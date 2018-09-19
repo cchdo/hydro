@@ -3,3 +3,4 @@
 __pycache__
 hydro.egg-info
 docs/_build
+.pytest_cache
