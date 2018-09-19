@@ -2,3 +2,4 @@
 *.pyc
 __pycache__
 hydro.egg-info
+docs/_build
