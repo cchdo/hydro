@@ -10,6 +10,7 @@ Welcome to hydro's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   attributes
 
 
 Indices and tables
