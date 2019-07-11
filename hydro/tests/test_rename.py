@@ -1,6 +1,6 @@
 import xarray as xr
 
-from hydro.rename import rename_with_bookkeeping
+from hydro.rename import rename_with_bookkeeping, to_argo_variable_names
 
 is_not_none = lambda a: a is not None
 
@@ -16,3 +16,6 @@ def test_rename():
     for var, da in result.filter_by_attrs(ancillary_variables=is_not_none).items():
         assert("new_var1" in da.attrs["ancillary_variables"])
         assert("var2" in da.attrs["ancillary_variables"])
+
+def test_to_argo_variable_names():
+    to_argo_variable_names("TODO")
