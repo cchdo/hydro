@@ -5,3 +5,4 @@ hydro.egg-info
 docs/_build
 .pytest_cache
 .ipynb_checkpoints/
+.mypy_cache/
