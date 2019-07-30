@@ -6,7 +6,7 @@ from typing import Optional
 __versions__ = {}  # pile of data version infomation
 
 
-@dataclass
+@dataclass(frozen=True)
 class CFStandardName:
     """Wrapper for CF Standard Names"""
 
@@ -30,7 +30,7 @@ for element in _cf_table:
     if element.tag == "last_modified":
         __versions__["cf_standard_name_table_date"] = element.text
 
-    if element.tag not in ('entry', 'alias'):
+    if element.tag not in ("entry", "alias"):
         continue
 
     name = element.attrib["id"]
@@ -38,8 +38,8 @@ for element in _cf_table:
 
     if element.tag == "entry":
         cf_standard_names[name] = CFStandardName(name=name, **name_info)
-    
+
     if element.tag == "alias":
-        cf_standard_names[name] = cf_standard_names[name_info['entry_id']]
+        cf_standard_names[name] = cf_standard_names[name_info["entry_id"]]
 
 del _cf_table
