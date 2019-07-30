@@ -8,22 +8,25 @@ from xarray import Dataset
 
 import hydro.data
 
-is_not_none = lambda a: a is not None
+
+def is_not_none(obj):
+    return obj is not None
+
 
 def rename_with_bookkeeping(
-        xarray_obj: Dataset, 
-        name_dict: Optional[Mapping]=None, 
-        attrs: Optional[List[str]]=None
-        ) -> Dataset:
+    xarray_obj: Dataset,
+    name_dict: Optional[Mapping] = None,
+    attrs: Optional[List[str]] = None,
+) -> Dataset:
     """
     """
 
-    #lets just noop this case
+    # lets just noop this case
     if name_dict is None:
         return xarray_obj
 
     # easy part
-    renamed =  xarray_obj.rename(name_dict)
+    renamed = xarray_obj.rename(name_dict)
 
     # no bookkeeping to do
     if attrs is None:
@@ -40,9 +43,8 @@ def rename_with_bookkeeping(
     return renamed
 
 
-def to_argo_variable_names(
-        xarray_obj: Dataset
-        ) -> Dataset:
-    with open_text(hydro.data, "argo-parameters-list-code-and-b.csv",
-            encoding='utf-8-sig') as f:
-        argo_params = {d['parameter name']: d for d in DictReader(f)}
+def to_argo_variable_names(xarray_obj: Dataset) -> Dataset:
+    with open_text(
+        hydro.data, "argo-parameters-list-code-and-b.csv", encoding="utf-8-sig"
+    ) as f:
+        argo_params = {d["parameter name"]: d for d in DictReader(f)}
