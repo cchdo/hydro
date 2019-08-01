@@ -1,7 +1,11 @@
 from dataclasses import dataclass, field
 from xml.etree import ElementTree
-from importlib.resources import read_text
+from importlib.resources import read_text, open_text
 from typing import Optional
+from types import MappingProxyType
+from csv import DictReader
+
+__all__ = ["CFStandardNames"]
 
 __versions__ = {}  # pile of data version infomation
 
@@ -17,29 +21,71 @@ class CFStandardName:
     description: str = field(repr=False, hash=False)
 
 
-_cf_table = ElementTree.fromstring(
-    read_text("hydro.data", "cf-standard-name-table.xml")
-)
+@dataclass(frozen=True)
+class ArgoName:
+    """Wrapper for Argo variable name table
+    Note that most of the table is ignored, this 
+    is here to mostly map CF names to argo and back
+    """
 
-cf_standard_names = {}
+    name: str
+    order: int
+    cf_standard_name: Optional[str]
+    unit: str
+    fillvalue: str
+    dtype: str
 
-for element in _cf_table:
-    if element.tag == "version_number":
-        __versions__["cf_standard_name_table_version"] = element.text
 
-    if element.tag == "last_modified":
-        __versions__["cf_standard_name_table_date"] = element.text
+def _load_cf_standard_names():
+    cf_standard_names = {}
 
-    if element.tag not in ("entry", "alias"):
-        continue
+    for element in ElementTree.fromstring(
+        read_text("hydro.data", "cf-standard-name-table.xml")
+    ):
+        if element.tag == "version_number":
+            __versions__["cf_standard_name_table_version"] = element.text
 
-    name = element.attrib["id"]
-    name_info = {info.tag: info.text for info in element}
+        if element.tag == "last_modified":
+            __versions__["cf_standard_name_table_date"] = element.text
 
-    if element.tag == "entry":
-        cf_standard_names[name] = CFStandardName(name=name, **name_info)
+        if element.tag not in ("entry", "alias"):
+            continue
 
-    if element.tag == "alias":
-        cf_standard_names[name] = cf_standard_names[name_info["entry_id"]]
+        name = element.attrib["id"]
+        name_info = {info.tag: info.text for info in element}
 
-del _cf_table
+        if element.tag == "entry":
+            cf_standard_names[name] = CFStandardName(name=name, **name_info)
+
+        if element.tag == "alias":
+            cf_standard_names[name] = cf_standard_names[name_info["entry_id"]]
+
+    return cf_standard_names
+
+
+def _load_argo_names():
+    argo_names = {}
+    with open_text(
+        "hydro.data", "argo-parameters-list-code-and-b.csv", encoding="utf-8-sig"
+    ) as f:
+        for row in DictReader(f):
+            if row["cf_standard_name"] == "-":
+                row["cf_standard_name"] = None
+            argo_names[row["parameter name"]] = ArgoName(
+                name=row["parameter name"],
+                order=int(row["Order"]),
+                cf_standard_name=row["cf_standard_name"],
+                unit=row["unit"],
+                fillvalue=row["Fillvalue"],
+                dtype=row["Data Type"],
+            )
+    return argo_names
+
+
+def _load_whp_names():
+    ...
+
+
+CFStandardNames = MappingProxyType(_load_cf_standard_names())
+ArgoNames = MappingProxyType(_load_argo_names())
+WHPNames = ...
