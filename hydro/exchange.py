@@ -1,7 +1,7 @@
-from dataclasses import dataclass, asdict, astuple, field
-from functools import singledispatch
-from typing import Union
-from datetime import date, time
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Union, BinaryIO
+from datetime import date, time, datetime
 
 import logging
 
@@ -18,9 +18,6 @@ ch.setFormatter(fmat)
 
 log.addHandler(ch)
 
-WOCECTD_to_ARGO = {1: 0, 2: 1, 3: 3, 4: 4, 5: 9, 6: 0, 7: 0, 9: 9}
-WOCECTD_to_ODV = {1: 0, 2: 0, 3: 4, 4: 8, 5: 1, 6: 1, 7: 1, 9: 1}
-
 
 def _union_checker(union, obj):
     log.debug(f"Checking typing.Union types")
@@ -36,6 +33,7 @@ def _union_checker(union, obj):
 
 class ValidateInitTypes:
     def __post_init__(self):
+        print("hi")
         for attr, dtype in self.__annotations__.items():
             log.debug(f"Checking {attr} is {dtype}")
             obj = getattr(self, attr)
@@ -71,5 +69,34 @@ class ExchangeCompositeKey(ValidateInitTypes, ToAndFromDict):
 
 @dataclass(frozen=True)
 class ExchangeTimestamp(ValidateInitTypes, ToAndFromDict):
-    date: date
-    time: Union[time, type(None)]
+    date_part: date
+    time_part: Union[time, None]
+
+    def __init__(
+        self, date_part: Union[str, date], time_part: Union[str, time, None] = None
+    ):
+        """This class is designed to be called using the "string" values normally
+        found in an exchange file. This means it is looking for a date
+        which will match "%Y%m%d" and a date which looks like "%H%M".
+        The date may also be `None`
+
+        """
+        if isinstance(date_part, str):
+            date_part = datetime.strptime(date_part, "%Y%m%d").date()
+        object.__setattr__(self, "date_part", date_part)
+
+        if isinstance(time_part, str):
+            time_part = datetime.strptime(time_part, "%H%M").time()
+        object.__setattr__(self, "time_part", time_part)
+
+        self.__post_init__()
+
+
+# @dataclass(frozen=True)
+# class Exchange:
+#    file_type:
+
+
+def read_exchange(filename_or_obj: Union[str, Path, BinaryIO]):
+    """Open an exchange file"""
+    ...
