@@ -124,6 +124,7 @@ class FileType(Enum):
 class Exchange:
     file_type: FileType
     comments: str
+    data: str
 
 
 def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Exchange:
@@ -141,7 +142,7 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
 
     if is_zipfile(data_raw):
         raise NotImplementedError("zip files not supported yet")
-    data_raw.seek(0)
+    data_raw.seek(0)  # is_zipfile moves the "tell" position
 
     try:
         data = data_raw.read().decode("utf8")
@@ -154,4 +155,4 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     if "\r" in data:
         raise InvalidExchangeFileError(ERRORS["line-end"])
 
-    return data
+    return Exchange(file_type=FileType.CTD, comments="", data=data)

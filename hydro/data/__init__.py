@@ -24,7 +24,7 @@ class CFStandardName:
 @dataclass(frozen=True)
 class ArgoName:
     """Wrapper for Argo variable name table
-    Note that most of the table is ignored, this 
+    Note that most of the table is ignored, this
     is here to mostly map CF names to argo and back
     """
 

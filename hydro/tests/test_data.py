@@ -53,6 +53,6 @@ argo_cf_names = [
 def test_argo_cf_names_in_cf_list(argoname):
     if argoname.cf_standard_name == "upwelling_radiance_in_sea_water":
         pytest.xfail(
-            "upwelling_radiance_in_sea_water is not currently in the standard names list"
+            "upwelling_radiance_in_sea_water is not in the standard names list"
         )
     assert argoname.cf_standard_name in data.CFStandardNames

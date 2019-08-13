@@ -5,8 +5,9 @@ from enum import IntEnum
 class ExchangeBottleFlag(IntEnum):
     """Enum representing a WHP Bottle flag
 
-    This flag represents information about the sampling device itself (i.e. the niskin bottle).
-    It should only be used for "BTLNBR_FLAG_W" values and should never be used with CTD files.
+    This flag represents information about the sampling device itself
+    (i.e. the niskin bottle). It should only be used for "BTLNBR_FLAG_W"
+    values and should never be used with CTD files.
     """
 
     NOFLAG = 0  # no idea if this will cause issue
@@ -34,9 +35,9 @@ class ExchangeBottleFlag(IntEnum):
             3: "Leaking.",
             4: "Did not trip correctly.",
             5: "Not reported.",
-            6: "Significant discrepancy in measured values between Gerard and Niskin bottles.",
+            6: "Significant discrepancy in measured values between Gerard and Niskin bottles.",  # noqa: E501
             7: "Unknown problem.",
-            8: "Pair did not trip correctly. Note that the Niskin bottle can trip at an unplanned depth while the Gerard trips correctly and vice versa.",
+            8: "Pair did not trip correctly. Note that the Niskin bottle can trip at an unplanned depth while the Gerard trips correctly and vice versa.",  # noqa: E501
             9: "Samples not drawn from this bottle.",
         }
         return defs[self.flag]
@@ -70,7 +71,7 @@ class ExchangeSampleFlag(IntEnum):
     def definition(self):
         defs = {
             0: "No Flag assigned",
-            1: "Sample for this measurement was drawn from water bottle but analysis not received.",
+            1: "Sample for this measurement was drawn from water bottle but analysis not received.",  # noqa: E501
             2: "Acceptable measurement.",
             3: "Questionable measurement.",
             4: "Bad measurement.",

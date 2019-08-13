@@ -1,12 +1,8 @@
 """
 """
-from importlib.resources import open_text
-from csv import DictReader
 from typing import List, Mapping, Optional
 
 from xarray import Dataset
-
-import hydro.data
 
 
 def is_not_none(obj):
@@ -44,7 +40,4 @@ def rename_with_bookkeeping(
 
 
 def to_argo_variable_names(xarray_obj: Dataset) -> Dataset:
-    with open_text(
-        hydro.data, "argo-parameters-list-code-and-b.csv", encoding="utf-8-sig"
-    ) as f:
-        argo_params = {d["parameter name"]: d for d in DictReader(f)}
+    ...
