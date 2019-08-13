@@ -2,6 +2,7 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Union, BinaryIO
 from datetime import date, time, datetime
+from enum import Enum, auto
 
 import logging
 
@@ -92,11 +93,18 @@ class ExchangeTimestamp(ValidateInitTypes, ToAndFromDict):
         self.__post_init__()
 
 
-# @dataclass(frozen=True)
-# class Exchange:
-#    file_type:
+class FileType(Enum):
+    CTD = auto()
+    BOTTLE = auto()
 
 
-def read_exchange(filename_or_obj: Union[str, Path, BinaryIO]):
+@dataclass(frozen=True)
+class Exchange:
+    file_type: FileType
+    comments: str
+    
+
+
+def read_exchange(filename_or_obj: Union[str, Path, BinaryIO]) -> Exchange:
     """Open an exchange file"""
     ...
