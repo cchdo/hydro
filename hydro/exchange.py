@@ -1,10 +1,14 @@
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Union, BinaryIO
+from typing import Union
 from datetime import date, time, datetime
 from enum import Enum, auto
+import io
+from zipfile import is_zipfile
 
 import logging
+
+import requests
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -109,7 +113,21 @@ class Exchange:
     comments: str
 
 
-
-def read_exchange(filename_or_obj: Union[str, Path, BinaryIO]) -> Exchange:
+def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Exchange:
     """Open an exchange file"""
-    ...
+
+    if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
+        data = io.BytesIO(requests.get(filename_or_obj).content)
+
+    elif isinstance(filename_or_obj, (str, Path)):
+        with open(filename_or_obj, "rb") as f:
+            data = io.BytesIO(f.read())
+
+    elif isinstance(filename_or_obj, io.BufferedIOBase):
+        data = io.BytesIO(filename_or_obj.read())
+
+    if is_zipfile(data):
+        raise NotImplementedError("zip files not supported yet")
+    data.seek(0)
+
+    return data
