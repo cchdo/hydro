@@ -63,9 +63,14 @@ class ToAndFromDict:
 
 @dataclass(frozen=True)
 class ExchangeCompositeKey(ValidateInitTypes, ToAndFromDict):
+    expocode: str
     station: str
     cast: int
     sample: str  # may be the pressure value for CTD data
+
+    @property
+    def profile_id(self):
+        return (self.expocode, self.station, self.cast)
 
 
 @dataclass(frozen=True)
@@ -102,7 +107,7 @@ class FileType(Enum):
 class Exchange:
     file_type: FileType
     comments: str
-    
+
 
 
 def read_exchange(filename_or_obj: Union[str, Path, BinaryIO]) -> Exchange:
