@@ -24,6 +24,19 @@ ch.setFormatter(fmat)
 log.addHandler(ch)
 
 
+exchange_doc = "https://exchange-format.readthedocs.io/en/latest"
+
+ERRORS = {
+    "utf8": f"Exchange files MUST be utf8 encoded: {exchange_doc}/common.html#encoding",
+    "bom": f"Exchange files MUST NOT have a byte order mark: {exchange_doc}/common.html#byte-order-marks",  # noqa: E501
+    "line-end": f"Exchange files MUST use LF line endings: {exchange_doc}/common.html#line-endings",  # noqa: E501
+}
+
+
+class InvalidExchangeFileError(ValueError):
+    pass
+
+
 def _union_checker(union, obj):
     log.debug(f"Checking typing.Union types")
     union_types = union.__args__
@@ -117,17 +130,28 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     """Open an exchange file"""
 
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
-        data = io.BytesIO(requests.get(filename_or_obj).content)
+        data_raw = io.BytesIO(requests.get(filename_or_obj).content)
 
     elif isinstance(filename_or_obj, (str, Path)):
         with open(filename_or_obj, "rb") as f:
-            data = io.BytesIO(f.read())
+            data_raw = io.BytesIO(f.read())
 
     elif isinstance(filename_or_obj, io.BufferedIOBase):
-        data = io.BytesIO(filename_or_obj.read())
+        data_raw = io.BytesIO(filename_or_obj.read())
 
-    if is_zipfile(data):
+    if is_zipfile(data_raw):
         raise NotImplementedError("zip files not supported yet")
-    data.seek(0)
+    data_raw.seek(0)
+
+    try:
+        data = data_raw.read().decode("utf8")
+    except UnicodeDecodeError as error:
+        raise InvalidExchangeFileError(ERRORS["utf8"]) from error
+
+    if data.startswith("\ufeff"):
+        raise InvalidExchangeFileError(ERRORS["bom"])
+
+    if "\r" in data:
+        raise InvalidExchangeFileError(ERRORS["line-end"])
 
     return data
