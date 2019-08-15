@@ -187,9 +187,26 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
 
     comments = _extract_comments(data_lines)
 
+    # Strip end_data
+    data_lines.remove("END_DATA")
+
     params = data_lines.popleft().split(",")
     units = data_lines.popleft().split(",")
 
-    return Exchange(
-        file_type=ftype, comments=comments, data=f"{list(zip(params,units))}"
-    )
+    # at this point the data_lines should ONLY contain data/flags
+
+    # the number of expected columns is just going to be the number of
+    # parameter names we see
+    column_count = len(params)
+
+    if len(units) != column_count:
+        # TODO make message
+        raise InvalidExchangeFileError()
+
+    for data_line in data_lines:
+        cols = [x.strip() for x in data_line.split(",")]
+        if len(cols) != column_count:
+            raise InvalidExchangeFileError()
+
+    return Exchange(file_type=ftype, comments=comments, data=data_lines)
+
