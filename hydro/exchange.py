@@ -128,10 +128,16 @@ class Exchange:
     data: str
 
 
-def _extract_comments(data: deque) -> str:
+def _extract_comments(data: deque, include_post_content: bool = True) -> str:
     comments = []
     while data[0].startswith("#"):
         comments.append(data.popleft().lstrip("#"))
+
+    if include_post_content:
+        post_content = []
+        while data[-1] != "END_DATA":
+            post_content.append(data.pop())
+        comments.extend(reversed(post_content))
 
     return "\n".join(comments)
 
@@ -175,9 +181,15 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     data_lines = deque(data.splitlines())
     data_lines.popleft()  # discard "stamp"
 
+    if "END_DATA" not in data_lines:
+        # TODO make messages
+        raise InvalidExchangeFileError("message")
+
     comments = _extract_comments(data_lines)
 
-    params = data_lines.popleft()
-    units = data_lines.popleft()
+    params = data_lines.popleft().split(",")
+    units = data_lines.popleft().split(",")
 
-    return Exchange(file_type=ftype, comments=comments, data=f"{params}{units}")
+    return Exchange(
+        file_type=ftype, comments=comments, data=f"{list(zip(params,units))}"
+    )
