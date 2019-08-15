@@ -1,4 +1,5 @@
 from dataclasses import dataclass, asdict
+from collections import deque
 from pathlib import Path
 from typing import Union
 from datetime import date, time, datetime
@@ -127,6 +128,14 @@ class Exchange:
     data: str
 
 
+def _extract_comments(data: deque) -> str:
+    comments = []
+    while data[0].startswith("#"):
+        comments.append(data.popleft().lstrip("#"))
+
+    return "\n".join(comments)
+
+
 def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Exchange:
     """Open an exchange file"""
 
@@ -155,4 +164,20 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     if "\r" in data:
         raise InvalidExchangeFileError(ERRORS["line-end"])
 
-    return Exchange(file_type=FileType.CTD, comments="", data=data)
+    if data.startswith("BOTTLE"):
+        ftype = FileType.BOTTLE
+    elif data.startswith("CTD"):
+        ftype = FileType.CTD
+    else:
+        # TODO make messages
+        raise InvalidExchangeFileError("message")
+
+    data_lines = deque(data.splitlines())
+    data_lines.popleft()  # discard "stamp"
+
+    comments = _extract_comments(data_lines)
+
+    params = data_lines.popleft()
+    units = data_lines.popleft()
+
+    return Exchange(file_type=ftype, comments=comments, data=f"{params}{units}")
