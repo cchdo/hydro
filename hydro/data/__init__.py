@@ -4,8 +4,9 @@ from importlib.resources import read_text, open_text
 from typing import Optional
 from types import MappingProxyType
 from csv import DictReader
+from json import load
 
-__all__ = ["CFStandardNames"]
+__all__ = ["CFStandardNames", "ArgoNames", "WHPNames"]
 
 __versions__ = {}  # pile of data version infomation
 
@@ -34,6 +35,30 @@ class ArgoName:
     unit: str
     fillvalue: str
     dtype: str
+
+
+@dataclass(frozen=True)
+class WHPName:
+    """Wrapper for WHP parameters.json
+    """
+
+    whp_name: str
+    data_type: str
+    whp_unit: Optional[str] = None
+    flag_w: Optional[str] = None
+    cf_name: Optional[str] = None
+    numeric_min: Optional[float] = None
+    numeric_max: Optional[float] = None
+    numeric_precision: Optional[int] = None
+    field_width: Optional[int] = None
+    description: Optional[str] = None
+    note: Optional[str] = None
+    warning: Optional[str] = None
+
+    @property
+    def key(self):
+        """This is the thing that uniquely identifies"""
+        return (self.whp_name, self.whp_unit)
 
 
 def _load_cf_standard_names():
@@ -83,9 +108,14 @@ def _load_argo_names():
 
 
 def _load_whp_names():
-    ...
+    whp_name = {}
+    with open_text("hydro.data", "parameters.json") as f:
+        for record in load(f):
+            param = WHPName(**record)
+            whp_name[param.key] = param
+    return whp_name
 
 
 CFStandardNames = MappingProxyType(_load_cf_standard_names())
 ArgoNames = MappingProxyType(_load_argo_names())
-WHPNames = ...
+WHPNames = MappingProxyType(_load_whp_names())
