@@ -207,9 +207,19 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         # TODO make message
         raise InvalidExchangeFileError()
 
+    for param in params:
+        if not param.endswith("_FLAG_W"):
+            continue
+        if param.replace("_FLAG_W", "") not in params:
+            raise InvalidExchangeFileError(f"data column for {param} must exist")
+
     for param, unit in zip(params, units):
         if param.endswith("_FLAG_W"):
-            continue
+            if unit is not None:
+                raise InvalidExchangeFileError("Flags should not have units")
+            else:
+                continue
+
         if (param, unit) not in WHPNames:
             raise InvalidExchangeFileError(f"missing parameter def {(param, unit)}")
 
