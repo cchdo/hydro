@@ -56,3 +56,11 @@ def test_argo_cf_names_in_cf_list(argoname):
             "upwelling_radiance_in_sea_water is not in the standard names list"
         )
     assert argoname.cf_standard_name in data.CFStandardNames
+
+
+whp_cf_names = [value for value in data.WHPNames.values() if value.cf_name is not None]
+
+
+@pytest.mark.parametrize("whpname", whp_cf_names)
+def test_whp_cf_names_in_cf_list(whpname):
+    assert whpname.cf_name in data.CFStandardNames
