@@ -7,8 +7,13 @@ install:
 jobs: 
   include:
     - script: pytest
+      name: "Pytest Tests"
     - script: mypy -v .
+      name: "Type Checking"
     - script: flake8 -v hydro
+      name: "Style Checking"
+    - script: black --check .
+      name: "Format Checking"
 notifications:
   slack:
     secure: WJn+2qDrzU9sgRJOsv0Aa7GIX0D3luZ/rpcS42uPsAn/j3oAEQTptBpfBetHVypI6lszr8PSlamAUD0Vz5Q6zqufTlr8QnFYpmZhdtgJwnmFZ68D8o0mdKM57ctVaKVXVOfCobAnqFqcNW032qgXPg0fLlAgBK2jnrCQznAYK3xeueQycTnxjegHeSQiiS3Cr/6xFh2wa6m4dXhOf3g632UliyhyNJmDbNGLSnDNd/H/k0KO1xotIU+iIN4xgWwGERnotND4a8Gmg0yZAwV0ujRt0cJEm6fzC4WR+caiYsXj1osXwRTsZx1QJn6UsLDR0UCtLh+SxAafLR5i/wMIxvUdbAErE744zVNzyTnF+hL/c09z/bajZsILmZD9Oqc9xt40dEOiEHySu/OPR6sH5dNTMnj3fqweEW8kckblBuWKlECbYNXVpLEBsCl/y3+peqOZzf4MdqTuCP+2cQHIgehrKJXigfJjmdhXwhMqWi9fJFQA2xUHN05DLGKsduxjNg68lX1tBN2oq/lxuq2Ebru9psZ4XWb6sKiGDUxv5UBIXavD3+e5ZPQrIQEIHf5bSw8DZQVoZnnyIV4+YUPMVift3dXUsmxtf2/0fV98sZCZsMz8TRaltnJmUUXv+gu7DehAefnLPXhVPVvUiTCFyVrfiaX/V6BzOt9ED7Rwnyo=
