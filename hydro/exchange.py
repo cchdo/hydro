@@ -54,7 +54,6 @@ def _union_checker(union, obj):
 
 class ValidateInitTypes:
     def __post_init__(self):
-        print("hi")
         for attr, dtype in self.__annotations__.items():
             log.debug(f"Checking {attr} is {dtype}")
             obj = getattr(self, attr)
