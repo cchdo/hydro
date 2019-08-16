@@ -11,6 +11,8 @@ import logging
 
 import requests
 
+from hydro.data import WHPNames
+
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
@@ -191,7 +193,9 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     data_lines.remove("END_DATA")
 
     params = data_lines.popleft().split(",")
-    units = data_lines.popleft().split(",")
+    # we can have a bunch of empty strings as units, we want these to be
+    # None to match what would be in a WHPName object
+    units = [x if x != "" else None for x in data_lines.popleft().split(",")]
 
     # at this point the data_lines should ONLY contain data/flags
 
@@ -203,10 +207,15 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         # TODO make message
         raise InvalidExchangeFileError()
 
+    for param, unit in zip(params, units):
+        if param.endswith("_FLAG_W"):
+            continue
+        if (param, unit) not in WHPNames:
+            raise InvalidExchangeFileError(f"missing parameter def {(param, unit)}")
+
     for data_line in data_lines:
         cols = [x.strip() for x in data_line.split(",")]
         if len(cols) != column_count:
             raise InvalidExchangeFileError()
 
-    return Exchange(file_type=ftype, comments=comments, data=data_lines)
-
+    return Exchange(file_type=ftype, comments=comments, data="")
