@@ -1,7 +1,7 @@
 from dataclasses import dataclass, asdict
 from collections import deque
 from pathlib import Path
-from typing import Union
+from typing import Union, Iterable, Tuple, Optional, Mapping
 from datetime import date, time, datetime
 from enum import Enum, auto
 import io
@@ -11,7 +11,7 @@ import logging
 
 import requests
 
-from hydro.data import WHPNames
+from hydro.data import WHPNames, WHPName
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -78,6 +78,45 @@ class ToAndFromDict:
     @classmethod
     def from_dict(cls, d):
         return cls(**d)
+
+
+def _bottle_get_params(
+    params_units: Iterable[Tuple[str, Optional[str]]]
+) -> Mapping[WHPName, int]:
+    params = {}
+    for index, (param, unit) in enumerate(params_units):
+        if param.endswith("_FLAG_W"):
+            continue
+        try:
+            params[WHPNames[(param, unit)]] = index
+        except KeyError as error:
+            raise InvalidExchangeFileError(
+                f"missing parameter def {(param, unit)}"
+            ) from error
+    return params
+
+
+def _bottle_get_flags(
+    params_units: Iterable[Tuple[str, Optional[str]]], whp_params: Mapping[WHPName, int]
+) -> Mapping[WHPName, int]:
+
+    param_flags = {}
+    whp_params_names = {x.whp_name: x for x in whp_params.keys()}
+
+    for index, (param, unit) in enumerate(params_units):
+        if not param.endswith("_FLAG_W"):
+            continue
+
+        if unit is not None:
+            raise InvalidExchangeFileError("Flags should not have units")
+
+        try:
+            whpname = whp_params_names[param.replace("_FLAG_W", "")]
+            param_flags[whpname] = index
+        except KeyError as error:
+            raise InvalidExchangeFileError("Flag with no data column") from error
+
+    return param_flags
 
 
 @dataclass(frozen=True)
@@ -198,6 +237,11 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
 
     # at this point the data_lines should ONLY contain data/flags
 
+    # column labels must be unique
+    if len(params) != len(set(params)):
+        # TODO Make Message
+        raise InvalidExchangeFileError()
+
     # the number of expected columns is just going to be the number of
     # parameter names we see
     column_count = len(params)
@@ -206,21 +250,12 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         # TODO make message
         raise InvalidExchangeFileError()
 
-    for param in params:
-        if not param.endswith("_FLAG_W"):
-            continue
-        if param.replace("_FLAG_W", "") not in params:
-            raise InvalidExchangeFileError(f"data column for {param} must exist")
+    whp_params = _bottle_get_params(zip(params, units))
+    whp_flags = _bottle_get_flags(zip(params, units), whp_params)
 
-    for param, unit in zip(params, units):
-        if param.endswith("_FLAG_W"):
-            if unit is not None:
-                raise InvalidExchangeFileError("Flags should not have units")
-            else:
-                continue
-
-        if (param, unit) not in WHPNames:
-            raise InvalidExchangeFileError(f"missing parameter def {(param, unit)}")
+    # ensure we will read the ENTIRE file
+    if {*whp_params.values(), *whp_flags.values()} != set(range(column_count)):
+        raise ValueError("WAT")
 
     for data_line in data_lines:
         cols = [x.strip() for x in data_line.split(",")]
