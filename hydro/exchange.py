@@ -1,11 +1,22 @@
+from __future__ import annotations
 from dataclasses import dataclass, asdict
 from collections import deque
 from pathlib import Path
-from typing import Union, Iterable, Tuple, Optional, Mapping
+from typing import (
+    Union,
+    Iterable,
+    Tuple,
+    Optional,
+    Mapping,
+    Callable,
+    List,
+    get_type_hints,
+)
 from datetime import date, time, datetime
 from enum import Enum, auto
 import io
 from zipfile import is_zipfile
+from operator import itemgetter
 
 import logging
 
@@ -13,8 +24,10 @@ import requests
 
 from hydro.data import WHPNames, WHPName
 
+WHPNameIndex = Mapping[WHPName, int]
+
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.ERROR)
 
 fmat = logging.Formatter(
     "%(asctime)s - %(name)s - %(funcName)s - %(levelname)s - %(message)s"
@@ -54,7 +67,7 @@ def _union_checker(union, obj):
 
 class ValidateInitTypes:
     def __post_init__(self):
-        for attr, dtype in self.__annotations__.items():
+        for attr, dtype in get_type_hints(self).items():
             log.debug(f"Checking {attr} is {dtype}")
             obj = getattr(self, attr)
             self_type = type(obj)
@@ -82,7 +95,7 @@ class ToAndFromDict:
 
 def _bottle_get_params(
     params_units: Iterable[Tuple[str, Optional[str]]]
-) -> Mapping[WHPName, int]:
+) -> WHPNameIndex:
     params = {}
     for index, (param, unit) in enumerate(params_units):
         if param.endswith("_FLAG_W"):
@@ -97,8 +110,8 @@ def _bottle_get_params(
 
 
 def _bottle_get_flags(
-    params_units: Iterable[Tuple[str, Optional[str]]], whp_params: Mapping[WHPName, int]
-) -> Mapping[WHPName, int]:
+    params_units: Iterable[Tuple[str, Optional[str]]], whp_params: WHPNameIndex
+) -> WHPNameIndex:
 
     param_flags = {}
     whp_params_names = {x.whp_name: x for x in whp_params.keys()}
@@ -129,6 +142,31 @@ class ExchangeCompositeKey(ValidateInitTypes, ToAndFromDict):
     @property
     def profile_id(self):
         return (self.expocode, self.station, self.cast)
+
+    @classmethod
+    def key_factory(
+        cls, params: WHPNameIndex
+    ) -> Callable[[List[str]], ExchangeCompositeKey]:
+        # Why is all this "hard coded"? These are the required ID keys according to the
+        # spec, as such, their lack of presence is an error.
+        try:
+            expocode_index = params[WHPNames[("EXPOCODE", None)]]
+            station_index = params[WHPNames[("STNNBR", None)]]
+            cast_index = params[WHPNames[("CASTNO", None)]]
+            sample_index = params[WHPNames[("SAMPNO", None)]]
+        except KeyError as error:
+            # TODO Message
+            raise InvalidExchangeFileError("key getter") from error
+
+        def index_getter(data_line: List[str]) -> ExchangeCompositeKey:
+            return cls(
+                expocode=str(itemgetter(expocode_index)(data_line)).strip(),
+                station=str(itemgetter(station_index)(data_line)).strip(),
+                cast=int(itemgetter(cast_index)(data_line)),
+                sample=str(itemgetter(sample_index)(data_line)).strip(),
+            )
+
+        return index_getter
 
 
 @dataclass(frozen=True)
@@ -257,9 +295,13 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     if {*whp_params.values(), *whp_flags.values()} != set(range(column_count)):
         raise ValueError("WAT")
 
+    index_getter = ExchangeCompositeKey.key_factory(whp_params)
+
+    indicies = []
     for data_line in data_lines:
         cols = [x.strip() for x in data_line.split(",")]
         if len(cols) != column_count:
             raise InvalidExchangeFileError()
+        indicies.append(index_getter(cols))
 
     return Exchange(file_type=ftype, comments=comments, data="")
