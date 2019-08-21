@@ -203,6 +203,8 @@ class FileType(Enum):
 class Exchange:
     file_type: FileType
     comments: str
+    parameters: Tuple[WHPName, ...]
+    keys: Tuple[ExchangeCompositeKey, ...]
     data: str
 
 
@@ -304,4 +306,10 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
             raise InvalidExchangeFileError()
         indicies.append(index_getter(cols))
 
-    return Exchange(file_type=ftype, comments=comments, data="")
+    return Exchange(
+        file_type=ftype,
+        comments=comments,
+        parameters=tuple(whp_params.keys()),
+        keys=tuple(indicies),
+        data="",
+    )
