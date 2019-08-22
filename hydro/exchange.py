@@ -2,42 +2,19 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from collections import deque
 from pathlib import Path
-from typing import (
-    Union,
-    Iterable,
-    Tuple,
-    Optional,
-    Mapping,
-    Callable,
-    List,
-    get_type_hints,
-)
+from typing import Union, Iterable, Tuple, Optional, Mapping, Callable, List
 from datetime import date, time, datetime
 from enum import Enum, auto
 import io
 from zipfile import is_zipfile
 from operator import itemgetter
-
-import logging
+from types import MappingProxyType
 
 import requests
 
 from hydro.data import WHPNames, WHPName
 
 WHPNameIndex = Mapping[WHPName, int]
-
-log = logging.getLogger(__name__)
-log.setLevel(logging.ERROR)
-
-fmat = logging.Formatter(
-    "%(asctime)s - %(name)s - %(funcName)s - %(levelname)s - %(message)s"
-)
-
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-ch.setFormatter(fmat)
-
-log.addHandler(ch)
 
 
 exchange_doc = "https://exchange-format.readthedocs.io/en/latest"
@@ -51,37 +28,6 @@ ERRORS = {
 
 class InvalidExchangeFileError(ValueError):
     pass
-
-
-def _union_checker(union, obj):
-    log.debug(f"Checking typing.Union types")
-    union_types = union.__args__
-    log.debug(f"found types {union_types}")
-    for dtype in union_types:
-        log.debug(f"checking if {obj} is {dtype}")
-        if isinstance(obj, dtype):
-            return True
-    log.debug(f"{type(obj)} not in {union}")
-    return False
-
-
-class ValidateInitTypes:
-    def __post_init__(self):
-        for attr, dtype in get_type_hints(self).items():
-            log.debug(f"Checking {attr} is {dtype}")
-            obj = getattr(self, attr)
-            self_type = type(obj)
-            error = (
-                f"Invalid data type for {self!r}: The type of {attr} "
-                f"is expected to be {dtype} not {self_type}"
-            )
-            if "typing.Union" in str(dtype):
-                log.debug(f"typing.Union found, checking allowed types")
-                if not _union_checker(dtype, obj):
-                    raise TypeError(error)
-            elif self_type is not dtype:
-                raise TypeError(error)
-        log.debug(f"{self} looks ok")
 
 
 class ToAndFromDict:
@@ -133,7 +79,7 @@ def _bottle_get_flags(
 
 
 @dataclass(frozen=True)
-class ExchangeCompositeKey(ValidateInitTypes, ToAndFromDict):
+class ExchangeCompositeKey(ToAndFromDict):
     expocode: str
     station: str
     cast: int
@@ -170,28 +116,45 @@ class ExchangeCompositeKey(ValidateInitTypes, ToAndFromDict):
 
 
 @dataclass(frozen=True)
-class ExchangeTimestamp(ValidateInitTypes, ToAndFromDict):
+class ExchangeTimestamp(ToAndFromDict):
     date_part: date
-    time_part: Union[time, None]
+    time_part: Optional[time]
 
-    def __init__(
-        self, date_part: Union[str, date], time_part: Union[str, time, None] = None
-    ):
-        """This class is designed to be called using the "string" values normally
-        found in an exchange file. This means it is looking for a date
-        which will match "%Y%m%d" and a date which looks like "%H%M".
-        The date may also be `None`
+    @classmethod
+    def from_strs(
+        cls, date_part: str, time_part: Optional[str] = None
+    ) -> ExchangeTimestamp:
+        parsed_date = datetime.strptime(date_part, "%Y%m%d").date()
+        parsed_time: Optional[time] = None
+        if time_part is not None:
+            parsed_time = datetime.strptime(time_part, "%H%M").time()
+        return cls(date_part=parsed_date, time_part=parsed_time)
 
-        """
-        if isinstance(date_part, str):
-            date_part = datetime.strptime(date_part, "%Y%m%d").date()
-        object.__setattr__(self, "date_part", date_part)
+    @classmethod
+    def key_factory(
+        cls, params: WHPNameIndex
+    ) -> Callable[[List[str]], ExchangeTimestamp]:
+        time_index: Optional[int] = None
+        try:
+            date_index = params[WHPNames[("DATE", None)]]
+        except KeyError as error:
+            # TODO Message
+            raise InvalidExchangeFileError("date key") from error
+        try:
+            time_index = params[WHPNames[("TIME", None)]]
+        except KeyError:
+            pass
 
-        if isinstance(time_part, str):
-            time_part = datetime.strptime(time_part, "%H%M").time()
-        object.__setattr__(self, "time_part", time_part)
+        def index_getter(data_line: List[str]) -> ExchangeTimestamp:
+            date_part = str(itemgetter(date_index)(data_line)).strip()
+            time_part: Optional[str] = None
 
-        self.__post_init__()
+            if time_index is not None:
+                time_part = str(itemgetter(time_index)(data_line)).strip()
+
+            return cls.from_strs(date_part=date_part, time_part=time_part)
+
+        return index_getter
 
 
 class FileType(Enum):
@@ -205,7 +168,15 @@ class Exchange:
     comments: str
     parameters: Tuple[WHPName, ...]
     keys: Tuple[ExchangeCompositeKey, ...]
-    data: str
+    data: Mapping[ExchangeCompositeKey, Mapping[WHPName, Union[ExchangeTimestamp, str]]]
+
+    def __post_init__(self):
+        for key, value in self.data.items():
+            self.data[key] = MappingProxyType(value)
+        object.__setattr__(self, "data", MappingProxyType(self.data))
+
+    def __repr__(self):
+        return f"""<hydro.Exchange>"""
 
 
 def _extract_comments(data: deque, include_post_content: bool = True) -> str:
@@ -298,18 +269,24 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         raise ValueError("WAT")
 
     index_getter = ExchangeCompositeKey.key_factory(whp_params)
+    datetime_getter = ExchangeTimestamp.key_factory(whp_params)
 
     indicies = []
+    exchange_data = {}
     for data_line in data_lines:
         cols = [x.strip() for x in data_line.split(",")]
         if len(cols) != column_count:
             raise InvalidExchangeFileError()
-        indicies.append(index_getter(cols))
+        index = index_getter(cols)
+        indicies.append(index)
+        exchange_data[index] = {
+            param: datetime_getter(cols) for param in whp_params.keys()
+        }
 
     return Exchange(
         file_type=ftype,
         comments=comments,
         parameters=tuple(whp_params.keys()),
         keys=tuple(indicies),
-        data="",
+        data=exchange_data,
     )
