@@ -13,8 +13,10 @@ from types import MappingProxyType
 import requests
 
 from hydro.data import WHPNames, WHPName
+from hydro.flag import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
 
 WHPNameIndex = Mapping[WHPName, int]
+ExchangeFlags = Union[ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag]
 
 
 exchange_doc = "https://exchange-format.readthedocs.io/en/latest"
@@ -76,6 +78,38 @@ def _bottle_get_flags(
             raise InvalidExchangeFileError("Flag with no data column") from error
 
     return param_flags
+
+
+def _bottle_make_readers(names_index: WHPNameIndex, flags_index: WHPNameIndex):
+    _special_cases = [
+        WHPNames[name]
+        for name in [
+            ("EXPOCDE", None),
+            ("STNNBR", None),
+            ("CASTNO", None),
+            ("SAMPNO", None),
+            ("DATE", None),
+            ("TIME", None),
+        ]
+    ]
+
+    for name in names_index:
+        if name in _special_cases:
+            continue
+
+        # WHPName can have one of three data types:
+
+
+@dataclass(frozen=True)
+class ExchangeDataPoint:
+    whpname: WHPName
+    value: Union[str, float, int]
+    flag: ExchangeFlags
+
+    def __post_init__(self):
+        # Check to see if the flag value allowes for data
+        # Check to see if datatype is ok
+        ...
 
 
 @dataclass(frozen=True)
