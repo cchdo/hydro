@@ -43,17 +43,17 @@ class WHPName:
     """
 
     whp_name: str
-    data_type: str
+    data_type: str = field(repr=False)
     whp_unit: Optional[str] = None
-    flag_w: Optional[str] = None
+    flag_w: Optional[str] = field(default=None, repr=False)
     cf_name: Optional[str] = None
-    numeric_min: Optional[float] = None
-    numeric_max: Optional[float] = None
-    numeric_precision: Optional[int] = None
-    field_width: Optional[int] = None
-    description: Optional[str] = None
-    note: Optional[str] = None
-    warning: Optional[str] = None
+    numeric_min: Optional[float] = field(default=None, repr=False)
+    numeric_max: Optional[float] = field(default=None, repr=False)
+    numeric_precision: Optional[int] = field(default=None, repr=False)
+    field_width: Optional[int] = field(default=None, repr=False)
+    description: Optional[str] = field(default=None, repr=False)
+    note: Optional[str] = field(default=None, repr=False)
+    warning: Optional[str] = field(default=None, repr=False)
 
     @property
     def key(self):
