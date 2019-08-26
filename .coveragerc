@@ -1,0 +1,4 @@
+[run]
+omit =
+    hydro/tests/*
+    hydro/_version.py
