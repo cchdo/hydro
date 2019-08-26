@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from xml.etree import ElementTree
 from importlib.resources import read_text, open_text
-from typing import Optional
+from typing import Optional, Callable, Union
 from types import MappingProxyType
 from csv import DictReader
 from json import load
@@ -43,7 +43,7 @@ class WHPName:
     """
 
     whp_name: str
-    data_type: str = field(repr=False)
+    data_type: Callable[[str], Union[str, float, int]] = field(repr=False)
     whp_unit: Optional[str] = None
     flag_w: Optional[str] = field(default=None, repr=False)
     cf_name: Optional[str] = None
@@ -108,9 +108,11 @@ def _load_argo_names():
 
 
 def _load_whp_names():
+    _dtype_map = {"string": str, "decimal": float, "integer": int}
     whp_name = {}
     with open_text("hydro.data", "parameters.json") as f:
         for record in load(f):
+            record["data_type"] = _dtype_map[record["data_type"]]
             param = WHPName(**record)
             whp_name[param.key] = param
     return whp_name
