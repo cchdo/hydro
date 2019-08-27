@@ -84,7 +84,7 @@ def _bottle_make_readers(names_index: WHPNameIndex, flags_index: WHPNameIndex):
     _special_cases = [
         WHPNames[name]
         for name in [
-            ("EXPOCDE", None),
+            ("EXPOCODE", None),
             ("STNNBR", None),
             ("CASTNO", None),
             ("SAMPNO", None),
@@ -304,6 +304,7 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
 
     index_getter = ExchangeCompositeKey.key_factory(whp_params)
     datetime_getter = ExchangeTimestamp.key_factory(whp_params)
+    # data_getters = _bottle_make_readers(whp_params, whp_flags)
 
     indicies = []
     exchange_data = {}
