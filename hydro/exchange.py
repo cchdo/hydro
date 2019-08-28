@@ -73,6 +73,8 @@ def _bottle_get_flags(
 
         try:
             whpname = whp_params_names[param.replace("_FLAG_W", "")]
+            if whpname.flag_w is None:
+                raise InvalidExchangeFileError(f"{whpname} cannot have a flag column")
             param_flags[whpname] = index
         except KeyError as error:
             raise InvalidExchangeFileError("Flag with no data column") from error
@@ -96,8 +98,6 @@ def _bottle_make_readers(names_index: WHPNameIndex, flags_index: WHPNameIndex):
     for name in names_index:
         if name in _special_cases:
             continue
-
-        # WHPName can have one of three data types:
 
 
 @dataclass(frozen=True)
