@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from collections import deque
 from pathlib import Path
-from typing import Union, Iterable, Tuple, Optional, Mapping, Callable, List, Dict
+from typing import Union, Iterable, Tuple, Optional, Callable, List, Dict, NamedTuple
 from datetime import date, time, datetime
 from enum import Enum, auto
 import io
@@ -15,8 +15,19 @@ import requests
 from hydro.data import WHPNames, WHPName
 from hydro.flag import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
 
-WHPNameIndex = Mapping[WHPName, int]
+WHPNameIndex = Dict[WHPName, int]
 ExchangeFlags = Union[ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag]
+
+# Some Names we use frequently...
+EXPOCODE = WHPNames[("EXPOCODE", None)]
+STNNBR = WHPNames[("STNNBR", None)]
+CASTNO = WHPNames[("CASTNO", None)]
+SAMPNO = WHPNames[("SAMPNO", None)]
+CTDPRS = WHPNames[("CTDPRS", "DBAR")]
+DATE = WHPNames[("DATE", None)]
+TIME = WHPNames[("TIME", None)]
+LATITUDE = WHPNames[("LATITUDE", None)]
+LONGITUDE = WHPNames[("LONGITUDE", None)]
 
 
 exchange_doc = "https://exchange-format.readthedocs.io/en/latest"
@@ -26,6 +37,11 @@ ERRORS = {
     "bom": f"Exchange files MUST NOT have a byte order mark: {exchange_doc}/common.html#byte-order-marks",  # noqa: E501
     "line-end": f"Exchange files MUST use LF line endings: {exchange_doc}/common.html#line-endings",  # noqa: E501
 }
+
+
+class IntermediateDataPoint(NamedTuple):
+    data: str
+    flag: Optional[str]
 
 
 class InvalidExchangeFileError(ValueError):
@@ -106,29 +122,15 @@ class ExchangeCompositeKey(ToAndFromDict):
         return (self.expocode, self.station, self.cast)
 
     @classmethod
-    def key_factory(
-        cls, params: WHPNameIndex
-    ) -> Callable[[List[str]], ExchangeCompositeKey]:
-        # Why is all this "hard coded"? These are the required ID keys according to the
-        # spec, as such, their lack of presence is an error.
-        try:
-            expocode_index = params[WHPNames[("EXPOCODE", None)]]
-            station_index = params[WHPNames[("STNNBR", None)]]
-            cast_index = params[WHPNames[("CASTNO", None)]]
-            sample_index = params[WHPNames[("SAMPNO", None)]]
-        except KeyError as error:
-            # TODO Message
-            raise InvalidExchangeFileError("key getter") from error
-
-        def index_getter(data_line: List[str]) -> ExchangeCompositeKey:
-            return cls(
-                expocode=str(itemgetter(expocode_index)(data_line)).strip(),
-                station=str(itemgetter(station_index)(data_line)).strip(),
-                cast=int(itemgetter(cast_index)(data_line)),
-                sample=str(itemgetter(sample_index)(data_line)).strip(),
-            )
-
-        return index_getter
+    def from_data_line(
+        cls, data_line: Dict[WHPName, IntermediateDataPoint]
+    ) -> ExchangeCompositeKey:
+        return cls(
+            expocode=EXPOCODE.data_type(data_line.pop(EXPOCODE).data),
+            station=STNNBR.data_type(data_line.pop(STNNBR).data),
+            cast=CASTNO.data_type(data_line.pop(CASTNO).data),
+            sample=SAMPNO.data_type(data_line.pop(SAMPNO).data),
+        )
 
 
 @dataclass(frozen=True)
@@ -175,7 +177,7 @@ class ExchangeTimestamp(ToAndFromDict):
 
 def _bottle_line_parser(
     names_index: WHPNameIndex, flags_index: WHPNameIndex
-) -> Callable[[str], Dict[WHPName, Tuple[str, Optional[str]]]]:
+) -> Callable[[str], Dict[WHPName, IntermediateDataPoint]]:
     data_getters = {}
     flag_getters = {}
     for name, data_col in names_index.items():
@@ -187,14 +189,14 @@ def _bottle_line_parser(
         else:
             flag_getters[name] = itemgetter(flag_col)
 
-    def line_parser(line: str) -> Dict[WHPName, Tuple[str, Optional[str]]]:
+    def line_parser(line: str) -> Dict[WHPName, IntermediateDataPoint]:
         split_line = [s.strip() for s in line.split(",")]
         parsed = {}
         for name in names_index:
             data: str = data_getters[name](split_line)
             flag: Optional[str] = flag_getters[name](split_line)
 
-            parsed[name] = (data, flag)
+            parsed[name] = IntermediateDataPoint(data, flag)
 
         return parsed
 
@@ -212,7 +214,7 @@ class Exchange:
     comments: str
     parameters: Tuple[WHPName, ...]
     keys: Tuple[ExchangeCompositeKey, ...]
-    data: Dict[ExchangeCompositeKey, Dict[WHPName, Tuple[str, Optional[str]]]]
+    data: Dict[ExchangeCompositeKey, Dict[WHPName, IntermediateDataPoint]]
 
     def __post_init__(self):
         for key, value in self.data.items():
@@ -312,24 +314,26 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     if {*whp_params.values(), *whp_flags.values()} != set(range(column_count)):
         raise ValueError("WAT")
 
-    index_getter = ExchangeCompositeKey.key_factory(whp_params)
+    # index_getter = ExchangeCompositeKey.key_factory(whp_params)
     # datetime_getter = ExchangeTimestamp.key_factory(whp_params)
     line_parser = _bottle_line_parser(whp_params, whp_flags)
 
-    indicies = []
     exchange_data = {}
     for data_line in data_lines:
         cols = [x.strip() for x in data_line.split(",")]
         if len(cols) != column_count:
             raise InvalidExchangeFileError()
-        index = index_getter(cols)
-        indicies.append(index)
-        exchange_data[index] = line_parser(data_line)
+        parsed_data_line = line_parser(data_line)
+        try:
+            key = ExchangeCompositeKey.from_data_line(parsed_data_line)
+        except KeyError as error:
+            raise InvalidExchangeFileError("Something Missing") from error
+        exchange_data[key] = parsed_data_line
 
     return Exchange(
         file_type=ftype,
         comments=comments,
         parameters=tuple(whp_params.keys()),
-        keys=tuple(indicies),
+        keys=tuple(exchange_data.keys()),
         data=exchange_data,
     )
