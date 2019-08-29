@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from collections import deque
 from pathlib import Path
-from typing import Union, Iterable, Tuple, Optional, Mapping, Callable, List
+from typing import Union, Iterable, Tuple, Optional, Mapping, Callable, List, Dict
 from datetime import date, time, datetime
 from enum import Enum, auto
 import io
@@ -80,24 +80,6 @@ def _bottle_get_flags(
             raise InvalidExchangeFileError("Flag with no data column") from error
 
     return param_flags
-
-
-def _bottle_make_readers(names_index: WHPNameIndex, flags_index: WHPNameIndex):
-    _special_cases = [
-        WHPNames[name]
-        for name in [
-            ("EXPOCODE", None),
-            ("STNNBR", None),
-            ("CASTNO", None),
-            ("SAMPNO", None),
-            ("DATE", None),
-            ("TIME", None),
-        ]
-    ]
-
-    for name in names_index:
-        if name in _special_cases:
-            continue
 
 
 @dataclass(frozen=True)
@@ -191,6 +173,34 @@ class ExchangeTimestamp(ToAndFromDict):
         return index_getter
 
 
+def _bottle_line_parser(
+    names_index: WHPNameIndex, flags_index: WHPNameIndex
+) -> Callable[[str], Dict[WHPName, Tuple[str, Optional[str]]]]:
+    data_getters = {}
+    flag_getters = {}
+    for name, data_col in names_index.items():
+        data_getter = itemgetter(data_col)
+        flag_col = flags_index.get(name)
+        data_getters[name] = data_getter
+        if flag_col is None:
+            flag_getters[name] = lambda x: None
+        else:
+            flag_getters[name] = itemgetter(flag_col)
+
+    def line_parser(line: str) -> Dict[WHPName, Tuple[str, Optional[str]]]:
+        split_line = [s.strip() for s in line.split(",")]
+        parsed = {}
+        for name in names_index:
+            data: str = data_getters[name](split_line)
+            flag: Optional[str] = flag_getters[name](split_line)
+
+            parsed[name] = (data, flag)
+
+        return parsed
+
+    return line_parser
+
+
 class FileType(Enum):
     CTD = auto()
     BOTTLE = auto()
@@ -202,7 +212,7 @@ class Exchange:
     comments: str
     parameters: Tuple[WHPName, ...]
     keys: Tuple[ExchangeCompositeKey, ...]
-    data: Mapping[ExchangeCompositeKey, Mapping[WHPName, Union[ExchangeTimestamp, str]]]
+    data: Dict[ExchangeCompositeKey, Dict[WHPName, Tuple[str, Optional[str]]]]
 
     def __post_init__(self):
         for key, value in self.data.items():
@@ -303,8 +313,8 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         raise ValueError("WAT")
 
     index_getter = ExchangeCompositeKey.key_factory(whp_params)
-    datetime_getter = ExchangeTimestamp.key_factory(whp_params)
-    # data_getters = _bottle_make_readers(whp_params, whp_flags)
+    # datetime_getter = ExchangeTimestamp.key_factory(whp_params)
+    line_parser = _bottle_line_parser(whp_params, whp_flags)
 
     indicies = []
     exchange_data = {}
@@ -314,9 +324,7 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
             raise InvalidExchangeFileError()
         index = index_getter(cols)
         indicies.append(index)
-        exchange_data[index] = {
-            param: datetime_getter(cols) for param in whp_params.keys()
-        }
+        exchange_data[index] = line_parser(data_line)
 
     return Exchange(
         file_type=ftype,
