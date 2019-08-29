@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from collections import deque
 from pathlib import Path
-from typing import Union, Iterable, Tuple, Optional, Callable, List, Dict, NamedTuple
+from typing import Union, Iterable, Tuple, Optional, Callable, Dict, NamedTuple
 from datetime import date, time, datetime
 from enum import Enum, auto
 import io
@@ -16,7 +16,7 @@ from hydro.data import WHPNames, WHPName
 from hydro.flag import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
 
 WHPNameIndex = Dict[WHPName, int]
-ExchangeFlags = Union[ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag]
+ExchangeFlags = Union[ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag, None]
 
 # Some Names we use frequently...
 EXPOCODE = WHPNames[("EXPOCODE", None)]
@@ -104,6 +104,25 @@ class ExchangeDataPoint:
     value: Union[str, float, int]
     flag: ExchangeFlags
 
+    @classmethod
+    def from_ir(cls, whpname: WHPName, ir: IntermediateDataPoint) -> ExchangeDataPoint:
+        # https://github.com/python/mypy/issues/5485
+        value = whpname.data_type(ir.data)  # type: ignore
+        flag: ExchangeFlags = None
+        try:
+            # we will catch the type error explicitly
+            flag_v = int(ir.flag)  # type: ignore
+            if whpname.flag_w == "woce_bottle":
+                flag = ExchangeBottleFlag(flag_v)
+            if whpname.flag_w == "woce_discrete":
+                flag = ExchangeSampleFlag(flag_v)
+            if whpname.flag_w == "woce_ctd":
+                flag = ExchangeCTDFlag(flag_v)
+        except TypeError:
+            pass
+
+        return ExchangeDataPoint(whpname=whpname, value=value, flag=flag)
+
     def __post_init__(self):
         # Check to see if the flag value allowes for data
         # Check to see if datatype is ok
@@ -134,6 +153,32 @@ class ExchangeCompositeKey(ToAndFromDict):
 
 
 @dataclass(frozen=True)
+class ExchangeXYZT:
+    x: ExchangeDataPoint  # Longitude
+    y: ExchangeDataPoint  # Latitude
+    z: ExchangeDataPoint  # Pressure
+    t: ExchangeTimestamp  # Time obviously...
+
+    @classmethod
+    def from_data_line(
+        cls, data_line: Dict[WHPName, IntermediateDataPoint]
+    ) -> ExchangeXYZT:
+        date = data_line.pop(DATE).data
+        time: Optional[str] = None
+        try:
+            time = data_line.pop(TIME).data
+        except KeyError:
+            pass
+
+        return cls(
+            x=ExchangeDataPoint.from_ir(LONGITUDE, data_line.pop(LONGITUDE)),
+            y=ExchangeDataPoint.from_ir(LATITUDE, data_line.pop(LATITUDE)),
+            z=ExchangeDataPoint.from_ir(CTDPRS, data_line[CTDPRS]),
+            t=ExchangeTimestamp.from_strs(date, time),
+        )
+
+
+@dataclass(frozen=True)
 class ExchangeTimestamp(ToAndFromDict):
     date_part: date
     time_part: Optional[time]
@@ -147,32 +192,6 @@ class ExchangeTimestamp(ToAndFromDict):
         if time_part is not None:
             parsed_time = datetime.strptime(time_part, "%H%M").time()
         return cls(date_part=parsed_date, time_part=parsed_time)
-
-    @classmethod
-    def key_factory(
-        cls, params: WHPNameIndex
-    ) -> Callable[[List[str]], ExchangeTimestamp]:
-        time_index: Optional[int] = None
-        try:
-            date_index = params[WHPNames[("DATE", None)]]
-        except KeyError as error:
-            # TODO Message
-            raise InvalidExchangeFileError("date key") from error
-        try:
-            time_index = params[WHPNames[("TIME", None)]]
-        except KeyError:
-            pass
-
-        def index_getter(data_line: List[str]) -> ExchangeTimestamp:
-            date_part = str(itemgetter(date_index)(data_line)).strip()
-            time_part: Optional[str] = None
-
-            if time_index is not None:
-                time_part = str(itemgetter(time_index)(data_line)).strip()
-
-            return cls.from_strs(date_part=date_part, time_part=time_part)
-
-        return index_getter
 
 
 def _bottle_line_parser(
@@ -214,7 +233,8 @@ class Exchange:
     comments: str
     parameters: Tuple[WHPName, ...]
     keys: Tuple[ExchangeCompositeKey, ...]
-    data: Dict[ExchangeCompositeKey, Dict[WHPName, IntermediateDataPoint]]
+    coordinates: Dict[ExchangeCompositeKey, ExchangeXYZT]
+    data: Dict[ExchangeCompositeKey, Dict[WHPName, ExchangeDataPoint]]
 
     def __post_init__(self):
         for key, value in self.data.items():
@@ -314,11 +334,10 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     if {*whp_params.values(), *whp_flags.values()} != set(range(column_count)):
         raise ValueError("WAT")
 
-    # index_getter = ExchangeCompositeKey.key_factory(whp_params)
-    # datetime_getter = ExchangeTimestamp.key_factory(whp_params)
     line_parser = _bottle_line_parser(whp_params, whp_flags)
 
     exchange_data = {}
+    coordinates = {}
     for data_line in data_lines:
         cols = [x.strip() for x in data_line.split(",")]
         if len(cols) != column_count:
@@ -328,12 +347,22 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
             key = ExchangeCompositeKey.from_data_line(parsed_data_line)
         except KeyError as error:
             raise InvalidExchangeFileError("Something Missing") from error
-        exchange_data[key] = parsed_data_line
+
+        try:
+            coord = ExchangeXYZT.from_data_line(parsed_data_line)
+        except KeyError as error:
+            raise InvalidExchangeFileError("Something Missing") from error
+        exchange_data[key] = {
+            param: ExchangeDataPoint.from_ir(param, ir)
+            for param, ir in parsed_data_line.items()
+        }
+        coordinates[key] = coord
 
     return Exchange(
         file_type=ftype,
         comments=comments,
         parameters=tuple(whp_params.keys()),
         keys=tuple(exchange_data.keys()),
+        coordinates=coordinates,
         data=exchange_data,
     )
