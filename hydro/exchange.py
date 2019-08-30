@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from collections import deque
 from pathlib import Path
 from typing import Union, Iterable, Tuple, Optional, Callable, Dict, NamedTuple
@@ -46,15 +46,6 @@ class IntermediateDataPoint(NamedTuple):
 
 class InvalidExchangeFileError(ValueError):
     pass
-
-
-class ToAndFromDict:
-    def to_dict(self):
-        return asdict(self)
-
-    @classmethod
-    def from_dict(cls, d):
-        return cls(**d)
 
 
 def _bottle_get_params(
@@ -134,7 +125,7 @@ class ExchangeDataPoint:
 
 
 @dataclass(frozen=True)
-class ExchangeCompositeKey(ToAndFromDict):
+class ExchangeCompositeKey:
     __slots__ = ("expocode", "station", "cast", "sample")
     expocode: str
     station: str
@@ -185,7 +176,7 @@ class ExchangeXYZT:
 
 
 @dataclass(frozen=True)
-class ExchangeTimestamp(ToAndFromDict):
+class ExchangeTimestamp:
     __slots__ = ("date_part", "time_part")
     date_part: date
     time_part: Optional[time]
@@ -239,6 +230,7 @@ class Exchange:
     file_type: FileType
     comments: str
     parameters: Tuple[WHPName, ...]
+    flags: Tuple[WHPName, ...]
     keys: Tuple[ExchangeCompositeKey, ...]
     coordinates: Dict[ExchangeCompositeKey, ExchangeXYZT]
     data: Dict[ExchangeCompositeKey, Dict[WHPName, ExchangeDataPoint]]
@@ -371,6 +363,7 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         file_type=ftype,
         comments=comments,
         parameters=tuple(whp_params.keys()),
+        flags=tuple(whp_flags.keys()),
         keys=tuple(exchange_data.keys()),
         coordinates=coordinates,
         data=exchange_data,
