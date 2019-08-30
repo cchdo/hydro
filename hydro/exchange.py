@@ -100,14 +100,19 @@ def _bottle_get_flags(
 
 @dataclass(frozen=True)
 class ExchangeDataPoint:
+    __slots__ = ("whpname", "value", "flag")
     whpname: WHPName
-    value: Union[str, float, int]
+    value: Optional[Union[str, float, int]]
     flag: ExchangeFlags
 
     @classmethod
     def from_ir(cls, whpname: WHPName, ir: IntermediateDataPoint) -> ExchangeDataPoint:
-        # https://github.com/python/mypy/issues/5485
-        value = whpname.data_type(ir.data)  # type: ignore
+        if ir.data.startswith("-999"):
+            value = None
+        else:
+            # https://github.com/python/mypy/issues/5485
+            value = whpname.data_type(ir.data)  # type: ignore
+
         flag: ExchangeFlags = None
         try:
             # we will catch the type error explicitly
@@ -124,13 +129,13 @@ class ExchangeDataPoint:
         return ExchangeDataPoint(whpname=whpname, value=value, flag=flag)
 
     def __post_init__(self):
-        # Check to see if the flag value allowes for data
-        # Check to see if datatype is ok
-        ...
+        if self.flag is not None and self.flag.has_value and self.value is None:
+            raise InvalidExchangeFileError(f"{self}")
 
 
 @dataclass(frozen=True)
 class ExchangeCompositeKey(ToAndFromDict):
+    __slots__ = ("expocode", "station", "cast", "sample")
     expocode: str
     station: str
     cast: int
@@ -154,6 +159,7 @@ class ExchangeCompositeKey(ToAndFromDict):
 
 @dataclass(frozen=True)
 class ExchangeXYZT:
+    __slots__ = ("x", "y", "z", "t")
     x: ExchangeDataPoint  # Longitude
     y: ExchangeDataPoint  # Latitude
     z: ExchangeDataPoint  # Pressure
@@ -180,6 +186,7 @@ class ExchangeXYZT:
 
 @dataclass(frozen=True)
 class ExchangeTimestamp(ToAndFromDict):
+    __slots__ = ("date_part", "time_part")
     date_part: date
     time_part: Optional[time]
 
@@ -352,10 +359,12 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
             coord = ExchangeXYZT.from_data_line(parsed_data_line)
         except KeyError as error:
             raise InvalidExchangeFileError("Something Missing") from error
-        exchange_data[key] = {
+
+        row_data = {
             param: ExchangeDataPoint.from_ir(param, ir)
             for param, ir in parsed_data_line.items()
         }
+        exchange_data[key] = dict(filter(lambda di: di[1].flag != 9, row_data.items()))
         coordinates[key] = coord
 
     return Exchange(
