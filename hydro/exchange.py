@@ -9,6 +9,7 @@ import io
 from zipfile import is_zipfile
 from operator import itemgetter
 from types import MappingProxyType
+from itertools import groupby
 
 import requests
 
@@ -174,6 +175,34 @@ class ExchangeXYZT:
             t=ExchangeTimestamp.from_strs(date, time),
         )
 
+    def __post_init__(self):
+        if not all(
+            [
+                self.x.value is not None,
+                self.y.value is not None,
+                self.z.value is not None,
+            ]
+        ):
+            raise InvalidExchangeFileError()
+
+    def __eq__(self, other):
+        return (self.x, self.y, self.z, self.t) == (other.x, other.y, other.z, other.t)
+
+    def __lt__(self, other):
+        """We will consider the following order:
+        * A later coordiante is greater than an earlier one
+        * A deeper coordinate is greater than a shallower one
+        * A more easternly coordinate is greater than a more westerly one
+        * A more northernly coordinate is greater than a more southerly one
+        The first two points should get most of the stuff we care about sorted
+        """
+        return (self.t.to_datetime, self.z.value, self.x.value, self.y.value) < (
+            other.t.to_datetime,
+            other.z.value,
+            other.x.value,
+            other.y.value,
+        )
+
 
 @dataclass(frozen=True)
 class ExchangeTimestamp:
@@ -190,6 +219,19 @@ class ExchangeTimestamp:
         if time_part is not None:
             parsed_time = datetime.strptime(time_part, "%H%M").time()
         return cls(date_part=parsed_date, time_part=parsed_time)
+
+    @property
+    def to_datetime(self):
+        if self.time_part:
+            return datetime.combine(self.date_part, self.time_part)
+        else:
+            return datetime.combine(self.date_part, time(0, 0))
+
+    def __lt__(self, other):
+        return self.to_datetime < other.to_datetime
+
+    def __eq__(self, other):
+        return self.to_datetime == other.to_datetime
 
 
 def _bottle_line_parser(
@@ -238,10 +280,27 @@ class Exchange:
     def __post_init__(self):
         for key, value in self.data.items():
             self.data[key] = MappingProxyType(value)
+        sorted_keys = sorted(self.keys, key=lambda x: self.coordinates[x])
+        object.__setattr__(self, "keys", tuple(sorted_keys))
         object.__setattr__(self, "data", MappingProxyType(self.data))
 
     def __repr__(self):
         return f"""<hydro.Exchange>"""
+
+    def iter_profiles(self):
+        for key, group in groupby(self.keys, lambda k: k.profile_id):
+            keys = tuple(group)
+            yield Exchange(
+                file_type=self.file_type,
+                comments=self.comments,
+                parameters=self.parameters,
+                flags=self.flags,
+                keys=keys,
+                coordinates={
+                    sample_id: self.coordinates[sample_id] for sample_id in keys
+                },
+                data={sample_id: self.data[sample_id] for sample_id in keys},
+            )
 
 
 def _extract_comments(data: deque, include_post_content: bool = True) -> str:
