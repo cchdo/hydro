@@ -12,6 +12,7 @@ from types import MappingProxyType
 from itertools import groupby
 
 import requests
+import numpy as np
 
 from hydro.data import WHPNames, WHPName
 from hydro.flag import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
@@ -285,7 +286,10 @@ class Exchange:
         object.__setattr__(self, "data", MappingProxyType(self.data))
 
     def __repr__(self):
-        return f"""<hydro.Exchange>"""
+        return f"""<hydro.Exchange profiles={len(self)}>"""
+
+    def __len__(self):
+        return len({key.profile_id for key in self.keys})
 
     def iter_profiles(self):
         for key, group in groupby(self.keys, lambda k: k.profile_id):
@@ -301,6 +305,17 @@ class Exchange:
                 },
                 data={sample_id: self.data[sample_id] for sample_id in keys},
             )
+
+    def column_to_ndarray(self, col: WHPName) -> np.ndarray:
+        a = []
+        _fill_values = {int: float("nan"), str: None, float: float("nan")}
+        _fill_value = _fill_values[col.data_type]  # type: ignore
+        for key, value in self.data.items():
+            try:
+                a.append(value[col].value)
+            except KeyError:
+                a.append(_fill_value)
+        return np.array(a)
 
 
 def _extract_comments(data: deque, include_post_content: bool = True) -> str:
