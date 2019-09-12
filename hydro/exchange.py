@@ -149,6 +149,14 @@ class ExchangeCompositeKey:
             sample=SAMPNO.data_type(data_line.pop(SAMPNO).data),
         )
 
+    def __getitem__(self, key):
+        return {
+            EXPOCODE: self.expocode,
+            STNNBR: self.station,
+            CASTNO: self.cast,
+            SAMPNO: self.sample,
+        }[key]
+
 
 @dataclass(frozen=True)
 class ExchangeXYZT:
@@ -203,6 +211,15 @@ class ExchangeXYZT:
             other.x.value,
             other.y.value,
         )
+
+    def __getitem__(self, key):
+        return {
+            LONGITUDE: self.x.value,
+            LATITUDE: self.y.value,
+            CTDPRS: self.z.value,
+            TIME: self.t.time_part,
+            DATE: self.t.date_part,
+        }[key]
 
 
 @dataclass(frozen=True)
@@ -308,14 +325,27 @@ class Exchange:
 
     def column_to_ndarray(self, col: WHPName) -> np.ndarray:
         a = []
-        _fill_values = {int: float("nan"), str: None, float: float("nan")}
-        _fill_value = _fill_values[col.data_type]  # type: ignore
-        for key, value in self.data.items():
-            try:
-                a.append(value[col].value)
-            except KeyError:
-                a.append(_fill_value)
-        return np.array(a)
+        dtype = col.data_type  # type: ignore
+        if col in (EXPOCODE, STNNBR, CASTNO, SAMPNO):
+            for key in self.keys:
+                a.append(key[col])
+
+        elif col in (LATITUDE, LONGITUDE, CTDPRS, DATE, TIME):
+            for key in self.keys:
+                a.append(self.coordinates[key][col])
+        else:
+            for key in self.keys:
+                try:
+                    a.append(self.data[key][col].value)
+                except KeyError:
+                    a.append(None)
+
+        if None not in a:  # contigious array, should just work
+            return np.array(a, dtype=dtype)
+        elif dtype is str:
+            return np.array(["" if s is None else s for s in a], dtype=str)
+        else:  # turn int arrays with none in one with NaNs
+            return np.array(a, dtype=float)
 
 
 def _extract_comments(data: deque, include_post_content: bool = True) -> str:
