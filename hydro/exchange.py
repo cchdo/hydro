@@ -31,6 +31,9 @@ TIME = WHPNames[("TIME", None)]
 LATITUDE = WHPNames[("LATITUDE", None)]
 LONGITUDE = WHPNames[("LONGITUDE", None)]
 
+WHP_ERROR_COLS = {
+    ex.error_name: ex for ex in WHPNames.values() if ex.error_name is not None
+}
 
 exchange_doc = "https://exchange-format.readthedocs.io/en/latest"
 
@@ -44,6 +47,7 @@ ERRORS = {
 class IntermediateDataPoint(NamedTuple):
     data: str
     flag: Optional[str]
+    error: Optional[str]
 
 
 class InvalidExchangeFileError(ValueError):
@@ -55,6 +59,8 @@ def _bottle_get_params(
 ) -> WHPNameIndex:
     params = {}
     for index, (param, unit) in enumerate(params_units):
+        if param in WHP_ERROR_COLS:
+            continue
         if param.endswith("_FLAG_W"):
             continue
         try:
@@ -91,11 +97,28 @@ def _bottle_get_flags(
     return param_flags
 
 
+def _bottle_get_errors(
+    params_units: Iterable[Tuple[str, Optional[str]]], whp_params: WHPNameIndex
+) -> WHPNameIndex:
+    param_errs = {}
+
+    for index, (param, unit) in enumerate(params_units):
+        if param not in WHP_ERROR_COLS:
+            continue
+
+        for name in whp_params.keys():
+            if name.error_name == param:
+                param_errs[name] = index
+
+    return param_errs
+
+
 @dataclass(frozen=True)
 class ExchangeDataPoint:
-    __slots__ = ("whpname", "value", "flag")
+    __slots__ = ("whpname", "value", "flag", "error")
     whpname: WHPName
     value: Optional[Union[str, float, int]]
+    error: Optional[float]
     flag: ExchangeFlags
 
     @classmethod
@@ -119,7 +142,13 @@ class ExchangeDataPoint:
         except TypeError:
             pass
 
-        return ExchangeDataPoint(whpname=whpname, value=value, flag=flag)
+        error: Optional[float] = None
+        try:
+            error = float(ir.error)  # type: ignore
+        except TypeError:
+            pass
+
+        return ExchangeDataPoint(whpname=whpname, value=value, flag=flag, error=error)
 
     def __post_init__(self):
         if self.flag is not None and self.flag.has_value and self.value is None:
@@ -253,18 +282,26 @@ class ExchangeTimestamp:
 
 
 def _bottle_line_parser(
-    names_index: WHPNameIndex, flags_index: WHPNameIndex
+    names_index: WHPNameIndex, flags_index: WHPNameIndex, errors_index: WHPNameIndex
 ) -> Callable[[str], Dict[WHPName, IntermediateDataPoint]]:
     data_getters = {}
     flag_getters = {}
+    error_getters = {}
     for name, data_col in names_index.items():
         data_getter = itemgetter(data_col)
         flag_col = flags_index.get(name)
+        error_col = errors_index.get(name)
+
         data_getters[name] = data_getter
         if flag_col is None:
             flag_getters[name] = lambda x: None
         else:
             flag_getters[name] = itemgetter(flag_col)
+
+        if error_col is None:
+            error_getters[name] = lambda x: None
+        else:
+            error_getters[name] = itemgetter(error_col)
 
     def line_parser(line: str) -> Dict[WHPName, IntermediateDataPoint]:
         split_line = [s.strip() for s in line.split(",")]
@@ -272,8 +309,9 @@ def _bottle_line_parser(
         for name in names_index:
             data: str = data_getters[name](split_line)
             flag: Optional[str] = flag_getters[name](split_line)
+            error: Optional[str] = error_getters[name](split_line)
 
-            parsed[name] = IntermediateDataPoint(data, flag)
+            parsed[name] = IntermediateDataPoint(data, flag, error=error)
 
         return parsed
 
@@ -291,6 +329,7 @@ class Exchange:
     comments: str
     parameters: Tuple[WHPName, ...]
     flags: Tuple[WHPName, ...]
+    errors: Tuple[WHPName, ...]
     keys: Tuple[ExchangeCompositeKey, ...]
     coordinates: Dict[ExchangeCompositeKey, ExchangeXYZT]
     data: Dict[ExchangeCompositeKey, Dict[WHPName, ExchangeDataPoint]]
@@ -432,12 +471,13 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
 
     whp_params = _bottle_get_params(zip(params, units))
     whp_flags = _bottle_get_flags(zip(params, units), whp_params)
+    whp_errors = _bottle_get_errors(zip(params, units), whp_params)
 
     # ensure we will read the ENTIRE file
     if {*whp_params.values(), *whp_flags.values()} != set(range(column_count)):
         raise ValueError("WAT")
 
-    line_parser = _bottle_line_parser(whp_params, whp_flags)
+    line_parser = _bottle_line_parser(whp_params, whp_flags, whp_errors)
 
     exchange_data = {}
     coordinates = {}
@@ -468,6 +508,7 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         comments=comments,
         parameters=tuple(whp_params.keys()),
         flags=tuple(whp_flags.keys()),
+        errors=tuple(whp_errors.keys()),
         keys=tuple(exchange_data.keys()),
         coordinates=coordinates,
         data=exchange_data,
