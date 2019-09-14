@@ -8,7 +8,6 @@ from enum import Enum, auto
 import io
 from zipfile import is_zipfile
 from operator import itemgetter
-from types import MappingProxyType
 from itertools import groupby
 
 import requests
@@ -115,7 +114,6 @@ def _bottle_get_errors(
 
 @dataclass(frozen=True)
 class ExchangeDataPoint:
-    __slots__ = ("whpname", "value", "flag", "error")
     whpname: WHPName
     value: Optional[Union[str, float, int]]
     error: Optional[float]
@@ -157,7 +155,6 @@ class ExchangeDataPoint:
 
 @dataclass(frozen=True)
 class ExchangeCompositeKey:
-    __slots__ = ("expocode", "station", "cast", "sample")
     expocode: str
     station: str
     cast: int
@@ -189,7 +186,6 @@ class ExchangeCompositeKey:
 
 @dataclass(frozen=True)
 class ExchangeXYZT:
-    __slots__ = ("x", "y", "z", "t")
     x: ExchangeDataPoint  # Longitude
     y: ExchangeDataPoint  # Latitude
     z: ExchangeDataPoint  # Pressure
@@ -253,7 +249,6 @@ class ExchangeXYZT:
 
 @dataclass(frozen=True)
 class ExchangeTimestamp:
-    __slots__ = ("date_part", "time_part")
     date_part: date
     time_part: Optional[time]
 
@@ -335,11 +330,8 @@ class Exchange:
     data: Dict[ExchangeCompositeKey, Dict[WHPName, ExchangeDataPoint]]
 
     def __post_init__(self):
-        for key, value in self.data.items():
-            self.data[key] = MappingProxyType(value)
         sorted_keys = sorted(self.keys, key=lambda x: self.coordinates[x])
         object.__setattr__(self, "keys", tuple(sorted_keys))
-        object.__setattr__(self, "data", MappingProxyType(self.data))
 
     def __repr__(self):
         return f"""<hydro.Exchange profiles={len(self)}>"""
