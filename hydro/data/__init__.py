@@ -116,6 +116,13 @@ def _load_whp_names():
             record["data_type"] = _dtype_map[record["data_type"]]
             param = WHPName(**record)
             whp_name[param.key] = param
+    # load the aliases
+    with open_text("hydro.data", "aliases.json") as f:
+        for record in load(f):
+            whp_name[(record["whp_name"], record["whp_unit"])] = whp_name[
+                (record["canonical_name"], record["canonical_unit"])
+            ]
+
     return whp_name
 
 
