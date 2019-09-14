@@ -347,6 +347,7 @@ class Exchange:
                 comments=self.comments,
                 parameters=self.parameters,
                 flags=self.flags,
+                errors=self.errors,
                 keys=keys,
                 coordinates={
                     sample_id: self.coordinates[sample_id] for sample_id in keys
