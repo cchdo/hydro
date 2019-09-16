@@ -12,6 +12,7 @@ from itertools import groupby
 
 import requests
 import numpy as np
+import xarray as xr
 
 from hydro.data import WHPNames, WHPName
 from hydro.flag import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
@@ -378,6 +379,26 @@ class Exchange:
             return np.array(["" if s is None else s for s in a], dtype=str)
         else:  # turn int arrays with none in one with NaNs
             return np.array(a, dtype=float)
+
+    def to_xarray(self):
+        N_PROF = len(self)
+        N_LEVEL = max([len(prof.keys) for prof in self.iter_profiles()])
+        data_vars = {}
+        dims = {"N_PROF": N_PROF, "N_LEVEL": N_LEVEL}
+        for n, var in enumerate(self.parameters):
+            if var.data_type is str:  # type: ignore
+                data = np.empty((N_PROF, N_LEVEL), dtype=object)
+            else:
+                data = np.zeros((N_PROF, N_LEVEL), dtype=float)
+                data[:] = np.na
+            data_vars[f"var{n}"] = data
+        for n_prof, prof in enumerate(self.iter_profiles()):
+            for p_int, param in enumerate(prof.parameters):
+                d = prof.column_to_ndarray(col=param)
+                data_vars[f"var{p_int}"][n_prof][: len(d)] = d
+
+        dvars = {k: (dims, v) for k, v in data_vars.items()}
+        return xr.Dataset(dvars)
 
 
 def _extract_comments(data: deque, include_post_content: bool = True) -> str:
