@@ -210,6 +210,15 @@ class ExchangeXYZT:
             t=ExchangeTimestamp.from_strs(date, time),
         )
 
+    def __repr__(self):
+        return (
+            f"<ExchangeXYZT "
+            f"x={self.x.value} "
+            f"y={self.y.value} "
+            f"z={self.z.value} "
+            f"t='{self.t.to_datetime}'>"
+        )
+
     def __post_init__(self):
         if not all(
             [
@@ -380,6 +389,10 @@ class Exchange:
         else:  # turn int arrays with none in one with NaNs
             return np.array(a, dtype=float)
 
+    def iter_profile_coordinates(self):
+        for profile in self.iter_profiles():
+            yield profile.coordinates[profile.keys[-1]]
+
     def to_xarray(self):
         N_PROF = len(self)
         N_LEVEL = max([len(prof.keys) for prof in self.iter_profiles()])
@@ -390,7 +403,7 @@ class Exchange:
                 data = np.empty((N_PROF, N_LEVEL), dtype=object)
             else:
                 data = np.zeros((N_PROF, N_LEVEL), dtype=float)
-                data[:] = np.na
+                data[:] = np.nan
             data_vars[f"var{n}"] = data
         for n_prof, prof in enumerate(self.iter_profiles()):
             for p_int, param in enumerate(prof.parameters):
