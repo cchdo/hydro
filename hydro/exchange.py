@@ -394,6 +394,30 @@ class Exchange:
             yield profile.coordinates[profile.keys[-1]]
 
     def to_xarray(self):
+        """
+        Current thinking:
+        There are a few "special case" variables which include the WHP identifing ones:
+        * EXPOCODE
+        * STNNBR
+        * CASTNO
+        * SAMPNO
+        Profile level spacetime coords:
+        * LATITUDE
+        * LONGITUDE
+        * DATE
+        * TIME
+        * CTDPRS
+        If present, bottle trip information:
+        * BTL_LAT
+        * BTL_LON
+        * BTL_DATE
+        * BTL_TIME
+
+        Note that the seperate date and time need to be combined into a single
+        date var for CF. Except for the bottle trip information, all the
+        above should probably get "real" var names not just var0, ..., varN.
+        """
+
         N_PROF = len(self)
         N_LEVEL = max([len(prof.keys) for prof in self.iter_profiles()])
         data_vars = {}
