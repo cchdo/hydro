@@ -340,7 +340,17 @@ class Exchange:
     data: Dict[ExchangeCompositeKey, Dict[WHPName, ExchangeDataPoint]]
 
     def __post_init__(self):
+        # first the keys are sorted by information contained in the coordinates
         sorted_keys = sorted(self.keys, key=lambda x: self.coordinates[x])
+
+        # this checks to see if the number of unique profile_ids would be the same
+        # lengths as the number of profiles we woudl get when "iter_profiles"
+        if len({key.profile_id for key in sorted_keys}) != len(
+            list(key for key in groupby(sorted_keys, lambda k: k.profile_id))
+        ):
+            # this probably means there was no time available (or it was all 0000)
+            # so we need to sort by the profile_id
+            sorted_keys = sorted(sorted_keys, key=lambda x: x.profile_id)
         object.__setattr__(self, "keys", tuple(sorted_keys))
 
     def __repr__(self):
@@ -419,14 +429,14 @@ class Exchange:
         """
 
         N_PROF = len(self)
-        N_LEVEL = max([len(prof.keys) for prof in self.iter_profiles()])
+        N_LEVELS = max([len(prof.keys) for prof in self.iter_profiles()])
         data_vars = {}
-        dims = {"N_PROF": N_PROF, "N_LEVEL": N_LEVEL}
+        dims = {"N_PROF": N_PROF, "N_LEVELS": N_LEVELS}
         for n, var in enumerate(self.parameters):
             if var.data_type is str:  # type: ignore
-                data = np.empty((N_PROF, N_LEVEL), dtype=object)
+                data = np.empty((N_PROF, N_LEVELS), dtype=object)
             else:
-                data = np.zeros((N_PROF, N_LEVEL), dtype=float)
+                data = np.zeros((N_PROF, N_LEVELS), dtype=float)
                 data[:] = np.nan
             data_vars[f"var{n}"] = data
         for n_prof, prof in enumerate(self.iter_profiles()):
