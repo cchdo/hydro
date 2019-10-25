@@ -30,10 +30,14 @@ DATE = WHPNames[("DATE", None)]
 TIME = WHPNames[("TIME", None)]
 LATITUDE = WHPNames[("LATITUDE", None)]
 LONGITUDE = WHPNames[("LONGITUDE", None)]
+DEPTH = WHPNames[("DEPTH", "METERS")]
+SECT_ID = WHPNames[("SECT_ID", None)]
 
 WHP_ERROR_COLS = {
     ex.error_name: ex for ex in WHPNames.values() if ex.error_name is not None
 }
+
+EXCHANGE_COMPOSITE_KEY_PARAMS = (EXPOCODE, STNNBR, CASTNO, SAMPNO)
 
 exchange_doc = "https://exchange-format.readthedocs.io/en/latest"
 
@@ -378,7 +382,7 @@ class Exchange:
     def column_to_ndarray(self, col: WHPName) -> np.ndarray:
         a = []
         dtype = col.data_type  # type: ignore
-        if col in (EXPOCODE, STNNBR, CASTNO, SAMPNO):
+        if col in EXCHANGE_COMPOSITE_KEY_PARAMS:
             for key in self.keys:
                 a.append(key[col])
 
@@ -430,22 +434,52 @@ class Exchange:
 
         N_PROF = len(self)
         N_LEVELS = max([len(prof.keys) for prof in self.iter_profiles()])
+        one_d_vars = (
+            EXPOCODE,
+            STNNBR,
+            CASTNO,
+            LATITUDE,
+            LONGITUDE,
+            DATE,
+            TIME,
+            DEPTH,
+            SECT_ID,
+        )
+        one_d_dims = {"N_PROF": N_PROF}
         data_vars = {}
         dims = {"N_PROF": N_PROF, "N_LEVELS": N_LEVELS}
         for n, var in enumerate(self.parameters):
-            if var.data_type is str:  # type: ignore
-                data = np.empty((N_PROF, N_LEVELS), dtype=object)
+            if var in one_d_vars:
+                size = N_PROF
             else:
-                data = np.zeros((N_PROF, N_LEVELS), dtype=float)
+                size = (N_PROF, N_LEVELS)
+
+            if var.data_type is str:  # type: ignore
+                data = np.empty(size, dtype=object)
+            else:
+                data = np.zeros(size, dtype=float)
                 data[:] = np.nan
             data_vars[f"var{n}"] = data
         for n_prof, prof in enumerate(self.iter_profiles()):
             for p_int, param in enumerate(prof.parameters):
                 d = prof.column_to_ndarray(col=param)
-                data_vars[f"var{p_int}"][n_prof][: len(d)] = d
+                if param in one_d_vars:
+                    data_vars[f"var{p_int}"][n_prof] = d[0]
+                else:
+                    data_vars[f"var{p_int}"][n_prof][: len(d)] = d
 
-        dvars = {k: (dims, v) for k, v in data_vars.items()}
-        return xr.Dataset(dvars)
+        dvars = {}
+        for k, v in data_vars.items():
+            if v.ndim == 1:
+                dvars[k] = (one_d_dims, v)
+            else:
+                dvars[k] = (dims, v)
+        # dvars = {k: (dims, v) for k, v in data_vars.items()}
+        dataset = xr.Dataset(dvars)
+        for v in dataset:
+            if dataset[v].dtype == object:
+                dataset[v].encoding["dtype"] = str
+        return dataset
 
 
 def _extract_comments(data: deque, include_post_content: bool = True) -> str:
