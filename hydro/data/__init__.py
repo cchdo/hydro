@@ -55,6 +55,7 @@ class WHPName:
     note: Optional[str] = field(default=None, repr=False)
     warning: Optional[str] = field(default=None, repr=False)
     error_name: Optional[str] = field(default=None, repr=False)
+    scope: str = field(default="sample", repr=False)
 
     @property
     def key(self):
