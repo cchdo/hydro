@@ -30,8 +30,6 @@ DATE = WHPNames[("DATE", None)]
 TIME = WHPNames[("TIME", None)]
 LATITUDE = WHPNames[("LATITUDE", None)]
 LONGITUDE = WHPNames[("LONGITUDE", None)]
-DEPTH = WHPNames[("DEPTH", "METERS")]
-SECT_ID = WHPNames[("SECT_ID", None)]
 
 WHP_ERROR_COLS = {
     ex.error_name: ex for ex in WHPNames.values() if ex.error_name is not None
@@ -434,17 +432,7 @@ class Exchange:
 
         N_PROF = len(self)
         N_LEVELS = max([len(prof.keys) for prof in self.iter_profiles()])
-        one_d_vars = (
-            EXPOCODE,
-            STNNBR,
-            CASTNO,
-            LATITUDE,
-            LONGITUDE,
-            DATE,
-            TIME,
-            DEPTH,
-            SECT_ID,
-        )
+        one_d_vars = list(filter(lambda v: v.scope == "profile", WHPNames.values()))
         one_d_dims = {"N_PROF": N_PROF}
         data_vars = {}
         dims = {"N_PROF": N_PROF, "N_LEVELS": N_LEVELS}
@@ -478,7 +466,9 @@ class Exchange:
         dataset = xr.Dataset(dvars)
         for v in dataset:
             if dataset[v].dtype == object:
-                dataset[v].encoding["dtype"] = str
+                dataset[v].encoding["dtype"] = "str"
+            if dataset[v].dtype == float:
+                dataset[v].encoding["dtype"] = "float32"
         return dataset
 
 
