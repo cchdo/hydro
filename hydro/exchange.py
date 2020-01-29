@@ -559,7 +559,9 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     whp_errors = _bottle_get_errors(zip(params, units), whp_params)
 
     # ensure we will read the ENTIRE file
-    if {*whp_params.values(), *whp_flags.values()} != set(range(column_count)):
+    if {*whp_params.values(), *whp_flags.values(), *whp_errors.values()} != set(
+        range(column_count)
+    ):
         raise ValueError("WAT")
 
     line_parser = _bottle_line_parser(whp_params, whp_flags, whp_errors)
