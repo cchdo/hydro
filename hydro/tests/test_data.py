@@ -1,7 +1,7 @@
 import pytest
 from hydro import data
 
-CF_VERSION = "68"
+CF_VERSION = "70"
 
 
 def test_cf_standard_names():
