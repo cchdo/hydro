@@ -377,6 +377,19 @@ class Exchange:
                 data={sample_id: self.data[sample_id] for sample_id in keys},
             )
 
+    def flag_column_to_ndarray(self, col: WHPName) -> np.ndarray:
+        if col not in self.flags:
+            raise KeyError(f"No flags for {col}")
+
+        a = []
+        for key in self.keys:
+            try:
+                a.append(self.data[key][col].flag)
+            except KeyError:
+                a.append(None)
+
+        return np.array(a, dtype=np.float)
+
     def column_to_ndarray(self, col: WHPName) -> np.ndarray:
         a = []
         dtype = col.data_type  # type: ignore
@@ -447,7 +460,14 @@ class Exchange:
             else:
                 data = np.zeros(size, dtype=float)
                 data[:] = np.nan
+
             data_vars[f"var{n}"] = data
+
+            if var in self.flags:
+                data_vars[f"var{n}_qc"] = np.full_like(data, np.nan, dtype=np.float)
+            if var in self.errors:
+                data_vars[f"var{n}_error"] = np.full_like(data, np.nan)
+
         for n_prof, prof in enumerate(self.iter_profiles()):
             for p_int, param in enumerate(prof.parameters):
                 d = prof.column_to_ndarray(col=param)
@@ -455,6 +475,10 @@ class Exchange:
                     data_vars[f"var{p_int}"][n_prof] = d[0]
                 else:
                     data_vars[f"var{p_int}"][n_prof][: len(d)] = d
+
+                if param in prof.flags:
+                    d = prof.flag_column_to_ndarray(param)
+                    data_vars[f"var{p_int}_qc"][n_prof][: len(d)] = d
 
         dvars = {}
         for k, v in data_vars.items():
@@ -469,6 +493,9 @@ class Exchange:
                 dataset[v].encoding["dtype"] = "str"
             if dataset[v].dtype == float:
                 dataset[v].encoding["dtype"] = "float32"
+            if v.endswith("_qc"):
+                dataset[v].encoding["dtype"] = "int8"
+                dataset[v].encoding["_FillValue"] = 9
         return dataset
 
 
