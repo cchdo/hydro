@@ -593,7 +593,7 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
 
     line_parser = _bottle_line_parser(whp_params, whp_flags, whp_errors)
 
-    exchange_data = {}
+    exchange_data: Dict[ExchangeCompositeKey, dict] = {}
     coordinates = {}
     for data_line in data_lines:
         cols = [x.strip() for x in data_line.split(",")]
@@ -614,6 +614,9 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
             param: ExchangeDataPoint.from_ir(param, ir)
             for param, ir in parsed_data_line.items()
         }
+        if key in exchange_data:
+            raise InvalidExchangeFileError(f"Duplicate key {key}")
+
         exchange_data[key] = dict(filter(lambda di: di[1].flag != 9, row_data.items()))
         coordinates[key] = coord
 
