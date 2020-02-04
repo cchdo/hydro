@@ -88,13 +88,21 @@ def _bottle_get_flags(
         if unit is not None:
             raise InvalidExchangeFileError("Flags should not have units")
 
+        data_col = param.replace("_FLAG_W", "")
         try:
-            whpname = whp_params_names[param.replace("_FLAG_W", "")]
+            whpname = whp_params_names[data_col]
             if whpname.flag_w is None:
                 raise InvalidExchangeFileError(f"{whpname} cannot have a flag column")
             param_flags[whpname] = index
         except KeyError as error:
-            raise InvalidExchangeFileError("Flag with no data column") from error
+            # we might have an alias...
+            for name in whp_params:
+                potential = [k[0] for k, v in WHPNames.items() if v == name]
+                if data_col in potential:
+                    param_flags[name] = index
+                    break
+            else:
+                raise InvalidExchangeFileError("Flag with no data column") from error
 
     return param_flags
 
@@ -354,6 +362,22 @@ class Exchange:
             # so we need to sort by the profile_id
             sorted_keys = sorted(sorted_keys, key=lambda x: x.profile_id)
         object.__setattr__(self, "keys", tuple(sorted_keys))
+
+        for key, group in groupby(self.keys, lambda k: k.profile_id):
+            first = self.coordinates[next(group)]
+            if not (
+                all(
+                    all(
+                        (
+                            self.coordinates[key].x == first.x,
+                            self.coordinates[key].y == first.y,
+                            self.coordinates[key].t == first.t,
+                        )
+                    )
+                    for key in group
+                )
+            ):
+                raise InvalidExchangeFileError("Only profile xyt inconsistent")
 
     def __repr__(self):
         return f"""<hydro.Exchange profiles={len(self)}>"""
