@@ -5,12 +5,17 @@ CF_VERSION = "70"
 
 
 def test_cf_standard_names():
-    assert "cf_standard_name_table_version" in data.__versions__
-    assert "cf_standard_name_table_date" in data.__versions__
+    data.CFStandardNames._load_data()
+    assert "cf_standard_name_table_version" in data.CFStandardNames.__versions__
+    assert "cf_standard_name_table_date" in data.CFStandardNames.__versions__
 
 
 def test_cf_standard_name_version():
-    assert data.__versions__["cf_standard_name_table_version"] == CF_VERSION
+    data.CFStandardNames._load_data()
+    assert (
+        data.CFStandardNames.__versions__["cf_standard_name_table_version"]
+        == CF_VERSION
+    )
 
 
 cf_name_data = [

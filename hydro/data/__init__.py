@@ -2,13 +2,11 @@ from dataclasses import dataclass, field
 from xml.etree import ElementTree
 from importlib.resources import read_text, open_text
 from typing import Optional, Callable, Union
-from types import MappingProxyType
 from csv import DictReader
 from json import load
+from collections.abc import Mapping
 
 __all__ = ["CFStandardNames", "ArgoNames", "WHPNames"]
-
-__versions__ = {}  # pile of data version infomation
 
 
 @dataclass(frozen=True)
@@ -63,7 +61,7 @@ class WHPName:
         return (self.whp_name, self.whp_unit)
 
 
-def _load_cf_standard_names():
+def _load_cf_standard_names(__versions__):
     cf_standard_names = {}
 
     for element in ElementTree.fromstring(
@@ -127,6 +125,55 @@ def _load_whp_names():
     return whp_name
 
 
-CFStandardNames = MappingProxyType(_load_cf_standard_names())
-ArgoNames = MappingProxyType(_load_argo_names())
-WHPNames = MappingProxyType(_load_whp_names())
+class _LazyMapping(Mapping):
+    _cached_dict_internal = None
+
+    def __init__(self, loader):
+        self._loader = loader
+
+    @property
+    def _cached_dict(self):
+        if not self._cached_dict_internal:
+            self._cached_dict_internal = self._loader()
+        return self._cached_dict_internal
+
+    def _load_data(self):
+        self._cached_dict
+
+    def __getitem__(self, key):
+        return self._cached_dict[key]
+
+    def __iter__(self):
+        for key in self._cached_dict:
+            yield key
+
+    def __len__(self):
+        return len(self._cached_dict)
+
+
+class _WHPNames(_LazyMapping):
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            key = (key, None)
+
+        if isinstance(key, tuple) and len(key) == 1:
+            key = (*key, None)
+
+        return self._cached_dict[key]
+
+
+class _CFStandardNames(_LazyMapping):
+    def __init__(self, loader):
+        self._loader = loader
+        self.__versions__ = {}
+
+    @property
+    def _cached_dict(self):
+        if not self._cached_dict_internal:
+            self._cached_dict_internal = self._loader(self.__versions__)
+        return self._cached_dict_internal
+
+
+CFStandardNames = _CFStandardNames(_load_cf_standard_names)
+ArgoNames = _LazyMapping(_load_argo_names)
+WHPNames = _WHPNames(_load_whp_names)
