@@ -161,6 +161,14 @@ class _WHPNames(_LazyMapping):
 
         return self._cached_dict[key]
 
+    @property
+    def error_cols(self):
+        return {
+            ex.error_name: ex
+            for ex in self._cached_dict.values()
+            if ex.error_name is not None
+        }
+
 
 class _CFStandardNames(_LazyMapping):
     def __init__(self, loader):
