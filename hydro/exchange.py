@@ -1,6 +1,7 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from collections import deque
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Union, Iterable, Tuple, Optional, Callable, Dict, NamedTuple
 from datetime import date, time, datetime
@@ -12,30 +13,12 @@ from itertools import groupby
 
 import requests
 import numpy as np
-import xarray as xr
 
 from hydro.data import WHPNames, WHPName
 from hydro.flag import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
 
 WHPNameIndex = Dict[WHPName, int]
 ExchangeFlags = Union[ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag, None]
-
-# Some Names we use frequently...
-EXPOCODE = WHPNames[("EXPOCODE", None)]
-STNNBR = WHPNames[("STNNBR", None)]
-CASTNO = WHPNames[("CASTNO", None)]
-SAMPNO = WHPNames[("SAMPNO", None)]
-CTDPRS = WHPNames[("CTDPRS", "DBAR")]
-DATE = WHPNames[("DATE", None)]
-TIME = WHPNames[("TIME", None)]
-LATITUDE = WHPNames[("LATITUDE", None)]
-LONGITUDE = WHPNames[("LONGITUDE", None)]
-
-WHP_ERROR_COLS = {
-    ex.error_name: ex for ex in WHPNames.values() if ex.error_name is not None
-}
-
-EXCHANGE_COMPOSITE_KEY_PARAMS = (EXPOCODE, STNNBR, CASTNO, SAMPNO)
 
 exchange_doc = "https://exchange-format.readthedocs.io/en/latest"
 
@@ -61,7 +44,7 @@ def _bottle_get_params(
 ) -> WHPNameIndex:
     params = {}
     for index, (param, unit) in enumerate(params_units):
-        if param in WHP_ERROR_COLS:
+        if param in WHPNames.error_cols:
             continue
         if param.endswith("_FLAG_W"):
             continue
@@ -113,7 +96,7 @@ def _bottle_get_errors(
     param_errs = {}
 
     for index, (param, unit) in enumerate(params_units):
-        if param not in WHP_ERROR_COLS:
+        if param not in WHPNames.error_cols:
             continue
 
         for name in whp_params.keys():
@@ -165,11 +148,36 @@ class ExchangeDataPoint:
 
 
 @dataclass(frozen=True)
-class ExchangeCompositeKey:
+class ExchangeCompositeKey(Mapping):
     expocode: str
     station: str
     cast: int
     sample: str  # may be the pressure value for CTD data
+    _mapping: dict = field(init=False, repr=False, compare=False)
+
+    EXPOCODE = WHPNames["EXPOCODE"]
+    STNNBR = WHPNames["STNNBR"]
+    CASTNO = WHPNames["CASTNO"]
+    SAMPNO = WHPNames["SAMPNO"]
+
+    WHP_PARAMS = (
+        EXPOCODE,
+        STNNBR,
+        CASTNO,
+        SAMPNO,
+    )
+
+    def __post_init__(self):
+        object.__setattr__(
+            self,
+            "_mapping",
+            {
+                self.EXPOCODE: self.expocode,
+                self.STNNBR: self.station,
+                self.CASTNO: self.cast,
+                self.SAMPNO: self.sample,
+            },
+        )
 
     @property
     def profile_id(self):
@@ -179,6 +187,10 @@ class ExchangeCompositeKey:
     def from_data_line(
         cls, data_line: Dict[WHPName, IntermediateDataPoint]
     ) -> ExchangeCompositeKey:
+        EXPOCODE = cls.EXPOCODE
+        STNNBR = cls.STNNBR
+        CASTNO = cls.CASTNO
+        SAMPNO = cls.SAMPNO
         return cls(
             expocode=EXPOCODE.data_type(data_line.pop(EXPOCODE).data),
             station=STNNBR.data_type(data_line.pop(STNNBR).data),
@@ -187,36 +199,54 @@ class ExchangeCompositeKey:
         )
 
     def __getitem__(self, key):
-        return {
-            EXPOCODE: self.expocode,
-            STNNBR: self.station,
-            CASTNO: self.cast,
-            SAMPNO: self.sample,
-        }[key]
+        return self._mapping[key]
+
+    def __iter__(self):
+        for key in self._mapping:
+            yield key
+
+    def __len__(self):
+        return len(self._mapping)
 
 
 @dataclass(frozen=True)
-class ExchangeXYZT:
+class ExchangeXYZT(Mapping):
     x: ExchangeDataPoint  # Longitude
     y: ExchangeDataPoint  # Latitude
     z: ExchangeDataPoint  # Pressure
     t: ExchangeTimestamp  # Time obviously...
+    _mapping: dict = field(init=False, repr=False, compare=False)
+
+    CTDPRS = WHPNames[("CTDPRS", "DBAR")]
+    DATE = WHPNames[("DATE", None)]
+    TIME = WHPNames[("TIME", None)]
+    LATITUDE = WHPNames[("LATITUDE", None)]
+    LONGITUDE = WHPNames[("LONGITUDE", None)]
+
+    WHP_PARAMS: tuple = (
+        CTDPRS,
+        DATE,
+        TIME,
+        LATITUDE,
+        LONGITUDE,
+    )
 
     @classmethod
     def from_data_line(
         cls, data_line: Dict[WHPName, IntermediateDataPoint]
     ) -> ExchangeXYZT:
-        date = data_line.pop(DATE).data
+
+        date = data_line.pop(cls.DATE).data
         time: Optional[str] = None
         try:
-            time = data_line.pop(TIME).data
+            time = data_line.pop(cls.TIME).data
         except KeyError:
             pass
 
         return cls(
-            x=ExchangeDataPoint.from_ir(LONGITUDE, data_line.pop(LONGITUDE)),
-            y=ExchangeDataPoint.from_ir(LATITUDE, data_line.pop(LATITUDE)),
-            z=ExchangeDataPoint.from_ir(CTDPRS, data_line[CTDPRS]),
+            x=ExchangeDataPoint.from_ir(cls.LONGITUDE, data_line.pop(cls.LONGITUDE)),
+            y=ExchangeDataPoint.from_ir(cls.LATITUDE, data_line.pop(cls.LATITUDE)),
+            z=ExchangeDataPoint.from_ir(cls.CTDPRS, data_line[cls.CTDPRS]),
             t=ExchangeTimestamp.from_strs(date, time),
         )
 
@@ -239,6 +269,18 @@ class ExchangeXYZT:
         ):
             raise InvalidExchangeFileError()
 
+        object.__setattr__(
+            self,
+            "_mapping",
+            {
+                self.LONGITUDE: self.x.value,
+                self.LATITUDE: self.y.value,
+                self.CTDPRS: self.z.value,
+                self.TIME: self.t.time_part,
+                self.DATE: self.t.date_part,
+            },
+        )
+
     def __eq__(self, other):
         return (self.x, self.y, self.z, self.t) == (other.x, other.y, other.z, other.t)
 
@@ -258,13 +300,14 @@ class ExchangeXYZT:
         )
 
     def __getitem__(self, key):
-        return {
-            LONGITUDE: self.x.value,
-            LATITUDE: self.y.value,
-            CTDPRS: self.z.value,
-            TIME: self.t.time_part,
-            DATE: self.t.date_part,
-        }[key]
+        return self._mapping[key]
+
+    def __iter__(self):
+        for key in self._mapping:
+            yield key
+
+    def __len__(self):
+        return len(self._mapping)
 
 
 @dataclass(frozen=True)
@@ -417,11 +460,11 @@ class Exchange:
     def column_to_ndarray(self, col: WHPName) -> np.ndarray:
         a = []
         dtype = col.data_type  # type: ignore
-        if col in EXCHANGE_COMPOSITE_KEY_PARAMS:
+        if col in ExchangeCompositeKey.WHP_PARAMS:
             for key in self.keys:
                 a.append(key[col])
 
-        elif col in (LATITUDE, LONGITUDE, CTDPRS, DATE, TIME):
+        elif col in ExchangeXYZT.WHP_PARAMS:
             for key in self.keys:
                 a.append(self.coordinates[key][col])
         else:
@@ -466,6 +509,7 @@ class Exchange:
         date var for CF. Except for the bottle trip information, all the
         above should probably get "real" var names not just var0, ..., varN.
         """
+        import xarray as xr
 
         N_PROF = len(self)
         N_LEVELS = max([len(prof.keys) for prof in self.iter_profiles()])
