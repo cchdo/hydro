@@ -5,3 +5,7 @@ try:
 except DistributionNotFound:
     # package is not installed
     pass
+
+from appdirs import AppDirs
+
+_hydro_appdirs = AppDirs("edu.ucsd.cchdo.hydro")
