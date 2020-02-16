@@ -624,13 +624,13 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         raise InvalidExchangeFileError("message")
 
     data_lines = deque(data.splitlines())
-    data_lines.popleft()  # discard "stamp"
+    stamp = data_lines.popleft()
 
     if "END_DATA" not in data_lines:
         # TODO make messages
         raise InvalidExchangeFileError("message")
 
-    comments = _extract_comments(data_lines)
+    comments = "\n".join([stamp, _extract_comments(data_lines)])
 
     # Strip end_data
     data_lines.remove("END_DATA")
