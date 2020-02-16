@@ -489,17 +489,22 @@ class Exchange:
         """
         Current thinking:
         There are a few "special case" variables which include the WHP identifing ones:
+
         * EXPOCODE
         * STNNBR
         * CASTNO
         * SAMPNO
+
         Profile level spacetime coords:
+
         * LATITUDE
         * LONGITUDE
         * DATE
         * TIME
         * CTDPRS
+
         If present, bottle trip information:
+
         * BTL_LAT
         * BTL_LON
         * BTL_DATE
@@ -582,7 +587,8 @@ def _extract_comments(data: deque, include_post_content: bool = True) -> str:
 
 
 def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Exchange:
-    """Open an exchange file"""
+    """Open an exchange file and return an :class:`hydro.exchange.Exchange` object
+    """
 
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
         data_raw = io.BytesIO(requests.get(filename_or_obj).content)

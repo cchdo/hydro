@@ -3,6 +3,13 @@
 API
 ===
 
+Exchange Format
+---------------
+
+.. automodule:: hydro.exchange
+    :members:
+    :undoc-members:
+
 Flag Values
 -----------
 
