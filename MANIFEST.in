@@ -1,2 +1,6 @@
 include versioneer.py
 include hydro/_version.py
+
+include hydro/data/*.json
+include hydro/data/*.csv
+include hydro/data/*.xml
