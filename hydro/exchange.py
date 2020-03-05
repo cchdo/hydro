@@ -16,27 +16,34 @@ import numpy as np
 
 from hydro.data import WHPNames, WHPName
 from hydro.flag import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
+from hydro.exceptions import (
+    ExchangeEncodingError,
+    ExchangeBOMError,
+    ExchangeLEError,
+    ExchangeMagicNumberError,
+    ExchangeEndDataError,
+    ExchangeDuplicateParameterError,
+    ExchangeOrphanFlagError,
+    ExchangeFlaglessParameterError,
+    ExchangeParameterUnitAlignmentError,
+    ExchangeDataColumnAlignmentError,
+    ExchangeParameterUndefError,
+    ExchangeFlagUnitError,
+    ExchangeDataFlagPairError,
+    ExchangeDataPartialKeyError,
+    ExchangeDuplicateKeyError,
+    ExchangeDataPartialCoordinateError,
+    ExchangeDataInconsistentCoordinateError,
+)
 
 WHPNameIndex = Dict[WHPName, int]
 ExchangeFlags = Union[ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag, None]
-
-exchange_doc = "https://exchange-format.readthedocs.io/en/latest"
-
-ERRORS = {
-    "utf8": f"Exchange files MUST be utf8 encoded: {exchange_doc}/common.html#encoding",
-    "bom": f"Exchange files MUST NOT have a byte order mark: {exchange_doc}/common.html#byte-order-marks",  # noqa: E501
-    "line-end": f"Exchange files MUST use LF line endings: {exchange_doc}/common.html#line-endings",  # noqa: E501
-}
 
 
 class IntermediateDataPoint(NamedTuple):
     data: str
     flag: Optional[str]
     error: Optional[str]
-
-
-class InvalidExchangeFileError(ValueError):
-    pass
 
 
 def _bottle_get_params(
@@ -51,7 +58,7 @@ def _bottle_get_params(
         try:
             params[WHPNames[(param, unit)]] = index
         except KeyError as error:
-            raise InvalidExchangeFileError(
+            raise ExchangeParameterUndefError(
                 f"missing parameter def {(param, unit)}"
             ) from error
     return params
@@ -69,13 +76,13 @@ def _bottle_get_flags(
             continue
 
         if unit is not None:
-            raise InvalidExchangeFileError("Flags should not have units")
+            raise ExchangeFlagUnitError
 
         data_col = param.replace("_FLAG_W", "")
         try:
             whpname = whp_params_names[data_col]
             if whpname.flag_w is None:
-                raise InvalidExchangeFileError(f"{whpname} cannot have a flag column")
+                raise ExchangeFlaglessParameterError(f"{data_col}")
             param_flags[whpname] = index
         except KeyError as error:
             # we might have an alias...
@@ -85,7 +92,7 @@ def _bottle_get_flags(
                     param_flags[name] = index
                     break
             else:
-                raise InvalidExchangeFileError("Flag with no data column") from error
+                raise ExchangeOrphanFlagError(f"{data_col}") from error
 
     return param_flags
 
@@ -144,7 +151,11 @@ class ExchangeDataPoint:
 
     def __post_init__(self):
         if self.flag is not None and self.flag.has_value and self.value is None:
-            raise InvalidExchangeFileError(f"{self}")
+            if self.flag.has_value:
+                msg = f"{self.whpname.whp_name} has a fill value but a flag of {self.flag}"
+            else:
+                msg = f"{self.whpname.whp_name} has the value {self.value} but a flag of {self.flag}"
+            raise ExchangeDataFlagPairError(msg)
 
 
 @dataclass(frozen=True)
@@ -267,7 +278,7 @@ class ExchangeXYZT(Mapping):
                 self.z.value is not None,
             ]
         ):
-            raise InvalidExchangeFileError()
+            raise ExchangeDataPartialCoordinateError
 
         object.__setattr__(
             self,
@@ -420,7 +431,7 @@ class Exchange:
                     for key in group
                 )
             ):
-                raise InvalidExchangeFileError("Only profile xyt inconsistent")
+                raise ExchangeDataInconsistentCoordinateError
 
     def __repr__(self):
         return f"""<hydro.Exchange profiles={len(self)}>"""
@@ -607,28 +618,26 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     try:
         data = data_raw.read().decode("utf8")
     except UnicodeDecodeError as error:
-        raise InvalidExchangeFileError(ERRORS["utf8"]) from error
+        raise ExchangeEncodingError from error
 
     if data.startswith("\ufeff"):
-        raise InvalidExchangeFileError(ERRORS["bom"])
+        raise ExchangeBOMError
 
     if "\r" in data:
-        raise InvalidExchangeFileError(ERRORS["line-end"])
+        raise ExchangeLEError
 
     if data.startswith("BOTTLE"):
         ftype = FileType.BOTTLE
     elif data.startswith("CTD"):
         ftype = FileType.CTD
     else:
-        # TODO make messages
-        raise InvalidExchangeFileError("message")
+        raise ExchangeMagicNumberError
 
     data_lines = deque(data.splitlines())
     stamp = data_lines.popleft()
 
     if "END_DATA" not in data_lines:
-        # TODO make messages
-        raise InvalidExchangeFileError("message")
+        raise ExchangeEndDataError
 
     comments = "\n".join([stamp, _extract_comments(data_lines)])
 
@@ -644,16 +653,14 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
 
     # column labels must be unique
     if len(params) != len(set(params)):
-        # TODO Make Message
-        raise InvalidExchangeFileError()
+        raise ExchangeDuplicateParameterError
 
     # the number of expected columns is just going to be the number of
     # parameter names we see
     column_count = len(params)
 
     if len(units) != column_count:
-        # TODO make message
-        raise InvalidExchangeFileError()
+        raise ExchangeParameterUnitAlignmentError
 
     whp_params = _bottle_get_params(zip(params, units))
     whp_flags = _bottle_get_flags(zip(params, units), whp_params)
@@ -663,7 +670,13 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     if {*whp_params.values(), *whp_flags.values(), *whp_errors.values()} != set(
         range(column_count)
     ):
-        raise ValueError("WAT")
+        raise RuntimeError(
+            (
+                "Not all of the data columns will be read. "
+                "This shouldn't happen and is likely a bug, please include the file that caused "
+                "this error to occur."
+            )
+        )
 
     line_parser = _bottle_line_parser(whp_params, whp_flags, whp_errors)
 
@@ -672,24 +685,24 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     for data_line in data_lines:
         cols = [x.strip() for x in data_line.split(",")]
         if len(cols) != column_count:
-            raise InvalidExchangeFileError()
+            raise ExchangeDataColumnAlignmentError
         parsed_data_line = line_parser(data_line)
         try:
             key = ExchangeCompositeKey.from_data_line(parsed_data_line)
         except KeyError as error:
-            raise InvalidExchangeFileError("Something Missing") from error
+            raise ExchangeDataPartialKeyError from error
 
         try:
             coord = ExchangeXYZT.from_data_line(parsed_data_line)
         except KeyError as error:
-            raise InvalidExchangeFileError("Something Missing") from error
+            raise ExchangeDataPartialCoordinateError from error
 
         row_data = {
             param: ExchangeDataPoint.from_ir(param, ir)
             for param, ir in parsed_data_line.items()
         }
         if key in exchange_data:
-            raise InvalidExchangeFileError(f"Duplicate key {key}")
+            raise ExchangeDuplicateKeyError(f"{key}")
 
         exchange_data[key] = dict(filter(lambda di: di[1].flag != 9, row_data.items()))
         coordinates[key] = coord
