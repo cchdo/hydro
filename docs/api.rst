@@ -10,6 +10,13 @@ Exchange Format
     :members:
     :undoc-members:
 
+Exceptions
+----------
+
+.. automodule:: hydro.exceptions
+    :members:
+    :undoc-members:
+
 Flag Values
 -----------
 
