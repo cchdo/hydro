@@ -16,6 +16,7 @@ Exceptions
 .. automodule:: hydro.exceptions
     :members:
     :undoc-members:
+    :show-inheritance:
 
 Flag Values
 -----------
