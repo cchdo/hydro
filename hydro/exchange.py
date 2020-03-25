@@ -40,6 +40,9 @@ WHPNameIndex = Dict[WHPName, int]
 ExchangeFlags = Union[ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag, None]
 
 
+PROFILE_LEVEL_PARAMS = list(filter(lambda x: x.scope == "profile", WHPNames.values()))
+
+
 class IntermediateDataPoint(NamedTuple):
     data: str
     flag: Optional[str]
@@ -102,7 +105,7 @@ def _bottle_get_errors(
 ) -> WHPNameIndex:
     param_errs = {}
 
-    for index, (param, unit) in enumerate(params_units):
+    for index, (param, _unit) in enumerate(params_units):
         if param not in WHPNames.error_cols:
             continue
 
@@ -392,6 +395,31 @@ class FileType(Enum):
     BOTTLE = auto()
 
 
+class ExchangeDataProxy(Mapping):
+    def __init__(self, exchange: Exchange):
+        self._ex = exchange
+
+    def __getitem__(self, key: Tuple[ExchangeCompositeKey, WHPName]):
+        row, col = key
+        if col in ExchangeCompositeKey.WHP_PARAMS:
+            return row[col]
+        elif col in ExchangeXYZT.WHP_PARAMS:
+            return self._ex.coordinates[row][col]
+        else:
+            try:
+                return self._ex.data[row][col].value
+            except KeyError:
+                return None
+
+    def __iter__(self):
+        for key in self._ex.keys:
+            for param in self._ex.parameters:
+                yield (key, param)
+
+    def __len__(self):
+        return len(self._ex.keys) * len(self._ex.parameters)
+
+
 @dataclass(frozen=True)
 class Exchange:
     file_type: FileType
@@ -417,21 +445,15 @@ class Exchange:
             sorted_keys = sorted(sorted_keys, key=lambda x: x.profile_id)
         object.__setattr__(self, "keys", tuple(sorted_keys))
 
+        # Check to see that all the "profile level" parameters are the same for
+        # excah profile
         for key, group in groupby(self.keys, lambda k: k.profile_id):
-            first = self.coordinates[next(group)]
-            if not (
-                all(
-                    all(
-                        (
-                            self.coordinates[key].x == first.x,
-                            self.coordinates[key].y == first.y,
-                            self.coordinates[key].t == first.t,
-                        )
-                    )
-                    for key in group
-                )
-            ):
-                raise ExchangeDataInconsistentCoordinateError
+            first_row = next(group)
+            for col in PROFILE_LEVEL_PARAMS:
+                val = self.at[(first_row, col)]
+                for row in group:
+                    if val != self.at[(row, col)]:
+                        raise ExchangeDataInconsistentCoordinateError
 
     def __repr__(self):
         return f"""<hydro.Exchange profiles={len(self)}>"""
@@ -439,8 +461,12 @@ class Exchange:
     def __len__(self):
         return len({key.profile_id for key in self.keys})
 
+    @property
+    def at(self) -> ExchangeDataProxy:
+        return ExchangeDataProxy(self)
+
     def iter_profiles(self):
-        for key, group in groupby(self.keys, lambda k: k.profile_id):
+        for _key, group in groupby(self.keys, lambda k: k.profile_id):
             keys = tuple(group)
             yield Exchange(
                 file_type=self.file_type,
@@ -471,19 +497,8 @@ class Exchange:
     def column_to_ndarray(self, col: WHPName) -> np.ndarray:
         a = []
         dtype = col.data_type  # type: ignore
-        if col in ExchangeCompositeKey.WHP_PARAMS:
-            for key in self.keys:
-                a.append(key[col])
-
-        elif col in ExchangeXYZT.WHP_PARAMS:
-            for key in self.keys:
-                a.append(self.coordinates[key][col])
-        else:
-            for key in self.keys:
-                try:
-                    a.append(self.data[key][col].value)
-                except KeyError:
-                    a.append(None)
+        for key in self.keys:
+            a.append(self.at[(key, col)])
 
         if None not in a:  # contigious array, should just work
             return np.array(a, dtype=dtype)
