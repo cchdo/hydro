@@ -3,13 +3,14 @@ from dataclasses import dataclass, field
 from collections import deque
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Union, Iterable, Tuple, Optional, Callable, Dict, NamedTuple
+from typing import Union, Iterable, Tuple, Optional, Callable, Dict, NamedTuple, Literal
 from datetime import date, time, datetime
 from enum import Enum, auto
 import io
 from zipfile import is_zipfile
-from operator import itemgetter
+from operator import itemgetter, attrgetter
 from itertools import groupby
+from functools import cached_property
 
 import requests
 import numpy as np
@@ -396,8 +397,11 @@ class FileType(Enum):
 
 
 class ExchangeDataProxy(Mapping):
-    def __init__(self, exchange: Exchange):
+    def __init__(
+        self, exchange: Exchange, attr: Literal["value", "flag", "error"] = "value"
+    ):
         self._ex = exchange
+        self._get = attrgetter(attr)
 
     def __getitem__(self, key: Tuple[ExchangeCompositeKey, WHPName]):
         row, col = key
@@ -407,7 +411,7 @@ class ExchangeDataProxy(Mapping):
             return self._ex.coordinates[row][col]
         else:
             try:
-                return self._ex.data[row][col].value
+                return self._get(self._ex.data[row][col])
             except KeyError:
                 return None
 
@@ -459,11 +463,25 @@ class Exchange:
         return f"""<hydro.Exchange profiles={len(self)}>"""
 
     def __len__(self):
-        return len({key.profile_id for key in self.keys})
+        return self.shape[0]
 
-    @property
+    @cached_property
     def at(self) -> ExchangeDataProxy:
         return ExchangeDataProxy(self)
+
+    @cached_property
+    def at_flag(self) -> ExchangeDataProxy:
+        return ExchangeDataProxy(self, "flag")
+
+    @cached_property
+    def at_error(self) -> ExchangeDataProxy:
+        return ExchangeDataProxy(self, "error")
+
+    @cached_property
+    def shape(self):
+        x = len({key.profile_id for key in self.keys})
+        y = max([len(prof.keys) for prof in self.iter_profiles()])
+        return (x, y)
 
     def iter_profiles(self):
         for _key, group in groupby(self.keys, lambda k: k.profile_id):
@@ -481,31 +499,33 @@ class Exchange:
                 data={sample_id: self.data[sample_id] for sample_id in keys},
             )
 
-    def flag_column_to_ndarray(self, col: WHPName) -> np.ndarray:
-        if col not in self.flags:
-            raise KeyError(f"No flags for {col}")
+    def flag_to_ndarray(self, param: WHPName) -> np.ndarray:
+        if param not in self.flags:
+            raise KeyError(f"No flags for {param}")
 
-        a = []
-        for key in self.keys:
-            try:
-                a.append(self.data[key][col].flag)
-            except KeyError:
-                a.append(None)
+        arr = np.full(self.shape, np.nan, dtype=float)
 
-        return np.array(a, dtype=np.float)
+        for row, (_key, group) in enumerate(groupby(self.keys, lambda k: k.profile_id)):
+            for col, key in enumerate(group):
+                arr[row, col] = self.at_flag[(key, param)]
 
-    def column_to_ndarray(self, col: WHPName) -> np.ndarray:
-        a = []
-        dtype = col.data_type  # type: ignore
-        for key in self.keys:
-            a.append(self.at[(key, col)])
+        if arr.shape[0] == 1:
+            return np.squeeze(arr)
+        return arr
 
-        if None not in a:  # contigious array, should just work
-            return np.array(a, dtype=dtype)
-        elif dtype is str:
-            return np.array(["" if s is None else s for s in a], dtype=str)
-        else:  # turn int arrays with none in one with NaNs
-            return np.array(a, dtype=float)
+    def parameter_to_ndarray(self, param: WHPName) -> np.ndarray:
+        # https://github.com/python/mypy/issues/5485
+        dtype = param.data_type  # type: ignore
+        if dtype == str:
+            arr = np.full(self.shape, "", dtype=object)
+        else:
+            arr = np.full(self.shape, np.nan, dtype=float)
+        for row, (_key, group) in enumerate(groupby(self.keys, lambda k: k.profile_id)):
+            for col, key in enumerate(group):
+                arr[row, col] = self.at[(key, param)]
+        if arr.shape[0] == 1:
+            return np.squeeze(arr)
+        return arr
 
     def iter_profile_coordinates(self):
         for profile in self.iter_profiles():
@@ -542,59 +562,34 @@ class Exchange:
         """
         import xarray as xr
 
-        N_PROF = len(self)
-        N_LEVELS = max([len(prof.keys) for prof in self.iter_profiles()])
-        one_d_vars = list(filter(lambda v: v.scope == "profile", WHPNames.values()))
-        one_d_dims = {"N_PROF": N_PROF}
-        data_vars = {}
-        dims = {"N_PROF": N_PROF, "N_LEVELS": N_LEVELS}
-        for n, var in enumerate(self.parameters):
-            if var in one_d_vars:
-                size = N_PROF
+        data_arrays = []
+
+        for n, param in enumerate(self.parameters):
+            if param.scope == "profile":
+                values = self.parameter_to_ndarray(param)[:, 0]
+                dims = ("N_PROF",)
             else:
-                size = (N_PROF, N_LEVELS)
+                values = self.parameter_to_ndarray(param)
+                dims = ("N_PROF", "N_LEVELS")
 
-            if var.data_type is str:  # type: ignore
-                data = np.empty(size, dtype=object)
-            else:
-                data = np.zeros(size, dtype=float)
-                data[:] = np.nan
+            data_array = xr.DataArray(values, dims=dims, name=f"var{n}")
 
-            data_vars[f"var{n}"] = data
+            if data_array.dtype == object:
+                data_array.encoding["dtype"] = "str"
+            if data_array.dtype == float:
+                data_array.encoding["dtype"] = "float32"
 
-            if var in self.flags:
-                data_vars[f"var{n}_qc"] = np.full_like(data, np.nan, dtype=np.float)
-            if var in self.errors:
-                data_vars[f"var{n}_error"] = np.full_like(data, np.nan)
+            data_arrays.append(data_array)
 
-        for n_prof, prof in enumerate(self.iter_profiles()):
-            for p_int, param in enumerate(prof.parameters):
-                d = prof.column_to_ndarray(col=param)
-                if param in one_d_vars:
-                    data_vars[f"var{p_int}"][n_prof] = d[0]
-                else:
-                    data_vars[f"var{p_int}"][n_prof][: len(d)] = d
+            if param in self.flags:
+                values = self.flag_to_ndarray(param)
+                dims = ("N_PROF", "N_LEVELS")
+                data_array = xr.DataArray(values, dims=dims, name=f"var{n}_qc")
+                data_array.encoding["dtype"] = "int8"
+                data_array.encoding["_FillValue"] = 9
+                data_arrays.append(data_array)
 
-                if param in prof.flags:
-                    d = prof.flag_column_to_ndarray(param)
-                    data_vars[f"var{p_int}_qc"][n_prof][: len(d)] = d
-
-        dvars = {}
-        for k, v in data_vars.items():
-            if v.ndim == 1:
-                dvars[k] = (one_d_dims, v)
-            else:
-                dvars[k] = (dims, v)
-        # dvars = {k: (dims, v) for k, v in data_vars.items()}
-        dataset = xr.Dataset(dvars)
-        for v in dataset:
-            if dataset[v].dtype == object:
-                dataset[v].encoding["dtype"] = "str"
-            if dataset[v].dtype == float:
-                dataset[v].encoding["dtype"] = "float32"
-            if v.endswith("_qc"):
-                dataset[v].encoding["dtype"] = "int8"
-                dataset[v].encoding["_FillValue"] = 9
+        dataset = xr.Dataset({da.name: da for da in data_arrays})
         return dataset
 
 
