@@ -5,12 +5,37 @@ from typing import Optional, Callable, Union
 from csv import DictReader
 from json import load
 from collections.abc import Mapping
+from functools import cached_property
 
 __all__ = ["CFStandardNames", "ArgoNames", "WHPNames"]
 
 
+def _name_getter(cf_name, names_list):
+    if cf_name is None:
+        return None
+
+    names = list(filter(lambda x: x.cf == cf_name, names_list))
+
+    if not any(names):
+        return None
+
+    return names
+
+
+class ArgoNameMixin:
+    @cached_property
+    def argo(self):
+        return _name_getter(self.cf, ArgoNames.values())
+
+
+class WHPNameMixin:
+    @cached_property
+    def whp(self):
+        return _name_getter(self.cf, WHPNames.values())
+
+
 @dataclass(frozen=True)
-class CFStandardName:
+class CFStandardName(ArgoNameMixin, WHPNameMixin):
     """Wrapper for CF Standard Names"""
 
     name: str  # is the 'id' property in the xml
@@ -19,9 +44,13 @@ class CFStandardName:
     amip: Optional[str]
     description: str = field(repr=False, hash=False)
 
+    @property
+    def cf(self):
+        return self
+
 
 @dataclass(frozen=True)
-class ArgoName:
+class ArgoName(WHPNameMixin):
     """Wrapper for Argo variable name table
     Note that most of the table is ignored, this
     is here to mostly map CF names to argo and back
@@ -34,9 +63,13 @@ class ArgoName:
     fillvalue: str
     dtype: str
 
+    @property
+    def cf(self):
+        return CFStandardNames.get(self.cf_standard_name)
+
 
 @dataclass(frozen=True)
-class WHPName:
+class WHPName(ArgoNameMixin):
     """Wrapper for WHP parameters.json
     """
 
@@ -59,6 +92,10 @@ class WHPName:
     def key(self):
         """This is the thing that uniquely identifies"""
         return (self.whp_name, self.whp_unit)
+
+    @property
+    def cf(self):
+        return CFStandardNames.get(self.cf_name)
 
 
 def _load_cf_standard_names(__versions__):
