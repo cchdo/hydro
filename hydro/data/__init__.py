@@ -163,16 +163,12 @@ def _load_whp_names():
 
 
 class _LazyMapping(Mapping):
-    _cached_dict_internal = None
-
     def __init__(self, loader):
         self._loader = loader
 
-    @property
+    @cached_property
     def _cached_dict(self):
-        if not self._cached_dict_internal:
-            self._cached_dict_internal = self._loader()
-        return self._cached_dict_internal
+        return self._loader()
 
     def _load_data(self):
         self._cached_dict
@@ -212,11 +208,9 @@ class _CFStandardNames(_LazyMapping):
         self._loader = loader
         self.__versions__ = {}
 
-    @property
+    @cached_property
     def _cached_dict(self):
-        if not self._cached_dict_internal:
-            self._cached_dict_internal = self._loader(self.__versions__)
-        return self._cached_dict_internal
+        return self._loader(self.__versions__)
 
 
 CFStandardNames = _CFStandardNames(_load_cf_standard_names)
