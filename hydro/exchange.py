@@ -1,10 +1,20 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from collections import deque
+from collections import deque, defaultdict
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Union, Iterable, Tuple, Optional, Callable, Dict, NamedTuple, Literal
-from datetime import date, time, datetime
+from typing import (
+    Union,
+    Iterable,
+    Tuple,
+    Optional,
+    Callable,
+    Dict,
+    NamedTuple,
+    Literal,
+    List,
+)
+from datetime import datetime
 from enum import Enum, auto
 import io
 from zipfile import is_zipfile
@@ -14,6 +24,7 @@ from functools import cached_property
 
 import requests
 import numpy as np
+import pandas as pd
 
 from hydro.data import WHPNames, WHPName
 from hydro.flag import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
@@ -42,6 +53,14 @@ ExchangeFlags = Union[ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag, N
 
 
 PROFILE_LEVEL_PARAMS = list(filter(lambda x: x.scope == "profile", WHPNames.values()))
+
+
+def _none_factory(*args, **kwargs):
+    return None
+
+
+def _none_factory_factory(*args, **kwargs):
+    return _none_factory
 
 
 class IntermediateDataPoint(NamedTuple):
@@ -229,7 +248,7 @@ class ExchangeXYZT(Mapping):
     x: ExchangeDataPoint  # Longitude
     y: ExchangeDataPoint  # Latitude
     z: ExchangeDataPoint  # Pressure
-    t: ExchangeTimestamp  # Time obviously...
+    t: np.datetime64  # Time obviously...
     _mapping: dict = field(init=False, repr=False, compare=False)
 
     CTDPRS = WHPNames[("CTDPRS", "DBAR")]
@@ -251,10 +270,11 @@ class ExchangeXYZT(Mapping):
         cls, data_line: Dict[WHPName, IntermediateDataPoint]
     ) -> ExchangeXYZT:
 
-        date = data_line.pop(cls.DATE).data
-        time: Optional[str] = None
+        date = datetime.strptime(data_line.pop(cls.DATE).data, "%Y%m%d").date()
         try:
             time = data_line.pop(cls.TIME).data
+            time_obj = datetime.strptime(time, "%H%M").time()
+            date = datetime.combine(date, time_obj)
         except KeyError:
             pass
 
@@ -262,7 +282,7 @@ class ExchangeXYZT(Mapping):
             x=ExchangeDataPoint.from_ir(cls.LONGITUDE, data_line.pop(cls.LONGITUDE)),
             y=ExchangeDataPoint.from_ir(cls.LATITUDE, data_line.pop(cls.LATITUDE)),
             z=ExchangeDataPoint.from_ir(cls.CTDPRS, data_line[cls.CTDPRS]),
-            t=ExchangeTimestamp.from_strs(date, time),
+            t=np.datetime64(date),
         )
 
     def __repr__(self):
@@ -271,7 +291,7 @@ class ExchangeXYZT(Mapping):
             f"x={self.x.value} "
             f"y={self.y.value} "
             f"z={self.z.value} "
-            f"t='{self.t.to_datetime}'>"
+            f"t={self.t!r}>"
         )
 
     def __post_init__(self):
@@ -291,8 +311,8 @@ class ExchangeXYZT(Mapping):
                 self.LONGITUDE: self.x.value,
                 self.LATITUDE: self.y.value,
                 self.CTDPRS: self.z.value,
-                self.TIME: self.t.time_part,
-                self.DATE: self.t.date_part,
+                self.TIME: self._time_part,
+                self.DATE: self._date_part,
             },
         )
 
@@ -307,8 +327,8 @@ class ExchangeXYZT(Mapping):
         * A more northernly coordinate is greater than a more southerly one
         The first two points should get most of the stuff we care about sorted
         """
-        return (self.t.to_datetime, self.z.value, self.x.value, self.y.value) < (
-            other.t.to_datetime,
+        return (self.t, self.z.value, self.x.value, self.y.value) < (
+            other.t,
             other.z.value,
             other.x.value,
             other.y.value,
@@ -324,56 +344,33 @@ class ExchangeXYZT(Mapping):
     def __len__(self):
         return len(self._mapping)
 
-
-@dataclass(frozen=True)
-class ExchangeTimestamp:
-    date_part: date
-    time_part: Optional[time]
-
-    @classmethod
-    def from_strs(
-        cls, date_part: str, time_part: Optional[str] = None
-    ) -> ExchangeTimestamp:
-        parsed_date = datetime.strptime(date_part, "%Y%m%d").date()
-        parsed_time: Optional[time] = None
-        if time_part is not None:
-            parsed_time = datetime.strptime(time_part, "%H%M").time()
-        return cls(date_part=parsed_date, time_part=parsed_time)
+    @property
+    def _time_part(self):
+        if self.t.dtype.name == "datetime64[D]":
+            return None
+        return pd.Timestamp(self.t).to_pydatetime().time()
 
     @property
-    def to_datetime(self):
-        if self.time_part:
-            return datetime.combine(self.date_part, self.time_part)
-        else:
-            return datetime.combine(self.date_part, time(0, 0))
-
-    def __lt__(self, other):
-        return self.to_datetime < other.to_datetime
-
-    def __eq__(self, other):
-        return self.to_datetime == other.to_datetime
+    def _date_part(self):
+        return pd.Timestamp(self.t).to_pydatetime().date()
 
 
 def _bottle_line_parser(
     names_index: WHPNameIndex, flags_index: WHPNameIndex, errors_index: WHPNameIndex
 ) -> Callable[[str], Dict[WHPName, IntermediateDataPoint]]:
-    data_getters = {}
-    flag_getters = {}
-    error_getters = {}
-    for name, data_col in names_index.items():
-        data_getter = itemgetter(data_col)
-        flag_col = flags_index.get(name)
-        error_col = errors_index.get(name)
+    GetterType = Dict[WHPName, Callable[[List[str]], Optional[str]]]
 
-        data_getters[name] = data_getter
-        if flag_col is None:
-            flag_getters[name] = lambda x: None
-        else:
+    data_getters = {}
+    flag_getters: GetterType = defaultdict(_none_factory_factory)
+    error_getters: GetterType = defaultdict(_none_factory_factory)
+
+    for name, data_col in names_index.items():
+        data_getters[name] = itemgetter(data_col)
+
+        if flag_col := flags_index.get(name):
             flag_getters[name] = itemgetter(flag_col)
 
-        if error_col is None:
-            error_getters[name] = lambda x: None
-        else:
+        if error_col := errors_index.get(name):
             error_getters[name] = itemgetter(error_col)
 
     def line_parser(line: str) -> Dict[WHPName, IntermediateDataPoint]:
@@ -384,7 +381,7 @@ def _bottle_line_parser(
             flag: Optional[str] = flag_getters[name](split_line)
             error: Optional[str] = error_getters[name](split_line)
 
-            parsed[name] = IntermediateDataPoint(data, flag, error=error)
+            parsed[name] = IntermediateDataPoint(data, flag, error)
 
         return parsed
 
@@ -538,7 +535,7 @@ class Exchange:
 
         for row, (_key, group) in enumerate(groupby(self.keys, lambda k: k.profile_id)):
             for col, key in enumerate(group):
-                arr[row, col] = np.datetime64(self.coordinates[key].t.to_datetime)
+                arr[row, col] = self.coordinates[key].t
 
         if arr.shape[0] == 1:
             return np.squeeze(arr)
@@ -786,6 +783,9 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         except KeyError as error:
             raise ExchangeDataPartialKeyError from error
 
+        if key in exchange_data:
+            raise ExchangeDuplicateKeyError(f"{key}")
+
         try:
             coord = ExchangeXYZT.from_data_line(parsed_data_line)
         except KeyError as error:
@@ -795,8 +795,6 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
             param: ExchangeDataPoint.from_ir(param, ir)
             for param, ir in parsed_data_line.items()
         }
-        if key in exchange_data:
-            raise ExchangeDuplicateKeyError(f"{key}")
 
         exchange_data[key] = dict(filter(lambda di: di[1].flag != 9, row_data.items()))
         coordinates[key] = coord
