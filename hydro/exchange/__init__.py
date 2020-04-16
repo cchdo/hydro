@@ -27,8 +27,8 @@ import numpy as np
 import pandas as pd
 
 from hydro.data import WHPNames, WHPName
-from hydro.flag import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
-from hydro.exceptions import (
+from .flags import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
+from .exceptions import (
     ExchangeEncodingError,
     ExchangeBOMError,
     ExchangeLEError,

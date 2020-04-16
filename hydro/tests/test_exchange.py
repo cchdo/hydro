@@ -2,7 +2,7 @@ import io
 import pytest
 
 from hydro.exchange import read_exchange
-from hydro.exceptions import (
+from hydro.exchange.exceptions import (
     ExchangeLEError,
     ExchangeBOMError,
     ExchangeEncodingError,
