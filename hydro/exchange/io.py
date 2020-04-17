@@ -43,10 +43,31 @@ from .exceptions import (
     ExchangeDataPartialCoordinateError,
 )
 
+# WHPNameIndex represents a Name to Column index in an exchange file
 WHPNameIndex = Dict[WHPName, int]
+# WHPParamUnit represents the paired up contents of the Parameter and Unit lines
+# in an exchange file
+WHPParamUnit = Tuple[str, Optional[str]]
 
 
 def _extract_comments(data: deque, include_post_content: bool = True) -> str:
+    """Destructively extract the comments from exchange data.
+
+     Exchange files may have zero or more lines of meaningless (to the format) comments.
+     Between the ``CTD`` or ``BOTTLE`` stamp line and the start of the meaningful content of the file. These must be prefixed with a ``#`` character.
+     Optionally, there might also be any amount of content after the ``END_DATA`` line of an exchange file.
+     By default this function will extract that as well and append it to the retried comment string.
+     This function will remove all the leading "#" from the comments.
+
+     .. warning::
+
+        This function expects the "stamp" line to have been popped from the deque already.
+
+     :param collections.deque data: A deque containing the separated lines of an exchange file with the first line already popped.
+     :param bool include_post_content: If True, include any post ``END_DATA`` content as part of the comments, default: True.
+     :return: The extracted comment lines from the deque
+     :rtype: str
+     """
     comments = []
     while data[0].startswith("#"):
         comments.append(data.popleft().lstrip("#"))
@@ -60,9 +81,30 @@ def _extract_comments(data: deque, include_post_content: bool = True) -> str:
     return "\n".join(comments)
 
 
-def _bottle_get_params(
-    params_units: Iterable[Tuple[str, Optional[str]]]
-) -> WHPNameIndex:
+def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
+    """Given an ordered iterable of param, unit pairs, return the index of the column in the datafile for known WHP params.
+
+    Exchange files have comma separated parameter names on one line, and the corresponding units on the next.
+    This function will search for this name+unit pair in the builtin database of known WHP parameter names and return a mapping of :py:class:`~hydro.data.WHPName` to column indicies.
+
+    It is currently an error for the parameter in a file to not be in the built in database.
+
+    This function will ignore uncertainty (error) columns and flag columns, those are parsed by other functions.
+
+    .. warning::
+
+        Convert semantically empty units (e.g. empty string, all whitespace) to None before passing into this function
+
+    .. note::
+
+        The parameter name database will convert unambiguous aliases to their canonical exchange parameter and unit pair.
+
+    :param params_units: Paired (e.g. zip) parameter names and units
+    :type params_units: tuple in the form (str, str) or (str, None)
+    :returns: Mapping of :py:class:`~hydro.data.WHPName` to column indicies
+    :rtype: dict with keys of :py:class:`~hydro.data.WHPName` and values of int
+    :raises ExchangeParameterUndefError: if the parameter unit pair cannot be found in the built in database
+    """
     params = {}
     for index, (param, unit) in enumerate(params_units):
         if param in WHPNames.error_cols:
@@ -79,9 +121,24 @@ def _bottle_get_params(
 
 
 def _bottle_get_flags(
-    params_units: Iterable[Tuple[str, Optional[str]]], whp_params: WHPNameIndex
+    params_units: Iterable[WHPParamUnit], whp_params: WHPNameIndex
 ) -> WHPNameIndex:
+    """Given an ordered iterable of param unit pairs and WHPNames known to be in the file, return the index of the column indicies of the flags for the WHPNames.
 
+    Exchange files can have status flags for some of the parameters.
+    Flag columns must have no units.
+    Some parameters must not have status flags, these include the spatiotemporal parameters (e.g. lat, lon, but also pressure) and the sample identifying parameters (expocode, station, cast, sample, but *not* bottle id).
+
+    :param params_units: Paired (e.g. zip) parameter names and units
+    :type params_units: tuple in the form (str, str) or (str, None)
+    :param whp_params: Mapping of parameters known to be in the file, this is the output of :py:func:`._bottle_get_params`
+    :type whp_params: Mapping of :py:class:`~hydro.data.WHPName` to int
+    :returns: Mapping of :py:class:`~hydro.data.WHPName` to column indicies for the status flag column
+    :rtype: dict with keys of :py:class:`~hydro.data.WHPName` and values of int
+    :raises ExchangeFlagUnitError: if the flag column has units other than None
+    :raises ExchangeFlaglessParameterError: if the flag column is for a parameter not allowed to have status flags
+    :raises ExchangeOrphanFlagError: if the flag column is for a parameter not in the passed in mapping of whp_params
+    """
     param_flags = {}
     whp_params_names = {x.whp_name: x for x in whp_params.keys()}
 
@@ -112,8 +169,24 @@ def _bottle_get_flags(
 
 
 def _bottle_get_errors(
-    params_units: Iterable[Tuple[str, Optional[str]]], whp_params: WHPNameIndex
+    params_units: Iterable[WHPParamUnit], whp_params: WHPNameIndex
 ) -> WHPNameIndex:
+    """Given an ordered iterable of param unit pairs and WHPNames known to be in the file, return the index of the column indicies of the errors/uncertanties for the WHPNames.
+
+    Some parameters may have uncertanties associated with them, this function finds those columns and pairs them with the correct parameter.
+
+    .. note::
+
+        There is no programable way to find the error columns for a given unit (e.g. no common suffix like the flags).
+        This must be done via lookup in the built in database of params.
+
+    :param params_units: Paired (e.g. :py:func:`zip`) parameter names and units
+    :type params_units: tuple in the form (str, str) or (str, None)
+    :param whp_params: Mapping of parameters known to be in the file, this is the output of :py:func:`._bottle_get_params`
+    :type whp_params: Mapping of :py:class:`~hydro.data.WHPName` to int
+    :returns: Mapping of :py:class:`~hydro.data.WHPName` to column indicies for the error column
+    :rtype: dict with keys of :py:class:`~hydro.data.WHPName` and values of int
+    """
     param_errs = {}
 
     for index, (param, _unit) in enumerate(params_units):

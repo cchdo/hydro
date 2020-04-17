@@ -21,7 +21,7 @@
 # -- Project information -----------------------------------------------------
 
 project = "hydro"
-copyright = "2018, Regents of the University of California"
+copyright = "2020, Regents of the University of California"
 author = "Andrew Barna"
 
 # The short X.Y version
@@ -41,12 +41,14 @@ release = ""
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
 ]
 
 autosummary_generate = True
+autodoc_typehints = "none"
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']
@@ -185,3 +187,7 @@ epub_exclude_files = ["search.html"]
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3/", None),
+}
