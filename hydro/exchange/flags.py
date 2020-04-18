@@ -43,6 +43,10 @@ class ExchangeBottleFlag(IntEnum):
         return defs[self.flag]
 
     @property
+    def cf_def(self):
+        return "_".join(self.definition.lower().replace(".", "").split())
+
+    @property
     def has_value(self):
         """Should the data this is a flag for contain a value"""
         if self.flag in [1, 5, 9]:
@@ -84,6 +88,10 @@ class ExchangeSampleFlag(IntEnum):
         return defs[self.flag]
 
     @property
+    def cf_def(self):
+        return "_".join(self.definition.lower().replace(".", "").split())
+
+    @property
     def has_value(self):
         if self.flag in (1, 5, 9):
             return False
@@ -118,6 +126,10 @@ class ExchangeCTDFlag(IntEnum):
             9: "Not sampled.",
         }
         return defs[self.flag]
+
+    @property
+    def cf_def(self):
+        return "_".join(self.definition.lower().replace(".", "").split())
 
     @property
     def has_value(self):

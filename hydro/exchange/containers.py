@@ -35,6 +35,12 @@ PROFILE_LEVEL_PARAMS = list(filter(lambda x: x.scope == "profile", WHPNames.valu
 
 DIMS = ("N_PROF", "N_LEVELS")
 
+FLAG_SCHEME = {
+    "woce_bottle": ExchangeBottleFlag,
+    "woce_discrete": ExchangeSampleFlag,
+    "woce_ctd": ExchangeCTDFlag,
+}
+
 
 class IntermediateDataPoint(NamedTuple):
     data: str
@@ -61,12 +67,7 @@ class ExchangeDataPoint:
         try:
             # we will catch the type error explicitly
             flag_v = int(ir.flag)  # type: ignore
-            if whpname.flag_w == "woce_bottle":
-                flag = ExchangeBottleFlag(flag_v)
-            if whpname.flag_w == "woce_discrete":
-                flag = ExchangeSampleFlag(flag_v)
-            if whpname.flag_w == "woce_ctd":
-                flag = ExchangeCTDFlag(flag_v)
+            flag = FLAG_SCHEME[whpname.flag_w](flag_v)  # type: ignore
         except TypeError:
             pass
 
@@ -400,9 +401,18 @@ class Exchange:
 
         dims = DIMS[: data.ndim]
 
+        flag_defs = FLAG_SCHEME[param.flag_w]  # type: ignore
+        flag_values = []
+        flag_meanings = []
+        for flag in flag_defs:
+            flag_values.append(int(flag))
+            flag_meanings.append(flag.cf_def)  # type: ignore
+
         attrs = {
-            "standard_name": "status_flag"
-            # TODO put flag defs here
+            "standard_name": "status_flag",
+            "flag_values": np.array(flag_values, dtype="int8"),
+            "flag_meanings": " ".join(flag_meanings),
+            "whp_flag_scheme": param.flag_w,
         }
 
         da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
