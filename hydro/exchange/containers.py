@@ -17,6 +17,7 @@ from functools import cached_property
 
 import numpy as np
 import pandas as pd
+import xarray as xr
 
 from hydro.data import WHPNames, WHPName
 from .flags import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
@@ -31,6 +32,8 @@ ExchangeFlags = Union[ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag, N
 
 
 PROFILE_LEVEL_PARAMS = list(filter(lambda x: x.scope == "profile", WHPNames.values()))
+
+DIMS = ("N_PROF", "N_LEVELS")
 
 
 class IntermediateDataPoint(NamedTuple):
@@ -167,6 +170,16 @@ class ExchangeXYZT(Mapping):
         LATITUDE,
         LONGITUDE,
     )
+
+    TEMPORAL_PARAMS = (DATE, TIME)
+
+    CF_AXIS = {
+        DATE: "T",
+        TIME: "T",
+        LATITUDE: "Y",
+        LONGITUDE: "X",
+        CTDPRS: "Z",
+    }
 
     @classmethod
     def from_data_line(
@@ -380,6 +393,25 @@ class Exchange:
             return np.squeeze(arr)
         return arr
 
+    def flag_to_dataarray(
+        self, param: WHPName, name: Optional[str] = None
+    ) -> xr.DataArray:
+        data = self.flag_to_ndarray(param)
+
+        dims = DIMS[: data.ndim]
+
+        attrs = {
+            "standard_name": "status_flag"
+            # TODO put flag defs here
+        }
+
+        da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
+
+        da.encoding["dtype"] = "int8"
+        da.encoding["_FillValue"] = 9
+
+        return da
+
     def error_to_ndarray(self, param: WHPName) -> np.ndarray:
         if param not in self.errors:
             raise KeyError(f"No error for {param}")
@@ -411,6 +443,48 @@ class Exchange:
             return np.squeeze(arr)
         return arr
 
+    def time_to_dataarray(self) -> xr.DataArray:
+        data = self.time_to_ndarray()[:, 0]
+        # units will be handeled by xarray on serialization
+        attrs = {"standard_name": "time", "axis": "T", "whp_name": ["DATE", "TIME"]}
+        dims = DIMS[: data.ndim]
+        da = xr.DataArray(name="time", data=data, dims=dims, attrs=attrs,)
+        da.encoding["_FillValue"] = None
+        return da
+
+    def coord_to_dataarray(self, param: WHPName) -> xr.DataArray:
+        if (
+            param not in ExchangeXYZT.WHP_PARAMS
+            or param in ExchangeXYZT.TEMPORAL_PARAMS
+        ):
+            raise ValueError("param must be one of: LATITUDE, LONGITUDE, CTDPRS")
+
+        axis_to_name = {"X": "longitude", "Y": "latitude", "Z": "pressure"}
+
+        data = self.parameter_to_ndarray(param)[:, 0]
+        axis = ExchangeXYZT.CF_AXIS[param]
+        attrs = {
+            "standard_name": param.cf.name,
+            "units": param.cf.canonical_units,
+            "axis": axis,
+            "whp_name": param.whp_name,
+        }
+
+        if axis == "Z":
+            attrs["positive"] = "down"
+
+        if param.whp_unit is not None:
+            attrs["whp_unit"] = param.whp_unit
+
+        dims = DIMS[: data.ndim]
+        name = axis_to_name[axis]
+
+        da = xr.DataArray(name=name, data=data, dims=dims, attrs=attrs,)
+        if not np.any(np.isnan(data)):
+            da.encoding["_FillValue"] = None
+
+        return da
+
     def parameter_to_ndarray(self, param: WHPName) -> np.ndarray:
         # https://github.com/python/mypy/issues/5485
         dtype = param.data_type  # type: ignore
@@ -424,6 +498,33 @@ class Exchange:
         if arr.shape[0] == 1:
             return np.squeeze(arr)
         return arr
+
+    def parameter_to_dataarray(
+        self, param: WHPName, name: Optional[str] = None
+    ) -> xr.DataArray:
+        data = self.parameter_to_ndarray(param)
+
+        if param.scope == "profile":
+            data = data[:, 0]
+
+        dims = DIMS[: data.ndim]
+
+        attrs = {"whp_name": param.whp_name}
+        if param.whp_unit is not None:
+            attrs["whp_unit"] = param.whp_unit
+
+        if param.cf_name is not None:
+            attrs["standard_name"] = param.cf.name
+            attrs["units"] = param.cf.canonical_units
+
+        da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
+
+        if data.dtype == object:
+            da.encoding["dtype"] = "str"
+        if data.dtype == float:
+            da.encoding["dtype"] = "float32"
+
+        return da
 
     def iter_profile_coordinates(self):
         for profile in self.iter_profiles():
@@ -458,87 +559,33 @@ class Exchange:
         date var for CF. Except for the bottle trip information, all the
         above should probably get "real" var names not just var0, ..., varN.
         """
-        import xarray as xr
 
         consumed = []
         data_arrays = []
-
-        # specal cases
-        # for key in ExchangeXYZT.WHP_PARAMS:
-        for param in self.parameters:
-            if param in ExchangeXYZT.WHP_PARAMS:
-                consumed.append(param)
         coords = {}
-        coords["latitude"] = xr.DataArray(
-            self.parameter_to_ndarray(ExchangeXYZT.LATITUDE)[:, 0],
-            dims=("N_PROF",),
-            attrs={
-                "standard_name": ExchangeXYZT.LATITUDE.cf_name,
-                "axis": "Y",
-                "whp_name": ExchangeXYZT.LATITUDE.whp_name,
-            },
-        )
-        coords["longitude"] = xr.DataArray(
-            self.parameter_to_ndarray(ExchangeXYZT.LONGITUDE)[:, 0],
-            dims=("N_PROF",),
-            attrs={
-                "standard_name": ExchangeXYZT.LONGITUDE.cf_name,
-                "axis": "X",
-                "whp_name": ExchangeXYZT.LONGITUDE.whp_name,
-            },
-        )
-        coords["time"] = xr.DataArray(
-            self.time_to_ndarray()[:, 0],
-            dims=("N_PROF",),
-            attrs={"standard_name": "time", "axis": "T", "whp_name": ["DATE", "TIME"]},
-        )
-        coords["pressure"] = xr.DataArray(
-            self.parameter_to_ndarray(ExchangeXYZT.CTDPRS),
-            dims=("N_PROF", "N_LEVELS"),
-            attrs={
-                "standard_name": ExchangeXYZT.CTDPRS.cf_name,
-                "axis": "Z",
-                "positive": "down",
-                "whp_name": ExchangeXYZT.CTDPRS.whp_name,
-                "whp_unit": ExchangeXYZT.CTDPRS.whp_unit,
-            },
-        )
 
-        for coord in coords.values():
-            coord.encoding["_FillValue"] = None
+        # coordinates
+        for param in ExchangeXYZT.WHP_PARAMS:
+            consumed.append(param)
+            if param in ExchangeXYZT.TEMPORAL_PARAMS:
+                continue
+            coord = self.coord_to_dataarray(param)
+            coords[coord.name] = coord
+
+        # Time Special case
+        temporal = self.time_to_dataarray()
+        coords[temporal.name] = temporal
 
         data_params = (param for param in self.parameters if param not in consumed)
         for n, param in enumerate(data_params):
-            if param.scope == "profile":
-                values = self.parameter_to_ndarray(param)[:, 0]
-                dims = ("N_PROF",)
-            else:
-                values = self.parameter_to_ndarray(param)
-                dims = ("N_PROF", "N_LEVELS")
-
-            attrs = {}
-            if param.cf_name is not None:
-                attrs["standard_name"] = param.cf_name
-
-            data_array = xr.DataArray(values, dims=dims, name=f"var{n}", attrs=attrs)
-
-            if data_array.dtype == object:
-                data_array.encoding["dtype"] = "str"
-            if data_array.dtype == float:
-                data_array.encoding["dtype"] = "float32"
-
-            data_arrays.append(data_array)
+            da = self.parameter_to_dataarray(param, name=f"var{n}")
+            data_arrays.append(da)
 
             if param in self.flags:
-                values = self.flag_to_ndarray(param)
-                dims = ("N_PROF", "N_LEVELS")
-                anc_data_array = xr.DataArray(values, dims=dims, name=f"var{n}_qc")
-                anc_data_array.attrs["standard_name"] = "status_flag"
-                anc_data_array.encoding["dtype"] = "int8"
-                anc_data_array.encoding["_FillValue"] = 9
-                data_arrays.append(anc_data_array)
+                da_qc = self.flag_to_dataarray(param, name=f"var{n}_qc")
+                data_arrays.append(da_qc)
 
-                data_array.attrs["ancillary_variables"] = anc_data_array.name
+                da.attrs["ancillary_variables"] = da_qc.name
 
         dataset = xr.Dataset({da.name: da for da in data_arrays}, coords=coords)
         return dataset
