@@ -1,7 +1,7 @@
 import pytest
 from hydro import data
 
-CF_VERSION = "70"
+CF_VERSION = "72"
 
 
 def _argo_cf_names():

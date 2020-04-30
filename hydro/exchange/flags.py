@@ -49,7 +49,7 @@ class ExchangeBottleFlag(IntEnum):
     @property
     def has_value(self):
         """Should the data this is a flag for contain a value"""
-        if self.flag in [1, 5, 9]:
+        if self.flag in (1, 5, 9):
             return False
         return True
 
@@ -133,6 +133,6 @@ class ExchangeCTDFlag(IntEnum):
 
     @property
     def has_value(self):
-        if self.flag in [5, 9]:
+        if self.flag in (5, 9):
             return False
         return True
