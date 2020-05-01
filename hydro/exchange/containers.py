@@ -332,7 +332,7 @@ class Exchange:
 
         # Check to see that all the "profile level" parameters are the same for
         # excah profile
-        for key, group in groupby(self.keys, lambda k: k.profile_id):
+        for _, group in groupby(self.keys, lambda k: k.profile_id):
             first_row = next(group)
             for col in PROFILE_LEVEL_PARAMS:
                 val = self.at[(first_row, col)]
@@ -390,8 +390,6 @@ class Exchange:
             for col, key in enumerate(group):
                 arr[row, col] = self.at_flag[(key, param)]
 
-        if arr.shape[0] == 1:
-            return np.squeeze(arr)
         return arr
 
     def flag_to_dataarray(
@@ -432,8 +430,6 @@ class Exchange:
             for col, key in enumerate(group):
                 arr[row, col] = self.at_error[(key, param)]
 
-        if arr.shape[0] == 1:
-            return np.squeeze(arr)
         return arr
 
     def time_to_ndarray(self) -> np.ndarray:
@@ -449,8 +445,6 @@ class Exchange:
             for col, key in enumerate(group):
                 arr[row, col] = self.coordinates[key].t
 
-        if arr.shape[0] == 1:
-            return np.squeeze(arr)
         return arr
 
     def time_to_dataarray(self) -> xr.DataArray:
@@ -471,7 +465,11 @@ class Exchange:
 
         axis_to_name = {"X": "longitude", "Y": "latitude", "Z": "pressure"}
 
-        data = self.parameter_to_ndarray(param)[:, 0]
+        data = self.parameter_to_ndarray(param)
+
+        if param.scope == "profile":
+            data = data[:, 0]
+
         axis = ExchangeXYZT.CF_AXIS[param]
         attrs = {
             "standard_name": param.cf.name,
@@ -505,8 +503,10 @@ class Exchange:
         for row, (_key, group) in enumerate(groupby(self.keys, lambda k: k.profile_id)):
             for col, key in enumerate(group):
                 arr[row, col] = self.at[(key, param)]
-        if arr.shape[0] == 1:
-            return np.squeeze(arr)
+
+        if dtype == str:
+            arr[arr == None] = ""  # noqa
+
         return arr
 
     def parameter_to_dataarray(
