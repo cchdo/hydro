@@ -47,5 +47,4 @@ dmypy.json
 
 docs/_build
 .ipynb_checkpoints/
-.vscode/
 _version.py
