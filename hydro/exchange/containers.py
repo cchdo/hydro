@@ -493,6 +493,41 @@ class Exchange:
 
         return da
 
+    def key_to_dataarray(self, param: WHPName) -> xr.DataArray:
+        if param not in ExchangeCompositeKey.WHP_PARAMS:
+            raise ValueError(f"param must be one of: {ExchangeCompositeKey.WHP_PARAMS}")
+
+        key_to_name = {
+            ExchangeCompositeKey.EXPOCODE: "expocode",
+            ExchangeCompositeKey.STNNBR: "station",
+            ExchangeCompositeKey.CASTNO: "cast",
+            ExchangeCompositeKey.SAMPNO: "sample",
+        }
+
+        data = self.parameter_to_ndarray(param)
+
+        if param.scope == "profile":
+            data = data[:, 0]
+
+        attrs = {
+            "whp_name": param.whp_name,
+        }
+
+        if param.whp_unit is not None:
+            attrs["whp_unit"] = param.whp_unit
+
+        dims = DIMS[: data.ndim]
+        name = key_to_name[param]
+
+        da = xr.DataArray(name=name, data=data, dims=dims, attrs=attrs,)
+
+        if param.data_type == int:  # type: ignore
+            # the woce spec says this should go from 1 and incriment
+            # largest I have seen is maybe 20something on a GT cruise
+            da.encoding["dtype"] = "int8"
+
+        return da
+
     def parameter_to_ndarray(self, param: WHPName) -> np.ndarray:
         # https://github.com/python/mypy/issues/5485
         dtype = param.data_type  # type: ignore
@@ -542,22 +577,7 @@ class Exchange:
 
     def to_xarray(self):
         """
-        Current thinking:
-        There are a few "special case" variables which include the WHP identifing ones:
-
-        * EXPOCODE
-        * STNNBR
-        * CASTNO
-        * SAMPNO
-
-        Profile level spacetime coords:
-
-        * LATITUDE
-        * LONGITUDE
-        * DATE
-        * TIME
-        * CTDPRS
-
+        A lingering special case...
         If present, bottle trip information:
 
         * BTL_LAT
@@ -585,6 +605,12 @@ class Exchange:
         # Time Special case
         temporal = self.time_to_dataarray()
         coords[temporal.name] = temporal
+
+        # CCHDO Sample Identifying parameters go into coords
+        for param in ExchangeCompositeKey.WHP_PARAMS:
+            consumed.append(param)
+            coord = self.key_to_dataarray(param)
+            coords[coord.name] = coord
 
         data_params = (param for param in self.parameters if param not in consumed)
         for n, param in enumerate(data_params):
