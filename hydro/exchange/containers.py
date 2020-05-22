@@ -432,6 +432,25 @@ class Exchange:
 
         return arr
 
+    def error_to_dataarray(
+        self, param: WHPName, name: Optional[str] = None
+    ) -> xr.DataArray:
+        data = self.flag_to_ndarray(param)
+
+        dims = DIMS[: data.ndim]
+
+        attrs = {"whp_name": param.error_name}
+
+        if param.cf_name is not None:
+            attrs["standard_name"] = f"{param.cf.name} standard_error"
+            attrs["units"] = param.cf.canonical_units
+
+        da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
+
+        da.encoding["dtype"] = "float32"
+
+        return da
+
     def time_to_ndarray(self) -> np.ndarray:
         """Time is a specal/funky case
 
@@ -617,11 +636,22 @@ class Exchange:
             da = self.parameter_to_dataarray(param, name=f"var{n}")
             data_arrays.append(da)
 
+            ancillary_variables = []
+
             if param in self.flags:
                 da_qc = self.flag_to_dataarray(param, name=f"var{n}_qc")
                 data_arrays.append(da_qc)
 
-                da.attrs["ancillary_variables"] = da_qc.name
+                ancillary_variables.append(da_qc.name)
+
+            if param in self.errors:
+                da_error = self.error_to_dataarray(param, name=f"var{n}_error")
+                data_arrays.append(da_error)
+
+                ancillary_variables.append(da_error.name)
+
+            if len(ancillary_variables) > 0:
+                da.attrs["ancillary_variables"] = " ".join(ancillary_variables)
 
         dataset = xr.Dataset({da.name: da for da in data_arrays}, coords=coords)
         return dataset
