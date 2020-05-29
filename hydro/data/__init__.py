@@ -86,6 +86,9 @@ class WHPName(ArgoNameMixin):
     note: Optional[str] = field(default=None, repr=False)
     warning: Optional[str] = field(default=None, repr=False)
     error_name: Optional[str] = field(default=None, repr=False)
+    cf_unit: Optional[str] = field(default=None, repr=False)
+    reference_scale: Optional[str] = field(default=None, repr=False)
+    whp_number: Optional[int] = field(default=None, repr=False)
     scope: str = field(default="sample", repr=False)
 
     @property
