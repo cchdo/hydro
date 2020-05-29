@@ -27,6 +27,12 @@ from .exceptions import (
     ExchangeDataInconsistentCoordinateError,
 )
 
+try:
+    from hydro import __version__ as hydro_version
+except ImportError:
+    hydro_version = "unknown"
+
+
 WHPNameIndex = Dict[WHPName, int]
 ExchangeFlags = Union[ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag, None]
 
@@ -581,6 +587,12 @@ class Exchange:
             attrs["standard_name"] = param.cf.name
             attrs["units"] = param.cf.canonical_units
 
+        if param.cf_unit is not None:
+            attrs["units"] = param.cf_unit
+
+        if param.reference_scale is not None:
+            attrs["reference_scale"] = param.reference_scale
+
         da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
 
         if data.dtype == object:
@@ -653,5 +665,9 @@ class Exchange:
             if len(ancillary_variables) > 0:
                 da.attrs["ancillary_variables"] = " ".join(ancillary_variables)
 
-        dataset = xr.Dataset({da.name: da for da in data_arrays}, coords=coords)
+        dataset = xr.Dataset(
+            {da.name: da for da in data_arrays},
+            coords=coords,
+            attrs={"Conventions": f"CF-1.8 CCHDO-{hydro_version}"},
+        )
         return dataset
