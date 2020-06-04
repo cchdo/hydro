@@ -32,10 +32,14 @@ jobs:
         flake8 hydro --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest --cov-report term --cov=hydro
+        pytest --cov-report xml --cov=hydro
     - name: Test code style with black
       run: |
         black --check .
     - name: Test typing
       run: |
         mypy -v .
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
