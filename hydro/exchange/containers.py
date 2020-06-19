@@ -441,18 +441,11 @@ class Exchange:
     def error_to_dataarray(
         self, param: WHPName, name: Optional[str] = None
     ) -> xr.DataArray:
-        data = self.flag_to_ndarray(param)
-
+        data = self.error_to_ndarray(param)
         dims = DIMS[: data.ndim]
-
-        attrs = {"whp_name": param.error_name}
-
-        if param.cf_name is not None:
-            attrs["standard_name"] = f"{param.cf.name} standard_error"
-            attrs["units"] = param.cf.canonical_units
+        attrs = param.get_nc_attrs(error=True)
 
         da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
-
         da.encoding["dtype"] = "float32"
 
         return da
@@ -495,19 +488,12 @@ class Exchange:
         if param.scope == "profile":
             data = data[:, 0]
 
-        axis = ExchangeXYZT.CF_AXIS[param]
-        attrs = {
-            "standard_name": param.cf.name,
-            "units": param.cf.canonical_units,
-            "axis": axis,
-            "whp_name": param.whp_name,
-        }
+        attrs = param.get_nc_attrs()
 
+        axis = ExchangeXYZT.CF_AXIS[param]
+        attrs["axis"] = axis
         if axis == "Z":
             attrs["positive"] = "down"
-
-        if param.whp_unit is not None:
-            attrs["whp_unit"] = param.whp_unit
 
         dims = DIMS[: data.ndim]
         name = axis_to_name[axis]
@@ -534,12 +520,7 @@ class Exchange:
         if param.scope == "profile":
             data = data[:, 0]
 
-        attrs = {
-            "whp_name": param.whp_name,
-        }
-
-        if param.whp_unit is not None:
-            attrs["whp_unit"] = param.whp_unit
+        attrs = param.get_nc_attrs()
 
         dims = DIMS[: data.ndim]
         name = key_to_name[param]
@@ -579,19 +560,7 @@ class Exchange:
 
         dims = DIMS[: data.ndim]
 
-        attrs = {"whp_name": param.whp_name}
-        if param.whp_unit is not None:
-            attrs["whp_unit"] = param.whp_unit
-
-        if param.cf_name is not None:
-            attrs["standard_name"] = param.cf.name
-            attrs["units"] = param.cf.canonical_units
-
-        if param.cf_unit is not None:
-            attrs["units"] = param.cf_unit
-
-        if param.reference_scale is not None:
-            attrs["reference_scale"] = param.reference_scale
+        attrs = param.get_nc_attrs()
 
         da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
 

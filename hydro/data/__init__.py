@@ -100,6 +100,33 @@ class WHPName(ArgoNameMixin):
     def cf(self):
         return CFStandardNames.get(self.cf_name)
 
+    def get_nc_attrs(self, error=False):
+        attrs = {
+            "whp_name": self.whp_name,
+        }
+
+        if error is True and self.error_name is not None:
+            attrs["whp_name"] = self.error_name
+
+        if self.whp_unit is not None:
+            attrs["whp_unit"] = self.whp_unit
+
+        if self.cf_name is not None:
+            standard_name = f"{self.cf.name}"
+            if error is True:
+                standard_name = f"{standard_name} standard_error"
+
+            attrs["standard_name"] = standard_name
+            attrs["units"] = self.cf.canonical_units
+
+        if self.cf_unit is not None:
+            attrs["units"] = self.cf_unit
+
+        if self.reference_scale is not None:
+            attrs["reference_scale"] = self.reference_scale
+
+        return attrs
+
 
 def _load_cf_standard_names(__versions__):
     cf_standard_names = {}
