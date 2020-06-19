@@ -153,6 +153,8 @@ def _load_whp_names():
     with open_text("hydro.data", "parameters.json") as f:
         for record in load(f):
             record["data_type"] = _dtype_map[record["data_type"]]
+            if "cf_unit" not in record and record["whp_unit"] is not None:
+                record["cf_unit"] = record["whp_unit"].lower()
             param = WHPName(**record)
             whp_name[param.key] = param
     # load the aliases
