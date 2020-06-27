@@ -1,4 +1,3 @@
-from collections import ChainMap
 from itertools import chain
 from typing import Hashable, Tuple
 
@@ -10,6 +9,8 @@ def ordered_merge(*tuples: Tuple[Hashable, ...]):
 
 
 def merge_ex(*excahnges: Exchange) -> Exchange:
+    coordinates2 = dict(coord for ex in excahnges for coord in ex.coordinates.items())
+    data2 = dict(data for ex in excahnges for data in ex.data.items())
     return Exchange(
         file_type=excahnges[0].file_type,
         comments=excahnges[0].comments,
@@ -17,6 +18,6 @@ def merge_ex(*excahnges: Exchange) -> Exchange:
         keys=ordered_merge(*(ex.keys for ex in excahnges)),
         flags=ordered_merge(*(ex.flags for ex in excahnges)),
         errors=ordered_merge(*(ex.errors for ex in excahnges)),
-        coordinates=dict(ChainMap(*(ex.coordinates for ex in reversed(excahnges)))),
-        data=dict(ChainMap(*(ex.data for ex in reversed(excahnges)))),
+        coordinates=coordinates2,
+        data=data2,
     )

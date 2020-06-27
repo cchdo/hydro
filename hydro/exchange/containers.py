@@ -7,11 +7,9 @@ from typing import (
     Optional,
     Dict,
     NamedTuple,
-    Literal,
 )
 from datetime import datetime
 from enum import Enum, auto
-from operator import attrgetter
 from itertools import groupby
 from functools import cached_property
 
@@ -283,34 +281,6 @@ class FileType(Enum):
     BOTTLE = auto()
 
 
-class ExchangeDataProxy(Mapping):
-    def __init__(
-        self, exchange: Exchange, attr: Literal["value", "flag", "error"] = "value"
-    ):
-        self._ex = exchange
-        self._get = attrgetter(attr)
-
-    def __getitem__(self, key: Tuple[ExchangeCompositeKey, WHPName]):
-        row, col = key
-        if col in ExchangeCompositeKey.WHP_PARAMS:
-            return row[col]
-        elif col in ExchangeXYZT.WHP_PARAMS:
-            return self._ex.coordinates[row][col]
-        else:
-            try:
-                return self._get(self._ex.data[row][col])
-            except KeyError:
-                return None
-
-    def __iter__(self):
-        for key in self._ex.keys:
-            for param in self._ex.parameters:
-                yield (key, param)
-
-    def __len__(self):
-        return len(self._ex.keys) * len(self._ex.parameters)
-
-
 @dataclass(frozen=True)
 class Exchange:
     file_type: FileType
@@ -321,6 +291,10 @@ class Exchange:
     keys: Tuple[ExchangeCompositeKey, ...]
     coordinates: Dict[ExchangeCompositeKey, ExchangeXYZT]
     data: Dict[ExchangeCompositeKey, Dict[WHPName, ExchangeDataPoint]]
+
+    _ndarray_cache: Dict[Tuple[WHPName, str], np.ndarray] = field(
+        default_factory=dict, init=False
+    )
 
     def __post_init__(self):
         # first the keys are sorted by information contained in the coordinates
@@ -338,13 +312,19 @@ class Exchange:
 
         # Check to see that all the "profile level" parameters are the same for
         # excah profile
-        for _, group in groupby(self.keys, lambda k: k.profile_id):
-            first_row = next(group)
-            for col in PROFILE_LEVEL_PARAMS:
-                val = self.at[(first_row, col)]
-                for row in group:
-                    if val != self.at[(row, col)]:
-                        raise ExchangeDataInconsistentCoordinateError
+
+        for col in PROFILE_LEVEL_PARAMS:
+            try:
+                data = np.transpose(self.parameter_to_ndarray(col))
+            except KeyError:
+                continue
+
+            if data.dtype == float:
+                if not ((data == data[0]) | np.isnan(data)).all():
+                    raise ExchangeDataInconsistentCoordinateError
+            else:
+                if not ((data == data[0]) | (data == "")).all():
+                    raise ExchangeDataInconsistentCoordinateError
 
     def __repr__(self):
         return f"""<hydro.Exchange profiles={len(self)}>"""
@@ -353,21 +333,11 @@ class Exchange:
         return self.shape[0]
 
     @cached_property
-    def at(self) -> ExchangeDataProxy:
-        return ExchangeDataProxy(self)
-
-    @cached_property
-    def at_flag(self) -> ExchangeDataProxy:
-        return ExchangeDataProxy(self, "flag")
-
-    @cached_property
-    def at_error(self) -> ExchangeDataProxy:
-        return ExchangeDataProxy(self, "error")
-
-    @cached_property
     def shape(self):
         x = len({key.profile_id for key in self.keys})
-        y = max([len(prof.keys) for prof in self.iter_profiles()])
+        y = max(
+            [len(list(prof)) for _, prof in groupby(self.keys, lambda k: k.profile_id)]
+        )
         return (x, y)
 
     def iter_profiles(self):
@@ -392,9 +362,15 @@ class Exchange:
 
         arr = np.full(self.shape, np.nan, dtype=float)
 
-        for row, (_key, group) in enumerate(groupby(self.keys, lambda k: k.profile_id)):
-            for col, key in enumerate(group):
-                arr[row, col] = self.at_flag[(key, param)]
+        try:
+            data = self._col_major_data[param]
+        except KeyError:
+            # this means there is no data and we can jsut use the empty array
+            pass
+        else:
+            for key, value in data.items():
+                idx = self.ndaray_indicies[key]
+                arr[idx] = value.flag
 
         return arr
 
@@ -432,9 +408,15 @@ class Exchange:
 
         arr = np.full(self.shape, np.nan, dtype=float)
 
-        for row, (_key, group) in enumerate(groupby(self.keys, lambda k: k.profile_id)):
-            for col, key in enumerate(group):
-                arr[row, col] = self.at_error[(key, param)]
+        try:
+            data = self._col_major_data[param]
+        except KeyError:
+            # this means there is no data and we can jsut use the empty array
+            pass
+        else:
+            for key, value in data.items():
+                idx = self.ndaray_indicies[key]
+                arr[idx] = value.error
 
         return arr
 
@@ -534,20 +516,64 @@ class Exchange:
 
         return da
 
+    @cached_property
+    def ndaray_indicies(self):
+        profiles = groupby(self.keys, lambda k: k.profile_id)
+
+        indicies = {}
+        for row, (_key, levels) in enumerate(profiles):
+            for col, key in enumerate(levels):
+                indicies[key] = (row, col)
+
+        return indicies
+
+    @cached_property
+    def _col_major_data(self):
+        from collections import defaultdict
+
+        data = defaultdict(dict)
+        for key, row in self.data.items():
+            for param, datum in row.items():
+                data[param][key] = datum
+
+        return dict(data)
+
     def parameter_to_ndarray(self, param: WHPName) -> np.ndarray:
+        try:
+            return self._ndarray_cache[(param, "value")]
+        except KeyError:
+            pass
+
         # https://github.com/python/mypy/issues/5485
         dtype = param.data_type  # type: ignore
         if dtype == str:
             arr = np.full(self.shape, "", dtype=object)
         else:
             arr = np.full(self.shape, np.nan, dtype=float)
-        for row, (_key, group) in enumerate(groupby(self.keys, lambda k: k.profile_id)):
-            for col, key in enumerate(group):
-                arr[row, col] = self.at[(key, param)]
+
+        if param not in (*ExchangeCompositeKey.WHP_PARAMS, *ExchangeXYZT.WHP_PARAMS):
+            try:
+                data = self._col_major_data[param]
+            except KeyError:
+                # this means there is no data and we can jsut use the empty array
+                pass
+            else:
+                for key, value in data.items():
+                    idx = self.ndaray_indicies[key]
+                    arr[idx] = value.value
+        elif param in ExchangeXYZT.WHP_PARAMS:
+            for key, value in self.coordinates.items():
+                idx = self.ndaray_indicies[key]
+                arr[idx] = value._mapping[param]
+        else:
+            for key in self.keys:
+                idx = self.ndaray_indicies[key]
+                arr[idx] = key._mapping[param]
 
         if dtype == str:
             arr[arr == None] = ""  # noqa
 
+        self._ndarray_cache[(param, "value")] = arr
         return arr
 
     def parameter_to_dataarray(
