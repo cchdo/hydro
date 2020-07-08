@@ -239,6 +239,11 @@ def _bottle_line_parser(
     return line_parser
 
 
+def _ctd_get_header(line, dtype=str):
+    header, value = (part.strip() for part in line.split("="))
+    return header, dtype(value)
+
+
 def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Exchange:
     """Open an exchange file and return an :class:`hydro.exchange.Exchange` object
     """
@@ -286,12 +291,32 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     # Strip end_data
     data_lines.remove("END_DATA")
 
+    # CTD Divergence
+    ctd_params = []
+    ctd_units: List[None] = []
+    ctd_values = []
+    if ftype == FileType.CTD:
+        param, value = _ctd_get_header(data_lines.popleft(), dtype=int)
+        if param != "NUMBER_HEADERS":
+            raise ValueError()
+        number_headers = value
+
+        for _ in range(number_headers - 1):
+            param, value = _ctd_get_header(data_lines.popleft())
+            ctd_params.append(param)
+            ctd_units.append(None)
+            ctd_values.append(value)
+
     params = data_lines.popleft().split(",")
     # we can have a bunch of empty strings as units, we want these to be
     # None to match what would be in a WHPName object
     units = [x if x != "" else None for x in data_lines.popleft().split(",")]
 
     # at this point the data_lines should ONLY contain data/flags
+
+    if ftype == FileType.CTD:
+        params = [*ctd_params, *params]
+        units = [*ctd_units, *units]
 
     # column labels must be unique
     if len(params) != len(set(params)):
@@ -326,9 +351,20 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     coordinates = {}
     for data_line in data_lines:
         cols = [x.strip() for x in data_line.split(",")]
+
+        if ftype == FileType.CTD:
+            cols = [*ctd_values, *cols]
+            data_line = f"{','.join(ctd_values)},{data_line}"
+
         if len(cols) != column_count:
             raise ExchangeDataColumnAlignmentError
         parsed_data_line = line_parser(data_line)
+
+        if ftype == FileType.CTD:
+            parsed_data_line[ExchangeCompositeKey.SAMPNO] = parsed_data_line[
+                ExchangeXYZT.CTDPRS
+            ]
+
         try:
             key = ExchangeCompositeKey.from_data_line(parsed_data_line)
         except KeyError as error:
