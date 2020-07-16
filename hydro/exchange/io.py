@@ -322,6 +322,12 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
     if len(params) != len(set(params)):
         raise ExchangeDuplicateParameterError
 
+    # In initial testing, it was discovered that approx half the ctd files
+    # had trailing commas in just the params and units lines
+    if params[-1] == "" and units[-1] is None:
+        params.pop()
+        units.pop()
+
     # the number of expected columns is just going to be the number of
     # parameter names we see
     column_count = len(params)

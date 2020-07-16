@@ -502,6 +502,9 @@ class Exchange:
         if param.scope == "profile":
             data = data[:, 0]
 
+        if param.data_type == int:  # type: ignore
+            data = data.astype(int)
+
         attrs = param.get_nc_attrs()
 
         dims = DIMS[: data.ndim]
