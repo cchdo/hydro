@@ -121,12 +121,16 @@ class WoceAccessor:
             depth = ""
             depths = prof.filter_by_attrs(whp_name="DEPTH")
             for _, meters in depths.items():
-                depth = str(meters.values)
+                depth = f"{meters.values:.0f}"
+                if depth == "nan":
+                    depth = ""
                 break
 
             row = [""] * len(col_widths)
-            row[0] = str(prof.expocode.values)
-            row[1] = sect_id
+            row[0] = str(
+                prof.expocode.values
+            )  # TODO? Limit to 12 chars as per 3.3.1 of woce manual
+            row[1] = sect_id  # TODO? Maybe also limit to 12 chars?
             row[2] = str(prof.station.values)
             row[3] = str(prof.cast.values)
             row[4] = "ROS"
@@ -139,9 +143,11 @@ class WoceAccessor:
             row[11] = depth
             row[12] = ""  # height above "BOTTOM"
             row[13] = ""  # "WIRE" out
-            row[14] = ""  # max "PRESS"
-            row[15] = ""  # TODO number of bottle trips... str(len(cast.samples))
-            row[16] = ""  # "PARAMS"
+            row[14] = f"{max(prof.pressure.values):.0f}"
+            row[15] = f"{sum(prof.sample.values!='')}"  # TODO leave blank if CTD?
+            row[
+                16
+            ] = ""  # "PARAMS" we have this info... needs to be calculated on a per profile basis though...
             row[17] = ""  # "COMMENTS"
             sum_rows.append(row)
             col_widths = [max(x, len(s)) for x, s in zip(col_widths, row)]
