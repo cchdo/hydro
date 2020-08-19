@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from hydro.data import WHPNames, WHPName
+from cchdo.params import WHPNames, WHPName
 from .flags import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
 from .exceptions import (
     ExchangeDataFlagPairError,

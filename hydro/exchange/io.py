@@ -24,7 +24,7 @@ from .containers import (
     ExchangeXYZT,
     ExchangeDataPoint,
 )
-from ..data import WHPNames, WHPName
+from cchdo.params import WHPNames, WHPName
 from .exceptions import (
     ExchangeEncodingError,
     ExchangeBOMError,
