@@ -642,20 +642,26 @@ class Exchange:
             coords[coord.name] = coord
 
         data_params = (param for param in self.parameters if param not in consumed)
+        varN = 0
         for n, param in enumerate(data_params):
-            da = self.parameter_to_dataarray(param, name=f"var{n}")
+            if param.nc_name is not None:
+                name = param.nc_name
+            else:
+                name = f"var{varN}"
+                varN += 1
+            da = self.parameter_to_dataarray(param, name=f"{name}")
             data_arrays.append(da)
 
             ancillary_variables = []
 
             if param in self.flags:
-                da_qc = self.flag_to_dataarray(param, name=f"var{n}_qc")
+                da_qc = self.flag_to_dataarray(param, name=f"{name}_qc")
                 data_arrays.append(da_qc)
 
                 ancillary_variables.append(da_qc.name)
 
             if param in self.errors:
-                da_error = self.error_to_dataarray(param, name=f"var{n}_error")
+                da_error = self.error_to_dataarray(param, name=f"{name}_error")
                 data_arrays.append(da_error)
 
                 ancillary_variables.append(da_error.name)
