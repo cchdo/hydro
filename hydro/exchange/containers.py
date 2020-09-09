@@ -8,7 +8,7 @@ from typing import (
     Dict,
     NamedTuple,
 )
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum, auto
 from itertools import groupby
 from functools import cached_property
@@ -452,7 +452,12 @@ class Exchange:
         # units will be handeled by xarray on serialization
         attrs = {"standard_name": "time", "axis": "T", "whp_name": ["DATE", "TIME"]}
         dims = DIMS[: data.ndim]
-        da = xr.DataArray(name="time", data=data, dims=dims, attrs=attrs,)
+        da = xr.DataArray(
+            name="time",
+            data=data,
+            dims=dims,
+            attrs=attrs,
+        )
         da.encoding["_FillValue"] = None
         return da
 
@@ -480,7 +485,12 @@ class Exchange:
         dims = DIMS[: data.ndim]
         name = axis_to_name[axis]
 
-        da = xr.DataArray(name=name, data=data, dims=dims, attrs=attrs,)
+        da = xr.DataArray(
+            name=name,
+            data=data,
+            dims=dims,
+            attrs=attrs,
+        )
         if not np.any(np.isnan(data)):
             da.encoding["_FillValue"] = None
 
@@ -510,7 +520,12 @@ class Exchange:
         dims = DIMS[: data.ndim]
         name = key_to_name[param]
 
-        da = xr.DataArray(name=name, data=data, dims=dims, attrs=attrs,)
+        da = xr.DataArray(
+            name=name,
+            data=data,
+            dims=dims,
+            attrs=attrs,
+        )
 
         if param.data_type == int:  # type: ignore
             # the woce spec says this should go from 1 and incriment
@@ -675,3 +690,63 @@ class Exchange:
             attrs={"Conventions": f"CF-1.8 CCHDO-{hydro_version}"},
         )
         return dataset
+
+    def to_exchange_csv(self, postfix: str = None):
+
+        # headers
+        file_indicator = f"{self.file_type.name}, {datetime.now(tz=timezone.utc).strftime('%Y%m%d')}CCHSIO"
+        labels, units = [], []
+        for param in self.parameters:
+            labels.append(param.whp_name)
+            units.append(param.whp_unit)
+            if param.whp_name in [param.whp_name for param in self.flags]:
+                labels.append(f"{param.whp_name}_FLAG_W")
+                units.append("")
+
+        units = ["" if u is None else u for u in units]
+        header = f"""{file_indicator}
+{",".join(labels)}
+{",".join(units)}
+"""
+
+        # consolidate to dataframe
+        df = pd.DataFrame(columns=labels, index=np.arange(0, len(self.data)))
+        for idx, d in enumerate(self.data):
+
+            # unique row identifiers (expocode/stnnbr/castno/sampno)
+            for key, val in d.items():
+                df.loc[idx, key.whp_name] = val
+
+            # XYZT
+            for key, val in self.coordinates[d].items():
+                if key.whp_name == "TIME":
+                    df.loc[idx, key.whp_name] = val.strftime("%H%M")
+                elif key.whp_name == "DATE":
+                    df.loc[idx, key.whp_name] = val.strftime("%Y%m%d")
+                else:
+                    df.loc[idx, key.whp_name] = val
+
+            # data values
+            for key, val in self.data[d].items():
+                df.loc[idx, key.whp_name] = val.value
+                if val.flag is not None:
+                    df.loc[idx, f"{key.whp_name}_FLAG_W"] = val.flag.value
+
+        # fix nans
+        na_values = {col: 9 if col.endswith("FLAG_W") else -999 for col in df.columns}
+        df.fillna(value=na_values, inplace=True)
+
+        # save
+        if postfix is None:
+            if self.file_type.name == "BOTTLE":
+                postfix = "_hy1"
+            elif self.file_type.name == "CTD":
+                postfix = "_ct1"
+        fname = df["EXPOCODE"].unique().item() + postfix + ".csv"
+
+        with open(fname, "x") as f:
+            f.write(header)
+
+        df.to_csv(fname, mode="a", index=False, header=False)
+        with open(fname, "a") as f:
+            f.write("END_DATA")
