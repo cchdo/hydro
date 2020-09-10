@@ -9,7 +9,7 @@ from typing import (
     NamedTuple,
 )
 from datetime import datetime
-from enum import Enum, auto
+from enum import Enum
 from itertools import groupby
 from functools import cached_property
 
@@ -277,8 +277,8 @@ class ExchangeXYZT(Mapping):
 
 
 class FileType(Enum):
-    CTD = auto()
-    BOTTLE = auto()
+    CTD = "C"
+    BOTTLE = "B"
 
 
 @dataclass(frozen=True)
@@ -452,7 +452,12 @@ class Exchange:
         # units will be handeled by xarray on serialization
         attrs = {"standard_name": "time", "axis": "T", "whp_name": ["DATE", "TIME"]}
         dims = DIMS[: data.ndim]
-        da = xr.DataArray(name="time", data=data, dims=dims, attrs=attrs,)
+        da = xr.DataArray(
+            name="time",
+            data=data,
+            dims=dims,
+            attrs=attrs,
+        )
         da.encoding["_FillValue"] = None
         return da
 
@@ -480,7 +485,12 @@ class Exchange:
         dims = DIMS[: data.ndim]
         name = axis_to_name[axis]
 
-        da = xr.DataArray(name=name, data=data, dims=dims, attrs=attrs,)
+        da = xr.DataArray(
+            name=name,
+            data=data,
+            dims=dims,
+            attrs=attrs,
+        )
         if not np.any(np.isnan(data)):
             da.encoding["_FillValue"] = None
 
@@ -510,7 +520,12 @@ class Exchange:
         dims = DIMS[: data.ndim]
         name = key_to_name[param]
 
-        da = xr.DataArray(name=name, data=data, dims=dims, attrs=attrs,)
+        da = xr.DataArray(
+            name=name,
+            data=data,
+            dims=dims,
+            attrs=attrs,
+        )
 
         if param.data_type == int:  # type: ignore
             # the woce spec says this should go from 1 and incriment
@@ -643,7 +658,7 @@ class Exchange:
 
         data_params = (param for param in self.parameters if param not in consumed)
         varN = 0
-        for n, param in enumerate(data_params):
+        for _, param in enumerate(data_params):
             if param.nc_name is not None:
                 name = param.nc_name
             else:
@@ -668,6 +683,15 @@ class Exchange:
 
             if len(ancillary_variables) > 0:
                 da.attrs["ancillary_variables"] = " ".join(ancillary_variables)
+
+        # record the types of the profiles, this is probably "least" importnat so it can go at the end
+        profile_type = xr.DataArray(
+            [self.file_type.value] * len(self), name="profile_type", dims=DIMS[0]
+        )
+        profile_type.encoding[
+            "dtype"
+        ] = "S1"  # we probably always want this to be a char for max compatability
+        data_arrays.append(profile_type)
 
         dataset = xr.Dataset(
             {da.name: da for da in data_arrays},
