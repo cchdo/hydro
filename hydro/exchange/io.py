@@ -53,21 +53,21 @@ WHPParamUnit = Tuple[str, Optional[str]]
 def _extract_comments(data: deque, include_post_content: bool = True) -> str:
     """Destructively extract the comments from exchange data.
 
-     Exchange files may have zero or more lines of meaningless (to the format) comments.
-     Between the ``CTD`` or ``BOTTLE`` stamp line and the start of the meaningful content of the file. These must be prefixed with a ``#`` character.
-     Optionally, there might also be any amount of content after the ``END_DATA`` line of an exchange file.
-     By default this function will extract that as well and append it to the retried comment string.
-     This function will remove all the leading "#" from the comments.
+    Exchange files may have zero or more lines of meaningless (to the format) comments.
+    Between the ``CTD`` or ``BOTTLE`` stamp line and the start of the meaningful content of the file. These must be prefixed with a ``#`` character.
+    Optionally, there might also be any amount of content after the ``END_DATA`` line of an exchange file.
+    By default this function will extract that as well and append it to the retried comment string.
+    This function will remove all the leading "#" from the comments.
 
-     .. warning::
+    .. warning::
 
-        This function expects the "stamp" line to have been popped from the deque already.
+       This function expects the "stamp" line to have been popped from the deque already.
 
-     :param collections.deque data: A deque containing the separated lines of an exchange file with the first line already popped.
-     :param bool include_post_content: If True, include any post ``END_DATA`` content as part of the comments, default: True.
-     :return: The extracted comment lines from the deque
-     :rtype: str
-     """
+    :param collections.deque data: A deque containing the separated lines of an exchange file with the first line already popped.
+    :param bool include_post_content: If True, include any post ``END_DATA`` content as part of the comments, default: True.
+    :return: The extracted comment lines from the deque
+    :rtype: str
+    """
     comments = []
     while data[0].startswith("#"):
         comments.append(data.popleft().lstrip("#"))
@@ -245,8 +245,7 @@ def _ctd_get_header(line, dtype=str):
 
 
 def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Exchange:
-    """Open an exchange file and return an :class:`hydro.exchange.Exchange` object
-    """
+    """Open an exchange file and return an :class:`hydro.exchange.Exchange` object"""
 
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
         data_raw = io.BytesIO(requests.get(filename_or_obj).content)

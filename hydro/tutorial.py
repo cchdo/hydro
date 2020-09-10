@@ -17,8 +17,7 @@ def _cache_dir():
 
 
 def load_cchdo_bottle_data():
-    """Downloads some CCHDO data for playing with...
-    """
+    """Downloads some CCHDO data for playing with..."""
     path = os.path.join(_cache_dir(), bottle_fname)
     with requests.get(bottle_uri, stream=True) as r:
         r.raise_for_status()
