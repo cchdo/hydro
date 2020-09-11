@@ -447,10 +447,26 @@ class Exchange:
 
         return arr
 
+    def time_precision(self) -> float:
+        precisions = []
+        for _key, group in groupby(self.keys, lambda k: k.profile_id):
+            for key in group:
+                if self.coordinates[key].t.dtype.name == "datetime64[D]":
+                    precisions.append(1.0)
+                else:
+                    precisions.append(0.000694)  # minute fraction of a day
+        return min(precisions)
+
     def time_to_dataarray(self) -> xr.DataArray:
         data = self.time_to_ndarray()[:, 0]
         # units will be handeled by xarray on serialization
-        attrs = {"standard_name": "time", "axis": "T", "whp_name": ["DATE", "TIME"]}
+        precision = self.time_precision()
+        attrs = {
+            "standard_name": "time",
+            "axis": "T",
+            "whp_name": ["DATE", "TIME"],
+            "resolution": precision,
+        }
         dims = DIMS[: data.ndim]
         da = xr.DataArray(
             name="time",
@@ -459,6 +475,8 @@ class Exchange:
             attrs=attrs,
         )
         da.encoding["_FillValue"] = None
+        da.encoding["units"] = "days since 1950-01-01T00:00Z"
+        da.encoding["calendar"] = "gregorian"
         return da
 
     def coord_to_dataarray(self, param: WHPName) -> xr.DataArray:
