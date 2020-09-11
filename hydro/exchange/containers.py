@@ -699,7 +699,7 @@ class Exchange:
         for param in self.parameters:
             labels.append(param.whp_name)
             units.append(param.whp_unit)
-            if param.whp_name in [param.whp_name for param in self.flags]:
+            if param in self.flags:
                 labels.append(f"{param.whp_name}_FLAG_W")
                 units.append("")
 
@@ -710,31 +710,29 @@ class Exchange:
 """
 
         # consolidate to dataframe
-        df = pd.DataFrame(columns=labels, index=np.arange(0, len(self.data)))
-        for idx, d in enumerate(self.data):
-
-            # unique row identifiers (expocode/stnnbr/castno/sampno)
-            for key, val in d.items():
-                df.loc[idx, key.whp_name] = val
-
-            # XYZT
-            for key, val in self.coordinates[d].items():
-                if key.whp_name == "TIME":
-                    df.loc[idx, key.whp_name] = val.strftime("%H%M")
-                elif key.whp_name == "DATE":
-                    df.loc[idx, key.whp_name] = val.strftime("%Y%m%d")
+        df_list = []
+        for p in self.iter_profiles():
+            df = pd.DataFrame()
+            for param in self.parameters:
+                if param.whp_name in ["DATE", "TIME"]:
+                    df[param.whp_name] = p.time_to_ndarray().flatten()
                 else:
-                    df.loc[idx, key.whp_name] = val
+                    df[param.whp_name] = p.parameter_to_ndarray(param).flatten()
+                if param in self.flags:
+                    df[param.whp_name + "_FLAG_W"] = p.flag_to_ndarray(param).flatten()
+            df_list.append(df)
 
-            # data values
-            for key, val in self.data[d].items():
-                df.loc[idx, key.whp_name] = val.value
-                if val.flag is not None:
-                    df.loc[idx, f"{key.whp_name}_FLAG_W"] = val.flag.value
+        data = pd.concat(df_list)
+
+        # fix datetime format, precision, and field width
+        data["DATE"] = data["DATE"].dt.strftime("%Y%m%d")
+        data["TIME"] = data["TIME"].dt.strftime("%H%M")
+        # precision: param.numeric_precision
+        # field width: param.field_width
 
         # fix nans
-        na_values = {col: 9 if col.endswith("FLAG_W") else -999 for col in df.columns}
-        df.fillna(value=na_values, inplace=True)
+        na_values = {col: 9 if col.endswith("FLAG_W") else -999 for col in data.columns}
+        data.fillna(value=na_values, inplace=True)
 
         # save
         if postfix is None:
@@ -742,11 +740,11 @@ class Exchange:
                 postfix = "_hy1"
             elif self.file_type.name == "CTD":
                 postfix = "_ct1"
-        fname = df["EXPOCODE"].unique().item() + postfix + ".csv"
+        fname = data["EXPOCODE"].unique().item() + postfix + ".csv"
 
         with open(fname, "x") as f:
             f.write(header)
 
-        df.to_csv(fname, mode="a", index=False, header=False)
+        data.to_csv(fname, mode="a", index=False, header=False)
         with open(fname, "a") as f:
             f.write("END_DATA")
