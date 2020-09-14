@@ -696,12 +696,15 @@ class Exchange:
         # headers
         file_indicator = f"{self.file_type.name}, {datetime.now(tz=timezone.utc).strftime('%Y%m%d')}CCHSIO"
         labels, units = [], []
+        format_dict = {}
         for param in self.parameters:
             labels.append(param.whp_name)
             units.append(param.whp_unit)
+            format_dict[param.whp_name] = (param.field_width, param.numeric_precision)
             if param in self.flags:
                 labels.append(f"{param.whp_name}_FLAG_W")
                 units.append("")
+                format_dict[f"{param.whp_name}_FLAG_W"] = (1, 0)  # flags are integers
 
         units = ["" if u is None else u for u in units]
         header = f"""{file_indicator}
@@ -724,14 +727,25 @@ class Exchange:
 
         data = pd.concat(df_list)
 
-        # fix datetime format, precision, and field width
+        # fix formatting
         data["DATE"] = data["DATE"].dt.strftime("%Y%m%d")
         data["TIME"] = data["TIME"].dt.strftime("%H%M")
-        # precision: param.numeric_precision
-        # field width: param.field_width
+        for key, (width, prec) in format_dict.items():
+            if key in ["DATE", "TIME"]:
+                continue
+            elif data[key].dtype == object:
+                data[key] = data[key].map(f"{{:>{width}s}}".format, na_action="ignore")
+                continue
+            if prec is None:
+                prec = 0
+            data[key] = data[key].map(
+                f"{{:>{width}.{prec}f}}".format, na_action="ignore"
+            )
 
         # fix nans
-        na_values = {col: 9 if col.endswith("FLAG_W") else -999 for col in data.columns}
+        na_values = {
+            col: "9" if col.endswith("FLAG_W") else "-999" for col in data.columns
+        }
         data.fillna(value=na_values, inplace=True)
 
         # save
@@ -740,7 +754,7 @@ class Exchange:
                 postfix = "_hy1"
             elif self.file_type.name == "CTD":
                 postfix = "_ct1"
-        fname = data["EXPOCODE"].unique().item() + postfix + ".csv"
+        fname = data["EXPOCODE"].unique().item().strip() + postfix + ".csv"
 
         with open(fname, "x") as f:
             f.write(header)
