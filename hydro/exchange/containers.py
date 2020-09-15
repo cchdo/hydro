@@ -714,6 +714,10 @@ class Exchange:
         dataset = xr.Dataset(
             {da.name: da for da in data_arrays},
             coords=coords,
-            attrs={"Conventions": f"CF-1.8 CCHDO-{hydro_version}"},
+            attrs={
+                "Conventions": f"CF-1.8 CCHDO-{hydro_version}",
+                "comments": self.comments,
+                "featureType": "profile",
+            },
         )
         return dataset
