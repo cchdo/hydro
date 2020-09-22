@@ -1,5 +1,7 @@
 from __future__ import annotations
 from collections import deque, defaultdict
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 from pathlib import Path
 from typing import (
     Union,
@@ -11,7 +13,7 @@ from typing import (
     List,
 )
 import io
-from zipfile import is_zipfile
+from zipfile import is_zipfile, ZipFile
 from operator import itemgetter
 
 import requests
@@ -41,7 +43,10 @@ from .exceptions import (
     ExchangeDataPartialKeyError,
     ExchangeDuplicateKeyError,
     ExchangeDataPartialCoordinateError,
+    ExchangeRecursiveZip,
 )
+
+from .merge import merge_ex
 
 # WHPNameIndex represents a Name to Column index in an exchange file
 WHPNameIndex = Dict[WHPName, int]
@@ -244,7 +249,11 @@ def _ctd_get_header(line, dtype=str):
     return header, dtype(value)
 
 
-def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Exchange:
+def read_exchange(
+    filename_or_obj: Union[str, Path, io.BufferedIOBase],
+    parallelize="processpool",
+    recursed=False,
+) -> Exchange:
     """Open an exchange file and return an :class:`hydro.exchange.Exchange` object"""
 
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
@@ -258,7 +267,25 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         data_raw = io.BytesIO(filename_or_obj.read())
 
     if is_zipfile(data_raw):
-        raise NotImplementedError("zip files not supported yet")
+        if recursed is True:
+            raise ExchangeRecursiveZip
+
+        recursed_read_exchange = partial(read_exchange, recursed=True)
+
+        data_raw.seek(0)  # is_zipfile moves the "tell" position
+        zip_contents = []
+        with ZipFile(data_raw) as zf:
+            for zipinfo in zf.infolist():
+                zip_contents.append(io.BytesIO(zf.read(zipinfo)))
+
+        if parallelize == "processpool":
+            with ProcessPoolExecutor() as executor:
+                results = executor.map(recursed_read_exchange, zip_contents)
+        else:
+            results = map(recursed_read_exchange, zip_contents)
+
+        return merge_ex(*results)
+
     data_raw.seek(0)  # is_zipfile moves the "tell" position
 
     try:
