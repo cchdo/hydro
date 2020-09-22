@@ -117,3 +117,11 @@ class ExchangeDataInconsistentCoordinateError(ExchangeDataError):
     A "profile" in an exchange file is a grouping of data rows which all have the same EXPOCODE, STNNBR, and CASTNO.
     The SAMPNO/CTDPRS is allowed/requried to vary for a single profile and is what identifies samples within one profile.
     """
+
+
+class ExchangeInconsistentMergeType(ExchangeError):
+    """Error raised when the merge_ex method is called on mixed ctd and bottle exchange types"""
+
+
+class ExchangeRecursiveZip(ExchangeError):
+    """Error raised if there are zip files inside the zip file that read exchange is trying to read"""
