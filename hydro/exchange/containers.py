@@ -509,8 +509,13 @@ class Exchange:
             dims=dims,
             attrs=attrs,
         )
+        da.encoding["zlib"] = True
+
         if not np.any(np.isnan(data)):
             da.encoding["_FillValue"] = None
+
+        if data.dtype == object:
+            da.encoding["dtype"] = "S1"
 
         return da
 
@@ -626,8 +631,10 @@ class Exchange:
 
         da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
 
+        da.encoding["zlib"] = True
+
         if data.dtype == object:
-            da.encoding["dtype"] = "str"
+            da.encoding["dtype"] = "S1"
         if data.dtype == float:
             da.encoding["dtype"] = "float32"
 
@@ -720,4 +727,11 @@ class Exchange:
                 "featureType": "profile",
             },
         )
+
+        # upstream bug?
+        for coordinate in dataset.coords:
+            dataset.coords[coordinate].encoding["zlib"] = True
+
+            if dataset.coords[coordinate].dtype == object:
+                dataset.coords[coordinate].encoding["dtype"] = "S1"
         return dataset
