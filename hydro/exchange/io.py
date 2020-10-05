@@ -1,5 +1,7 @@
 from __future__ import annotations
 from collections import deque, defaultdict
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 from pathlib import Path
 from typing import (
     Union,
@@ -11,7 +13,7 @@ from typing import (
     List,
 )
 import io
-from zipfile import is_zipfile
+from zipfile import is_zipfile, ZipFile
 from operator import itemgetter
 
 import requests
@@ -41,7 +43,10 @@ from .exceptions import (
     ExchangeDataPartialKeyError,
     ExchangeDuplicateKeyError,
     ExchangeDataPartialCoordinateError,
+    ExchangeRecursiveZip,
 )
+
+from .merge import merge_ex
 
 # WHPNameIndex represents a Name to Column index in an exchange file
 WHPNameIndex = Dict[WHPName, int]
@@ -53,21 +58,21 @@ WHPParamUnit = Tuple[str, Optional[str]]
 def _extract_comments(data: deque, include_post_content: bool = True) -> str:
     """Destructively extract the comments from exchange data.
 
-     Exchange files may have zero or more lines of meaningless (to the format) comments.
-     Between the ``CTD`` or ``BOTTLE`` stamp line and the start of the meaningful content of the file. These must be prefixed with a ``#`` character.
-     Optionally, there might also be any amount of content after the ``END_DATA`` line of an exchange file.
-     By default this function will extract that as well and append it to the retried comment string.
-     This function will remove all the leading "#" from the comments.
+    Exchange files may have zero or more lines of meaningless (to the format) comments.
+    Between the ``CTD`` or ``BOTTLE`` stamp line and the start of the meaningful content of the file. These must be prefixed with a ``#`` character.
+    Optionally, there might also be any amount of content after the ``END_DATA`` line of an exchange file.
+    By default this function will extract that as well and append it to the retried comment string.
+    This function will remove all the leading "#" from the comments.
 
-     .. warning::
+    .. warning::
 
-        This function expects the "stamp" line to have been popped from the deque already.
+       This function expects the "stamp" line to have been popped from the deque already.
 
-     :param collections.deque data: A deque containing the separated lines of an exchange file with the first line already popped.
-     :param bool include_post_content: If True, include any post ``END_DATA`` content as part of the comments, default: True.
-     :return: The extracted comment lines from the deque
-     :rtype: str
-     """
+    :param collections.deque data: A deque containing the separated lines of an exchange file with the first line already popped.
+    :param bool include_post_content: If True, include any post ``END_DATA`` content as part of the comments, default: True.
+    :return: The extracted comment lines from the deque
+    :rtype: str
+    """
     comments = []
     while data[0].startswith("#"):
         comments.append(data.popleft().lstrip("#"))
@@ -244,9 +249,12 @@ def _ctd_get_header(line, dtype=str):
     return header, dtype(value)
 
 
-def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Exchange:
-    """Open an exchange file and return an :class:`hydro.exchange.Exchange` object
-    """
+def read_exchange(
+    filename_or_obj: Union[str, Path, io.BufferedIOBase],
+    parallelize="processpool",
+    recursed=False,
+) -> Exchange:
+    """Open an exchange file and return an :class:`hydro.exchange.Exchange` object"""
 
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
         data_raw = io.BytesIO(requests.get(filename_or_obj).content)
@@ -259,7 +267,25 @@ def read_exchange(filename_or_obj: Union[str, Path, io.BufferedIOBase]) -> Excha
         data_raw = io.BytesIO(filename_or_obj.read())
 
     if is_zipfile(data_raw):
-        raise NotImplementedError("zip files not supported yet")
+        if recursed is True:
+            raise ExchangeRecursiveZip
+
+        recursed_read_exchange = partial(read_exchange, recursed=True)
+
+        data_raw.seek(0)  # is_zipfile moves the "tell" position
+        zip_contents = []
+        with ZipFile(data_raw) as zf:
+            for zipinfo in zf.infolist():
+                zip_contents.append(io.BytesIO(zf.read(zipinfo)))
+
+        if parallelize == "processpool":
+            with ProcessPoolExecutor() as executor:
+                results = executor.map(recursed_read_exchange, zip_contents)
+        else:
+            results = map(recursed_read_exchange, zip_contents)
+
+        return merge_ex(*results)
+
     data_raw.seek(0)  # is_zipfile moves the "tell" position
 
     try:

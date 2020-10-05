@@ -9,7 +9,7 @@ from typing import (
     NamedTuple,
 )
 from datetime import datetime, timezone
-from enum import Enum, auto
+from enum import Enum
 from itertools import groupby
 from functools import cached_property
 
@@ -277,8 +277,8 @@ class ExchangeXYZT(Mapping):
 
 
 class FileType(Enum):
-    CTD = auto()
-    BOTTLE = auto()
+    CTD = "C"
+    BOTTLE = "B"
 
 
 @dataclass(frozen=True)
@@ -447,10 +447,26 @@ class Exchange:
 
         return arr
 
+    def time_precision(self) -> float:
+        precisions = []
+        for _key, group in groupby(self.keys, lambda k: k.profile_id):
+            for key in group:
+                if self.coordinates[key].t.dtype.name == "datetime64[D]":
+                    precisions.append(1.0)
+                else:
+                    precisions.append(0.000694)  # minute fraction of a day
+        return min(precisions)
+
     def time_to_dataarray(self) -> xr.DataArray:
         data = self.time_to_ndarray()[:, 0]
         # units will be handeled by xarray on serialization
-        attrs = {"standard_name": "time", "axis": "T", "whp_name": ["DATE", "TIME"]}
+        precision = self.time_precision()
+        attrs = {
+            "standard_name": "time",
+            "axis": "T",
+            "whp_name": ["DATE", "TIME"],
+            "resolution": precision,
+        }
         dims = DIMS[: data.ndim]
         da = xr.DataArray(
             name="time",
@@ -459,6 +475,8 @@ class Exchange:
             attrs=attrs,
         )
         da.encoding["_FillValue"] = None
+        da.encoding["units"] = "days since 1950-01-01T00:00Z"
+        da.encoding["calendar"] = "gregorian"
         return da
 
     def coord_to_dataarray(self, param: WHPName) -> xr.DataArray:
@@ -658,7 +676,7 @@ class Exchange:
 
         data_params = (param for param in self.parameters if param not in consumed)
         varN = 0
-        for n, param in enumerate(data_params):
+        for _, param in enumerate(data_params):
             if param.nc_name is not None:
                 name = param.nc_name
             else:
@@ -684,10 +702,23 @@ class Exchange:
             if len(ancillary_variables) > 0:
                 da.attrs["ancillary_variables"] = " ".join(ancillary_variables)
 
+        # record the types of the profiles, this is probably "least" importnat so it can go at the end
+        profile_type = xr.DataArray(
+            [self.file_type.value] * len(self), name="profile_type", dims=DIMS[0]
+        )
+        profile_type.encoding[
+            "dtype"
+        ] = "S1"  # we probably always want this to be a char for max compatability
+        data_arrays.append(profile_type)
+
         dataset = xr.Dataset(
             {da.name: da for da in data_arrays},
             coords=coords,
-            attrs={"Conventions": f"CF-1.8 CCHDO-{hydro_version}"},
+            attrs={
+                "Conventions": f"CF-1.8 CCHDO-{hydro_version}",
+                "comments": self.comments,
+                "featureType": "profile",
+            },
         )
         return dataset
 
