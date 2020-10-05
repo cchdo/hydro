@@ -727,15 +727,17 @@ class Exchange:
         # headers
         file_indicator = f"{self.file_type.name}, {datetime.now(tz=timezone.utc).strftime('%Y%m%d')}CCHSIO"
         labels, units = [], []
-        format_dict = {}
+        format_dict, na_values = {}, {}
         for param in self.parameters:
             labels.append(param.whp_name)
             units.append(param.whp_unit)
             format_dict[param.whp_name] = (param.field_width, param.numeric_precision)
+            na_values[param.whp_name] = f"{-999:>{param.field_width}}"
             if param in self.flags:
                 labels.append(f"{param.whp_name}_FLAG_W")
                 units.append("")
                 format_dict[f"{param.whp_name}_FLAG_W"] = (1, 0)  # flags are integers
+                na_values[f"{param.whp_name}_FLAG_W"] = "9"  # flag field_width is 1
 
         units = ["" if u is None else u for u in units]
         header = f"""{file_indicator}
@@ -772,11 +774,6 @@ class Exchange:
             data[key] = data[key].map(
                 f"{{:>{width}.{prec}f}}".format, na_action="ignore"
             )
-
-        # fix nans
-        na_values = {
-            col: "9" if col.endswith("FLAG_W") else "-999" for col in data.columns
-        }
         data.fillna(value=na_values, inplace=True)
 
         # save
