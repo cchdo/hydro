@@ -12,6 +12,8 @@ from datetime import datetime, timezone
 from enum import Enum
 from itertools import groupby
 from functools import cached_property
+from pathlib import Path
+import io
 
 import numpy as np
 import pandas as pd
@@ -722,7 +724,9 @@ class Exchange:
         )
         return dataset
 
-    def to_exchange_csv(self, postfix: str = None):
+    def to_exchange_csv(
+        self, filename_or_obj: Optional[Union[str, Path, io.TextIOBase]] = None
+    ):
 
         # headers
         file_indicator = f"{self.file_type.name}, {datetime.now(tz=timezone.utc).strftime('%Y%m%d')}CCHSIO"
@@ -777,16 +781,21 @@ class Exchange:
         data.fillna(value=na_values, inplace=True)
 
         # save
-        if postfix is None:
-            if self.file_type.name == "BOTTLE":
-                postfix = "_hy1"
-            elif self.file_type.name == "CTD":
-                postfix = "_ct1"
-        fname = data["EXPOCODE"].unique().item().strip() + postfix + ".csv"
+        if isinstance(filename_or_obj, io.TextIOBase):
+            filename_or_obj.write(header)
+            data.to_csv(filename_or_obj, mode="a", index=False, header=False)
+            filename_or_obj.write("END_DATA")
+            return
+
+        elif isinstance(filename_or_obj, (str, Path)):
+            # append/change extension if missing/wrong
+            fname = Path(filename_or_obj).with_suffix(".csv")
+
+        elif not filename_or_obj:
+            postfix = {"BOTTLE": "_hy1", "CTD": "_ct1"}[self.file_type.name]
+            fname = data["EXPOCODE"].unique().item().strip() + postfix + ".csv"
 
         with open(fname, "x") as f:
             f.write(header)
-
-        data.to_csv(fname, mode="a", index=False, header=False)
-        with open(fname, "a") as f:
+            data.to_csv(f, mode="a", index=False, header=False)
             f.write("END_DATA")
