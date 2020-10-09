@@ -725,7 +725,7 @@ class Exchange:
         return dataset
 
     def to_exchange_csv(
-        self, filename_or_obj: Optional[Union[str, Path, io.TextIOBase]] = None
+        self, filename_or_obj: Optional[Union[str, Path, io.BufferedIOBase]] = None
     ):
 
         # headers
@@ -781,6 +781,7 @@ class Exchange:
                     f"{{:>{width}.{prec}f}}".format, na_action="ignore"
                 )
             df.fillna(value=na_values, inplace=True)
+            data_bytes_csv = bytes(df.to_csv(index=False, header=False).encode("utf8"))
 
             # save
             expocode = df["EXPOCODE"].unique().item().strip()
@@ -792,10 +793,10 @@ class Exchange:
                     folder = Path(expocode + "_ct1")
                 folder.mkdir(exist_ok=True)
 
-            if isinstance(filename_or_obj, io.TextIOBase):
-                filename_or_obj.write(header)
-                df.to_csv(filename_or_obj, mode="a", index=False, header=False)
-                filename_or_obj.write("END_DATA")
+            if isinstance(filename_or_obj, io.BufferedIOBase):
+                filename_or_obj.write(header.encode("utf8"))
+                filename_or_obj.write(data_bytes_csv)
+                filename_or_obj.write(b"END_DATA")
                 return
 
             elif (
@@ -814,7 +815,7 @@ class Exchange:
                     infix = f"_{station:05d}_{cast:05d}"
                 fname = Path(expocode + infix + postfix + ".csv")
 
-            with open(folder / fname, "x") as f:
-                f.write(header)
-                df.to_csv(f, mode="a", index=False, header=False)
-                f.write("END_DATA")
+            with open(folder / fname, "xb") as f:
+                f.write(header.encode("utf8"))
+                f.write(data_bytes_csv)
+                f.write(b"END_DATA")
