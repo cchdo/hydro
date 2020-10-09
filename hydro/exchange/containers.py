@@ -762,40 +762,59 @@ class Exchange:
                     df[param.whp_name + "_FLAG_W"] = p.flag_to_ndarray(param).flatten()
             df_list.append(df)
 
-        data = pd.concat(df_list)
+        if self.file_type == FileType.BOTTLE:
+            df_list = [pd.concat(df_list)]
 
-        # fix formatting
-        data["DATE"] = data["DATE"].dt.strftime("%Y%m%d")
-        data["TIME"] = data["TIME"].dt.strftime("%H%M")
-        for key, (width, prec) in format_dict.items():
-            if key in ["DATE", "TIME"]:
-                continue
-            elif data[key].dtype == object:
-                data[key] = data[key].map(f"{{:>{width}s}}".format, na_action="ignore")
-                continue
-            if prec is None:
-                prec = 0
-            data[key] = data[key].map(
-                f"{{:>{width}.{prec}f}}".format, na_action="ignore"
-            )
-        data.fillna(value=na_values, inplace=True)
+        for df in df_list:
+            # fix formatting
+            df["DATE"] = df["DATE"].dt.strftime("%Y%m%d")
+            df["TIME"] = df["TIME"].dt.strftime("%H%M")
+            for key, (width, prec) in format_dict.items():
+                if key in ["DATE", "TIME"]:
+                    continue
+                elif df[key].dtype == object:
+                    df[key] = df[key].map(f"{{:>{width}s}}".format, na_action="ignore")
+                    continue
+                if prec is None:
+                    prec = 0
+                df[key] = df[key].map(
+                    f"{{:>{width}.{prec}f}}".format, na_action="ignore"
+                )
+            df.fillna(value=na_values, inplace=True)
 
-        # save
-        if isinstance(filename_or_obj, io.TextIOBase):
-            filename_or_obj.write(header)
-            data.to_csv(filename_or_obj, mode="a", index=False, header=False)
-            filename_or_obj.write("END_DATA")
-            return
+            # save
+            expocode = df["EXPOCODE"].unique().item().strip()
+            folder = Path()
+            if self.file_type == FileType.CTD:  # and zip=False
+                if isinstance(filename_or_obj, (str, Path)):
+                    folder = Path(filename_or_obj).with_suffix("")
+                elif not filename_or_obj:
+                    folder = Path(expocode + "_ct1")
+                folder.mkdir(exist_ok=True)
 
-        elif isinstance(filename_or_obj, (str, Path)):
-            # append/change extension if missing/wrong
-            fname = Path(filename_or_obj).with_suffix(".csv")
+            if isinstance(filename_or_obj, io.TextIOBase):
+                filename_or_obj.write(header)
+                df.to_csv(filename_or_obj, mode="a", index=False, header=False)
+                filename_or_obj.write("END_DATA")
+                return
 
-        elif not filename_or_obj:
-            postfix = {"BOTTLE": "_hy1", "CTD": "_ct1"}[self.file_type.name]
-            fname = data["EXPOCODE"].unique().item().strip() + postfix + ".csv"
+            elif (
+                isinstance(filename_or_obj, (str, Path))
+                and self.file_type == FileType.BOTTLE
+            ):
+                # append/change extension if missing/wrong
+                fname = Path(filename_or_obj).with_suffix(".csv")
 
-        with open(fname, "x") as f:
-            f.write(header)
-            data.to_csv(f, mode="a", index=False, header=False)
-            f.write("END_DATA")
+            elif not filename_or_obj or self.file_type == FileType.CTD:
+                infix = ""
+                postfix = {"BOTTLE": "_hy1", "CTD": "_ct1"}[self.file_type.name]
+                if self.file_type == FileType.CTD:
+                    station = int(df["STNNBR"].unique().item())
+                    cast = int(df["CASTNO"].unique().item())
+                    infix = f"_{station:05d}_{cast:05d}"
+                fname = Path(expocode + infix + postfix + ".csv")
+
+            with open(folder / fname, "x") as f:
+                f.write(header)
+                df.to_csv(f, mode="a", index=False, header=False)
+                f.write("END_DATA")
