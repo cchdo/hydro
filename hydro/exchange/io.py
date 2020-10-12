@@ -247,7 +247,7 @@ def _bottle_line_parser(
 
 def _bottle_merge_sample_times(date, time):
     if date.startswith("-999") != time.startswith("-999"):
-        raise Exception("bottle date and time error")
+        raise ValueError("BTL_TIME or BTL_DATE have mismatched fill values")
     if date.startswith("-999"):
         return None
     return datetime.strptime(f"{date}{time}", "%Y%m%d%H%M")
@@ -391,7 +391,7 @@ def read_exchange(
     # Specal case:
     btl_dt_present = False
     if (WHPNames["BTL_DATE"] in whp_params) != (WHPNames["BTL_TIME"] in whp_params):
-        raise Exception("bottle date/time error")
+        raise ValueError("BTL_DATE or BTL_TIME present when the other is not")
     if WHPNames["BTL_DATE"] in whp_params:
         btl_dt_present = True
 
