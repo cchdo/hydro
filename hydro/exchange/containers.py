@@ -76,10 +76,11 @@ class ExchangeDataPoint:
             pass
 
         error: Optional[float] = None
-        try:
-            error = float(ir.error)  # type: ignore
-        except TypeError:
-            pass
+        if ir.error is not None and not ir.error.startswith("-999"):
+            try:
+                error = float(ir.error)  # type: ignore
+            except TypeError:
+                pass
 
         return ExchangeDataPoint(whpname=whpname, value=value, flag=flag, error=error)
 
