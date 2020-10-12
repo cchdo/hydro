@@ -15,6 +15,7 @@ from typing import (
 import io
 from zipfile import is_zipfile, ZipFile
 from operator import itemgetter
+from datetime import datetime
 
 import requests
 
@@ -244,6 +245,14 @@ def _bottle_line_parser(
     return line_parser
 
 
+def _bottle_merge_sample_times(date, time):
+    if date.startswith("-999") != time.startswith("-999"):
+        raise Exception("bottle date and time error")
+    if date.startswith("-999"):
+        return None
+    return datetime.strptime(f"{date}{time}", "%Y%m%d%H%M")
+
+
 def _ctd_get_header(line, dtype=str):
     header, value = (part.strip() for part in line.split("="))
     return header, dtype(value)
@@ -379,8 +388,17 @@ def read_exchange(
 
     line_parser = _bottle_line_parser(whp_params, whp_flags, whp_errors)
 
+    # Specal case:
+    btl_dt_present = False
+    if (WHPNames["BTL_DATE"] in whp_params) != (WHPNames["BTL_TIME"] in whp_params):
+        raise Exception("bottle date/time error")
+    if WHPNames["BTL_DATE"] in whp_params:
+        btl_dt_present = True
+
     exchange_data: Dict[ExchangeCompositeKey, dict] = {}
     coordinates = {}
+    sampletimes = {}
+
     for data_line in data_lines:
         cols = [x.strip() for x in data_line.split(",")]
 
@@ -415,6 +433,13 @@ def read_exchange(
             for param, ir in parsed_data_line.items()
         }
 
+        if btl_dt_present:
+            btl_date = row_data.pop(WHPNames["BTL_DATE"]).value
+            btl_time = row_data.pop(WHPNames["BTL_TIME"]).value
+            btl_date_time = _bottle_merge_sample_times(btl_date, btl_time)
+            if btl_date_time is not None:
+                sampletimes[key] = btl_date_time
+
         exchange_data[key] = dict(filter(lambda di: di[1].flag != 9, row_data.items()))
         coordinates[key] = coord
 
@@ -427,4 +452,5 @@ def read_exchange(
         keys=tuple(exchange_data.keys()),
         coordinates=coordinates,
         data=exchange_data,
+        sampletimes=sampletimes,
     )

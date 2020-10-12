@@ -295,6 +295,7 @@ class Exchange:
     keys: Tuple[ExchangeCompositeKey, ...]
     coordinates: Dict[ExchangeCompositeKey, ExchangeXYZT]
     data: Dict[ExchangeCompositeKey, Dict[WHPName, ExchangeDataPoint]]
+    sampletimes: Dict[ExchangeCompositeKey, np.datetime64]
 
     _ndarray_cache: Dict[Tuple[WHPName, str], np.ndarray] = field(
         default_factory=dict, init=False
@@ -474,6 +475,34 @@ class Exchange:
         dims = DIMS[: data.ndim]
         da = xr.DataArray(
             name="time",
+            data=data,
+            dims=dims,
+            attrs=attrs,
+        )
+        da.encoding["_FillValue"] = None
+        da.encoding["units"] = "days since 1950-01-01T00:00Z"
+        da.encoding["calendar"] = "gregorian"
+        return da
+
+    def sampletime_to_ndarray(self) -> np.ndarray:
+        arr = np.full(self.shape, np.datetime64("NaT"), dtype="datetime64[m]")
+
+        for row, (_key, group) in enumerate(groupby(self.keys, lambda k: k.profile_id)):
+            for col, key in enumerate(group):
+                arr[row, col] = self.sampletimes.get(key)
+
+        return arr
+
+    def sampletime_to_dataarray(self) -> xr.DataArray:
+        data = self.sampletime_to_ndarray()
+        attrs = {
+            "standard_name": "time",
+            "whp_name": ["BTL_DATE", "BTL_TIME"],
+            "resolution": 0.000694,
+        }
+        dims = DIMS[: data.ndim]
+        da = xr.DataArray(
+            name="bottle_time",
             data=data,
             dims=dims,
             attrs=attrs,
@@ -678,6 +707,11 @@ class Exchange:
         # Time Special case
         temporal = self.time_to_dataarray()
         coords[temporal.name] = temporal
+
+        if len(self.sampletimes) > 0:
+            consumed.append(WHPNames["BTL_TIME"])
+            consumed.append(WHPNames["BTL_DATE"])
+            data_arrays.append(self.sampletime_to_dataarray())
 
         # CCHDO Sample Identifying parameters go into coords
         for param in ExchangeCompositeKey.WHP_PARAMS:
