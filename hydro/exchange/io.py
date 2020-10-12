@@ -16,6 +16,7 @@ import io
 from zipfile import is_zipfile, ZipFile
 from operator import itemgetter
 from datetime import datetime
+from warnings import warn
 
 import requests
 
@@ -250,6 +251,9 @@ def _bottle_merge_sample_times(date, time):
         raise ValueError("BTL_TIME or BTL_DATE have mismatched fill values")
     if date.startswith("-999"):
         return None
+    if len(time) != 4:
+        warn(f"BTL_TIME is not zero padded: {time}")
+        time = time.zfill(4)
     return datetime.strptime(f"{date}{time}", "%Y%m%d%H%M")
 
 
