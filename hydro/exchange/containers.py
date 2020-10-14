@@ -14,6 +14,7 @@ from itertools import groupby
 from functools import cached_property
 from pathlib import Path
 import io
+from zipfile import ZipFile
 
 import numpy as np
 import pandas as pd
@@ -725,7 +726,9 @@ class Exchange:
         return dataset
 
     def to_exchange_csv(
-        self, filename_or_obj: Optional[Union[str, Path, io.BufferedIOBase]] = None
+        self,
+        filename_or_obj: Optional[Union[str, Path, io.BufferedIOBase]] = None,
+        zip_ctd: Optional[bool] = True,
     ):
 
         # headers
@@ -782,11 +785,12 @@ class Exchange:
                 )
             df.fillna(value=na_values, inplace=True)
             data_bytes_csv = bytes(df.to_csv(index=False, header=False).encode("utf8"))
+            file_contents = header.encode("utf8") + data_bytes_csv + b"END_DATA"
 
             # save
             expocode = df["EXPOCODE"].unique().item().strip()
             folder = Path()
-            if self.file_type == FileType.CTD:  # and zip=False
+            if self.file_type == FileType.CTD and not zip_ctd:
                 if isinstance(filename_or_obj, (str, Path)):
                     folder = Path(filename_or_obj).with_suffix("")
                 elif not filename_or_obj:
@@ -794,9 +798,7 @@ class Exchange:
                 folder.mkdir(exist_ok=True)
 
             if isinstance(filename_or_obj, io.BufferedIOBase):
-                filename_or_obj.write(header.encode("utf8"))
-                filename_or_obj.write(data_bytes_csv)
-                filename_or_obj.write(b"END_DATA")
+                filename_or_obj.write(file_contents)
                 return
 
             elif (
@@ -815,7 +817,10 @@ class Exchange:
                     infix = f"_{station:05d}_{cast:05d}"
                 fname = Path(expocode + infix + postfix + ".csv")
 
-            with open(folder / fname, "xb") as f:
-                f.write(header.encode("utf8"))
-                f.write(data_bytes_csv)
-                f.write(b"END_DATA")
+            if self.file_type == FileType.CTD and zip_ctd:
+                with ZipFile(expocode + "_ct1.zip", "a") as zipped:
+                    zipped.writestr(str(fname), file_contents)
+
+            else:
+                with open(folder / fname, "xb") as f:
+                    f.write(file_contents)
