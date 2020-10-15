@@ -730,26 +730,24 @@ class Exchange:
         filename_or_obj: Optional[Union[str, Path, io.BufferedIOBase]] = None,
         zip_ctd: Optional[bool] = True,
     ):
+        """Export :class:`hydro.exchange.Exchange` object to WHP-Exchange datafile(s)"""
 
         # headers
-        file_indicator = f"{self.file_type.name}, {datetime.now(tz=timezone.utc).strftime('%Y%m%d')}CCHSIO"
-        labels, units = [], []
-        format_dict, na_values = {}, {}
+        now = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
+        file_indicator = f"{self.file_type.name}, {now}CCHSIO"
+        units, format_dict, na_values = {}, {}, {}
         for param in self.parameters:
-            labels.append(param.whp_name)
-            units.append(param.whp_unit)
+            units[param.whp_name] = param.whp_unit or ""  # empty str if unit is None
             format_dict[param.whp_name] = (param.field_width, param.numeric_precision)
             na_values[param.whp_name] = f"{-999:>{param.field_width}}"
             if param in self.flags:
-                labels.append(f"{param.whp_name}_FLAG_W")
-                units.append("")
+                units[f"{param.whp_name}_FLAG_W"] = ""
                 format_dict[f"{param.whp_name}_FLAG_W"] = (1, 0)  # flags are integers
                 na_values[f"{param.whp_name}_FLAG_W"] = "9"  # flag field_width is 1
 
-        units = ["" if u is None else u for u in units]
         header = f"""{file_indicator}
-{",".join(labels)}
-{",".join(units)}
+{",".join(str(k) for k in units.keys())}
+{",".join(str(v) for v in units.values())}
 """
 
         # consolidate to dataframe
@@ -778,10 +776,8 @@ class Exchange:
                 elif df[key].dtype == object:
                     df[key] = df[key].map(f"{{:>{width}s}}".format, na_action="ignore")
                     continue
-                if prec is None:
-                    prec = 0
-                df[key] = df[key].map(
-                    f"{{:>{width}.{prec}f}}".format, na_action="ignore"
+                df[key] = df[key].map(  # if prec is None: prec = 0
+                    f"{{:>{width}.{prec or 0}f}}".format, na_action="ignore"
                 )
             df.fillna(value=na_values, inplace=True)
             data_bytes_csv = bytes(df.to_csv(index=False, header=False).encode("utf8"))
@@ -789,38 +785,32 @@ class Exchange:
 
             # save
             expocode = df["EXPOCODE"].unique().item().strip()
+            postfix = {"BOTTLE": "_hy1", "CTD": "_ct1"}[self.file_type.name]
             folder = Path()
-            if self.file_type == FileType.CTD and not zip_ctd:
+            if self.file_type == FileType.CTD:
+                station = int(df["STNNBR"].unique().item())
+                cast = int(df["CASTNO"].unique().item())
+                infix = f"_{station:05d}_{cast:05d}"
+                fname = Path(expocode + infix + postfix + ".csv")
                 if isinstance(filename_or_obj, (str, Path)):
                     folder = Path(filename_or_obj).with_suffix("")
                 elif not filename_or_obj:
-                    folder = Path(expocode + "_ct1")
-                folder.mkdir(exist_ok=True)
+                    folder = Path(expocode + postfix)
+                if not zip_ctd:
+                    folder.mkdir(exist_ok=True)
+                else:
+                    with ZipFile(folder.with_suffix(".zip"), "a") as zipped:
+                        zipped.writestr(str(fname), file_contents)
+                        continue
 
-            if isinstance(filename_or_obj, io.BufferedIOBase):
-                filename_or_obj.write(file_contents)
-                return
+            if self.file_type == FileType.BOTTLE:
+                if isinstance(filename_or_obj, io.BufferedIOBase):
+                    filename_or_obj.write(file_contents)
+                    return
+                elif isinstance(filename_or_obj, (str, Path)):
+                    fname = Path(filename_or_obj).with_suffix(".csv")
+                elif not filename_or_obj:
+                    fname = Path(expocode + postfix + ".csv")
 
-            elif (
-                isinstance(filename_or_obj, (str, Path))
-                and self.file_type == FileType.BOTTLE
-            ):
-                # append/change extension if missing/wrong
-                fname = Path(filename_or_obj).with_suffix(".csv")
-
-            elif not filename_or_obj or self.file_type == FileType.CTD:
-                infix = ""
-                postfix = {"BOTTLE": "_hy1", "CTD": "_ct1"}[self.file_type.name]
-                if self.file_type == FileType.CTD:
-                    station = int(df["STNNBR"].unique().item())
-                    cast = int(df["CASTNO"].unique().item())
-                    infix = f"_{station:05d}_{cast:05d}"
-                fname = Path(expocode + infix + postfix + ".csv")
-
-            if self.file_type == FileType.CTD and zip_ctd:
-                with ZipFile(expocode + "_ct1.zip", "a") as zipped:
-                    zipped.writestr(str(fname), file_contents)
-
-            else:
-                with open(folder / fname, "xb") as f:
-                    f.write(file_contents)
+            with open(folder / fname, "xb") as f:
+                f.write(file_contents)
