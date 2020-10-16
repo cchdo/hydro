@@ -14,7 +14,7 @@ from itertools import groupby
 from functools import cached_property
 from pathlib import Path
 import io
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 
 import numpy as np
 import pandas as pd
@@ -799,7 +799,9 @@ class Exchange:
                 if not zip_ctd:
                     folder.mkdir(exist_ok=True)
                 else:
-                    with ZipFile(folder.with_suffix(".zip"), "a") as zipped:
+                    with ZipFile(
+                        folder.with_suffix(".zip"), mode="a", compression=ZIP_DEFLATED
+                    ) as zipped:
                         zipped.writestr(str(fname), file_contents)
                         continue
 
