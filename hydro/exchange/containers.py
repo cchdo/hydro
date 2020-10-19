@@ -8,10 +8,13 @@ from typing import (
     Dict,
     NamedTuple,
 )
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from itertools import groupby
 from functools import cached_property
+from pathlib import Path
+import io
+from zipfile import ZipFile, ZIP_DEFLATED
 
 import numpy as np
 import pandas as pd
@@ -736,3 +739,95 @@ class Exchange:
             if dataset.coords[coordinate].dtype == object:
                 dataset.coords[coordinate].encoding["dtype"] = "S1"
         return dataset
+
+    def to_exchange_csv(
+        self,
+        filename_or_obj: Optional[Union[str, Path, io.BufferedIOBase]] = None,
+        zip_ctd: Optional[bool] = True,
+    ):
+        """Export :class:`hydro.exchange.Exchange` object to WHP-Exchange datafile(s)"""
+
+        # headers
+        now = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
+        file_indicator = f"{self.file_type.name}, {now}CCHSIO"
+        units, format_dict, na_values = {}, {}, {}
+        for param in self.parameters:
+            units[param.whp_name] = param.whp_unit or ""  # empty str if unit is None
+            format_dict[param.whp_name] = (param.field_width, param.numeric_precision)
+            na_values[param.whp_name] = f"{-999:>{param.field_width}}"
+            if param in self.flags:
+                units[f"{param.whp_name}_FLAG_W"] = ""
+                format_dict[f"{param.whp_name}_FLAG_W"] = (1, 0)  # flags are integers
+                na_values[f"{param.whp_name}_FLAG_W"] = "9"  # flag field_width is 1
+
+        header = f"""{file_indicator}
+{",".join(str(k) for k in units.keys())}
+{",".join(str(v) for v in units.values())}
+"""
+
+        # consolidate to dataframe
+        df_list = []
+        for p in self.iter_profiles():
+            df = pd.DataFrame()
+            for param in self.parameters:
+                if param.whp_name in ["DATE", "TIME"]:
+                    df[param.whp_name] = p.time_to_ndarray().flatten()
+                else:
+                    df[param.whp_name] = p.parameter_to_ndarray(param).flatten()
+                if param in self.flags:
+                    df[param.whp_name + "_FLAG_W"] = p.flag_to_ndarray(param).flatten()
+            df_list.append(df)
+
+        if self.file_type == FileType.BOTTLE:
+            df_list = [pd.concat(df_list)]
+
+        for df in df_list:
+            # fix formatting
+            df["DATE"] = df["DATE"].dt.strftime("%Y%m%d")
+            df["TIME"] = df["TIME"].dt.strftime("%H%M")
+            for key, (width, prec) in format_dict.items():
+                if key in ["DATE", "TIME"]:
+                    continue
+                elif df[key].dtype == object:
+                    df[key] = df[key].map(f"{{:>{width}s}}".format, na_action="ignore")
+                    continue
+                df[key] = df[key].map(  # if prec is None: prec = 0
+                    f"{{:>{width}.{prec or 0}f}}".format, na_action="ignore"
+                )
+            df.fillna(value=na_values, inplace=True)
+            data_bytes_csv = bytes(df.to_csv(index=False, header=False).encode("utf8"))
+            file_contents = header.encode("utf8") + data_bytes_csv + b"END_DATA"
+
+            # save
+            expocode = df["EXPOCODE"].unique().item().strip()
+            postfix = {"BOTTLE": "_hy1", "CTD": "_ct1"}[self.file_type.name]
+            folder = Path()
+            if self.file_type == FileType.CTD:
+                station = int(df["STNNBR"].unique().item())
+                cast = int(df["CASTNO"].unique().item())
+                infix = f"_{station:05d}_{cast:05d}"
+                fname = Path(expocode + infix + postfix + ".csv")
+                if isinstance(filename_or_obj, (str, Path)):
+                    folder = Path(filename_or_obj).with_suffix("")
+                elif not filename_or_obj:
+                    folder = Path(expocode + postfix)
+                if not zip_ctd:
+                    folder.mkdir(exist_ok=True)
+                else:
+                    with ZipFile(
+                        folder.with_suffix(".zip"), mode="a", compression=ZIP_DEFLATED
+                    ) as zipped:
+                        zipped.writestr(str(fname), file_contents)
+                        continue
+
+            if self.file_type == FileType.BOTTLE:
+                if isinstance(filename_or_obj, io.BufferedIOBase):
+                    filename_or_obj.write(file_contents)
+                    return
+                elif isinstance(filename_or_obj, (str, Path)):
+                    fname = Path(filename_or_obj).with_suffix(".csv")
+                elif not filename_or_obj:
+                    fname = Path(expocode + postfix + ".csv")
+
+            with open(folder / fname, "xb") as f:
+                f.write(file_contents)
