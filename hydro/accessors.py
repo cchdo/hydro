@@ -1,8 +1,39 @@
 import xarray as xr
 import pandas as pd
+from numpy import nan_to_num
 
 
-@xr.register_dataset_accessor("woce")
+class MatlabAccessor:
+    def __init__(self, xarray_obj):
+        self._obj = xarray_obj
+
+    def savemat(self, fname):
+        from scipy.io import savemat as scipy_savemat
+
+        mat_dict = {}
+        data = self._obj.to_dict()
+
+        # flatten
+        for coord, value in data["coords"].items():
+            del value["dims"]
+            mat_dict[coord] = value
+        for param, value in data["data_vars"].items():
+            del value["dims"]
+            mat_dict[param] = value
+
+        # cleanups for matlab users
+        for _, value in mat_dict.items():
+            if value.get("attrs", {}).get("standard_name") == "time":
+                value["data"] = list(
+                    map(lambda x: x.strftime("%d-%b-%Y %H:%M:%S"), value["data"])
+                )
+
+            if "status_flag" in value.get("attrs", {}).get("standard_name", ""):
+                value["data"] = nan_to_num(value["data"], nan=9)
+
+        scipy_savemat(fname, mat_dict)
+
+
 class WoceAccessor:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
@@ -171,3 +202,11 @@ class WoceAccessor:
                 return
 
         return sum_file
+
+
+def register(name):
+    if name in ("matlab", "all"):
+        xr.register_dataset_accessor("matlab")(MatlabAccessor)
+
+    if name in ("woce", "all"):
+        xr.register_dataset_accessor("matlab")(WoceAccessor)

@@ -359,6 +359,11 @@ class Exchange:
                     sample_id: self.coordinates[sample_id] for sample_id in keys
                 },
                 data={sample_id: self.data[sample_id] for sample_id in keys},
+                sampletimes={
+                    sample_id: self.sampletimes[sample_id]
+                    for sample_id in keys
+                    if sample_id in self.sampletimes
+                },
             )
 
     def flag_to_ndarray(self, param: WHPName) -> np.ndarray:
@@ -860,7 +865,8 @@ class Exchange:
                     return
                 elif isinstance(filename_or_obj, (str, Path)):
                     fname = Path(filename_or_obj).with_suffix(".csv")
-                elif not filename_or_obj:
+                elif filename_or_obj is None:
+                    return file_contents
                     fname = Path(expocode + postfix + ".csv")
 
             with open(folder / fname, "xb") as f:
