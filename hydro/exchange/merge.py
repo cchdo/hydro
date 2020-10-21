@@ -18,9 +18,6 @@ def merge_ex(*exchanges: Exchange) -> Exchange:
 
     coordinates2 = dict(coord for ex in exchanges for coord in ex.coordinates.items())
     data2 = dict(data for ex in exchanges for data in ex.data.items())
-    sampletimes2 = dict(
-        sampletimes for ex in exchanges for sampletimes in ex.sampletimes.items()
-    )
     return Exchange(
         file_type=exchanges[0].file_type,
         comments=comments,
@@ -30,5 +27,4 @@ def merge_ex(*exchanges: Exchange) -> Exchange:
         errors=ordered_merge(*(ex.errors for ex in exchanges)),
         coordinates=coordinates2,
         data=data2,
-        sampletimes=sampletimes2,
     )

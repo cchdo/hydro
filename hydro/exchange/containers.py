@@ -295,7 +295,6 @@ class Exchange:
     keys: Tuple[ExchangeCompositeKey, ...]
     coordinates: Dict[ExchangeCompositeKey, ExchangeXYZT]
     data: Dict[ExchangeCompositeKey, Dict[WHPName, ExchangeDataPoint]]
-    sampletimes: Dict[ExchangeCompositeKey, np.datetime64]
 
     _ndarray_cache: Dict[Tuple[WHPName, str], np.ndarray] = field(
         default_factory=dict, init=False
@@ -331,8 +330,32 @@ class Exchange:
                 if not ((data == data[0]) | (data == "")).all():
                     raise ExchangeDataInconsistentCoordinateError
 
+        # validate BTL_DATE and BTL_TIME if present...
+        if (WHPNames["BTL_DATE"] in self.parameters) != (
+            WHPNames["BTL_TIME"] in self.parameters
+        ):
+            raise ValueError("BTL_DATE or BTL_TIME present when the other is not")
+        if WHPNames["BTL_DATE"] in self.parameters:
+            for key, row in self.data.items():
+                date = row.get(WHPNames["BTL_DATE"])
+                time = row.get(WHPNames["BTL_TIME"])
+
+                if (date.value is None) != (time.value is None):
+                    raise ValueError("BTL_TIME or BTL_DATE have mismatched fill values")
+
+                if date.value is None:
+                    continue
+
+                if len(time.value) != 4:
+                    object.__setattr__(
+                        self.data[key][WHPNames["BTL_TIME"]],
+                        "value",
+                        time.value.zfill(4),
+                    )
+            self.sampletime_to_ndarray()
+
     def __repr__(self):
-        return f"""<hydro.Exchange profiles={len(self)}>"""
+        return f"""<hydo.Exchange profiles={len(self)}>"""
 
     def __len__(self):
         return self.shape[0]
@@ -359,11 +382,6 @@ class Exchange:
                     sample_id: self.coordinates[sample_id] for sample_id in keys
                 },
                 data={sample_id: self.data[sample_id] for sample_id in keys},
-                sampletimes={
-                    sample_id: self.sampletimes[sample_id]
-                    for sample_id in keys
-                    if sample_id in self.sampletimes
-                },
             )
 
     def flag_to_ndarray(self, param: WHPName) -> np.ndarray:
@@ -487,6 +505,7 @@ class Exchange:
         da.encoding["_FillValue"] = None
         da.encoding["units"] = "days since 1950-01-01T00:00Z"
         da.encoding["calendar"] = "gregorian"
+        da.encoding["dtype"] = "double"
         return da
 
     def sampletime_to_ndarray(self) -> np.ndarray:
@@ -494,7 +513,16 @@ class Exchange:
 
         for row, (_key, group) in enumerate(groupby(self.keys, lambda k: k.profile_id)):
             for col, key in enumerate(group):
-                arr[row, col] = self.sampletimes.get(key)
+                date = self.data.get(key, {}).get(WHPNames["BTL_DATE"])
+                time = self.data.get(key, {}).get(WHPNames["BTL_TIME"])
+                if (date is not None and date.value is not None) and (
+                    time is not None and time.value is not None
+                ):
+                    arr[row, col] = datetime.strptime(
+                        f"{date.value}{time.value}", "%Y%m%d%H%M"
+                    )
+                else:
+                    arr[row, col] = None
 
         return arr
 
@@ -713,7 +741,7 @@ class Exchange:
         temporal = self.time_to_dataarray()
         coords[temporal.name] = temporal
 
-        if len(self.sampletimes) > 0:
+        if WHPNames["BTL_DATE"] in self.parameters:
             consumed.append(WHPNames["BTL_TIME"])
             consumed.append(WHPNames["BTL_DATE"])
             data_arrays.append(self.sampletime_to_dataarray())
