@@ -355,7 +355,7 @@ class Exchange:
             self.sampletime_to_ndarray()
 
     def __repr__(self):
-        return f"""<hydo.Exchange profiles={len(self)}>"""
+        return f"""<hydro.Exchange profiles={len(self)}>"""
 
     def __len__(self):
         return self.shape[0]
