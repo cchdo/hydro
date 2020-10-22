@@ -616,10 +616,15 @@ class Exchange:
             attrs=attrs,
         )
 
+        da.encoding["zlib"] = True
+
         if param.data_type == int:  # type: ignore
             # the woce spec says this should go from 1 and incriment
             # largest I have seen is maybe 20something on a GT cruise
             da.encoding["dtype"] = "int8"
+
+        if data.dtype == object:
+            da.encoding["dtype"] = "S1"
 
         return da
 
@@ -799,12 +804,6 @@ class Exchange:
             },
         )
 
-        # upstream bug?
-        for coordinate in dataset.coords:
-            dataset.coords[coordinate].encoding["zlib"] = True
-
-            if dataset.coords[coordinate].dtype == object:
-                dataset.coords[coordinate].encoding["dtype"] = "S1"
         return dataset
 
     def to_exchange_csv(
