@@ -11,7 +11,7 @@ Attributes
 
 CF Definiton
 ````````````
-The smallest and the largest valid non-missing values occurring in the variable.
+A value used to represent missing or undefined data. Allowed for auxiliary coordinate variables but not allowed for coordinate variables.
 
 CCHDO Usage
 ```````````

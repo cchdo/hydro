@@ -6,6 +6,16 @@ API
 Exchange Format
 ---------------
 
+
+containers
+~~~~~~~~~~
+
+.. automodule:: hydro.exchange.containers
+    :members: 
+    :undoc-members:
+    :private-members:
+
+
 io
 ~~
 
@@ -13,6 +23,7 @@ io
     :members: 
     :undoc-members:
     :private-members:
+
 
 exceptions
 ~~~~~~~~~~
@@ -22,12 +33,20 @@ exceptions
     :undoc-members:
     :private-members:
 
-Data
-----
 
-.. automodule:: hydro.data
-    :members:
+flags
+~~~~~~~~~~
+
+.. automodule:: hydro.exchange.flags
+    :members: 
     :undoc-members:
     :private-members:
-    :ignore-module-all:
 
+
+merge
+~~~~~~~~~~
+
+.. automodule:: hydro.exchange.merge
+    :members: 
+    :undoc-members:
+    :private-members:
