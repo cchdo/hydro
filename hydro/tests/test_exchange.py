@@ -1,12 +1,92 @@
 import io
 import pytest
 
+import numpy as np
+
 from hydro.exchange import read_exchange
 from hydro.exchange.exceptions import (
     ExchangeLEError,
     ExchangeBOMError,
     ExchangeEncodingError,
 )
+from cchdo.params import WHPNames
+
+
+def simple_bottle_exchange(params=None, units=None, data=None, comments: str = None):
+    stamp = "BOTTLE,test"
+    min_params = [
+        "EXPOCODE",
+        "STNNBR",
+        "CASTNO",
+        "SAMPNO",
+        "LATITUDE",
+        "LONGITUDE",
+        "DATE",
+        "TIME",
+        "CTDPRS",
+    ]
+    min_units = ["", "", "", "", "", "", "", "", "DBAR"]
+    min_line = ["TEST", "1", "1", "1", "0", "0", "20200101", "0000", "0"]
+    end = "END_DATA"
+
+    if params is not None:
+        min_params.extend(params)
+    if units is not None:
+        min_units.extend(units)
+    if data is not None:
+        min_line.extend(data)
+
+    if comments is not None:
+        comments = "\n".join([f"#{line}" for line in comments.splitlines()])
+        simple = "\n".join(
+            [
+                stamp,
+                comments,
+                ",".join(min_params),
+                ",".join(min_units),
+                ",".join(min_line),
+                end,
+            ]
+        )
+    else:
+        simple = "\n".join(
+            [stamp, ",".join(min_params), ",".join(min_units), ",".join(min_line), end]
+        )
+    return simple.encode("utf8")
+
+
+def test_btl_date_time():
+    BTL_DATE = WHPNames["BTL_DATE"]
+    BTL_TIME = WHPNames["BTL_TIME"]
+    raw = simple_bottle_exchange(
+        params=("BTL_DATE", "BTL_TIME"), units=("", ""), data=("20200101", "1234")
+    )
+    ex = read_exchange(io.BytesIO(raw))
+
+    assert BTL_DATE in ex.parameters
+    assert BTL_TIME in ex.parameters
+
+    ex_xr = ex.to_xarray()
+    assert "bottle_time" in ex_xr.variables
+    assert "bottle_date" not in ex_xr.variables
+    assert ex_xr["bottle_time"].values == [[np.datetime64("2020-01-01T12:34")]]
+
+
+def test_btl_date_time_missing_part():
+    raw = simple_bottle_exchange(params=("BTL_DATE",), units=("",), data=("20200101",))
+    with pytest.raises(ValueError):
+        read_exchange(io.BytesIO(raw))
+    raw = simple_bottle_exchange(params=("BTL_TIME",), units=("",), data=("0012",))
+    with pytest.raises(ValueError):
+        read_exchange(io.BytesIO(raw))
+
+
+def test_btl_date_time_missing_warn():
+    raw = simple_bottle_exchange(
+        params=("BTL_DATE", "BTL_TIME"), units=("", ""), data=("20200101", "34")
+    )
+    with pytest.warns(UserWarning):
+        read_exchange(io.BytesIO(raw))
 
 
 @pytest.mark.parametrize(

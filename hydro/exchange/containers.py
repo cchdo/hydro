@@ -15,6 +15,7 @@ from functools import cached_property
 from pathlib import Path
 import io
 from zipfile import ZipFile, ZIP_DEFLATED
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -347,6 +348,7 @@ class Exchange:
                     continue
 
                 if len(time.value) != 4:
+                    warnings.warn("Left padding BTL_TIME with zeros")
                     object.__setattr__(
                         self.data[key][WHPNames["BTL_TIME"]],
                         "value",
