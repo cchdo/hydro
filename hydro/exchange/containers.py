@@ -819,7 +819,7 @@ class Exchange:
 
         # headers
         now = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
-        file_indicator = f"{self.file_type.name}, {now}CCHSIO"
+        file_indicator = f"{self.file_type.name},{now}CCHSIO\n"
         units, format_dict, na_values = {}, {}, {}
         for param in self.parameters:
             units[param.whp_name] = param.whp_unit or ""  # empty str if unit is None
@@ -829,11 +829,6 @@ class Exchange:
                 units[f"{param.whp_name}_FLAG_W"] = ""
                 format_dict[f"{param.whp_name}_FLAG_W"] = (1, 0)  # flags are integers
                 na_values[f"{param.whp_name}_FLAG_W"] = "9"  # flag field_width is 1
-
-        header = f"""{file_indicator}
-{",".join(str(k) for k in units.keys())}
-{",".join(str(v) for v in units.values())}
-"""
 
         # consolidate to dataframe
         df_list = []
@@ -866,13 +861,38 @@ class Exchange:
                 )
             df.fillna(value=na_values, inplace=True)
             data_bytes_csv = bytes(df.to_csv(index=False, header=False).encode("utf8"))
-            file_contents = header.encode("utf8") + data_bytes_csv + b"END_DATA"
 
             # save
             expocode = df["EXPOCODE"].unique().item().strip()
             postfix = {"BOTTLE": "_hy1", "CTD": "_ct1"}[self.file_type.name]
             folder = Path()
             if self.file_type == FileType.CTD:
+                ctd_header = ""
+                num_headers = 1
+                for x in [
+                    "EXPOCODE",
+                    "SECT_ID",
+                    "STNNBR",
+                    "CASTNO",
+                    "DATE",
+                    "TIME",
+                    "LATITUDE",
+                    "LONGITUDE",
+                    "DEPTH",
+                ]:
+                    if x in df.columns:
+                        ctd_header += f"{x} = {df[x].unique().item().strip()}\n"
+                        num_headers += 1
+                ctd_header = f"NUMBER_HEADERS = {num_headers}\n" + ctd_header
+                file_header = (
+                    f"{file_indicator}"
+                    f"{ctd_header}"
+                    f"{','.join(str(k) for k in units.keys())}\n"
+                    f"{','.join(str(v) for v in units.values())}\n"
+                )
+                file_contents = (
+                    file_header.encode("utf8") + data_bytes_csv + b"END_DATA"
+                )
                 station = int(df["STNNBR"].unique().item())
                 cast = int(df["CASTNO"].unique().item())
                 infix = f"_{station:05d}_{cast:05d}"
@@ -891,6 +911,14 @@ class Exchange:
                         continue
 
             if self.file_type == FileType.BOTTLE:
+                file_header = (
+                    f"{file_indicator}"
+                    f"{','.join(str(k) for k in units.keys())}\n"
+                    f"{','.join(str(v) for v in units.values())}\n"
+                )
+                file_contents = (
+                    file_header.encode("utf8") + data_bytes_csv + b"END_DATA"
+                )
                 if isinstance(filename_or_obj, io.BufferedIOBase):
                     filename_or_obj.write(file_contents)
                     return
