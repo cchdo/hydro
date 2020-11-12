@@ -857,10 +857,10 @@ class Exchange:
 
         for df in df_list:
             # fix formatting
-            df["DATE"] = df["DATE"].dt.strftime("%Y%m%d")
-            df["TIME"] = df["TIME"].dt.strftime("%H%M")
             for key, (width, prec) in format_dict.items():
                 if key in ["DATE", "TIME"]:
+                    dt_format = {"DATE": "%Y%m%d", "TIME": "%H%M"}
+                    df[key] = df[key].dt.strftime(dt_format[key])
                     continue
                 elif df[key].dtype == object:
                     df[key] = df[key].map(f"{{:>{width}s}}".format, na_action="ignore")
@@ -897,9 +897,9 @@ class Exchange:
                 file_contents = (
                     file_header.encode("utf8") + data_bytes_csv + b"END_DATA"
                 )
-                station = int(df["STNNBR"].unique().item())
+                station = df["STNNBR"].unique().item().strip()
                 cast = int(df["CASTNO"].unique().item())
-                infix = f"_{station:05d}_{cast:05d}"
+                infix = f"_{station}_{cast:05d}"
                 fname = Path(expocode + infix + postfix + ".csv")
                 if isinstance(filename_or_obj, (str, Path)):
                     folder = Path(filename_or_obj).with_suffix("")
