@@ -110,3 +110,16 @@ def test_http_loads(uri, requests_mock):
     requests_mock.get(uri, content="BOTTLE\r".encode("utf8"))
     with pytest.raises(ExchangeLEError):
         read_exchange(uri)
+
+
+def test_write_exchange():
+    raw = simple_bottle_exchange(comments=" test comment1\n test comment2")
+    ex = read_exchange(io.BytesIO(raw))
+    csv = ex.to_exchange_csv()
+    ex2 = read_exchange(io.BytesIO(csv))
+
+    # header will be different so skip up through first newline
+    assert ex.comments.split("\n")[1:] == ex2.comments.split("\n")[1:]
+    assert ex.data == ex2.data
+    assert ex.coordinates == ex2.coordinates
+    assert ex.parameters == ex2.parameters
