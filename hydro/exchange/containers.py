@@ -718,20 +718,6 @@ class Exchange:
             yield profile.coordinates[profile.keys[-1]]
 
     def to_xarray(self):
-        """
-        A lingering special case...
-        If present, bottle trip information:
-
-        * BTL_LAT
-        * BTL_LON
-        * BTL_DATE
-        * BTL_TIME
-
-        Note that the seperate date and time need to be combined into a single
-        date var for CF. Except for the bottle trip information, all the
-        above should probably get "real" var names not just var0, ..., varN.
-        """
-
         consumed = []
         data_arrays = []
         coords = {}
