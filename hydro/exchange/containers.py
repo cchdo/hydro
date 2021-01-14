@@ -782,6 +782,17 @@ class Exchange:
         ] = "S1"  # we probably always want this to be a char for max compatability
         data_arrays.append(profile_type)
 
+        # CF 1.8 geometry container
+        data_arrays.append(
+            xr.DataArray(
+                name="geometry_container",
+                attrs={
+                    "geometry_type": "point",
+                    "node_coordinates": "longitude latitude",
+                },
+            )
+        )
+
         dataset = xr.Dataset(
             {da.name: da for da in data_arrays},
             coords=coords,
@@ -791,6 +802,11 @@ class Exchange:
                 "featureType": "profile",
             },
         )
+
+        # Add geometry to useful vars
+        for var in ("expocode", "station", "cast", "section_id", "time"):
+            if var in dataset:
+                dataset[var].attrs["geometry"] = "geometry_container"
 
         return dataset
 
