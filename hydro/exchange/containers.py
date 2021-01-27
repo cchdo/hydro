@@ -16,6 +16,8 @@ from pathlib import Path
 import io
 from zipfile import ZipFile, ZIP_DEFLATED
 import warnings
+import string
+from logging import getLogger
 
 import numpy as np
 import pandas as pd
@@ -33,6 +35,8 @@ try:
     from hydro import __version__ as hydro_version
 except ImportError:
     hydro_version = "unknown"
+
+log = getLogger(__name__)
 
 
 WHPNameIndex = Dict[WHPName, int]
@@ -810,30 +814,72 @@ class Exchange:
 
         return dataset
 
+    def _gen_fname(self: Exchange) -> str:
+        allowed_chars = set(f"._{string.ascii_letters}{string.digits}")
+
+        key = self.keys[0]
+        if self.file_type == FileType.BOTTLE:
+            fname = f"{key.expocode}_hy1.csv"
+        elif self.file_type == FileType.CTD and len(self) > 1:
+            fname = f"{key.expocode}_ct1.zip"
+        else:
+            fname = f"{key.expocode}_{key.station}_{key.cast}_ct1.csv"
+
+        for char in set(fname) - allowed_chars:
+            fname = fname.replace(char, "_")
+
+        return fname
+
     def to_exchange_csv(
         self,
         filename_or_obj: Optional[Union[str, Path, io.BufferedIOBase]] = None,
-        zip_ctd: Optional[bool] = True,
+        zip_ctd: bool = True,
     ):
         """Export :class:`hydro.exchange.Exchange` object to WHP-Exchange datafile(s)"""
+        log.info(f"Converting {self} to exchange csv")
+        log.info(f"File Type is {self.file_type.name}")
 
         # headers
         now = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
-        file_indicator = f"{self.file_type.name}, {now}CCHSIO"
+
+        # TODO: Chance CCHSIO to something (sourced) better
+        file_indicator = f"{self.file_type.name},{now}CCHSIO\n"
+        # TODO: I think this is only here due to how to compare "comments" when round tripping files
+        if self.comments.startswith(("CTD", "BOTTLE")):
+            comments = self.comments.split("\n", maxsplit=1)[1]
+        else:
+            comments = self.comments
+        # TODO: I'm kinda "meh" on replace calls and somewhat prefer an explicit
+        # f"#{line}" type loop
+        header = (file_indicator + comments).replace("\n", "\n#")
+
+        ctd_headers = []
+        data_params = []
+
+        # create params/units rows
+        log.debug("Processing Parameters")
         units, format_dict, na_values = {}, {}, {}
         for param in self.parameters:
+            if self.file_type == FileType.CTD and param in WHPNames.groups.profile:
+                log.debug(f"Put {param} in CTD Headers")
+                ctd_headers.append(param.whp_name)
+            else:
+                data_params.append(param.whp_name)
             units[param.whp_name] = param.whp_unit or ""  # empty str if unit is None
             format_dict[param.whp_name] = (param.field_width, param.numeric_precision)
             na_values[param.whp_name] = f"{-999:>{param.field_width}}"
-            if param in self.flags:
-                units[f"{param.whp_name}_FLAG_W"] = ""
-                format_dict[f"{param.whp_name}_FLAG_W"] = (1, 0)  # flags are integers
-                na_values[f"{param.whp_name}_FLAG_W"] = "9"  # flag field_width is 1
+            if param in self.flags and param.whp_name not in ctd_headers:
+                param_flag_name = f"{param.whp_name}_FLAG_W"
+                units[param_flag_name] = ""
+                format_dict[param_flag_name] = (1, 0)  # flags are integers
+                na_values[param_flag_name] = "9"  # flag field_width is 1
+                data_params.append(param_flag_name)
+            # TODO: Error columns, the name needs to come from a lookup table though
+        params_row = ",".join(str(k) for k in units.keys() if k in data_params)
+        units_row = ",".join(str(v) for k, v in units.items() if k in data_params)
 
-        header = f"""{file_indicator}
-{",".join(str(k) for k in units.keys())}
-{",".join(str(v) for v in units.values())}
-"""
+        log.debug(f"{ctd_headers=}")
+        log.debug(f"{data_params=}")
 
         # consolidate to dataframe
         df_list = []
@@ -853,10 +899,10 @@ class Exchange:
 
         for df in df_list:
             # fix formatting
-            df["DATE"] = df["DATE"].dt.strftime("%Y%m%d")
-            df["TIME"] = df["TIME"].dt.strftime("%H%M")
             for key, (width, prec) in format_dict.items():
                 if key in ["DATE", "TIME"]:
+                    dt_format = {"DATE": "%Y%m%d", "TIME": "%H%M"}
+                    df[key] = df[key].dt.strftime(dt_format[key])
                     continue
                 elif df[key].dtype == object:
                     df[key] = df[key].map(f"{{:>{width}s}}".format, na_action="ignore")
@@ -865,17 +911,30 @@ class Exchange:
                     f"{{:>{width}.{prec or 0}f}}".format, na_action="ignore"
                 )
             df.fillna(value=na_values, inplace=True)
-            data_bytes_csv = bytes(df.to_csv(index=False, header=False).encode("utf8"))
-            file_contents = header.encode("utf8") + data_bytes_csv + b"END_DATA"
+            data_bytes_csv = bytes(
+                df.to_csv(index=False, header=False, columns=data_params).encode("utf8")
+            )
 
             # save
             expocode = df["EXPOCODE"].unique().item().strip()
             postfix = {"BOTTLE": "_hy1", "CTD": "_ct1"}[self.file_type.name]
             folder = Path()
             if self.file_type == FileType.CTD:
-                station = int(df["STNNBR"].unique().item())
+                ctd_header = ""
+                num_headers = 1  # NUMBER_HEADERS always included
+                for x in ctd_headers:
+                    ctd_header += f"{x} = {df[x].unique().item().strip()}\n"
+                    num_headers += 1
+                ctd_header = f"NUMBER_HEADERS = {num_headers}\n" + ctd_header
+                file_header = f"{header}\n{ctd_header}{params_row}\n{units_row}\n"
+                file_contents = (
+                    file_header.encode("utf8") + data_bytes_csv + b"END_DATA"
+                )
+                station = df["STNNBR"].unique().item().strip()
                 cast = int(df["CASTNO"].unique().item())
-                infix = f"_{station:05d}_{cast:05d}"
+                infix = f"_{station}_{cast:05d}"
+                # TODO: using expocode like this can cause "directories" to be made rather
+                # than filename, this will be ok in a zip file, but will crash if writing to a bottle file
                 fname = Path(expocode + infix + postfix + ".csv")
                 if isinstance(filename_or_obj, (str, Path)):
                     folder = Path(filename_or_obj).with_suffix("")
@@ -891,6 +950,10 @@ class Exchange:
                         continue
 
             if self.file_type == FileType.BOTTLE:
+                file_header = f"{header}\n{params_row}\n{units_row}\n"
+                file_contents = (
+                    file_header.encode("utf8") + data_bytes_csv + b"END_DATA"
+                )
                 if isinstance(filename_or_obj, io.BufferedIOBase):
                     filename_or_obj.write(file_contents)
                     return
