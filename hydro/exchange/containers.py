@@ -422,11 +422,17 @@ class Exchange:
             flag_values.append(int(flag))
             flag_meanings.append(flag.cf_def)  # type: ignore
 
+        odv_conventions_map = {
+            "woce_bottle": "WOCESAMPLE - WOCE Quality Codes for the sampling device itself",
+            "woce_ctd": "WOCECTD - WOCE Quality Codes for CTD instrument measurements",
+            "woce_discrete": "WOCEBOTTLE - WOCE Quality Codes for water sample (bottle) measurements",
+        }
+
         attrs = {
             "standard_name": "status_flag",
             "flag_values": np.array(flag_values, dtype="int8"),
             "flag_meanings": " ".join(flag_meanings),
-            "whp_flag_scheme": param.flag_w,
+            "conventions": odv_conventions_map[param.flag_w],  # type: ignore
         }
 
         da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
