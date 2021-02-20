@@ -200,11 +200,13 @@ class ExchangeXYZT(Mapping):
         cls, data_line: Dict[WHPName, IntermediateDataPoint]
     ) -> ExchangeXYZT:
 
-        date = datetime.strptime(data_line.pop(cls.DATE).data, "%Y%m%d").date()
+        units = "D"
+        date = datetime.strptime(data_line.pop(cls.DATE).data, "%Y%m%d")
         try:
             time = data_line.pop(cls.TIME).data
             time_obj = datetime.strptime(time, "%H%M").time()
-            date = datetime.combine(date, time_obj)
+            date = datetime.combine(date.date(), time_obj)
+            units = "m"
         except KeyError:
             pass
 
@@ -212,7 +214,7 @@ class ExchangeXYZT(Mapping):
             x=ExchangeDataPoint.from_ir(cls.LONGITUDE, data_line.pop(cls.LONGITUDE)),
             y=ExchangeDataPoint.from_ir(cls.LATITUDE, data_line.pop(cls.LATITUDE)),
             z=ExchangeDataPoint.from_ir(cls.CTDPRS, data_line[cls.CTDPRS]),
-            t=np.datetime64(date),
+            t=np.datetime64(date, units),
         )
 
     def __repr__(self):
