@@ -346,10 +346,13 @@ def read_exchange(
             ctd_units.append(None)
             ctd_values.append(value)
 
-    params = data_lines.popleft().split(",")
+    params = [param.strip() for param in data_lines.popleft().split(",")]
     # we can have a bunch of empty strings as units, we want these to be
     # None to match what would be in a WHPName object
-    units = [x if x != "" else None for x in data_lines.popleft().split(",")]
+    units = [
+        x if x != "" else None
+        for x in [unit.strip() for unit in data_lines.popleft().split(",")]
+    ]
 
     # at this point the data_lines should ONLY contain data/flags
 
