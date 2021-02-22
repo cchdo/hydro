@@ -17,6 +17,7 @@ from zipfile import is_zipfile, ZipFile
 from operator import itemgetter
 from datetime import datetime
 from warnings import warn
+import logging
 
 import requests
 
@@ -49,6 +50,8 @@ from .exceptions import (
 )
 
 from .merge import merge_ex
+
+log = logging.getLogger(__name__)
 
 # WHPNameIndex represents a Name to Column index in an exchange file
 WHPNameIndex = Dict[WHPName, int]
@@ -270,13 +273,16 @@ def read_exchange(
     """Open an exchange file and return an :class:`hydro.exchange.Exchange` object"""
 
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
+        log.info("Loading object over http")
         data_raw = io.BytesIO(requests.get(filename_or_obj).content)
 
     elif isinstance(filename_or_obj, (str, Path)):
+        log.info("Loading object from local file path")
         with open(filename_or_obj, "rb") as f:
             data_raw = io.BytesIO(f.read())
 
     elif isinstance(filename_or_obj, io.BufferedIOBase):
+        log.info("Loading object open file object")
         data_raw = io.BytesIO(filename_or_obj.read())
 
     if is_zipfile(data_raw):
@@ -318,6 +324,8 @@ def read_exchange(
         ftype = FileType.CTD
     else:
         raise ExchangeMagicNumberError
+
+    log.info(f"Found filetype: {ftype.name}")
 
     data_lines = deque(data.splitlines())
     stamp = data_lines.popleft()
