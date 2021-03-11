@@ -32,7 +32,7 @@ from .exceptions import (
 )
 
 try:
-    from hydro import __version__ as hydro_version
+    from .. import __version__ as hydro_version
 except ImportError:
     hydro_version = "unknown"
 
