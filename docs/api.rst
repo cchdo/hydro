@@ -1,4 +1,4 @@
-.. currentmodule:: hydro
+.. currentmodule:: cchdo.hydro
 
 API
 ===
@@ -10,7 +10,7 @@ Exchange Format
 containers
 ~~~~~~~~~~
 
-.. automodule:: hydro.exchange.containers
+.. automodule:: cchdo.hydro.exchange.containers
     :members: 
     :undoc-members:
     :private-members:
@@ -19,7 +19,7 @@ containers
 io
 ~~
 
-.. automodule:: hydro.exchange.io
+.. automodule:: cchdo.hydro.exchange.io
     :members: 
     :undoc-members:
     :private-members:
@@ -28,7 +28,7 @@ io
 exceptions
 ~~~~~~~~~~
 
-.. automodule:: hydro.exchange.exceptions
+.. automodule:: cchdo.hydro.exchange.exceptions
     :members: 
     :undoc-members:
     :private-members:
@@ -37,7 +37,7 @@ exceptions
 flags
 ~~~~~~~~~~
 
-.. automodule:: hydro.exchange.flags
+.. automodule:: cchdo.hydro.exchange.flags
     :members: 
     :undoc-members:
     :private-members:
@@ -46,7 +46,7 @@ flags
 merge
 ~~~~~~~~~~
 
-.. automodule:: hydro.exchange.merge
+.. automodule:: cchdo.hydro.exchange.merge
     :members: 
     :undoc-members:
     :private-members:
