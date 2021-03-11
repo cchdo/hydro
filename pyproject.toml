@@ -4,4 +4,4 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 write_to = "cchdo/hydro/_version.py"
-write_to_template = 'version = "{version}"\n'
+write_to_template = 'version = "{version}"'
