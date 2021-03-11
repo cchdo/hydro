@@ -24,6 +24,7 @@ import pandas as pd
 import xarray as xr
 
 from cchdo.params import WHPNames, WHPName
+from cchdo.params._version import version as params_version
 from .flags import ExchangeBottleFlag, ExchangeSampleFlag, ExchangeCTDFlag
 from .exceptions import (
     ExchangeDataFlagPairError,
@@ -33,8 +34,12 @@ from .exceptions import (
 
 try:
     from .. import __version__ as hydro_version
+
+    CCHDO_VERSION = ".".join(hydro_version.split(".")[:2])
+    if "dev" in hydro_version:
+        CCHDO_VERSION = hydro_version
 except ImportError:
-    hydro_version = "unknown"
+    hydro_version = CCHDO_VERSION = "unknown"
 
 log = getLogger(__name__)
 
@@ -809,7 +814,9 @@ class Exchange:
             {da.name: da for da in data_arrays},
             coords=coords,
             attrs={
-                "Conventions": f"CF-1.8 CCHDO-{hydro_version}",
+                "Conventions": f"CF-1.8 CCHDO-{CCHDO_VERSION}",
+                "cchdo_software_version": f"hydro {hydro_version}",
+                "cchdo_parameters_version": f"params {params_version}",
                 "comments": self.comments,
                 "featureType": "profile",
             },
