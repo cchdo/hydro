@@ -1,10 +1,15 @@
+**********
 Attributes
-==========
+**********
+
+
+Variable Level Attributes
+=========================
 
 ``_FillValue``
 --------------
 
-:type:       numeric
+:dtype:      same as the variable
 :usage:      variables
 :required:   only if there are missing data
 :reference:  CF-1.8, NUG
