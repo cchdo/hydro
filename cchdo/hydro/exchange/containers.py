@@ -559,7 +559,8 @@ class Exchange:
             dims=dims,
             attrs=attrs,
         )
-        da.encoding["_FillValue"] = None
+        # TODO Write a migrator for the new fill value
+        da.encoding["_FillValue"] = np.NaN
         da.encoding["units"] = "days since 1950-01-01T00:00Z"
         da.encoding["calendar"] = "gregorian"
         return da
