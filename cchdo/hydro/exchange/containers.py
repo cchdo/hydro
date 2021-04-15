@@ -788,6 +788,18 @@ class Exchange:
 
                 ancillary_variables.append(da_error.name)
 
+            # analytical temperature linking
+            # TODO: write a migrator/tests for this
+            if param.analytical_temperature_name is not None:
+                temperature_param = WHPNames[
+                    (
+                        param.analytical_temperature_name,
+                        param.analytical_temperature_units,
+                    )
+                ]
+                if temperature_param in self.parameters:
+                    ancillary_variables.append(temperature_param.nc_name)
+
             if len(ancillary_variables) > 0:
                 da.attrs["ancillary_variables"] = " ".join(ancillary_variables)
 
