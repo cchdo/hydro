@@ -3,11 +3,25 @@ import pandas as pd
 from numpy import nan_to_num
 
 
-class MatlabAccessor:
+class CCHDOAccessorBase:
     def __init__(self, xarray_obj):
         self._obj = xarray_obj
 
+
+class MatlabAccessor(CCHDOAccessorBase):
     def savemat(self, fname):
+        """Experimental Matlab .mat data file generator
+
+        The support for netCDF files in Matlab is really bad.
+        Matlab also has no built in support for the standards
+        we are trying to follow (CF, ACDD), the most egregious
+        lack of support is how to deal with times in netCDF files.
+        This was an attempt to make a mat file which takes
+        care of some of the things matlab won't do for you.
+        It requires scipy to function.
+
+        The file it produces is in no way stable.
+        """
         from scipy.io import savemat as scipy_savemat
 
         mat_dict = {}
@@ -22,11 +36,21 @@ class MatlabAccessor:
             mat_dict[param] = value
 
         # cleanups for matlab users
+        def to_matdate(dt):
+            if dt is None:
+                return "NaT"
+            return dt.strftime("%d-%b-%Y %H:%M:%S")
+
+        def dt_list_to_str_list(dtl):
+            return list(map(to_matdate, dtl))
+
         for _, value in mat_dict.items():
             if value.get("attrs", {}).get("standard_name") == "time":
-                value["data"] = list(
-                    map(lambda x: x.strftime("%d-%b-%Y %H:%M:%S"), value["data"])
-                )
+                # the case of list of lists is bottle closure times, which is a sparse array
+                if any(isinstance(v, list) for v in value["data"]):
+                    value["data"] = list(map(dt_list_to_str_list, value["data"]))
+                else:
+                    value["data"] = dt_list_to_str_list(value["data"])
 
             if "status_flag" in value.get("attrs", {}).get("standard_name", ""):
                 value["data"] = nan_to_num(value["data"], nan=9)
@@ -34,11 +58,13 @@ class MatlabAccessor:
         scipy_savemat(fname, mat_dict)
 
 
-class WoceAccessor:
-    def __init__(self, xarray_obj):
-        self._obj = xarray_obj
-
+class WoceAccessor(CCHDOAccessorBase):
     def sum_file(self, path=None):
+        """netCDF to WOCE sumfile maker
+
+        This is missing some information that is not included anymore (wire out, height above bottom).
+        It is especially lacking in including woce parameter IDs
+        """
         COMMENTS = "CCHDO SumFile"  # TODO is there a better way?
         SUM_COLUMN_HEADERS_1 = [
             "SHIP/CRS",
@@ -204,9 +230,38 @@ class WoceAccessor:
         return sum_file
 
 
-def register(name):
-    if name in ("matlab", "all"):
-        xr.register_dataset_accessor("matlab")(MatlabAccessor)
+class GeoAccessor(CCHDOAccessorBase):
+    @property
+    def __geo_interface__(self):
+        """The station positions as a MultiPoint geo interface
 
-    if name in ("woce", "all"):
-        xr.register_dataset_accessor("matlab")(WoceAccessor)
+        See https://gist.github.com/sgillies/2217756
+        """
+        coords = []
+
+        for _, prof in self._obj.groupby("N_PROF"):
+            coords.append(
+                (
+                    float(prof.longitude.values),
+                    float(prof.latitude.values),
+                )
+            )
+
+        return {"type": "MultiPoint", "coordinates": coords}
+
+    @property
+    def track(self):
+        """A dict which can be dumped to json which conforms to the expected
+        structure for the CCHDO website
+        """
+        geo = self.__geo_interface__
+        geo["type"] = "LineString"
+        return geo
+
+
+class CCHDOAccessor(GeoAccessor, WoceAccessor, MatlabAccessor):
+    ...
+
+
+def register():
+    xr.register_dataset_accessor("cchdo")(CCHDOAccessor)
