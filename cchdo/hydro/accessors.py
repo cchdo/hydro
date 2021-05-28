@@ -1,6 +1,6 @@
 import xarray as xr
 import pandas as pd
-from numpy import nan_to_num
+import numpy as np
 
 
 class CCHDOAccessorBase:
@@ -53,7 +53,7 @@ class MatlabAccessor(CCHDOAccessorBase):
                     value["data"] = dt_list_to_str_list(value["data"])
 
             if "status_flag" in value.get("attrs", {}).get("standard_name", ""):
-                value["data"] = nan_to_num(value["data"], nan=9)
+                value["data"] = np.nan_to_num(value["data"], nan=9)
 
         scipy_savemat(fname, mat_dict)
 
@@ -237,17 +237,10 @@ class GeoAccessor(CCHDOAccessorBase):
 
         See https://gist.github.com/sgillies/2217756
         """
-        coords = []
+        ds = self._obj
+        coords = np.column_stack((ds.longitude, ds.latitude))
 
-        for _, prof in self._obj.groupby("N_PROF"):
-            coords.append(
-                (
-                    float(prof.longitude.values),
-                    float(prof.latitude.values),
-                )
-            )
-
-        return {"type": "MultiPoint", "coordinates": coords}
+        return {"type": "MultiPoint", "coordinates": coords.tolist()}
 
     @property
     def track(self):
@@ -255,6 +248,11 @@ class GeoAccessor(CCHDOAccessorBase):
         structure for the CCHDO website
         """
         geo = self.__geo_interface__
+        if len(geo["coordinates"]) == 1:
+            # Website only supports LineString which must contain at least 2 points
+            # They can be the same point though
+            geo["coordinates"].append(geo["coordinates"][0])
+
         geo["type"] = "LineString"
         return geo
 
