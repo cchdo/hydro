@@ -8,15 +8,16 @@ from typing import (
     Dict,
     NamedTuple,
 )
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone, time
 from enum import Enum
 from itertools import groupby
 from functools import cached_property
 from pathlib import Path
 import io
-from zipfile import ZipFile, ZIP_DEFLATED
 import warnings
 import string
+from textwrap import indent
+from functools import wraps
 from logging import getLogger
 
 import numpy as np
@@ -292,6 +293,24 @@ class ExchangeXYZT(Mapping):
         return pd.Timestamp(self.t).to_pydatetime().date()
 
 
+def _ndcache_helper(key):
+    def _ndcache_dec(func):
+        @wraps(func)
+        def _ndcache_func(self: Exchange, param: Optional[WHPName] = None):
+            try:
+                return self._ndarray_cache[(param, key)]
+            except KeyError:
+                if param is None:
+                    self._ndarray_cache[(param, key)] = func(self)
+                else:
+                    self._ndarray_cache[(param, key)] = func(self, param)
+                return self._ndarray_cache[(param, key)]
+
+        return _ndcache_func
+
+    return _ndcache_dec
+
+
 class FileType(Enum):
     CTD = "C"
     BOTTLE = "B"
@@ -308,7 +327,7 @@ class Exchange:
     coordinates: Dict[ExchangeCompositeKey, ExchangeXYZT]
     data: Dict[ExchangeCompositeKey, Dict[WHPName, ExchangeDataPoint]]
 
-    _ndarray_cache: Dict[Tuple[WHPName, str], np.ndarray] = field(
+    _ndarray_cache: Dict[Tuple[Optional[WHPName], str], np.ndarray] = field(
         default_factory=dict, init=False
     )
 
@@ -397,6 +416,7 @@ class Exchange:
                 data={sample_id: self.data[sample_id] for sample_id in keys},
             )
 
+    @_ndcache_helper("flag")
     def flag_to_ndarray(self, param: WHPName) -> np.ndarray:
         if param not in self.flags:
             raise KeyError(f"No flags for {param}")
@@ -449,6 +469,7 @@ class Exchange:
 
         return da
 
+    @_ndcache_helper("error")
     def error_to_ndarray(self, param: WHPName) -> np.ndarray:
         if param not in self.errors:
             raise KeyError(f"No error for {param}")
@@ -479,6 +500,7 @@ class Exchange:
 
         return da
 
+    @_ndcache_helper("time")
     def time_to_ndarray(self) -> np.ndarray:
         """Time is a specal/funky case
 
@@ -527,6 +549,7 @@ class Exchange:
         da.encoding["dtype"] = "double"
         return da
 
+    @_ndcache_helper("date")
     def sampletime_to_ndarray(self) -> np.ndarray:
         arr = np.full(self.shape, np.datetime64("NaT"), dtype="datetime64[m]")
 
@@ -670,12 +693,8 @@ class Exchange:
 
         return dict(data)
 
+    @_ndcache_helper("value")
     def parameter_to_ndarray(self, param: WHPName) -> np.ndarray:
-        try:
-            return self._ndarray_cache[(param, "value")]
-        except KeyError:
-            pass
-
         # https://github.com/python/mypy/issues/5485
         dtype = param.data_type  # type: ignore
         if dtype == str:
@@ -705,7 +724,6 @@ class Exchange:
         if dtype == str:
             arr[arr == None] = ""  # noqa
 
-        self._ndarray_cache[(param, "value")] = arr
         return arr
 
     def parameter_to_dataarray(
@@ -862,134 +880,98 @@ class Exchange:
         self,
         filename_or_obj: Optional[Union[str, Path, io.BufferedIOBase]] = None,
         zip_ctd: bool = True,
+        stamp: str = "CCHDHYDRO",
     ):
         """Export :class:`hydro.exchange.Exchange` object to WHP-Exchange datafile(s)"""
         log.info(f"Converting {self} to exchange csv")
         log.info(f"File Type is {self.file_type.name}")
 
-        # headers
+        # File Fortmat indicator
+        # https://exchange-format.readthedocs.io/en/latest/common.html#file-format-indicator
         now = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
+        file_format_indicator = f"{self.file_type.name},{now}{stamp}"
 
-        # TODO: Chance CCHSIO to something (sourced) better
-        file_indicator = f"{self.file_type.name},{now}CCHSIO\n"
-        # TODO: I think this is only here due to how to compare "comments" when round tripping files
-        if self.comments.startswith(("CTD", "BOTTLE")):
-            comments = self.comments.split("\n", maxsplit=1)[1]
-        else:
-            comments = self.comments
-        # TODO: I'm kinda "meh" on replace calls and somewhat prefer an explicit
-        # f"#{line}" type loop
-        header = (file_indicator + comments).replace("\n", "\n#")
+        # File Comments
+        # https://exchange-format.readthedocs.io/en/latest/common.html#optional-comment-lines
+        file_comments = indent(self.comments, "# ")
 
-        ctd_headers = []
-        data_params = []
+        # File Parameter and Unit Lines
+        # https://exchange-format.readthedocs.io/en/latest/common.html#parameter-and-unit-lines
+        _parameters = []
+        _units = []
 
-        # create params/units rows
-        log.debug("Processing Parameters")
-        units, format_dict, na_values = {}, {}, {}
+        def none_to_empty(x: Optional[str]) -> str:
+            if x is None:
+                return ""
+            return x
+
+        # TODO, sort the params, needs to be part of the Exchange object
         for param in self.parameters:
-            if self.file_type == FileType.CTD and param in WHPNames.groups.profile:
-                log.debug(f"Put {param} in CTD Headers")
-                ctd_headers.append(param.whp_name)
-            else:
-                data_params.append(param.whp_name)
-            units[param.whp_name] = param.whp_unit or ""  # empty str if unit is None
-            format_dict[param.whp_name] = (param.field_width, param.numeric_precision)
-            na_values[param.whp_name] = f"{-999:>{param.field_width}}"
-            if param in self.flags and param.whp_name not in ctd_headers:
-                param_flag_name = f"{param.whp_name}_FLAG_W"
-                units[param_flag_name] = ""
-                format_dict[param_flag_name] = (1, 0)  # flags are integers
-                na_values[param_flag_name] = "9"  # flag field_width is 1
-                data_params.append(param_flag_name)
-            # TODO: Error columns, the name needs to come from a lookup table though
-        params_row = ",".join(str(k) for k in units.keys() if k in data_params)
-        units_row = ",".join(str(v) for k, v in units.items() if k in data_params)
+            _parameters.append(param.whp_name)
+            _units.append(none_to_empty(param.whp_unit))
 
-        log.debug(f"{ctd_headers=}")
-        log.debug(f"{data_params=}")
+            if param in self.flags:
+                _parameters.append(f"{param.whp_name}_FLAG_W")
+                _units.append("")
 
-        # consolidate to dataframe
-        df_list = []
-        for p in self.iter_profiles():
-            df = pd.DataFrame()
+            if param in self.errors:
+                if param.error_name is None:
+                    raise ValueError(f"No error name found for param {param}")
+                _parameters.append(param.error_name)
+                _units.append(none_to_empty(param.whp_unit))
+
+        file_parameters = ",".join(_parameters)
+        file_units = ",".join(_units)
+
+        # Data Lines
+        # TODO Port to be a method of WHPName...
+        def whp_format(param: WHPName, value, flag=False):
+            if flag is True and not np.isnan(value):
+                return f"{int(value):d}"
+            elif flag is True:
+                return "9"
+
+            # https://github.com/python/mypy/issues/5485
+            if param.data_type == str:  # type: ignore
+                if isinstance(value, date):
+                    return f"{value:%Y%m%d}"
+                if isinstance(value, time):
+                    return f"{value:%H%M}"
+                return f"{str(value):{param.field_width}s}"
+            if param.data_type == int:  # type: ignore
+                if np.isnan(value):
+                    return f"{-999:{param.field_width}d}"
+                return f"{int(value):{param.field_width}d}"
+            if param.data_type == float:  # type: ignore
+                if np.isnan(value):
+                    return f"{-999:{param.field_width}.0f}"
+
+                return f"{value:{param.field_width}.{param.numeric_precision}f}"
+
+        _data = []
+        for key in self.keys:
+            row = []
             for param in self.parameters:
-                if param.whp_name in ["DATE", "TIME"]:
-                    df[param.whp_name] = p.time_to_ndarray().flatten()
-                else:
-                    df[param.whp_name] = p.parameter_to_ndarray(param).flatten()
+                value = self.parameter_to_ndarray(param)[self.ndaray_indicies[key]]
+                row.append(whp_format(param, value))
+
                 if param in self.flags:
-                    df[param.whp_name + "_FLAG_W"] = p.flag_to_ndarray(param).flatten()
-            df_list.append(df)
+                    value = self.flag_to_ndarray(param)[self.ndaray_indicies[key]]
+                    row.append(whp_format(param, value, flag=True))
 
-        if self.file_type == FileType.BOTTLE:
-            df_list = [pd.concat(df_list)]
+                if param in self.errors:
+                    value = self.error_to_ndarray(param)[self.ndaray_indicies[key]]
+                    row.append(whp_format(param, value))
+            _data.append(",".join(row))
+        file_data = "\n".join(_data)
 
-        for df in df_list:
-            # fix formatting
-            for key, (width, prec) in format_dict.items():
-                if key in ["DATE", "TIME"]:
-                    dt_format = {"DATE": "%Y%m%d", "TIME": "%H%M"}
-                    df[key] = df[key].dt.strftime(dt_format[key])
-                    continue
-                elif df[key].dtype == object:
-                    df[key] = df[key].map(f"{{:>{width}s}}".format, na_action="ignore")
-                    continue
-                df[key] = df[key].map(  # if prec is None: prec = 0
-                    f"{{:>{width}.{prec or 0}f}}".format, na_action="ignore"
-                )
-            df.fillna(value=na_values, inplace=True)
-            data_bytes_csv = bytes(
-                df.to_csv(index=False, header=False, columns=data_params).encode("utf8")
-            )
-
-            # save
-            expocode = df["EXPOCODE"].unique().item().strip()
-            postfix = {"BOTTLE": "_hy1", "CTD": "_ct1"}[self.file_type.name]
-            folder = Path()
-            if self.file_type == FileType.CTD:
-                ctd_header = ""
-                num_headers = 1  # NUMBER_HEADERS always included
-                for x in ctd_headers:
-                    ctd_header += f"{x} = {df[x].unique().item().strip()}\n"
-                    num_headers += 1
-                ctd_header = f"NUMBER_HEADERS = {num_headers}\n" + ctd_header
-                file_header = f"{header}\n{ctd_header}{params_row}\n{units_row}\n"
-                file_contents = (
-                    file_header.encode("utf8") + data_bytes_csv + b"END_DATA"
-                )
-                station = df["STNNBR"].unique().item().strip()
-                cast = int(df["CASTNO"].unique().item())
-                infix = f"_{station}_{cast:05d}"
-                # TODO: using expocode like this can cause "directories" to be made rather
-                # than filename, this will be ok in a zip file, but will crash if writing to a bottle file
-                fname = Path(expocode + infix + postfix + ".csv")
-                if isinstance(filename_or_obj, (str, Path)):
-                    folder = Path(filename_or_obj).with_suffix("")
-                elif not filename_or_obj:
-                    folder = Path(expocode + postfix)
-                if not zip_ctd:
-                    folder.mkdir(exist_ok=True)
-                else:
-                    with ZipFile(
-                        folder.with_suffix(".zip"), mode="a", compression=ZIP_DEFLATED
-                    ) as zipped:
-                        zipped.writestr(str(fname), file_contents)
-                        continue
-
-            if self.file_type == FileType.BOTTLE:
-                file_header = f"{header}\n{params_row}\n{units_row}\n"
-                file_contents = (
-                    file_header.encode("utf8") + data_bytes_csv + b"END_DATA"
-                )
-                if isinstance(filename_or_obj, io.BufferedIOBase):
-                    filename_or_obj.write(file_contents)
-                    return
-                elif isinstance(filename_or_obj, (str, Path)):
-                    fname = Path(filename_or_obj).with_suffix(".csv")
-                elif filename_or_obj is None:
-                    return file_contents
-                    fname = Path(expocode + postfix + ".csv")
-
-            with open(folder / fname, "xb") as f:
-                f.write(file_contents)
+        return "\n".join(
+            [
+                file_format_indicator,
+                file_comments,
+                file_parameters,
+                file_units,
+                file_data,
+                "END_DATA",
+            ]
+        )
