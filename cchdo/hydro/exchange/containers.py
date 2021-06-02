@@ -335,6 +335,9 @@ class Exchange:
         # first the keys are sorted by information contained in the coordinates
         sorted_keys = sorted(self.keys, key=lambda x: self.coordinates[x])
 
+        # Make params ordered by preferred order (might change with params DB)
+        object.__setattr__(self, "parameters", tuple(sorted(self.parameters)))
+
         # this checks to see if the number of unique profile_ids would be the same
         # lengths as the number of profiles we woudl get when "iter_profiles"
         if len({key.profile_id for key in sorted_keys}) != len(
@@ -905,7 +908,6 @@ class Exchange:
                 return ""
             return x
 
-        # TODO, sort the params, needs to be part of the Exchange object
         for param in self.parameters:
             _parameters.append(param.whp_name)
             _units.append(none_to_empty(param.whp_unit))
