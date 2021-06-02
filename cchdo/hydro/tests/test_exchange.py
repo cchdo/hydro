@@ -118,8 +118,9 @@ def test_write_exchange():
     csv = ex.to_exchange_csv()
     ex2 = read_exchange(io.BytesIO(csv))
 
-    # header will be different so skip up through first newline
-    assert ex.comments.split("\n")[1:] == ex2.comments.split("\n")[1:]
+    # comment of the second file will have the stamp of the first in it
+    # ignore for the round trip purposes
+    assert ex.comments.split("\n") == ex2.comments.split("\n")[1:]
     assert ex.data == ex2.data
     assert ex.coordinates == ex2.coordinates
     assert ex.parameters == ex2.parameters

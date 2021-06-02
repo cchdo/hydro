@@ -896,7 +896,7 @@ class Exchange:
 
         # File Comments
         # https://exchange-format.readthedocs.io/en/latest/common.html#optional-comment-lines
-        file_comments = indent(self.comments, "# ")
+        file_comments = indent(self.comments, "#")
 
         # File Parameter and Unit Lines
         # https://exchange-format.readthedocs.io/en/latest/common.html#parameter-and-unit-lines
@@ -976,4 +976,4 @@ class Exchange:
                 file_data,
                 "END_DATA",
             ]
-        )
+        ).encode("utf8")
