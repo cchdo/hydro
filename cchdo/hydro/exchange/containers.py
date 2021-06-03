@@ -7,18 +7,19 @@ from typing import (
     Optional,
     Dict,
     NamedTuple,
+    IO,
 )
 from datetime import date, datetime, timezone, time
 from enum import Enum
 from itertools import groupby
 from functools import cached_property
-from pathlib import Path
-import io
+from zipfile import ZipFile, ZIP_DEFLATED
 import warnings
 import string
 from textwrap import indent
 from functools import wraps
 from logging import getLogger
+import os  # noqa
 
 import numpy as np
 import pandas as pd
@@ -863,7 +864,7 @@ class Exchange:
 
         return dataset
 
-    def _gen_fname(self: Exchange) -> str:
+    def gen_fname(self: Exchange) -> str:
         allowed_chars = set(f"._{string.ascii_letters}{string.digits}")
 
         key = self.keys[0]
@@ -881,13 +882,24 @@ class Exchange:
 
     def to_exchange_csv(
         self,
-        filename_or_obj: Optional[Union[str, Path, io.BufferedIOBase]] = None,
+        filename_or_obj: Optional[Union[str, "os.PathLike[str]", IO[bytes]]] = None,
         zip_ctd: bool = True,
         stamp: str = "CCHDHYDRO",
     ):
         """Export :class:`hydro.exchange.Exchange` object to WHP-Exchange datafile(s)"""
         log.info(f"Converting {self} to exchange csv")
         log.info(f"File Type is {self.file_type.name}")
+
+        if self.file_type == FileType.CTD and len(self) > 1:
+            if filename_or_obj is None:
+                raise ValueError(
+                    "Will result in multiple files, please provide a path or open filelike object in bytes mode to write to"
+                )
+            with ZipFile(filename_or_obj, "w", compression=ZIP_DEFLATED) as zf:
+                for profile in self.iter_profiles():
+                    with zf.open(profile.gen_fname(), "w") as zip_prof:
+                        zip_prof.write(profile.to_exchange_csv())
+            return
 
         # File Fortmat indicator
         # https://exchange-format.readthedocs.io/en/latest/common.html#file-format-indicator
@@ -908,7 +920,14 @@ class Exchange:
                 return ""
             return x
 
-        for param in self.parameters:
+        _data_params = self.parameters
+        _ctd_params: Tuple[WHPName, ...] = tuple()
+
+        if self.file_type == FileType.CTD:
+            _ctd_params = tuple(filter(lambda x: x.scope == "profile", _data_params))
+            _data_params = tuple(filter(lambda x: x.scope != "profile", _data_params))
+
+        for param in _data_params:
             _parameters.append(param.whp_name)
             _units.append(none_to_empty(param.whp_unit))
 
@@ -950,10 +969,24 @@ class Exchange:
 
                 return f"{value:{param.field_width}.{param.numeric_precision}f}"
 
+        _ctd_headers = []
+        if self.file_type == FileType.CTD:
+            _ctd_headers.append(f"NUMBER_HEADERS = {len(_ctd_params) + 1}")
+            for param in _ctd_params:
+                ctdh_key = param.whp_name
+                ctdh_value = self.parameter_to_ndarray(param)[
+                    self.ndaray_indicies[self.keys[0]]
+                ]
+                _ctd_headers.append(
+                    f"{ctdh_key} = {whp_format(param, ctdh_value).strip()}"
+                )
+
+        file_ctd_headers = "\n".join(_ctd_headers)
+
         _data = []
         for key in self.keys:
             row = []
-            for param in self.parameters:
+            for param in _data_params:
                 value = self.parameter_to_ndarray(param)[self.ndaray_indicies[key]]
                 row.append(whp_format(param, value))
 
@@ -967,13 +1000,15 @@ class Exchange:
             _data.append(",".join(row))
         file_data = "\n".join(_data)
 
-        return "\n".join(
-            [
-                file_format_indicator,
-                file_comments,
-                file_parameters,
-                file_units,
-                file_data,
-                "END_DATA",
-            ]
-        ).encode("utf8")
+        _data_file = [
+            file_format_indicator,
+            file_comments,
+            file_parameters,
+            file_units,
+            file_data,
+            "END_DATA",
+        ]
+        if self.file_type == FileType.CTD:
+            _data_file.insert(2, file_ctd_headers)
+
+        return "\n".join(_data_file).encode("utf8")
