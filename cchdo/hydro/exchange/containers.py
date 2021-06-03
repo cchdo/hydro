@@ -958,7 +958,12 @@ class Exchange:
                     return f"{value:%Y%m%d}"
                 if isinstance(value, time):
                     return f"{value:%H%M}"
-                return f"{str(value):{param.field_width}s}"
+                formatted = f"{str(value):{param.field_width}s}"
+                # having empty cells is undesireable
+                if formatted.strip() == "":
+                    return f"{'-999':{param.field_width}s}"
+
+                return formatted
             if param.data_type == int:  # type: ignore
                 if np.isnan(value):
                     return f"{-999:{param.field_width}d}"
