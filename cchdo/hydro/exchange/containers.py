@@ -16,7 +16,6 @@ from functools import cached_property
 from zipfile import ZipFile, ZIP_DEFLATED
 import warnings
 import string
-from textwrap import indent
 from functools import wraps
 from logging import getLogger
 import os  # noqa
@@ -883,7 +882,6 @@ class Exchange:
     def to_exchange_csv(
         self,
         filename_or_obj: Optional[Union[str, "os.PathLike[str]", IO[bytes]]] = None,
-        zip_ctd: bool = True,
         stamp: str = "CCHDHYDRO",
     ):
         """Export :class:`hydro.exchange.Exchange` object to WHP-Exchange datafile(s)"""
@@ -908,7 +906,7 @@ class Exchange:
 
         # File Comments
         # https://exchange-format.readthedocs.io/en/latest/common.html#optional-comment-lines
-        file_comments = indent(self.comments, "#")
+        file_comments = "\n".join([f"#{line}" for line in self.comments.splitlines()])
 
         # File Parameter and Unit Lines
         # https://exchange-format.readthedocs.io/en/latest/common.html#parameter-and-unit-lines
@@ -1016,4 +1014,17 @@ class Exchange:
         if self.file_type == FileType.CTD:
             _data_file.insert(2, file_ctd_headers)
 
-        return "\n".join(_data_file).encode("utf8")
+        final_file = "\n".join(_data_file).encode("utf8")
+
+        if filename_or_obj is None:
+            return final_file
+
+        # we are going to ignore typing here since the open call will use
+        # the first two types: str, and PathLike. If it is an open file-like
+        # the second write will work unless the wrong modes are set (not binary
+        # or writable), just raise if things are wrong.
+        try:
+            with open(filename_or_obj, "wb") as f:  # type: ignore
+                f.write(final_file)
+        except TypeError:
+            filename_or_obj.write(final_file)  # type: ignore
