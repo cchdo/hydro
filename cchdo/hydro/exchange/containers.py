@@ -9,7 +9,7 @@ from typing import (
     NamedTuple,
     IO,
 )
-from datetime import date, datetime, timezone, time
+from datetime import datetime, timezone
 from enum import Enum
 from itertools import groupby
 from functools import cached_property
@@ -942,36 +942,6 @@ class Exchange:
         file_parameters = ",".join(_parameters)
         file_units = ",".join(_units)
 
-        # Data Lines
-        # TODO Port to be a method of WHPName...
-        def whp_format(param: WHPName, value, flag=False):
-            if flag is True and not np.isnan(value):
-                return f"{int(value):d}"
-            elif flag is True:
-                return "9"
-
-            # https://github.com/python/mypy/issues/5485
-            if param.data_type == str:  # type: ignore
-                if isinstance(value, date):
-                    return f"{value:%Y%m%d}"
-                if isinstance(value, time):
-                    return f"{value:%H%M}"
-                formatted = f"{str(value):{param.field_width}s}"
-                # having empty cells is undesireable
-                if formatted.strip() == "":
-                    return f"{'-999':{param.field_width}s}"
-
-                return formatted
-            if param.data_type == int:  # type: ignore
-                if np.isnan(value):
-                    return f"{-999:{param.field_width}d}"
-                return f"{int(value):{param.field_width}d}"
-            if param.data_type == float:  # type: ignore
-                if np.isnan(value):
-                    return f"{-999:{param.field_width}.0f}"
-
-                return f"{value:{param.field_width}.{param.numeric_precision}f}"
-
         _ctd_headers = []
         if self.file_type == FileType.CTD:
             _ctd_headers.append(f"NUMBER_HEADERS = {len(_ctd_params) + 1}")
@@ -980,9 +950,7 @@ class Exchange:
                 ctdh_value = self.parameter_to_ndarray(param)[
                     self.ndaray_indicies[self.keys[0]]
                 ]
-                _ctd_headers.append(
-                    f"{ctdh_key} = {whp_format(param, ctdh_value).strip()}"
-                )
+                _ctd_headers.append(f"{ctdh_key} = {param.strfex(ctdh_value).strip()}")
 
         file_ctd_headers = "\n".join(_ctd_headers)
 
@@ -991,15 +959,15 @@ class Exchange:
             row = []
             for param in _data_params:
                 value = self.parameter_to_ndarray(param)[self.ndaray_indicies[key]]
-                row.append(whp_format(param, value))
+                row.append(param.strfex(value))
 
                 if param in self.flags:
                     value = self.flag_to_ndarray(param)[self.ndaray_indicies[key]]
-                    row.append(whp_format(param, value, flag=True))
+                    row.append(param.strfex(value, flag=True))
 
                 if param in self.errors:
                     value = self.error_to_ndarray(param)[self.ndaray_indicies[key]]
-                    row.append(whp_format(param, value))
+                    row.append(param.strfex(value))
             _data.append(",".join(row))
         file_data = "\n".join(_data)
 
