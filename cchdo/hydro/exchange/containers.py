@@ -499,7 +499,7 @@ class Exchange:
         attrs = param.get_nc_attrs(error=True)
 
         da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
-        da.encoding["dtype"] = "float32"
+        da.encoding["dtype"] = "float64"
 
         return da
 
@@ -748,7 +748,7 @@ class Exchange:
         if data.dtype == object:
             da.encoding["dtype"] = "S1"
         if data.dtype == float:
-            da.encoding["dtype"] = "float32"
+            da.encoding["dtype"] = "float64"
 
         return da
 
