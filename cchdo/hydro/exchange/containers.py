@@ -72,12 +72,18 @@ class ExchangeDataPoint:
     value: Optional[Union[str, float, int]]
     error: Optional[float]
     flag: ExchangeFlags
+    source_c_format: Optional[int] = field(compare=False)
 
     @classmethod
     def from_ir(cls, whpname: WHPName, ir: IntermediateDataPoint) -> ExchangeDataPoint:
+        source_c_format = None
         if ir.data.startswith("-999"):
             value = None
         else:
+            if len(splt := ir.data.split(".")) == 2:
+                source_c_format = len(splt[-1])
+            elif whpname.data_type is float:  # type: ignore
+                source_c_format = 0
             # https://github.com/python/mypy/issues/5485
             value = whpname.data_type(ir.data)  # type: ignore
 
@@ -96,7 +102,13 @@ class ExchangeDataPoint:
             except TypeError:
                 pass
 
-        return ExchangeDataPoint(whpname=whpname, value=value, flag=flag, error=error)
+        return ExchangeDataPoint(
+            whpname=whpname,
+            value=value,
+            flag=flag,
+            error=error,
+            source_c_format=source_c_format,
+        )
 
     def __post_init__(self):
         if self.flag is not None and self.flag.has_value and self.value is None:
@@ -254,6 +266,16 @@ class ExchangeXYZT(Mapping):
             },
         )
 
+    @cached_property
+    def _source_c_formats(self):
+        return {
+            self.LONGITUDE: self.x.source_c_format,
+            self.LATITUDE: self.y.source_c_format,
+            self.CTDPRS: self.z.source_c_format,
+            self.TIME: None,
+            self.DATE: None,
+        }
+
     def __eq__(self, other):
         return (self.x, self.y, self.z, self.t) == (other.x, other.y, other.z, other.t)
 
@@ -402,6 +424,28 @@ class Exchange:
             [len(list(prof)) for _, prof in groupby(self.keys, lambda k: k.profile_id)]
         )
         return (x, y)
+
+    @cached_property
+    def _param_source_c_formats(self) -> Dict[WHPName, str]:
+        c_formats_max: Dict[WHPName, int] = {}
+        for coord in self.coordinates.values():
+            for param, c_format in coord._source_c_formats.items():
+                if c_format is None:
+                    continue
+                c_formats_max[param] = max(c_format, c_formats_max.get(param, 0))
+
+        for _, row in self.data.items():
+            for param, datum in row.items():
+                if datum.source_c_format is not None:
+                    c_formats_max[param] = max(
+                        datum.source_c_format, c_formats_max.get(param, 0)
+                    )
+
+        c_formats = {}
+        for param, C_format in c_formats_max.items():
+            c_formats[param] = f".{C_format}f"
+
+        return c_formats
 
     def iter_profiles(self):
         for _key, group in groupby(self.keys, lambda k: k.profile_id):
@@ -606,6 +650,8 @@ class Exchange:
             data = data[:, 0]
 
         attrs = param.get_nc_attrs()
+        if param in self._param_source_c_formats:
+            attrs["source_C_format"] = self._param_source_c_formats[param]
 
         axis = ExchangeXYZT.CF_AXIS[param]
         attrs["axis"] = axis
@@ -740,6 +786,8 @@ class Exchange:
         dims = DIMS[: data.ndim]
 
         attrs = param.get_nc_attrs()
+        if param in self._param_source_c_formats:
+            attrs["source_C_format"] = self._param_source_c_formats[param]
 
         da = xr.DataArray(data=data, dims=dims, attrs=attrs, name=name)
 
@@ -756,7 +804,7 @@ class Exchange:
         for profile in self.iter_profiles():
             yield profile.coordinates[profile.keys[-1]]
 
-    def to_xarray(self):
+    def to_xarray(self, source_c_format=True):
         consumed = []
         data_arrays = []
         coords = {}
@@ -860,6 +908,14 @@ class Exchange:
         for var in ("expocode", "station", "cast", "section_id", "time"):
             if var in dataset:
                 dataset[var].attrs["geometry"] = "geometry_container"
+
+        if not source_c_format:
+            for variable in dataset.variables:
+                da = dataset[variable]
+                try:
+                    del da.attrs["source_C_format"]
+                except KeyError:
+                    continue
 
         return dataset
 
