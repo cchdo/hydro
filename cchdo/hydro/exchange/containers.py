@@ -943,7 +943,7 @@ class Exchange:
         self,
         filename_or_obj: Optional[Union[str, "os.PathLike[str]", IO[bytes]]] = None,
         stamp: str = "CCHDHYDRO",
-        use_source_c_format: bool = False,
+        use_source_c_format: bool = True,
     ):
         """Export :class:`hydro.exchange.Exchange` object to WHP-Exchange datafile(s)"""
         log.info(f"Converting {self} to exchange csv")
