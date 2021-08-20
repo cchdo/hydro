@@ -426,7 +426,7 @@ class Exchange:
         return (x, y)
 
     @cached_property
-    def _param_source_c_formats(self) -> Dict[WHPName, str]:
+    def _param_source_numeric_precision(self) -> Dict[WHPName, int]:
         c_formats_max: Dict[WHPName, int] = {}
         for coord in self.coordinates.values():
             for param, c_format in coord._source_c_formats.items():
@@ -441,9 +441,13 @@ class Exchange:
                         datum.source_c_format, c_formats_max.get(param, 0)
                     )
 
+        return c_formats_max
+
+    @cached_property
+    def _param_source_c_formats(self) -> Dict[WHPName, str]:
         c_formats = {}
-        for param, C_format in c_formats_max.items():
-            c_formats[param] = f".{C_format}f"
+        for param, C_format in self._param_source_numeric_precision.items():
+            c_formats[param] = f"%.{C_format}f"
 
         return c_formats
 
@@ -939,6 +943,7 @@ class Exchange:
         self,
         filename_or_obj: Optional[Union[str, "os.PathLike[str]", IO[bytes]]] = None,
         stamp: str = "CCHDHYDRO",
+        use_source_c_format: bool = False,
     ):
         """Export :class:`hydro.exchange.Exchange` object to WHP-Exchange datafile(s)"""
         log.info(f"Converting {self} to exchange csv")
@@ -1002,11 +1007,19 @@ class Exchange:
         if self.file_type == FileType.CTD:
             _ctd_headers.append(f"NUMBER_HEADERS = {len(_ctd_params) + 1}")
             for param in _ctd_params:
+                ctd_source_c_format: Optional[int] = None
+                if use_source_c_format:
+                    ctd_source_c_format = self._param_source_numeric_precision.get(
+                        param
+                    )
+
                 ctdh_key = param.whp_name
                 ctdh_value = self.parameter_to_ndarray(param)[
                     self.ndaray_indicies[self.keys[0]]
                 ]
-                _ctd_headers.append(f"{ctdh_key} = {param.strfex(ctdh_value).strip()}")
+                _ctd_headers.append(
+                    f"{ctdh_key} = {param.strfex(ctdh_value, numeric_precision_override=ctd_source_c_format).strip()}"
+                )
 
         file_ctd_headers = "\n".join(_ctd_headers)
 
@@ -1014,8 +1027,15 @@ class Exchange:
         for key in self.keys:
             row = []
             for param in _data_params:
+
+                source_c_format: Optional[int] = None
+                if use_source_c_format:
+                    source_c_format = self._param_source_numeric_precision.get(param)
+
                 value = self.parameter_to_ndarray(param)[self.ndaray_indicies[key]]
-                row.append(param.strfex(value))
+                row.append(
+                    param.strfex(value, numeric_precision_override=source_c_format)
+                )
 
                 if param in self.flags:
                     value = self.flag_to_ndarray(param)[self.ndaray_indicies[key]]
@@ -1023,7 +1043,9 @@ class Exchange:
 
                 if param in self.errors:
                     value = self.error_to_ndarray(param)[self.ndaray_indicies[key]]
-                    row.append(param.strfex(value))
+                    row.append(
+                        param.strfex(value, numeric_precision_override=source_c_format)
+                    )
             _data.append(",".join(row))
         file_data = "\n".join(_data)
 
