@@ -1,6 +1,9 @@
 import xarray as xr
 import pandas as pd
 import numpy as np
+import string
+
+from .exchange.containers import FileType
 
 
 class CCHDOAccessorBase:
@@ -257,7 +260,27 @@ class GeoAccessor(CCHDOAccessorBase):
         return geo
 
 
-class CCHDOAccessor(GeoAccessor, WoceAccessor, MatlabAccessor):
+class MiscAccessor(CCHDOAccessorBase):
+    def gen_fname(self) -> str:
+        ds = self._obj
+        allowed_chars = set(f"._{string.ascii_letters}{string.digits}")
+
+        if ds["profile_type"][0].item() == FileType.BOTTLE.value:
+            fname = f"{ds['expocode'][0].item()}_bottle.nc"
+        elif (
+            ds["profile_type"][0].item() == FileType.CTD.value and len(ds["N_PROF"]) > 1
+        ):
+            fname = f"{ds['expocode'][0].item()}_ctd.nc"
+        else:
+            fname = f"{ds['expocode'][0].item()}_{ds['station'][0].item()}_{ds['cast'][0].item()}_ctd.nc"
+
+        for char in set(fname) - allowed_chars:
+            fname = fname.replace(char, "_")
+
+        return fname
+
+
+class CCHDOAccessor(GeoAccessor, WoceAccessor, MatlabAccessor, MiscAccessor):
     ...
 
 
