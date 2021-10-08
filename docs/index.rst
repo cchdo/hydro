@@ -12,6 +12,7 @@ Welcome to hydro's documentation!
 
    attributes
    api
+   changelog
 
 
 Indices and tables

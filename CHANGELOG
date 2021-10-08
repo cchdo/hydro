@@ -1,0 +1,38 @@
+v1.0.1.4 (unreleased)
+=====================
+* Fixed an issue where the WOCE sumfile accessor would missalign latitude columns near the equator since they lacked a digit in the tens place.
+
+v1.0.1.3 (2021-08-25)
+=====================
+This release fixes many of the issues identified after the initial "1.0.0.0" release. Highlights include:
+
+* Explicitly set the ``_FillValue`` attribute for the bottle closure time variable.
+* The dtype for real number variables has been changed from ``float`` to ``double``
+* If the source data is an "exchange csv", a ``source_C_format`` attribute will (with some exceptions) be present on the real number data variables.
+
+v1.0.1.2 (2021-03-11)
+=====================
+This release fixes a typo in the pyproject.toml file which would cause the _version.py file to be invalid.
+
+v1.0.1.0 (2021-03-11)
+=====================
+Hopefully this fixes the errors which prevented the project from being published automatically to pypi.
+
+v1.0.0.0 (2021-03-11)
+=====================
+After a whole bunch of testing, meetings, more testing, arguments, and a lot of work. We have declared the current status of the project as "good enough" for a 1.0.0 release.
+
+There is much work to be done, especially since not all our files convert currently, but we think the ones that do convert are ready for public consumption. Unless something crazy goes wrong or is discovered, format changes should only be additive in nature (e.g. new attributes on variables).
+
+The version will hopefully use the following (close to semver):
+
+x.y.z
+
+Where:
+
+* x is incremented when a real breaking change to the netCDF output format is made.
+* y is incremented when things are added to the netCDF format that should not break code which relies on previously existing attributes
+* z is incremented for normal software releases that don't change the netCDF output.
+
+.. note::
+  The version number was since updated to be w.x.y.z where w.x is the CCHDO netCDF format version and y.z is the software versions
