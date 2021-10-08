@@ -146,7 +146,7 @@ class WoceAccessor(CCHDOAccessorBase):
 
             min = 60 * (dec / (10 ** dec_len))
 
-            return f"{deg} {min:05.2f} {hem}"
+            return f"{deg:>2d} {min:05.2f} {hem}"
 
         def sum_lon(deg_str):
             deg_str = str(deg_str)
