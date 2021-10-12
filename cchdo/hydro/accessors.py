@@ -186,6 +186,10 @@ class WoceAccessor(CCHDOAccessorBase):
                     depth = ""
                 break
 
+            no_of_bottles = (
+                f"{sum(prof.sample.values!='')}" if prof.profile_type == "B" else ""
+            )
+
             row = [""] * len(col_widths)
             row[0] = str(
                 prof.expocode.values
@@ -204,7 +208,7 @@ class WoceAccessor(CCHDOAccessorBase):
             row[12] = ""  # height above "BOTTOM"
             row[13] = ""  # "WIRE" out
             row[14] = f"{max(prof.pressure.values):.0f}"
-            row[15] = f"{sum(prof.sample.values!='')}"  # TODO leave blank if CTD?
+            row[15] = no_of_bottles
             row[
                 16
             ] = ""  # "PARAMS" we have this info... needs to be calculated on a per profile basis though...
