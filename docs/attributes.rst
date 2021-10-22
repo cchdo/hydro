@@ -20,5 +20,152 @@ A value used to represent missing or undefined data. Allowed for auxiliary coord
 
 CCHDO Usage
 ```````````
-Largely the same as before. For floating point type data (float,
-double), the IEEE NaN value will be used.
+For floating point type data (float, double), the IEEE NaN value will be used.
+Woce flag variables will be initialized with the value `9b`.
+Some special coordinate variables are not allowed to have any ``_FillValue`` values in them
+
+The ``_FillValue`` attribute has special meaning to the netCDF4 libraries (C and Java).
+When the size of the variable is known (i.e. the variable does not have an "unlimited" dimmension) at the time the netCDF file is written, all of the space in the variable will be initalized with the value in ``_FillValue``.
+This is usually almost entirely transparent to you the user, some software will change the data type when a variable still contains ``_FillValue`` values.
+Matlab for example, will change byte (integers between 0 and 255) data into IEEE floating point values while replacing the fill value with NaNs.
+
+``whp_name``
+------------
+:dtype:      char or array of strings
+:usage:      variables
+:required:   conditionally (see CCHDO Usage)
+:reference:  CCHDO
+
+CF Definiton
+````````````
+Not used or defined in the CF conventions.
+
+CCHDO Usage
+```````````
+This attribute contains the name this variable would have inside a WHP Exchange or WOCE sea/ctd file.
+Forms a pair with :ref:`whp_unit`
+This attribute will only be on variables which are data, and not on flag variables or certain specal variables meant to be interpreted by CF compliant readers (e.g. ``geometry_container``).
+
+Some variables cannot be represented by a single column in the WHP Exchange format, when this occurs, the attribute will be an array of strings containing all the names needed to represent this variable in WHP Exchange format.
+The most frequent example will be the ``time`` variable, in WHP Exchange files, this may either be a pair of columns (DATE, TIME) or a single column (DATE) when time of day is not reported.
+This will very likly be used to represet ex and em wavelengths for optical sensors with multiple channels.
+
+There is no requiremnt that all variables in a netCDF file contain unique ``whp_name`` and ``whp_unit`` pairs.
+
+
+``whp_unit``
+------------
+:dtype:      char or array of strings
+:usage:      variables
+:required:   conditionally (see CCHDO Usage)
+:reference:  CCHDO
+
+CF Definiton
+````````````
+Not used or defined in the CF conventions.
+
+CCHDO Usage
+```````````
+For this variable, the value which would appear in the units line of the WHP Exchange or WOCE sea/ctd file.
+Forms a pair with :ref:``whp_name``
+Usage is the same as ``whp_name``
+
+
+``standard_name``
+-----------------
+:dtype:      char
+:usage:      variables
+:required:   conditionally (see CF Usage)
+:reference:  CF 1.8
+
+CF Definiton
+````````````
+TODO: get cf definiton
+
+CCHDO Usage
+```````````
+The CF usage will be followed, if a CF standard name exists for physical quantity represeted by a variable, the most specific name MUST be used and appear in the ``standard_name`` attribute.
+The CF standard names table is updated frequently, as names are added they will be evaluated for including in the CCHDO netCDF files to both be more specific or to add a standard name to a variable that did not have one previously.
+Always check the param version attribute to see which version of the standard name table is in use for a particular file.
+
+It is important to understand that standard names represet the physical quantity of the variable and not how that physical quantity was made.
+Standard names cannot distinguish between salinity measured in situ with a CTD, salinity measured with an autosal, or even salinity from a model output.
+The names are meant to help with intercomparison of the values themselves, not methods of determing that value.
+
+
+``units``
+-----------------
+:dtype:      char
+:usage:      variables
+:required:   conditionally
+:reference:  CF 1.8
+
+CF Definiton
+````````````
+TODO: get cf definiton
+
+CCHDO Usage
+```````````
+The units attribute will follow CF.
+The value must be physically comparible with the canonical units of the ``standard_name``.
+The value will be the ``whp_unit`` translated into SI.
+
+Unitless parameters will have the symbol "1" as their units (TODO: ref the SI paper).
+
+Some examples:
+
+*  discintigrations per minute (DPM) will be translated to their equivalent Bq, which will be scaled (1DPM = 0.0166 Bq)
+* Practical salinity will have the units of "1", not variabtions on "PSU" or even "0.001" implying g/kg of actual salinity.
+* Tritium Units are really parts per 1e18, so the equivalent SI units are the recriprical: 1e-18
+
+
+``reference_scale``
+-------------------
+:dtype:      char
+:usage:      variables
+:required:   conditionally
+:reference:  OceanSITES 1.4
+
+CF Definiton
+````````````
+This attribute is not defined in CF. 
+
+CCHDO Usage
+```````````
+TODO: get OceanSITES definition.
+
+Some variables (e.g. temperature) are not described well enough by their units and standard name alone.
+For example, depending on when it was measured, the temperature sensors may have been calibrated on the ITS-90, IPTS-68, or WHAT_WAS_BEFORE_t68 calibration scales.
+While all the temperatures are degree C, users doing precice work need to know the difference.
+
+TODO: this is a controlled list internally, list which variables have a scale and what their value can be.
+
+
+``C_format``
+------------
+:dtype:      char
+:usage:      variables
+:required:   no
+:reference:  NUG
+
+CF Definiton
+````````````
+TODO See if CF talks about this
+
+CCHDO Usage
+```````````
+The ``C_format`` attribute will contain the format string from the internal database of parameters.
+The presence or lack of presence of this attribute will not change the underlyying values in the variable (e.g. you cannot round the values to the nearst integer using C_format).
+This attribute is sometimes (TODO: footnote about ncdump being the only one) used when _displaying_ data values to a user.
+When performing calculations in most software, the underlying data values are almost always used directly.
+
+.. warning::
+  Use ``C_format` and ``source_C_format`` as implied uncertanty if you have `no other` source of uncertanty (including statistical methods across the dataset).
+
+  Historically, the tradeoff between storing numeric values in text and the cost of storage meant there was a tradeoff.
+  When looking though our database of format strings, the text print precision was almost always set at one decimal place more than the actual measuremnt uncertanty.
+  Having these values published in the WOCE manual also lead to values being reported a certain way to conform to the format which disconnected "print precision" from uncertanty.
+  Additionally, the WOCE format was designed when IEEE floating point numbers were quite new.
+
+  More recent measuremnets have started to include explicit uncertanties which will be reported along side the data values.
+  Often, the cruise report will contain some charicterizaion of the uncertanty of a given measumrnet.
