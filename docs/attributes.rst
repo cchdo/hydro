@@ -80,7 +80,8 @@ Usage is the same as ``whp_name``
 
 CF Definiton
 ````````````
-TODO: get cf definiton
+.. todo::
+  get cf definiton
 
 CCHDO Usage
 ```````````
@@ -102,7 +103,8 @@ The names are meant to help with intercomparison of the values themselves, not m
 
 CF Definiton
 ````````````
-TODO: get cf definiton
+.. todo::
+  get cf definiton
 
 CCHDO Usage
 ```````````
@@ -110,7 +112,10 @@ The units attribute will follow CF.
 The value must be physically comparible with the canonical units of the ``standard_name``.
 The value will be the ``whp_unit`` translated into SI.
 
-Unitless parameters will have the symbol "1" as their units (TODO: ref the SI paper).
+Unitless parameters will have the symbol "1" as their units.
+
+.. todo::
+  get ref to SI paper
 
 Some examples:
 
@@ -132,13 +137,15 @@ This attribute is not defined in CF.
 
 CCHDO Usage
 ```````````
-TODO: get OceanSITES definition.
+.. todo::
+  get OceanSITES definition.
 
 Some variables (e.g. temperature) are not described well enough by their units and standard name alone.
 For example, depending on when it was measured, the temperature sensors may have been calibrated on the ITS-90, IPTS-68, or WHAT_WAS_BEFORE_t68 calibration scales.
 While all the temperatures are degree C, users doing precice work need to know the difference.
 
-TODO: this is a controlled list internally, list which variables have a scale and what their value can be.
+.. todo::
+  this is a controlled list internally, list which variables have a scale and what their value can be.
 
 
 ``C_format``
@@ -150,14 +157,18 @@ TODO: this is a controlled list internally, list which variables have a scale an
 
 CF Definiton
 ````````````
-TODO See if CF talks about this
+.. todo::
+  See if CF talks about this
 
 CCHDO Usage
 ```````````
 The ``C_format`` attribute will contain the format string from the internal database of parameters.
 The presence or lack of presence of this attribute will not change the underlyying values in the variable (e.g. you cannot round the values to the nearst integer using C_format).
-This attribute is sometimes (TODO: footnote about ncdump being the only one) used when _displaying_ data values to a user.
+This attribute is sometimes used when _displaying_ data values to a user.
 When performing calculations in most software, the underlying data values are almost always used directly.
+
+.. todo::
+   footnote about ncdump being the only one that respects C_format
 
 .. warning::
   Use ``C_format` and ``source_C_format`` as implied uncertanty if you have `no other` source of uncertanty (including statistical methods across the dataset).
@@ -169,3 +180,27 @@ When performing calculations in most software, the underlying data values are al
 
   More recent measuremnets have started to include explicit uncertanties which will be reported along side the data values.
   Often, the cruise report will contain some charicterizaion of the uncertanty of a given measumrnet.
+
+
+``source_C_format``
+-------------------
+:dtype:      char
+:usage:      variables
+:required:   no
+:reference:  CCHDO
+
+CF Definiton
+````````````
+This attribute is not used in CF.
+
+CCHDO Usage
+```````````
+If the data soure for this variable came from a text source, the ``source_C_format`` will contain the format string which represents the largest string seen.
+For example, if a data source had text values of "0.001" and "0.0010", the ``source_C_format`` attribute would be set to ``"%.4f"``.
+This can be tricky for data managers: if for example, the data source was an excel file, it is important to use the underlying value as the actual data and not a copy/paste or text based export.
+
+.. warning::
+  See the warning in ``C_format``
+
+.. todo::
+  if the print format is set in excel, should _that_ value be set as the source_C_format?)
