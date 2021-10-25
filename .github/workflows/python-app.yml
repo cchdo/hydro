@@ -38,7 +38,7 @@ jobs:
         black --check .
     - name: Test typing
       run: |
-        mypy -v .
+        mypy -v cchdo
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
