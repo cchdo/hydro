@@ -252,7 +252,7 @@ class ExchangeXYZT(Mapping):
                 self.z.value is not None,
             ]
         ):
-            raise ExchangeDataPartialCoordinateError
+            raise ExchangeDataPartialCoordinateError(self)
 
         object.__setattr__(
             self,

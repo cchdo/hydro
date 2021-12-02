@@ -105,7 +105,7 @@ class ExchangeDuplicateKeyError(ExchangeDataError):
 
 
 class ExchangeDataPartialCoordinateError(ExchangeDataError):
-    """Error raised if values for latitude, longitude, or date are missing.
+    """Error raised if values for latitude, longitude, or pressure are missing.
 
     It is OK by the standard to omit the time of day.
     """
