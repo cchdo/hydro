@@ -4,6 +4,7 @@ import dataclasses
 from collections.abc import Mapping
 from typing import Tuple, Dict
 from itertools import repeat
+from functools import cached_property
 from zipfile import ZipFile, is_zipfile, is_zipfile
 
 from cchdo.params import WHPName, WHPNames
@@ -135,15 +136,15 @@ class ExchangeXYZT(Mapping):
         return pd.Timestamp(self.t).to_pydatetime().date()
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass
 class ExchangeInfo:
-    stamp: int
+    stamp_line: int
     comments_start: int
     comments_end: int
     ctd_header_start: int
     ctd_header_end: int
-    params: int
-    units: int
+    params_line: int
+    units_line: int
     data_start: int
     data_end: int
     post_data_start: int
@@ -161,6 +162,101 @@ class ExchangeInfo:
     @property
     def post_data(self):
         return slice(self.post_data_start, self.post_data_end)
+
+    @property
+    def ctd_headers(self):
+        slc = slice(self.ctd_header_start, self.ctd_header_end)
+        return dict([_ctd_get_header(line) for line in self._raw_lines[slc]])
+
+    @cached_property
+    def params(self):
+        ctd_params = self.ctd_headers.keys()
+        return [
+            param.strip()
+            for param in [*ctd_params, *self._raw_lines[self.params_line].split(",")]
+        ]
+
+    @cached_property
+    def units(self):
+        # we can have a bunch of empty strings as units, we want these to be
+        # None to match what would be in a WHPName object
+        ctd_units = [None for _ in self.ctd_headers]
+        return [
+            x if x != "" else None
+            for x in [
+                *ctd_units,
+                *[unit.strip() for unit in self._raw_lines[self.units_line].split(",")],
+            ]
+        ]
+
+    @cached_property
+    def whp_params(self):
+        # TODO remove when min pyver is 3.10
+        if len(self.params) != len(set(self.params)):
+            raise ExchangeDuplicateParameterError
+
+        # In initial testing, it was discovered that approx half the ctd files
+        # had trailing commas in just the params and units lines
+        if self.params[-1] == "" and self.units[-1] is None:
+            log.warning(
+                "Removed trailing empty param/unit pair, this indicates these lines have trailing commas."
+            )
+            self.params.pop()
+            self.units.pop()
+
+        # the number of expected columns is just going to be the number of
+        # parameter names we see
+        column_count = len(self.params)
+
+        if len(self.units) != column_count:
+            raise ExchangeParameterUnitAlignmentError
+
+        return _bottle_get_params(zip(self.params, self.units))
+
+    @cached_property
+    def whp_flags(self):
+        self.whp_params
+        return _bottle_get_flags(zip(self.params, self.units), self.whp_params)
+
+    @cached_property
+    def whp_errors(self):
+        self.whp_params
+        return _bottle_get_errors(zip(self.params, self.units), self.whp_params)
+
+    # TODO cache?
+    @property
+    def _np_data_block(self):
+        _raw_data = tuple(
+            tuple((*self.ctd_headers.values(), *line.replace(" ", "").split(",")))
+            for line in self._raw_lines[self.data]
+        )
+        return np.array(_raw_data, dtype="U")
+
+    def finalize(self):
+        log.debug("Finializing...")
+        self.single_profile = any(self.ctd_headers)
+        np_db = self._np_data_block
+        self.length = np_db.shape[0]
+        dtype_map = {"string": "U", "integer": "float32", "decimal": "float64"}
+        self.whp_param_cols = {}
+        self.whp_flag_cols = {}
+        self.whp_error_cols = {}
+        self.whp_param_precisions = {}
+        self.whp_error_precisions = {}
+        for param, idx in self.whp_params.items():
+            param_col = np_db[:,idx]
+            if param.dtype == "decimal":
+                self.whp_param_precisions[param] = _extract_numeric_precisions(param_col)
+            self.whp_param_cols[param] = param_col.astype(dtype_map[param.dtype])
+        for param, idx in self.whp_flags.items():
+            self.whp_flag_cols[param] = np_db[:,idx].astype("float16")
+        for param, idx in self.whp_errors.items():
+            param_col = np_db[:,idx]
+            if param.dtype == "decimal":
+                self.whp_error_precisions[param] = _extract_numeric_precisions(param_col)
+            self.whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
+
+        del self._raw_lines
 
 
 def _get_parts(lines: Tuple[str, ...], ftype: FileType) -> ExchangeInfo:
@@ -196,7 +292,7 @@ def _get_parts(lines: Tuple[str, ...], ftype: FileType) -> ExchangeInfo:
                 if param != "NUMBER_HEADERS":
                     raise ValueError()
                 ctd_num_headers = value - 1
-                ctd_header_start = idx
+                ctd_header_start = idx + 1
                 continue
             else:
                 looking_for = "params"
@@ -232,13 +328,13 @@ def _get_parts(lines: Tuple[str, ...], ftype: FileType) -> ExchangeInfo:
             post_data_end = idx
 
     return ExchangeInfo(
-        stamp=stamp,
+        stamp_line=stamp,
         comments_start=comments_start,
         comments_end=comments_end,
         ctd_header_start=ctd_header_start,
         ctd_header_end=ctd_header_end,
-        params=params,
-        units=units,
+        params_line=params,
+        units_line=units,
         data_start=data_start,
         data_end=data_end,
         post_data_start=post_data_start,
@@ -253,12 +349,11 @@ def _prepare_data_block(data_block: Tuple[str, ...]) -> Tuple[Tuple[str, ...], .
 
 def _extract_numeric_precisions(data: npt.ArrayLike) -> np.ndarray:
     """Get the numeric precision of a printed decimal number"""
-    numeric_parts = np.char.partition(data, ".")[..., 2]
-
     # magic number explain: np.char.partition expands each element into a 3-tuple
     # of (pre, sep, post) of some sep, in our case a "." char.
     # We only want the post bits [idx 2] (the number of chars after a decimal seperator)
     # of the last axis.
+    numeric_parts = np.char.partition(data, ".")[..., 2]
     str_lens = np.char.str_len(numeric_parts)
     return np.max(str_lens, axis=0)
 
@@ -366,74 +461,31 @@ def read_exchange(path):
     # data_lines = tuple(data.splitlines())
 
     file_parts = [_get_parts(tuple(df.splitlines()), ftype=ftype) for df in data]
-    log.debug(file_parts)
+    for fp in file_parts:
+        fp.finalize()
 
-    params = [param.strip() for param in data_lines[file_parts.params].split(",")]
-    # we can have a bunch of empty strings as units, we want these to be
-    # None to match what would be in a WHPName object
-    units = [
-        x if x != "" else None
-        for x in [unit.strip() for unit in data_lines[file_parts.units].split(",")]
-    ]
+    if all((fp.single_profile for fp in file_parts)):
+        log.debug("CTD mode")
+        N_PROF = len(file_parts)
+        N_LEVELS = max((fp.length for fp in file_parts))
 
-    # TODO remove when min pyver is 3.10
-    if len(params) != len(set(params)):
-        raise ExchangeDuplicateParameterError
+        log.debug((N_PROF, N_LEVELS))
 
-    # In initial testing, it was discovered that approx half the ctd files
-    # had trailing commas in just the params and units lines
-    if params[-1] == "" and units[-1] is None:
-        log.warning(
-            "Removed trailing empty param/unit pair, this indicates these lines have trailing commas."
-        )
-        params.pop()
-        units.pop()
-
-    # the number of expected columns is just going to be the number of
-    # parameter names we see
-    column_count = len(params)
-
-    if len(units) != column_count:
-        raise ExchangeParameterUnitAlignmentError
-
-    whp_params = _bottle_get_params(zip(params, units))
-    whp_flags = _bottle_get_flags(zip(params, units), whp_params)
-    whp_errors = _bottle_get_errors(zip(params, units), whp_params)
+    else:
+        ...
 
     # ensure we will read all the columns of file
-    if {*whp_params.values(), *whp_flags.values(), *whp_errors.values()} != set(
-        range(column_count)
-    ):
-        raise RuntimeError(
-            (
-                "Not all of the data columns will be read. "
-                "This shouldn't happen and is likely a bug, please include the file that caused "
-                "this error to occur."
-            )
-        )
+    #if {*whp_params.values(), *whp_flags.values(), *whp_errors.values()} != set(
+    #    range(column_count)
+    #):
+    #    raise RuntimeError(
+    #        (
+    #            "Not all of the data columns will be read. "
+    #            "This shouldn't happen and is likely a bug, please include the file that caused "
+    #            "this error to occur."
+    #        )
+    #    )
 
-    data_block_raw = np.array(
-        _prepare_data_block(data_lines[file_parts.data]), dtype="U"
-    )
-    data_block_fill = np.char.startswith(data_block_raw, "-999")
-    log.debug("Block size: %s bytes", data_block_raw.nbytes)
-
-    # this is basically the only actual "string op" we need to do
-    log.debug("Extracting column print precisions")
-    # an earlier implimentation just did got the precisions of the entire block
-    # that had some significant impacts on ram usage
-    whp_param_precisions = {
-        param: _extract_numeric_precisions(data_block_raw[:, idx])
-        for param, idx in whp_params.items()
-        if param.dtype == "decimal"
-    }
-    whp_error_precisions = {
-        param: _extract_numeric_precisions(data_block_raw[:, idx])
-        for param, idx in whp_errors.items()
-        if param.dtype == "decimal"
-    }
-
-    data_block = np.ma.masked_array(data_block_raw, mask=data_block_fill)
 
     log.debug("Casting to dtypes")
     # TODO confirm dtype mapping
