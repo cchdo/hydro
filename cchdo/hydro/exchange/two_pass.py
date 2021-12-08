@@ -33,6 +33,10 @@ from .io import (
 
 log = logging.getLogger(__name__)
 
+EXPOCODE = WHPNames["EXPOCODE"]
+STNNBR = WHPNames["STNNBR"]
+CASTNO = WHPNames["CASTNO"]
+
 ## tmp for new implimentatio
 @dataclasses.dataclass(frozen=True)
 class ExchangeXYZT(Mapping):
@@ -233,20 +237,27 @@ class ExchangeInfo:
         return np.array(_raw_data, dtype="U")
 
     def finalize(self):
+        # TODO clean up this function
         log.debug("Finializing...")
         self.single_profile = any(self.ctd_headers)
+
         np_db = self._np_data_block
+
         self.length = np_db.shape[0]
         dtype_map = {"string": "U", "integer": "float32", "decimal": "float64"}
+
         self.whp_param_cols = {}
         self.whp_flag_cols = {}
         self.whp_error_cols = {}
         self.whp_param_precisions = {}
         self.whp_error_precisions = {}
+
         for param, idx in self.whp_params.items():
             param_col = np_db[:,idx]
             if param.dtype == "decimal":
                 self.whp_param_precisions[param] = _extract_numeric_precisions(param_col)
+                fill_spaces = np.char.startswith(param_col, "-999")
+                param_col[fill_spaces] = "nan"
             self.whp_param_cols[param] = param_col.astype(dtype_map[param.dtype])
         for param, idx in self.whp_flags.items():
             self.whp_flag_cols[param] = np_db[:,idx].astype("float16")
@@ -257,6 +268,7 @@ class ExchangeInfo:
             self.whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
 
         del self._raw_lines
+
 
 
 def _get_parts(lines: Tuple[str, ...], ftype: FileType) -> ExchangeInfo:
@@ -341,10 +353,6 @@ def _get_parts(lines: Tuple[str, ...], ftype: FileType) -> ExchangeInfo:
         post_data_end=post_data_end,
         _raw_lines=lines,
     )
-
-
-def _prepare_data_block(data_block: Tuple[str, ...]) -> Tuple[Tuple[str, ...], ...]:
-    return tuple(tuple(a.strip() for a in line.split(",")) for line in data_block)
 
 
 def _extract_numeric_precisions(data: npt.ArrayLike) -> np.ndarray:
@@ -458,8 +466,8 @@ def read_exchange(path):
 
     log.info("Found filetype: %s", ftype.name)
 
-    # data_lines = tuple(data.splitlines())
 
+    # TODO make the parts object better
     file_parts = [_get_parts(tuple(df.splitlines()), ftype=ftype) for df in data]
     for fp in file_parts:
         fp.finalize()
@@ -471,8 +479,30 @@ def read_exchange(path):
 
         log.debug((N_PROF, N_LEVELS))
 
-    else:
-        ...
+    elif len(file_parts) == 1:
+        log.debug("Bottle Mode...?")
+
+        # I guess assume it's a bottle file?
+        bottle_file = file_parts[0]
+        expocode = bottle_file.whp_param_cols[EXPOCODE]
+        station = bottle_file.whp_param_cols[STNNBR]
+        cast = bottle_file.whp_param_cols[CASTNO]
+
+        # need to split up by profiles and _not_ assume the bottles are in order
+        # use the actual values to sort things out
+        # we don't care what the values are, they just need to work
+        log.debug("Grouping Profiles by Key")
+        prof_ids = np.char.add(np.char.add(expocode, station), cast.astype("U"))
+        unique_profile_ids = np.unique(prof_ids)
+        log.debug("Found %s unique profile keys", len(unique_profile_ids))
+        profiles = [np.nonzero(prof_ids==prof) for prof in unique_profile_ids]
+
+        for profile in profiles:
+            for param, data in bottle_file.whp_param_cols.items():
+                log.debug((param, data[profile]))
+
+
+
 
     # ensure we will read all the columns of file
     #if {*whp_params.values(), *whp_flags.values(), *whp_errors.values()} != set(
@@ -485,32 +515,3 @@ def read_exchange(path):
     #            "this error to occur."
     #        )
     #    )
-
-
-    log.debug("Casting to dtypes")
-    # TODO confirm dtype mapping
-    # For now it looks like ints need to be floats for nan ability
-    # this is how xarray does it with an internal encoding
-    dtype_map = {"string": "U", "integer": "float32", "decimal": "float64"}
-    dtype_fill_values = {"string": "", "integer": np.nan, "decimal": np.nan}
-
-    whp_param_data = {}
-    whp_flag_data = {}
-    whp_error_data = {}
-
-    for param, idx in whp_params.items():
-        param_data = data_block[:, idx]
-        param_data.fill_value = dtype_fill_values[param.dtype]
-        whp_param_data[param] = np.ma.filled(param_data.astype(dtype_map[param.dtype]))
-    for param, idx in whp_flags.items():
-        whp_flag_data[param] = data_block[:, idx].astype("float16")
-    for param, idx in whp_errors.items():
-        whp_error_data[param] = data_block[:, idx].astype(dtype_map[param.dtype])
-
-    log.debug(whp_param_data.values())
-
-    log.debug("Extracting Exchange File Keys")
-    exchange_keys = _get_ex_keys(whp_param_data)
-
-    log.debug("Extracting XYZT Coordinates")
-    exchange_xyzt = _get_ex_xyzt(whp_param_data)
