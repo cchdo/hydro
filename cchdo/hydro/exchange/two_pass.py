@@ -3,8 +3,9 @@ import io
 import dataclasses
 from collections.abc import Mapping
 from typing import Tuple, Dict
-from itertools import repeat
+from operator import attrgetter
 from functools import cached_property
+from itertools import chain
 from zipfile import ZipFile, is_zipfile, is_zipfile
 
 from cchdo.params import WHPName, WHPNames
@@ -139,6 +140,63 @@ class ExchangeXYZT(Mapping):
     def _date_part(self):
         return pd.Timestamp(self.t).to_pydatetime().date()
 
+@dataclasses.dataclass
+class ExchangeData:
+    single_profile: bool
+    param_cols: Dict[WHPName, np.ndarray]
+    flag_cols: Dict[WHPName, np.ndarray]
+    error_cols: Dict[WHPName, np.ndarray]
+
+    # OG Print Precition Tracking
+    param_precisions: Dict[WHPName, int]
+    error_precisions: Dict[WHPName, int]
+
+    comments: str
+
+    def __post_init__(self):
+        # check the shapes of all the nd arrays are the same
+        get_shape = attrgetter("shape")
+        shapes = [get_shape(arr) for arr in chain(self.param_cols.values(), self.flag_cols.values(), self.error_cols.values())]
+        if not all([shape == shapes[0] for shape in shapes]):
+            # TODO Error handling
+            raise ValueError("shape error")
+
+        self.shape = shapes[0]
+
+        if self.single_profile:
+            # all "profile scoped" params must have the same values
+            for param, data in self.param_cols.items():
+                if param.scope != "profile":
+                    continue
+                if not np.unique(data).shape[0] == 1:
+                    raise ValueError("inconsistent param")
+
+    def split_profiles(self):
+        expocode = self.param_cols[EXPOCODE]
+        station = self.param_cols[STNNBR]
+        cast = self.param_cols[CASTNO]
+
+        # need to split up by profiles and _not_ assume the bottles are in order
+        # use the actual values to sort things out
+        # we don't care what the values are, they just need to work
+        log.debug("Grouping Profiles by Key")
+        prof_ids = np.char.add(np.char.add(expocode, station), cast.astype("U"))
+        unique_profile_ids = np.unique(prof_ids)
+        log.debug("Found %s unique profile keys", len(unique_profile_ids))
+        profiles = [np.nonzero(prof_ids==prof) for prof in unique_profile_ids]
+
+        log.debug("Actually splitting profiles")
+        return [
+            ExchangeData(
+                single_profile=True,
+                param_cols={param:data[profile] for param, data in self.param_cols.items()},
+                flag_cols={param:data[profile] for param, data in self.flag_cols.items()},
+                error_cols={param:data[profile] for param, data in self.error_cols.items()},
+                param_precisions=self.param_precisions,
+                error_precisions=self.error_precisions,
+                comments=self.comments,
+            ) for profile in profiles]
+
 
 @dataclasses.dataclass
 class ExchangeInfo:
@@ -239,35 +297,48 @@ class ExchangeInfo:
     def finalize(self):
         # TODO clean up this function
         log.debug("Finializing...")
-        self.single_profile = any(self.ctd_headers)
+        single_profile = any(self.ctd_headers)
 
         np_db = self._np_data_block
 
-        self.length = np_db.shape[0]
         dtype_map = {"string": "U", "integer": "float32", "decimal": "float64"}
 
-        self.whp_param_cols = {}
-        self.whp_flag_cols = {}
-        self.whp_error_cols = {}
-        self.whp_param_precisions = {}
-        self.whp_error_precisions = {}
+        whp_param_cols = {}
+        whp_flag_cols = {}
+        whp_error_cols = {}
+        whp_param_precisions = {}
+        whp_error_precisions = {}
 
         for param, idx in self.whp_params.items():
             param_col = np_db[:,idx]
             if param.dtype == "decimal":
-                self.whp_param_precisions[param] = _extract_numeric_precisions(param_col)
+                whp_param_precisions[param] = _extract_numeric_precisions(param_col)
                 fill_spaces = np.char.startswith(param_col, "-999")
                 param_col[fill_spaces] = "nan"
-            self.whp_param_cols[param] = param_col.astype(dtype_map[param.dtype])
+            whp_param_cols[param] = param_col.astype(dtype_map[param.dtype])
         for param, idx in self.whp_flags.items():
-            self.whp_flag_cols[param] = np_db[:,idx].astype("float16")
+            fill_spaces = np.char.startswith(param_col, "9")
+            param_col[fill_spaces] = "nan"
+            whp_flag_cols[param] = np_db[:,idx].astype("float16")
         for param, idx in self.whp_errors.items():
             param_col = np_db[:,idx]
             if param.dtype == "decimal":
-                self.whp_error_precisions[param] = _extract_numeric_precisions(param_col)
-            self.whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
-
+                whp_error_precisions[param] = _extract_numeric_precisions(param_col)
+                fill_spaces = np.char.startswith(param_col, "-999")
+                param_col[fill_spaces] = "nan"
+            whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
         del self._raw_lines
+
+        return ExchangeData(
+            single_profile,
+            whp_param_cols,
+            whp_flag_cols,
+            whp_error_cols,
+            whp_param_precisions,
+            whp_error_precisions,
+            comments="test"
+        )
+
 
 
 
@@ -467,51 +538,12 @@ def read_exchange(path):
     log.info("Found filetype: %s", ftype.name)
 
 
-    # TODO make the parts object better
-    file_parts = [_get_parts(tuple(df.splitlines()), ftype=ftype) for df in data]
-    for fp in file_parts:
-        fp.finalize()
+    exchange_data = [_get_parts(tuple(df.splitlines()), ftype=ftype).finalize() for df in data]
 
-    if all((fp.single_profile for fp in file_parts)):
-        log.debug("CTD mode")
-        N_PROF = len(file_parts)
-        N_LEVELS = max((fp.length for fp in file_parts))
+    if not all((fp.single_profile for fp in exchange_data)):
+        exchange_data = list(chain(*[exd.split_profiles() for exd in exchange_data]))
 
-        log.debug((N_PROF, N_LEVELS))
+    N_PROF = len(exchange_data)
+    N_LEVELS = max((fp.shape[0] for fp in exchange_data))
 
-    elif len(file_parts) == 1:
-        log.debug("Bottle Mode...?")
-
-        # I guess assume it's a bottle file?
-        bottle_file = file_parts[0]
-        expocode = bottle_file.whp_param_cols[EXPOCODE]
-        station = bottle_file.whp_param_cols[STNNBR]
-        cast = bottle_file.whp_param_cols[CASTNO]
-
-        # need to split up by profiles and _not_ assume the bottles are in order
-        # use the actual values to sort things out
-        # we don't care what the values are, they just need to work
-        log.debug("Grouping Profiles by Key")
-        prof_ids = np.char.add(np.char.add(expocode, station), cast.astype("U"))
-        unique_profile_ids = np.unique(prof_ids)
-        log.debug("Found %s unique profile keys", len(unique_profile_ids))
-        profiles = [np.nonzero(prof_ids==prof) for prof in unique_profile_ids]
-
-        for profile in profiles:
-            for param, data in bottle_file.whp_param_cols.items():
-                log.debug((param, data[profile]))
-
-
-
-
-    # ensure we will read all the columns of file
-    #if {*whp_params.values(), *whp_flags.values(), *whp_errors.values()} != set(
-    #    range(column_count)
-    #):
-    #    raise RuntimeError(
-    #        (
-    #            "Not all of the data columns will be read. "
-    #            "This shouldn't happen and is likely a bug, please include the file that caused "
-    #            "this error to occur."
-    #        )
-    #    )
+    log.debug((N_PROF, N_LEVELS))
