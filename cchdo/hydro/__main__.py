@@ -19,11 +19,8 @@ def cli(exchange_path, out_path):
     from .exchange.two_pass import read_exchange
 
     ex = read_exchange(exchange_path)
-    log.info(ex)
-    # log.info("Convert to xr.Dataset")
-    # ex_xr = ex.to_xarray()
-    # log.info("Saving to netCDF")
-    # ex_xr.to_netcdf(out_path)
+    log.info("Saving to netCDF")
+    ex.to_netcdf(out_path)
 
 
 if __name__ == "__main__":

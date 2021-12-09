@@ -1,3 +1,4 @@
+from collections import defaultdict
 import logging
 import io
 import dataclasses
@@ -6,13 +7,16 @@ from typing import Tuple, Dict
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
-from zipfile import ZipFile, is_zipfile, is_zipfile
+from zipfile import ZipFile, is_zipfile
 
-from cchdo.params import WHPName, WHPNames
 
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+
+import xarray as xr
+
+from cchdo.params import WHPName, WHPNames
 
 from .exceptions import (
     ExchangeEncodingError,
@@ -171,6 +175,12 @@ class ExchangeData:
                 if not np.unique(data).shape[0] == 1:
                     raise ValueError("inconsistent param")
 
+        # make sure flags and errors are strict subsets
+        if not self.flag_cols.keys() <= self.param_cols.keys():
+            raise ValueError("orphan flag")
+        if not self.error_cols.keys() <= self.param_cols.keys():
+            raise ValueError("orphan error")
+
     def split_profiles(self):
         expocode = self.param_cols[EXPOCODE]
         station = self.param_cols[STNNBR]
@@ -197,6 +207,19 @@ class ExchangeData:
                 comments=self.comments,
             ) for profile in profiles]
 
+    @property
+    def parameters(self):
+        return self.param_cols.keys()
+
+    @cached_property
+    def str_lens(self) -> Dict[WHPName, int]:
+        np_char_size = np.dtype('U1').itemsize
+        lens = {}
+        for param, data in self.param_cols.items():
+            if param.dtype == "string":
+                lens[param] = data.itemsize // np_char_size
+
+        return lens
 
 @dataclasses.dataclass
 class ExchangeInfo:
@@ -547,3 +570,50 @@ def read_exchange(path):
     N_LEVELS = max((fp.shape[0] for fp in exchange_data))
 
     log.debug((N_PROF, N_LEVELS))
+
+    # TODO sort profiles
+
+
+    params = set(chain(*[exd.param_cols.keys() for exd in exchange_data]))
+    flags = set(chain(*[exd.flag_cols.keys() for exd in exchange_data]))
+    errors = set(chain(*[exd.error_cols.keys() for exd in exchange_data]))
+    log.debug("Dealing with strings")
+    str_len = 1
+    for exd in exchange_data:
+        for param, value in exd.str_lens.items():
+            str_len = max(value, str_len)
+
+    dataarrays = {}
+    dtype_map = {"string": f"U{str_len}", "integer": "float32", "decimal": "float64"}
+    fills_map = {"string": "", "integer": np.nan, "decimal": np.nan}
+
+    log.debug("Init DataArrays")
+    for param in params:
+        if param.scope == "profile":
+            arr = np.full((N_PROF), fill_value=fills_map[param.dtype], dtype=dtype_map[param.dtype])
+        elif param.scope == "sample":
+            arr = np.full((N_PROF, N_LEVELS),fill_value=fills_map[param.dtype], dtype=dtype_map[param.dtype])
+        dataarrays[param.nc_name] = xr.DataArray(arr, attrs=param.get_nc_attrs())
+
+        if param in flags:
+            if param.scope == "profile":
+                arr = np.full((N_PROF), fill_value=np.nan, dtype="float32")
+            elif param.scope == "sample":
+                arr = np.full((N_PROF, N_LEVELS),fill_value=np.nan, dtype="float32")
+            dataarrays[f"{param.nc_name}_qc"] = xr.DataArray(arr, attrs=param.get_nc_attrs(error=True))
+
+    for n_prof, exd in enumerate(exchange_data):
+        for param in params:
+            if param.scope == "profile":
+                dataarrays[param.nc_name][n_prof] = exd.param_cols[param][0]
+            if param.scope == "sample":
+                data = exd.param_cols[param]
+                dataarrays[param.nc_name][n_prof, :len(data)] = data
+            if param in flags:
+                if param.scope == "profile":
+                    dataarrays[f"{param.nc_name}_qc"][n_prof] = exd.flag_cols[param][0]
+                if param.scope == "sample":
+                    data = exd.flag_cols[param]
+                    dataarrays[f"{param.nc_name}_qc"][n_prof, :len(data)] = data
+
+    return xr.Dataset(dataarrays)
