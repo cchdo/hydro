@@ -21,7 +21,7 @@
 # -- Project information -----------------------------------------------------
 
 project = "hydro"
-copyright = "2020, Regents of the University of California"
+copyright = "2022, Regents of the University of California"
 author = "Andrew Barna"
 
 # The short X.Y version
