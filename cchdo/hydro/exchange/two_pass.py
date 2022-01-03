@@ -144,6 +144,7 @@ class ExchangeXYZT(Mapping):
     def _date_part(self):
         return pd.Timestamp(self.t).to_pydatetime().date()
 
+
 @dataclasses.dataclass
 class ExchangeData:
     single_profile: bool
@@ -160,7 +161,14 @@ class ExchangeData:
     def __post_init__(self):
         # check the shapes of all the nd arrays are the same
         get_shape = attrgetter("shape")
-        shapes = [get_shape(arr) for arr in chain(self.param_cols.values(), self.flag_cols.values(), self.error_cols.values())]
+        shapes = [
+            get_shape(arr)
+            for arr in chain(
+                self.param_cols.values(),
+                self.flag_cols.values(),
+                self.error_cols.values(),
+            )
+        ]
         if not all([shape == shapes[0] for shape in shapes]):
             # TODO Error handling
             raise ValueError("shape error")
@@ -193,19 +201,27 @@ class ExchangeData:
         prof_ids = np.char.add(np.char.add(expocode, station), cast.astype("U"))
         unique_profile_ids = np.unique(prof_ids)
         log.debug("Found %s unique profile keys", len(unique_profile_ids))
-        profiles = [np.nonzero(prof_ids==prof) for prof in unique_profile_ids]
+        profiles = [np.nonzero(prof_ids == prof) for prof in unique_profile_ids]
 
         log.debug("Actually splitting profiles")
         return [
             ExchangeData(
                 single_profile=True,
-                param_cols={param:data[profile] for param, data in self.param_cols.items()},
-                flag_cols={param:data[profile] for param, data in self.flag_cols.items()},
-                error_cols={param:data[profile] for param, data in self.error_cols.items()},
+                param_cols={
+                    param: data[profile] for param, data in self.param_cols.items()
+                },
+                flag_cols={
+                    param: data[profile] for param, data in self.flag_cols.items()
+                },
+                error_cols={
+                    param: data[profile] for param, data in self.error_cols.items()
+                },
                 param_precisions=self.param_precisions,
                 error_precisions=self.error_precisions,
                 comments=self.comments,
-            ) for profile in profiles]
+            )
+            for profile in profiles
+        ]
 
     @property
     def parameters(self):
@@ -213,13 +229,14 @@ class ExchangeData:
 
     @cached_property
     def str_lens(self) -> Dict[WHPName, int]:
-        np_char_size = np.dtype('U1').itemsize
+        np_char_size = np.dtype("U1").itemsize
         lens = {}
         for param, data in self.param_cols.items():
             if param.dtype == "string":
                 lens[param] = data.itemsize // np_char_size
 
         return lens
+
 
 @dataclasses.dataclass
 class ExchangeInfo:
@@ -333,7 +350,7 @@ class ExchangeInfo:
         whp_error_precisions = {}
 
         for param, idx in self.whp_params.items():
-            param_col = np_db[:,idx]
+            param_col = np_db[:, idx]
             if param.dtype == "decimal":
                 whp_param_precisions[param] = _extract_numeric_precisions(param_col)
                 fill_spaces = np.char.startswith(param_col, "-999")
@@ -342,9 +359,9 @@ class ExchangeInfo:
         for param, idx in self.whp_flags.items():
             fill_spaces = np.char.startswith(param_col, "9")
             param_col[fill_spaces] = "nan"
-            whp_flag_cols[param] = np_db[:,idx].astype("float16")
+            whp_flag_cols[param] = np_db[:, idx].astype("float16")
         for param, idx in self.whp_errors.items():
-            param_col = np_db[:,idx]
+            param_col = np_db[:, idx]
             if param.dtype == "decimal":
                 whp_error_precisions[param] = _extract_numeric_precisions(param_col)
                 fill_spaces = np.char.startswith(param_col, "-999")
@@ -359,10 +376,8 @@ class ExchangeInfo:
             whp_error_cols,
             whp_param_precisions,
             whp_error_precisions,
-            comments="test"
+            comments="test",
         )
-
-
 
 
 def _get_parts(lines: Tuple[str, ...], ftype: FileType) -> ExchangeInfo:
@@ -560,8 +575,9 @@ def read_exchange(path):
 
     log.info("Found filetype: %s", ftype.name)
 
-
-    exchange_data = [_get_parts(tuple(df.splitlines()), ftype=ftype).finalize() for df in data]
+    exchange_data = [
+        _get_parts(tuple(df.splitlines()), ftype=ftype).finalize() for df in data
+    ]
 
     if not all((fp.single_profile for fp in exchange_data)):
         exchange_data = list(chain(*[exd.split_profiles() for exd in exchange_data]))
@@ -572,7 +588,6 @@ def read_exchange(path):
     log.debug((N_PROF, N_LEVELS))
 
     # TODO sort profiles
-
 
     params = set(chain(*[exd.param_cols.keys() for exd in exchange_data]))
     flags = set(chain(*[exd.flag_cols.keys() for exd in exchange_data]))
@@ -590,17 +605,27 @@ def read_exchange(path):
     log.debug("Init DataArrays")
     for param in params:
         if param.scope == "profile":
-            arr = np.full((N_PROF), fill_value=fills_map[param.dtype], dtype=dtype_map[param.dtype])
+            arr = np.full(
+                (N_PROF),
+                fill_value=fills_map[param.dtype],
+                dtype=dtype_map[param.dtype],
+            )
         elif param.scope == "sample":
-            arr = np.full((N_PROF, N_LEVELS),fill_value=fills_map[param.dtype], dtype=dtype_map[param.dtype])
+            arr = np.full(
+                (N_PROF, N_LEVELS),
+                fill_value=fills_map[param.dtype],
+                dtype=dtype_map[param.dtype],
+            )
         dataarrays[param.nc_name] = xr.DataArray(arr, attrs=param.get_nc_attrs())
 
         if param in flags:
             if param.scope == "profile":
                 arr = np.full((N_PROF), fill_value=np.nan, dtype="float32")
             elif param.scope == "sample":
-                arr = np.full((N_PROF, N_LEVELS),fill_value=np.nan, dtype="float32")
-            dataarrays[f"{param.nc_name}_qc"] = xr.DataArray(arr, attrs=param.get_nc_attrs(error=True))
+                arr = np.full((N_PROF, N_LEVELS), fill_value=np.nan, dtype="float32")
+            dataarrays[f"{param.nc_name}_qc"] = xr.DataArray(
+                arr, attrs=param.get_nc_attrs(error=True)
+            )
 
     for n_prof, exd in enumerate(exchange_data):
         for param in params:
@@ -608,12 +633,12 @@ def read_exchange(path):
                 dataarrays[param.nc_name][n_prof] = exd.param_cols[param][0]
             if param.scope == "sample":
                 data = exd.param_cols[param]
-                dataarrays[param.nc_name][n_prof, :len(data)] = data
+                dataarrays[param.nc_name][n_prof, : len(data)] = data
             if param in flags:
                 if param.scope == "profile":
                     dataarrays[f"{param.nc_name}_qc"][n_prof] = exd.flag_cols[param][0]
                 if param.scope == "sample":
                     data = exd.flag_cols[param]
-                    dataarrays[f"{param.nc_name}_qc"][n_prof, :len(data)] = data
+                    dataarrays[f"{param.nc_name}_qc"][n_prof, : len(data)] = data
 
     return xr.Dataset(dataarrays)
