@@ -11,5 +11,7 @@ write_to_template = 'version = "{version}"'
 [[tool.mypy.overrides]]
 module = [
     "appdirs.*",
+    "pandas",
+    "scipy.*",
 ]
 ignore_missing_imports = true
