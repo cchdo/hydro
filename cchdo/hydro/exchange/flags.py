@@ -66,8 +66,6 @@ class ExchangeSampleFlag(IntEnum):
     CHROMA_IRREGULAR = 8
     NOT_SAMPLED = 9
 
-    __doc__ = """Test Doc String"""
-
     def __init__(self, flag):
         self.flag = flag
 
