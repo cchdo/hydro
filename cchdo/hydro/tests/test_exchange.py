@@ -4,6 +4,10 @@ import pytest
 import numpy as np
 
 from hydro.exchange import read_exchange
+
+#temp as we finalize the new reader
+from hydro.exchange.two_pass import read_exchange as rx2
+
 from hydro.exchange.exceptions import (
     ExchangeLEError,
     ExchangeBOMError,
@@ -124,3 +128,14 @@ def test_write_exchange():
     assert ex.data == ex2.data
     assert ex.coordinates == ex2.coordinates
     assert ex.parameters == ex2.parameters
+
+
+def test_new_reader():
+    raw = simple_bottle_exchange()
+
+    ex1 = read_exchange(io.BytesIO(raw)).to_xarray()
+    ex2 = rx2(io.BytesIO(raw))
+    print("ex1", ex1)
+    print("ex2", ex2)
+
+    assert ex2.identical(ex1)
