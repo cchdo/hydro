@@ -1,15 +1,15 @@
-from collections import defaultdict
 import logging
 import io
 import dataclasses
 from collections.abc import Mapping
-from typing import Tuple, Dict
+from typing import BinaryIO, Tuple, Dict, Union
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
 from zipfile import ZipFile, is_zipfile
+from pathlib import Path
 
-
+import requests
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
@@ -528,12 +528,21 @@ def _get_ex_xyzt(data: Dict[WHPName, np.ndarray]):
 
     return ex_xyzt
 
+ExchangeIO = Union[str, Path, io.BufferedIOBase]
 
-def read_exchange(path):
+def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
+    if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
+        log.info("Loading object over http")
+        data_raw = io.BytesIO(requests.get(filename_or_obj).content)
 
-    log.info("Trying to open as local filepath")
-    with open(path, "rb") as f:
-        data_raw = io.BytesIO(f.read())
+    elif isinstance(filename_or_obj, (str, Path)):
+        log.info("Loading object from local file path")
+        with open(filename_or_obj, "rb") as f:
+            data_raw = io.BytesIO(f.read())
+
+    elif isinstance(filename_or_obj, io.BufferedIOBase):
+        log.info("Loading object open file object")
+        data_raw = io.BytesIO(filename_or_obj.read())
 
     data = []
     if is_zipfile(data_raw):
@@ -555,6 +564,12 @@ def read_exchange(path):
 
     # cleanup the data_raw to free the memory
     data_raw.close()
+    return data
+
+
+def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
+
+    data = _load_raw_exchange(filename_or_obj)
 
     log.info("Checking for BOM")
     if any((df.startswith("\ufeff") for df in data)):
