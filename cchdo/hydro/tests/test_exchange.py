@@ -138,4 +138,7 @@ def test_new_reader():
     print("ex1", ex1)
     print("ex2", ex2)
 
+    assert ex2.attrs == ex1.attrs
+    assert ex2.keys() == ex1.keys()
+    assert ex2.coords.keys() == ex1.coords.keys()
     assert ex2.identical(ex1)
