@@ -17,8 +17,10 @@ import pandas as pd
 import xarray as xr
 
 from cchdo.params import WHPName, WHPNames
+from cchdo.params._version import version as params_version
 
 from .exceptions import (
+    ExchangeDataInconsistentCoordinateError,
     ExchangeEncodingError,
     ExchangeBOMError,
     ExchangeLEError,
@@ -28,6 +30,7 @@ from .exceptions import (
     ExchangeDataPartialCoordinateError,
 )
 from .containers import FileType, ExchangeCompositeKey
+from .flags import ExchangeBottleFlag, ExchangeCTDFlag, ExchangeSampleFlag
 
 from .io import (
     _bottle_get_params,
@@ -36,11 +39,46 @@ from .io import (
     _ctd_get_header,
 )
 
+try:
+    from .. import __version__ as hydro_version
+
+    CCHDO_VERSION = ".".join(hydro_version.split(".")[:2])
+    if "dev" in hydro_version:
+        CCHDO_VERSION = hydro_version
+except ImportError:
+    hydro_version = CCHDO_VERSION = "unknown"
+
 log = logging.getLogger(__name__)
+
+DIMS = ("N_PROF", "N_LEVELS")
 
 EXPOCODE = WHPNames["EXPOCODE"]
 STNNBR = WHPNames["STNNBR"]
 CASTNO = WHPNames["CASTNO"]
+SAMPNO = WHPNames["SAMPNO"]
+DATE = WHPNames["DATE"]
+TIME = WHPNames["TIME"]
+LATITUDE = WHPNames["LATITUDE"] 
+LONGITUDE = WHPNames["LONGITUDE"] 
+CTDPRS = WHPNames[("CTDPRS", "DBAR")]
+
+COORDS = [
+EXPOCODE,
+STNNBR,
+CASTNO,
+SAMPNO,
+DATE,
+TIME,
+LATITUDE,
+LONGITUDE,
+CTDPRS,
+]
+
+FLAG_SCHEME = {
+    "woce_bottle": ExchangeBottleFlag,
+    "woce_discrete": ExchangeSampleFlag,
+    "woce_ctd": ExchangeCTDFlag,
+}
 
 ## tmp for new implimentatio
 @dataclasses.dataclass(frozen=True)
@@ -367,6 +405,8 @@ class ExchangeInfo:
                 fill_spaces = np.char.startswith(param_col, "-999")
                 param_col[fill_spaces] = "nan"
             whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
+
+        comments = self._raw_lines[self.stamp_line] + "\n" + "\n".join(self._raw_lines[self.comments])
         del self._raw_lines
 
         return ExchangeData(
@@ -376,7 +416,7 @@ class ExchangeInfo:
             whp_error_cols,
             whp_param_precisions,
             whp_error_precisions,
-            comments="test",
+            comments=comments,
         )
 
 
@@ -528,6 +568,18 @@ def _get_ex_xyzt(data: Dict[WHPName, np.ndarray]):
 
     return ex_xyzt
 
+def _combine_dt_cols(data: Dict[WHPName, np.ndarray], date_col: WHPName, time_col: WHPName) -> np.ndarray:
+    if time_col not in data:
+         return pd.to_datetime(data[date_col], format="%Y%m%d").values.astype(
+            "datetime64[D]"
+        )
+
+    cat_time = np.char.add(data[date_col], data[time_col])
+    return pd.to_datetime(cat_time, format="%Y%m%d%H%M").values.astype(
+        "datetime64[m]"
+    )
+
+
 ExchangeIO = Union[str, Path, io.BufferedIOBase]
 
 def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
@@ -565,6 +617,25 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
     # cleanup the data_raw to free the memory
     data_raw.close()
     return data
+
+def all_same(ndarr: np.ndarray) -> bool:
+    return np.all(ndarr == ndarr.flat[0])
+
+def process_coords() -> Dict[WHPName, xr.DataArray]:
+    """There is a special set of variables that make up two types of coordinates.
+    
+    CCHDO Indexing coordinates:
+    * Expocode
+    * Station
+    * Cast
+    * Sample
+
+    Spatiotemporal coordinates:
+    * X: longitude
+    * Y: latitude
+    * Z: pressure
+    * T: the combined date and time
+    """
 
 
 def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
@@ -617,34 +688,70 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     dtype_map = {"string": f"U{str_len}", "integer": "float32", "decimal": "float64"}
     fills_map = {"string": "", "integer": np.nan, "decimal": np.nan}
 
-    log.debug("Init DataArrays")
-    for param in params:
+    def _dataarray_factory(param: WHPName, ctype="data") -> xr.DataArray:
+        dtype = dtype_map[param.dtype]
+        fill = fills_map[param.dtype]
+
+        if ctype == "flag":
+            dtype = dtype_map["integer"]
+            fill = fills_map["integer"]
+
         if param.scope == "profile":
-            arr = np.full(
-                (N_PROF),
-                fill_value=fills_map[param.dtype],
-                dtype=dtype_map[param.dtype],
-            )
-        elif param.scope == "sample":
-            arr = np.full(
-                (N_PROF, N_LEVELS),
-                fill_value=fills_map[param.dtype],
-                dtype=dtype_map[param.dtype],
-            )
-        dataarrays[param.nc_name] = xr.DataArray(arr, attrs=param.get_nc_attrs())
+            arr = np.full((N_PROF), fill_value=fill, dtype=dtype)
+        if param.scope == "sample":
+            arr = np.full((N_PROF, N_LEVELS), fill_value=fill, dtype=dtype)
+
+        attrs = param.get_nc_attrs()
+
+        if ctype == "flag":
+            flag_defs = FLAG_SCHEME[param.flag_w]  # type: ignore
+            flag_values = []
+            flag_meanings = []
+            for flag in flag_defs:
+                flag_values.append(int(flag))
+                flag_meanings.append(flag.cf_def)  # type: ignore
+
+            odv_conventions_map = {
+                "woce_bottle": "WOCESAMPLE - WOCE Quality Codes for the sampling device itself",
+                "woce_ctd": "WOCECTD - WOCE Quality Codes for CTD instrument measurements",
+                "woce_discrete": "WOCEBOTTLE - WOCE Quality Codes for water sample (bottle) measurements",
+            }
+
+            attrs = {
+                "standard_name": "status_flag",
+                "flag_values": np.array(flag_values, dtype="int8"),
+                "flag_meanings": " ".join(flag_meanings),
+                "conventions": odv_conventions_map[param.flag_w],  # type: ignore
+            }
+
+        da = xr.DataArray(arr, dims=DIMS[: arr.ndim], attrs=attrs)
+
+        if param.dtype == "string":
+            da.encoding["dtype"] = "S1"
+
+        da.encoding["zlib"] = True
+        if ctype == "flag":
+            da.encoding["dtype"] = "int8"
+            da.encoding["_FillValue"] = 9
+
+        return da
+
+    log.debug("Init DataArrays")
+    for param in sorted(params):
+        dataarrays[param.nc_name] = _dataarray_factory(param)
 
         if param in flags:
-            if param.scope == "profile":
-                arr = np.full((N_PROF), fill_value=np.nan, dtype="float32")
-            elif param.scope == "sample":
-                arr = np.full((N_PROF, N_LEVELS), fill_value=np.nan, dtype="float32")
-            dataarrays[f"{param.nc_name}_qc"] = xr.DataArray(
-                arr, attrs=param.get_nc_attrs(error=True)
-            )
+            dataarrays[f"{param.nc_name}_qc"] = _dataarray_factory(param, ctype="flag")
 
+    log.debug("Put data in arrays")
+    comments = exchange_data[0].comments
     for n_prof, exd in enumerate(exchange_data):
+        if exd.comments != comments:
+            comments = f"{comments}\n----file_break----\n{exd.comments}"
         for param in params:
             if param.scope == "profile":
+                if not all_same(exd.param_cols[param]):
+                    raise ExchangeDataInconsistentCoordinateError()
                 dataarrays[param.nc_name][n_prof] = exd.param_cols[param][0]
             if param.scope == "sample":
                 data = exd.param_cols[param]
@@ -656,4 +763,13 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
                     data = exd.flag_cols[param]
                     dataarrays[f"{param.nc_name}_qc"][n_prof, : len(data)] = data
 
-    return xr.Dataset(dataarrays)
+    ds = xr.Dataset(dataarrays,
+                attrs={
+                "Conventions": f"CF-1.8 CCHDO-{CCHDO_VERSION}",
+                "cchdo_software_version": f"hydro {hydro_version}",
+                "cchdo_parameters_version": f"params {params_version}",
+                "comments": comments,
+                "featureType": "profile",
+            },)
+    ds = ds.set_coords([coord.nc_name for coord in COORDS])
+    return ds
