@@ -80,6 +80,36 @@ FLAG_SCHEME = {
     "woce_ctd": ExchangeCTDFlag,
 }
 
+GEOMETRY_VARS = ("expocode", "station", "cast", "section_id", "time")
+
+def add_geometry_var(dataset: xr.Dataset) -> xr.Dataset:
+    geometry_var = xr.DataArray(
+                name="geometry_container",
+                attrs={
+                    "geometry_type": "point",
+                    "node_coordinates": "longitude latitude",
+                },
+            )
+    dataset["geometry_container"] = geometry_var
+
+    for var in GEOMETRY_VARS:
+        if var in dataset:
+            dataset[var].attrs["geometry"] = "geometry_container"
+
+    return dataset
+
+def add_profile_type(dataset: xr.Dataset, ftype: FileType) -> xr.Dataset:
+    profile_type = xr.DataArray(
+        np.full(dataset.dims["N_PROF"], fill_value=ftype.value, dtype="U1"), name="profile_type", dims=DIMS[0]
+    )
+    profile_type.encoding[
+        "dtype"
+    ] = "S1"
+
+    dataset["profile_type"] = profile_type
+    return dataset
+
+
 ## tmp for new implimentatio
 @dataclasses.dataclass(frozen=True)
 class ExchangeXYZT(Mapping):
@@ -772,4 +802,6 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
                 "featureType": "profile",
             },)
     ds = ds.set_coords([coord.nc_name for coord in COORDS])
+    ds = add_profile_type(ds, ftype=ftype)
+    ds = add_geometry_var(ds)
     return ds
