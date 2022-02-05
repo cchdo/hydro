@@ -58,20 +58,20 @@ CASTNO = WHPNames["CASTNO"]
 SAMPNO = WHPNames["SAMPNO"]
 DATE = WHPNames["DATE"]
 TIME = WHPNames["TIME"]
-LATITUDE = WHPNames["LATITUDE"] 
-LONGITUDE = WHPNames["LONGITUDE"] 
+LATITUDE = WHPNames["LATITUDE"]
+LONGITUDE = WHPNames["LONGITUDE"]
 CTDPRS = WHPNames[("CTDPRS", "DBAR")]
 
 COORDS = [
-EXPOCODE,
-STNNBR,
-CASTNO,
-SAMPNO,
-DATE,
-TIME,
-LATITUDE,
-LONGITUDE,
-CTDPRS,
+    EXPOCODE,
+    STNNBR,
+    CASTNO,
+    SAMPNO,
+    DATE,
+    TIME,
+    LATITUDE,
+    LONGITUDE,
+    CTDPRS,
 ]
 
 FLAG_SCHEME = {
@@ -82,14 +82,15 @@ FLAG_SCHEME = {
 
 GEOMETRY_VARS = ("expocode", "station", "cast", "section_id", "time")
 
+
 def add_geometry_var(dataset: xr.Dataset) -> xr.Dataset:
     geometry_var = xr.DataArray(
-                name="geometry_container",
-                attrs={
-                    "geometry_type": "point",
-                    "node_coordinates": "longitude latitude",
-                },
-            )
+        name="geometry_container",
+        attrs={
+            "geometry_type": "point",
+            "node_coordinates": "longitude latitude",
+        },
+    )
     dataset["geometry_container"] = geometry_var
 
     for var in GEOMETRY_VARS:
@@ -98,13 +99,14 @@ def add_geometry_var(dataset: xr.Dataset) -> xr.Dataset:
 
     return dataset
 
+
 def add_profile_type(dataset: xr.Dataset, ftype: FileType) -> xr.Dataset:
     profile_type = xr.DataArray(
-        np.full(dataset.dims["N_PROF"], fill_value=ftype.value, dtype="U1"), name="profile_type", dims=DIMS[0]
+        np.full(dataset.dims["N_PROF"], fill_value=ftype.value, dtype="U1"),
+        name="profile_type",
+        dims=DIMS[0],
     )
-    profile_type.encoding[
-        "dtype"
-    ] = "S1"
+    profile_type.encoding["dtype"] = "S1"
 
     dataset["profile_type"] = profile_type
     return dataset
@@ -436,7 +438,11 @@ class ExchangeInfo:
                 param_col[fill_spaces] = "nan"
             whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
 
-        comments = self._raw_lines[self.stamp_line] + "\n" + "\n".join(self._raw_lines[self.comments])
+        comments = (
+            self._raw_lines[self.stamp_line]
+            + "\n"
+            + "\n".join(self._raw_lines[self.comments])
+        )
         del self._raw_lines
 
         return ExchangeData(
@@ -598,19 +604,21 @@ def _get_ex_xyzt(data: Dict[WHPName, np.ndarray]):
 
     return ex_xyzt
 
-def _combine_dt_cols(data: Dict[WHPName, np.ndarray], date_col: WHPName, time_col: WHPName) -> np.ndarray:
+
+def _combine_dt_cols(
+    data: Dict[WHPName, np.ndarray], date_col: WHPName, time_col: WHPName
+) -> np.ndarray:
     if time_col not in data:
-         return pd.to_datetime(data[date_col], format="%Y%m%d").values.astype(
+        return pd.to_datetime(data[date_col], format="%Y%m%d").values.astype(
             "datetime64[D]"
         )
 
     cat_time = np.char.add(data[date_col], data[time_col])
-    return pd.to_datetime(cat_time, format="%Y%m%d%H%M").values.astype(
-        "datetime64[m]"
-    )
+    return pd.to_datetime(cat_time, format="%Y%m%d%H%M").values.astype("datetime64[m]")
 
 
 ExchangeIO = Union[str, Path, io.BufferedIOBase]
+
 
 def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
@@ -648,12 +656,14 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
     data_raw.close()
     return data
 
+
 def all_same(ndarr: np.ndarray) -> bool:
     return np.all(ndarr == ndarr.flat[0])
 
+
 def process_coords() -> Dict[WHPName, xr.DataArray]:
     """There is a special set of variables that make up two types of coordinates.
-    
+
     CCHDO Indexing coordinates:
     * Expocode
     * Station
@@ -793,14 +803,16 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
                     data = exd.flag_cols[param]
                     dataarrays[f"{param.nc_name}_qc"][n_prof, : len(data)] = data
 
-    ds = xr.Dataset(dataarrays,
-                attrs={
-                "Conventions": f"CF-1.8 CCHDO-{CCHDO_VERSION}",
-                "cchdo_software_version": f"hydro {hydro_version}",
-                "cchdo_parameters_version": f"params {params_version}",
-                "comments": comments,
-                "featureType": "profile",
-            },)
+    ds = xr.Dataset(
+        dataarrays,
+        attrs={
+            "Conventions": f"CF-1.8 CCHDO-{CCHDO_VERSION}",
+            "cchdo_software_version": f"hydro {hydro_version}",
+            "cchdo_parameters_version": f"params {params_version}",
+            "comments": comments,
+            "featureType": "profile",
+        },
+    )
     ds = ds.set_coords([coord.nc_name for coord in COORDS])
     ds = add_profile_type(ds, ftype=ftype)
     ds = add_geometry_var(ds)
