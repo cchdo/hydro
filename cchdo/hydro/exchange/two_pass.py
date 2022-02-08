@@ -2,12 +2,13 @@ import logging
 import io
 import dataclasses
 from collections.abc import Mapping
-from typing import BinaryIO, Tuple, Dict, Union
+from typing import BinaryIO, Tuple, Dict, Union, Optional
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
 from zipfile import ZipFile, is_zipfile
 from pathlib import Path
+from datetime import datetime
 
 import requests
 import numpy as np
@@ -620,6 +621,62 @@ def _combine_dt_cols(
 ExchangeIO = Union[str, Path, io.BufferedIOBase]
 
 
+def _combine_dt_ndarray(
+    date_arr: np.ndarray, time_arr: Optional[np.ndarray]
+) -> np.ndarray:
+    def _parseDate(dt):
+        return datetime.strptime(dt, "%Y%m%d")
+
+    def _parseDatetime(dt):
+        return datetime.strptime(dt, "%Y%m%d%H%M")
+
+    # vectorize here doesn't speed things, it just nice for the interface
+    parseDate = np.vectorize(_parseDate, ["datetime64"])
+    parseDatetime = np.vectorize(_parseDatetime, ["datetime64"])
+
+    if time_arr is None:
+        return parseDate(date_arr).astype("datetime64[D]")
+
+    arr = np.char.add(date_arr, time_arr)
+    return parseDatetime(arr).astype("datetime64[m]")
+
+
+def combine_dt(dataset: xr.Dataset, id_coord: bool = True) -> xr.Dataset:
+    # date and time want specific attrs whos values have been
+    # selected by significant debate
+    date = dataset["date"]
+    time = dataset.get("time")  # not be present, this is allowed
+
+    dt_arr = _combine_dt_ndarray(date, time)
+    precision = 1 / 24 / 60  # minute as day fraction
+    if dt_arr.dtype.name == "datetime64[D]":
+        precision = 1
+    time_var = xr.DataArray(
+        dt_arr,
+        dims=date.dims,
+        attrs={
+            "standard_name": "time",
+            "axis": "T",
+            "whp_name": ["DATE", "TIME"],
+            "resolution": precision,
+        },
+    )
+    # if the thing being combined is a coordinate, it may not contain vill values
+    time_var.encoding["_FillValue"] = None if id_coord else np.nan
+    time_var.encoding["units"] = "days since 1950-01-01T00:00Z"
+    time_var.encoding["calendar"] = "gregorian"
+    time_var.encoding["dtype"] = "double"
+
+    try:
+        del dataset["time"]
+    except KeyError:
+        pass
+
+    # this is being done in a funny way to retain the variable ordering
+    dataset["date"] = time_var
+    return dataset.rename({"date": "time"})
+
+
 def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
         log.info("Loading object over http")
@@ -813,7 +870,10 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
             "featureType": "profile",
         },
     )
-    ds = ds.set_coords([coord.nc_name for coord in COORDS])
+
+    # The order of the following is somewhat important
+    ds = combine_dt(ds)
+    ds = ds.set_coords([coord.nc_name for coord in COORDS if coord.nc_name in ds])
     ds = add_profile_type(ds, ftype=ftype)
     ds = add_geometry_var(ds)
     return ds
