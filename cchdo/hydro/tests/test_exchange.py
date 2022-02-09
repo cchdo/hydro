@@ -5,7 +5,7 @@ import numpy as np
 
 from hydro.exchange import read_exchange
 
-#temp as we finalize the new reader
+# temp as we finalize the new reader
 from hydro.exchange.two_pass import read_exchange as rx2
 
 from hydro.exchange.exceptions import (

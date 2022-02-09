@@ -113,7 +113,6 @@ def add_profile_type(dataset: xr.Dataset, ftype: FileType) -> xr.Dataset:
     return dataset
 
 
-
 @dataclasses.dataclass
 class ExchangeData:
     single_profile: bool

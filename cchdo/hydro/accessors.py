@@ -144,7 +144,7 @@ class WoceAccessor(CCHDOAccessorBase):
             dec_len = len(dec)
             dec = int(dec)
 
-            min = 60 * (dec / (10 ** dec_len))
+            min = 60 * (dec / (10**dec_len))
 
             return f"{deg:>2d} {min:05.2f} {hem}"
 
@@ -161,7 +161,7 @@ class WoceAccessor(CCHDOAccessorBase):
             dec_len = len(dec)
             dec = int(dec)
 
-            min = 60 * (dec / (10 ** dec_len))
+            min = 60 * (dec / (10**dec_len))
 
             return f"{deg:>3d} {min:05.2f} {hem}"
 
