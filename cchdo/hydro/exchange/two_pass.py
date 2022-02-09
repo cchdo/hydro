@@ -82,6 +82,10 @@ GEOMETRY_VARS = ("expocode", "station", "cast", "section_id", "time")
 
 
 def add_geometry_var(dataset: xr.Dataset) -> xr.Dataset:
+    """Adds a CF-1.8 Geometry container variable to the dataset
+
+    This allows for compatabiltiy with tools like gdal
+    """
     geometry_var = xr.DataArray(
         name="geometry_container",
         attrs={
@@ -99,6 +103,13 @@ def add_geometry_var(dataset: xr.Dataset) -> xr.Dataset:
 
 
 def add_profile_type(dataset: xr.Dataset, ftype: FileType) -> xr.Dataset:
+    """Adds a `profile_type` string variable to the dataset.
+
+    This is for ODV compatability
+
+    .. warning::
+      Currently mixed profile types are not supported
+    """
     profile_type = xr.DataArray(
         np.full(dataset.dims["N_PROF"], fill_value=ftype.value, dtype="U1"),
         name="profile_type",
@@ -205,6 +216,8 @@ class ExchangeData:
 
 @dataclasses.dataclass
 class ExchangeInfo:
+    """Low level dataclass containing the parts of an exchange file"""
+
     stamp_line: int
     comments_start: int
     comments_end: int
@@ -350,89 +363,89 @@ class ExchangeInfo:
             comments=comments,
         )
 
+    @classmethod
+    def from_lines(cls, lines: Tuple[str, ...], ftype: FileType):
+        """Figure out the line numbers/indicies of the parts of the exchange file"""
+        stamp = 0  # file stamp is always the first line of a valid exchange
+        comments_start = 1
+        comments_end = 1
+        ctd_header_start = 1
+        ctd_header_end = 1
+        params = 1
+        units = 1
+        data_start = 1
+        data_end = 1
+        post_data_start = 1
+        post_data_end = 1
 
-def _get_parts(lines: Tuple[str, ...], ftype: FileType) -> ExchangeInfo:
-    """Figure out the line numbers/indicies of the parts of the exchange file"""
-    stamp = 0  # file stamp is always the first line of a valid exchange
-    comments_start = 1
-    comments_end = 1
-    ctd_header_start = 1
-    ctd_header_end = 1
-    params = 1
-    units = 1
-    data_start = 1
-    data_end = 1
-    post_data_start = 1
-    post_data_end = 1
+        looking_for = "file_stamp"
+        ctd_num_headers = 0
 
-    looking_for = "file_stamp"
-    ctd_num_headers = 0
+        log.debug("Looking for file parts")
 
-    log.debug("Looking for file parts")
-
-    for idx, line in enumerate(lines):
-        if looking_for == "file_stamp":
-            looking_for = "comments"
-            continue
-
-        if looking_for == "comments":
-            if line.startswith("#"):
-                comments_end = idx + 1
-            elif ftype == FileType.CTD:
-                looking_for = "ctd_headers"
-                param, value = _ctd_get_header(line, dtype=int)
-                if param != "NUMBER_HEADERS":
-                    raise ValueError()
-                ctd_num_headers = value - 1
-                ctd_header_start = idx + 1
-                continue
-            else:
-                looking_for = "params"
+        for idx, line in enumerate(lines):
+            if looking_for == "file_stamp":
+                looking_for = "comments"
                 continue
 
-        if looking_for == "ctd_headers":
-            if ctd_num_headers == 0:
-                ctd_header_end = idx
-                looking_for = "params"
+            if looking_for == "comments":
+                if line.startswith("#"):
+                    comments_end = idx + 1
+                elif ftype == FileType.CTD:
+                    looking_for = "ctd_headers"
+                    param, value = _ctd_get_header(line, dtype=int)
+                    if param != "NUMBER_HEADERS":
+                        raise ValueError()
+                    ctd_num_headers = value - 1
+                    ctd_header_start = idx + 1
+                    continue
+                else:
+                    looking_for = "params"
+                    continue
+
+            if looking_for == "ctd_headers":
+                if ctd_num_headers == 0:
+                    ctd_header_end = idx
+                    looking_for = "params"
+                    continue
+                ctd_num_headers -= 1
+
+            if looking_for == "params":
+                params = idx - 1
+                looking_for = "units"
                 continue
-            ctd_num_headers -= 1
 
-        if looking_for == "params":
-            params = idx - 1
-            looking_for = "units"
-            continue
-
-        if looking_for == "units":
-            units = idx - 1
-            data_start = idx
-            looking_for = "data"
-            continue
-
-        if looking_for == "data":
-            if line == "END_DATA":
-                data_end = idx
-
-                looking_for = "post_data"
-                post_data_start = post_data_end = idx + 1
+            if looking_for == "units":
+                units = idx - 1
+                data_start = idx
+                looking_for = "data"
                 continue
 
-        if looking_for == "post_data":
-            post_data_end = idx
+            if looking_for == "data":
+                if line == "END_DATA":
+                    data_end = idx
 
-    return ExchangeInfo(
-        stamp_line=stamp,
-        comments_start=comments_start,
-        comments_end=comments_end,
-        ctd_header_start=ctd_header_start,
-        ctd_header_end=ctd_header_end,
-        params_line=params,
-        units_line=units,
-        data_start=data_start,
-        data_end=data_end,
-        post_data_start=post_data_start,
-        post_data_end=post_data_end,
-        _raw_lines=lines,
-    )
+                    looking_for = "post_data"
+                    post_data_start = post_data_end = idx + 1
+                    continue
+
+            if looking_for == "post_data":
+                post_data_end = idx
+
+        return cls(
+            stamp_line=stamp,
+            comments_start=comments_start,
+            comments_end=comments_end,
+            ctd_header_start=ctd_header_start,
+            ctd_header_end=ctd_header_end,
+            params_line=params,
+            units_line=units,
+            data_start=data_start,
+            data_end=data_end,
+            post_data_start=post_data_start,
+            post_data_end=post_data_end,
+            _raw_lines=lines,
+        )
 
 
 def _extract_numeric_precisions(data: npt.NDArray[np.str_]) -> np.ndarray:
@@ -470,6 +483,14 @@ def _combine_dt_ndarray(
 
 
 def combine_dt(dataset: xr.Dataset, id_coord: bool = True) -> xr.Dataset:
+    """Combine the exchange style string variables of date and optinally time into a single
+    variable containing real datetime objects
+
+    This will remove the time variable if present, and replace then rename the date variable.
+    Date is replaced/renamed to maintain variable order in the xr.DataSet
+    """
+    # TODO: support saying "which" variable to look at
+
     # date and time want specific attrs whos values have been
     # selected by significant debate
     date = dataset["date"]
@@ -485,6 +506,8 @@ def combine_dt(dataset: xr.Dataset, id_coord: bool = True) -> xr.Dataset:
     precision = 1 / 24 / 60  # minute as day fraction
     if dt_arr.dtype.name == "datetime64[D]":
         precision = 1
+
+    # TODO: Handle non Coordinate variable combining
     time_var = xr.DataArray(
         dt_arr,
         dims=date.dims,
@@ -593,7 +616,8 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     log.info("Found filetype: %s", ftype.name)
 
     exchange_data = [
-        _get_parts(tuple(df.splitlines()), ftype=ftype).finalize() for df in data
+        ExchangeInfo.from_lines(tuple(df.splitlines()), ftype=ftype).finalize()
+        for df in data
     ]
 
     if not all((fp.single_profile for fp in exchange_data)):
