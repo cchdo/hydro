@@ -3,7 +3,7 @@
 # https://github.com/python/black#version-control-integration
 repos:
   - repo: https://github.com/python/black
-    rev: 21.12b0
+    rev: 22.1.0
     hooks:
       - id: black
         language_version: python3.9
