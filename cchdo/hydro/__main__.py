@@ -41,7 +41,7 @@ def status():
 
 
 def cchdo_loader(dtype):
-    from cchdo.auth.session import session as s
+    from cchdo.auth.session import session as s  # type: ignore
 
     log.info("Loading Cruise Metadata")
     cruises = s.get("https://cchdo.ucsd.edu/api/v1/cruise/all").json()
@@ -88,8 +88,8 @@ from . import __main_helpers as mh
 @click.argument("out_dir")
 def status_exchange(dtype, out_dir):
     """Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset"""
-    from cchdo.hydro._version import version as hydro_version
-    from cchdo.params import _version as params_version
+    from cchdo.hydro._version import version as hydro_version  # type: ignore
+    from cchdo.params import _version as params_version  # type: ignore
 
     out_path = Path(out_dir)
     cruises, files = cchdo_loader(dtype)

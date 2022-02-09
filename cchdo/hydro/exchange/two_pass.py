@@ -1,8 +1,7 @@
 import logging
 import io
 import dataclasses
-from collections.abc import Mapping
-from typing import BinaryIO, Tuple, Dict, Union, Optional
+from typing import Tuple, Dict, Union, Optional
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
@@ -13,7 +12,6 @@ from datetime import datetime
 import requests
 import numpy as np
 import numpy.typing as npt
-import pandas as pd
 
 import xarray as xr
 
@@ -28,9 +26,8 @@ from .exceptions import (
     ExchangeMagicNumberError,
     ExchangeDuplicateParameterError,
     ExchangeParameterUnitAlignmentError,
-    ExchangeDataPartialCoordinateError,
 )
-from .containers import FileType, ExchangeCompositeKey
+from .containers import FileType
 from .flags import ExchangeBottleFlag, ExchangeCTDFlag, ExchangeSampleFlag
 
 from .io import (
@@ -438,7 +435,7 @@ def _get_parts(lines: Tuple[str, ...], ftype: FileType) -> ExchangeInfo:
     )
 
 
-def _extract_numeric_precisions(data: npt.ArrayLike) -> np.ndarray:
+def _extract_numeric_precisions(data: npt.NDArray[np.str_]) -> np.ndarray:
     """Get the numeric precision of a printed decimal number"""
     # magic number explain: np.char.partition expands each element into a 3-tuple
     # of (pre, sep, post) of some sep, in our case a "." char.
@@ -453,17 +450,17 @@ ExchangeIO = Union[str, Path, io.BufferedIOBase]
 
 
 def _combine_dt_ndarray(
-    date_arr: np.ndarray, time_arr: Optional[np.ndarray]
+    date_arr: npt.NDArray[np.str_], time_arr: Optional[npt.NDArray[np.str_]] = None
 ) -> np.ndarray:
-    def _parseDate(dt):
+    def _parse_date(dt):
         return datetime.strptime(dt, "%Y%m%d")
 
-    def _parseDatetime(dt):
+    def _parse_datetime(dt):
         return datetime.strptime(dt, "%Y%m%d%H%M")
 
     # vectorize here doesn't speed things, it just nice for the interface
-    parseDate = np.vectorize(_parseDate, ["datetime64"])
-    parseDatetime = np.vectorize(_parseDatetime, ["datetime64"])
+    parseDate = np.vectorize(_parse_date, ["datetime64"])
+    parseDatetime = np.vectorize(_parse_datetime, ["datetime64"])
 
     if time_arr is None:
         return parseDate(date_arr).astype("datetime64[D]")
@@ -476,9 +473,15 @@ def combine_dt(dataset: xr.Dataset, id_coord: bool = True) -> xr.Dataset:
     # date and time want specific attrs whos values have been
     # selected by significant debate
     date = dataset["date"]
-    time = dataset.get("time")  # not be present, this is allowed
+    time: Optional[xr.DataArray] = dataset.get(
+        "time"
+    )  # not be present, this is allowed
 
-    dt_arr = _combine_dt_ndarray(date, time)
+    if time is None:
+        dt_arr = _combine_dt_ndarray(date.values)
+    else:
+        dt_arr = _combine_dt_ndarray(date.values, time.values)
+
     precision = 1 / 24 / 60  # minute as day fraction
     if dt_arr.dtype.name == "datetime64[D]":
         precision = 1
@@ -545,7 +548,7 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
     return data
 
 
-def all_same(ndarr: np.ndarray) -> bool:
+def all_same(ndarr: np.ndarray) -> np.bool_:
     return np.all(ndarr == ndarr.flat[0])
 
 
@@ -605,7 +608,7 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
 
     params = set(chain(*[exd.param_cols.keys() for exd in exchange_data]))
     flags = set(chain(*[exd.flag_cols.keys() for exd in exchange_data]))
-    errors = set(chain(*[exd.error_cols.keys() for exd in exchange_data]))
+    # errors = set(chain(*[exd.error_cols.keys() for exd in exchange_data]))
     log.debug("Dealing with strings")
     str_len = 1
     for exd in exchange_data:
