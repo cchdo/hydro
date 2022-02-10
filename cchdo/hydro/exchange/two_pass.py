@@ -328,10 +328,12 @@ class ExchangeInfo:
 
         for param, idx in self.whp_params.items():
             param_col = np_db[:, idx]
+            fill_spaces = np.char.startswith(param_col, "-999")
             if param.dtype == "decimal":
                 whp_param_precisions[param] = _extract_numeric_precisions(param_col)
-                fill_spaces = np.char.startswith(param_col, "-999")
                 param_col[fill_spaces] = "nan"
+            if param.dtype == "string":
+                param_col[fill_spaces] = ""
             whp_param_cols[param] = param_col.astype(dtype_map[param.dtype])
         for param, idx in self.whp_flags.items():
             fill_spaces = np.char.startswith(param_col, "9")
@@ -339,9 +341,9 @@ class ExchangeInfo:
             whp_flag_cols[param] = np_db[:, idx].astype("float16")
         for param, idx in self.whp_errors.items():
             param_col = np_db[:, idx]
+            fill_spaces = np.char.startswith(param_col, "-999")
             if param.dtype == "decimal":
                 whp_error_precisions[param] = _extract_numeric_precisions(param_col)
-                fill_spaces = np.char.startswith(param_col, "-999")
                 param_col[fill_spaces] = "nan"
             whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
 
@@ -480,6 +482,36 @@ def _combine_dt_ndarray(
 
     arr = np.char.add(date_arr, time_arr)
     return parseDatetime(arr).astype("datetime64[m]")
+
+
+def sort_ds(dataset: xr.Dataset) -> xr.Dataset:
+    """Sorts the data values in the dataset
+
+    Ensures that profiles are in the following order:
+    * Earlier before later (time will increase)
+    * Southerly before northerly (latitude will increase)
+    * Westerly before easterly (longitude will increase)
+
+    The two xy sorts are esentially tie breakers for when we are missing "time"
+
+    Inside profiles:
+    * Shallower before Deeper (pressure will increase)
+    """
+    # first make sure everything is sorted by pressure
+    # this is being done "manually" here becuase xarray only supports 1D sorting
+    pressure = dataset.pressure
+    sorted_indicies = np.argsort(pressure.values, axis=1)
+
+    for var in dataset.variables:
+        # this check ensures that the variable being sorted
+        # shares the first two dims as pressure, but allows for more dims past that
+        if dataset[var].dims[slice(0, len(pressure.dims))] == pressure.dims:
+            dataset[var][:] = np.take_along_axis(
+                dataset[var].values, sorted_indicies, axis=1
+            )
+
+    # now we can just use the xarray sorting, which only supports 1D
+    return dataset.sortby(["time", "latitude", "longitude"])
 
 
 def combine_dt(dataset: xr.Dataset, id_coord: bool = True) -> xr.Dataset:
@@ -632,7 +664,7 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
 
     params = set(chain(*[exd.param_cols.keys() for exd in exchange_data]))
     flags = set(chain(*[exd.flag_cols.keys() for exd in exchange_data]))
-    # errors = set(chain(*[exd.error_cols.keys() for exd in exchange_data]))
+    errors = set(chain(*[exd.error_cols.keys() for exd in exchange_data]))
     log.debug("Dealing with strings")
     str_len = 1
     for exd in exchange_data:
@@ -657,6 +689,9 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
             arr = np.full((N_PROF, N_LEVELS), fill_value=fill, dtype=dtype)
 
         attrs = param.get_nc_attrs()
+
+        if ctype == "error":
+            attrs = param.get_nc_attrs(error=True)
 
         if ctype == "flag":
             flag_defs = FLAG_SCHEME[param.flag_w]  # type: ignore
@@ -698,25 +733,49 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
         if param in flags:
             dataarrays[f"{param.nc_name}_qc"] = _dataarray_factory(param, ctype="flag")
 
+        if param in errors:
+            dataarrays[f"{param.nc_name}_error"] = _dataarray_factory(
+                param, ctype="error"
+            )
+
     log.debug("Put data in arrays")
     comments = exchange_data[0].comments
     for n_prof, exd in enumerate(exchange_data):
         if exd.comments != comments:
             comments = f"{comments}\n----file_break----\n{exd.comments}"
+
         for param in params:
+            if param in exd.param_precisions:
+                dataarrays[param.nc_name].attrs[
+                    "source_C_format"
+                ] = f"%.{exd.param_precisions[param]}f"
+            if param in exd.error_precisions:
+                dataarrays[f"{param.nc_name}_error"].attrs[
+                    "source_C_format"
+                ] = f"%.{exd.error_precisions[param]}f"
+
             if param.scope == "profile":
                 if not all_same(exd.param_cols[param]):
                     raise ExchangeDataInconsistentCoordinateError()
                 dataarrays[param.nc_name][n_prof] = exd.param_cols[param][0]
+
+                if param in flags:
+                    dataarrays[f"{param.nc_name}_qc"][n_prof] = exd.flag_cols[param][0]
+                if param in errors:
+                    dataarrays[f"{param.nc_name}_error"][n_prof] = exd.error_cols[
+                        param
+                    ][0]
+
             if param.scope == "sample":
                 data = exd.param_cols[param]
                 dataarrays[param.nc_name][n_prof, : len(data)] = data
-            if param in flags:
-                if param.scope == "profile":
-                    dataarrays[f"{param.nc_name}_qc"][n_prof] = exd.flag_cols[param][0]
-                if param.scope == "sample":
+
+                if param in flags:
                     data = exd.flag_cols[param]
                     dataarrays[f"{param.nc_name}_qc"][n_prof, : len(data)] = data
+                if param in errors:
+                    data = exd.error_cols[param]
+                    dataarrays[f"{param.nc_name}_error"][n_prof, : len(data)] = data
 
     ds = xr.Dataset(
         dataarrays,
@@ -732,6 +791,7 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     # The order of the following is somewhat important
     ds = combine_dt(ds)
     ds = ds.set_coords([coord.nc_name for coord in COORDS if coord.nc_name in ds])
+    ds = sort_ds(ds)
     ds = add_profile_type(ds, ftype=ftype)
     ds = add_geometry_var(ds)
     return ds
