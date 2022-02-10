@@ -8,6 +8,7 @@ from itertools import chain
 from zipfile import ZipFile, is_zipfile
 from pathlib import Path
 from datetime import datetime
+from enum import Enum, auto
 
 import requests
 import numpy as np
@@ -129,8 +130,8 @@ class ExchangeData:
     error_cols: Dict[WHPName, np.ndarray]
 
     # OG Print Precition Tracking
-    param_precisions: Dict[WHPName, int]
-    error_precisions: Dict[WHPName, int]
+    param_precisions: Dict[WHPName, npt.NDArray[np.int_]]
+    error_precisions: Dict[WHPName, npt.NDArray[np.int_]]
 
     comments: str
 
@@ -218,56 +219,57 @@ class ExchangeData:
 class ExchangeInfo:
     """Low level dataclass containing the parts of an exchange file"""
 
-    stamp_line: int
-    comments_start: int
-    comments_end: int
-    ctd_header_start: int
-    ctd_header_end: int
-    params_line: int
-    units_line: int
-    data_start: int
-    data_end: int
-    post_data_start: int
-    post_data_end: int
+    stamp_slice: slice
+    comments_slice: slice
+    ctd_headers_slice: slice
+    params_idx: int
+    units_idx: int
+    data_slice: slice
+    post_data_slice: slice
     _raw_lines: Tuple[str, ...] = dataclasses.field(repr=False)
 
     @property
+    def stamp(self):
+        return self._raw_lines[self.stamp_slice]
+
+    @property
     def comments(self):
-        return slice(self.comments_start, self.comments_end)
-
-    @property
-    def data(self):
-        return slice(self.data_start, self.data_end)
-
-    @property
-    def post_data(self):
-        return slice(self.post_data_start, self.post_data_end)
+        raw_comments = self._raw_lines[self.comments_slice]
+        return [c[1:] if c.startswith("#") else c for c in raw_comments]
 
     @property
     def ctd_headers(self):
-        slc = slice(self.ctd_header_start, self.ctd_header_end)
-        return dict([_ctd_get_header(line) for line in self._raw_lines[slc]])
+        return dict(
+            [_ctd_get_header(line) for line in self._raw_lines[self.ctd_headers_slice]]
+        )
 
     @cached_property
     def params(self):
         ctd_params = self.ctd_headers.keys()
-        return [
-            param.strip()
-            for param in [*ctd_params, *self._raw_lines[self.params_line].split(",")]
-        ]
+        data_params = self._raw_lines[self.params_idx].split(",")
+        return [param.strip() for param in [*ctd_params, *data_params]]
 
     @cached_property
     def units(self):
         # we can have a bunch of empty strings as units, we want these to be
         # None to match what would be in a WHPName object
         ctd_units = [None for _ in self.ctd_headers]
+        data_units = self._raw_lines[self.units_idx].split(",")
         return [
             x if x != "" else None
             for x in [
                 *ctd_units,
-                *[unit.strip() for unit in self._raw_lines[self.units_line].split(",")],
+                *[unit.strip() for unit in data_units],
             ]
         ]
+
+    @property
+    def data(self):
+        return self._raw_lines[self.data_slice]
+
+    @property
+    def post_data(self):
+        return self._raw_lines[self.post_data_slice]
 
     @cached_property
     def whp_params(self):
@@ -295,24 +297,21 @@ class ExchangeInfo:
 
     @cached_property
     def whp_flags(self):
-        self.whp_params
         return _bottle_get_flags(zip(self.params, self.units), self.whp_params)
 
     @cached_property
     def whp_errors(self):
-        self.whp_params
         return _bottle_get_errors(zip(self.params, self.units), self.whp_params)
 
-    # TODO cache?
     @property
     def _np_data_block(self):
         _raw_data = tuple(
             tuple((*self.ctd_headers.values(), *line.replace(" ", "").split(",")))
-            for line in self._raw_lines[self.data]
+            for line in self.data
         )
         return np.array(_raw_data, dtype="U")
 
-    def finalize(self):
+    def finalize(self) -> ExchangeData:
         # TODO clean up this function
         log.debug("Finializing...")
         single_profile = any(self.ctd_headers)
@@ -346,11 +345,7 @@ class ExchangeInfo:
                 param_col[fill_spaces] = "nan"
             whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
 
-        comments = (
-            self._raw_lines[self.stamp_line]
-            + "\n"
-            + "\n".join(self._raw_lines[self.comments])
-        )
+        comments = "\n".join([*self.stamp, *self.comments])
         del self._raw_lines
 
         return ExchangeData(
@@ -378,21 +373,30 @@ class ExchangeInfo:
         post_data_start = 1
         post_data_end = 1
 
-        looking_for = "file_stamp"
+        class LookingFor(Enum):
+            FILE_STAMP = auto()
+            COMMENTS = auto()
+            CTD_HEADERS = auto()
+            PARAMS = auto()
+            UNITS = auto()
+            DATA = auto()
+            POST_DATA = auto()
+
+        state = LookingFor.FILE_STAMP
         ctd_num_headers = 0
 
         log.debug("Looking for file parts")
 
         for idx, line in enumerate(lines):
-            if looking_for == "file_stamp":
-                looking_for = "comments"
+            if state is LookingFor.FILE_STAMP:
+                state = LookingFor.COMMENTS
                 continue
 
-            if looking_for == "comments":
+            if state is LookingFor.COMMENTS:
                 if line.startswith("#"):
                     comments_end = idx + 1
                 elif ftype == FileType.CTD:
-                    looking_for = "ctd_headers"
+                    state = LookingFor.CTD_HEADERS
                     param, value = _ctd_get_header(line, dtype=int)
                     if param != "NUMBER_HEADERS":
                         raise ValueError()
@@ -400,55 +404,51 @@ class ExchangeInfo:
                     ctd_header_start = idx + 1
                     continue
                 else:
-                    looking_for = "params"
+                    state = LookingFor.PARAMS
                     continue
 
-            if looking_for == "ctd_headers":
+            if state is LookingFor.CTD_HEADERS:
                 if ctd_num_headers == 0:
                     ctd_header_end = idx
-                    looking_for = "params"
+                    state = LookingFor.PARAMS
                     continue
                 ctd_num_headers -= 1
 
-            if looking_for == "params":
+            if state is LookingFor.PARAMS:
                 params = idx - 1
-                looking_for = "units"
+                state = LookingFor.UNITS
                 continue
 
-            if looking_for == "units":
+            if state is LookingFor.UNITS:
                 units = idx - 1
                 data_start = idx
-                looking_for = "data"
+                state = LookingFor.DATA
                 continue
 
-            if looking_for == "data":
+            if state is LookingFor.DATA:
                 if line == "END_DATA":
                     data_end = idx
 
-                    looking_for = "post_data"
+                    state = LookingFor.POST_DATA
                     post_data_start = post_data_end = idx + 1
                     continue
 
-            if looking_for == "post_data":
+            if state is LookingFor.POST_DATA:
                 post_data_end = idx
 
         return cls(
-            stamp_line=stamp,
-            comments_start=comments_start,
-            comments_end=comments_end,
-            ctd_header_start=ctd_header_start,
-            ctd_header_end=ctd_header_end,
-            params_line=params,
-            units_line=units,
-            data_start=data_start,
-            data_end=data_end,
-            post_data_start=post_data_start,
-            post_data_end=post_data_end,
+            stamp_slice=slice(stamp, comments_start),
+            comments_slice=slice(comments_start, comments_end),
+            ctd_headers_slice=slice(ctd_header_start, ctd_header_end),
+            params_idx=params,
+            units_idx=units,
+            data_slice=slice(data_start, data_end),
+            post_data_slice=slice(post_data_start, post_data_end),
             _raw_lines=lines,
         )
 
 
-def _extract_numeric_precisions(data: npt.NDArray[np.str_]) -> np.ndarray:
+def _extract_numeric_precisions(data: npt.NDArray[np.str_]) -> npt.NDArray[np.int_]:
     """Get the numeric precision of a printed decimal number"""
     # magic number explain: np.char.partition expands each element into a 3-tuple
     # of (pre, sep, post) of some sep, in our case a "." char.
