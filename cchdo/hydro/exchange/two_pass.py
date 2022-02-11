@@ -811,15 +811,16 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     ds = combine_dt(ds)
 
     # these are the only two we know of for now
-    ds = combine_dt(
-        ds,
-        is_coord=False,
-        date_name=WHPNames["BTL_DATE"],
-        time_name=WHPNames["BTL_TIME"],
-    )
     ds = ds.set_coords([coord.nc_name for coord in COORDS if coord.nc_name in ds])
     ds = sort_ds(ds)
     ds = set_axis_attrs(ds)
     ds = add_profile_type(ds, ftype=ftype)
     ds = add_geometry_var(ds)
+    if WHPNames["BTL_DATE"].nc_name in ds:
+        ds = combine_dt(
+            ds,
+            is_coord=False,
+            date_name=WHPNames["BTL_DATE"],
+            time_name=WHPNames["BTL_TIME"],
+        )
     return ds
