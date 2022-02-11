@@ -566,6 +566,15 @@ def combine_dt(dataset: xr.Dataset, id_coord: bool = True) -> xr.Dataset:
     return dataset.rename({"date": "time"})
 
 
+def set_axis_attrs(dataset: xr.Dataset) -> xr.Dataset:
+    dataset.longitude.attrs["axis"] = "X"
+    dataset.latitude.attrs["axis"] = "Y"
+    dataset.pressure.attrs["axis"] = "Z"
+    dataset.pressure.attrs["positive"] = "down"
+    dataset.time.attrs["axis"] = "T"
+    return dataset
+
+
 def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
         log.info("Loading object over http")
@@ -792,6 +801,7 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     ds = combine_dt(ds)
     ds = ds.set_coords([coord.nc_name for coord in COORDS if coord.nc_name in ds])
     ds = sort_ds(ds)
+    ds = set_axis_attrs(ds)
     ds = add_profile_type(ds, ftype=ftype)
     ds = add_geometry_var(ds)
     return ds
