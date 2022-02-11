@@ -468,9 +468,13 @@ def _combine_dt_ndarray(
     date_arr: npt.NDArray[np.str_], time_arr: Optional[npt.NDArray[np.str_]] = None
 ) -> np.ndarray:
     def _parse_date(dt):
+        if dt == "":
+            return np.datetime64("nat")
         return datetime.strptime(dt, "%Y%m%d")
 
     def _parse_datetime(dt):
+        if dt == "":
+            return np.datetime64("nat")
         return datetime.strptime(dt, "%Y%m%d%H%M")
 
     # vectorize here doesn't speed things, it just nice for the interface
@@ -514,26 +518,32 @@ def sort_ds(dataset: xr.Dataset) -> xr.Dataset:
     return dataset.sortby(["time", "latitude", "longitude"])
 
 
-def combine_dt(dataset: xr.Dataset, id_coord: bool = True) -> xr.Dataset:
+def combine_dt(
+    dataset: xr.Dataset,
+    is_coord: bool = True,
+    date_name: WHPName = DATE,
+    time_name: WHPName = TIME,
+) -> xr.Dataset:
     """Combine the exchange style string variables of date and optinally time into a single
     variable containing real datetime objects
 
     This will remove the time variable if present, and replace then rename the date variable.
     Date is replaced/renamed to maintain variable order in the xr.DataSet
     """
-    # TODO: support saying "which" variable to look at
 
     # date and time want specific attrs whos values have been
     # selected by significant debate
-    date = dataset["date"]
+    date = dataset[date_name.nc_name]
     time: Optional[xr.DataArray] = dataset.get(
-        "time"
+        time_name.nc_name
     )  # not be present, this is allowed
 
     if time is None:
         dt_arr = _combine_dt_ndarray(date.values)
+        whp_name = date_name.whp_name
     else:
         dt_arr = _combine_dt_ndarray(date.values, time.values)
+        whp_name = [date_name.whp_name, time_name.whp_name]
 
     precision = 1 / 24 / 60  # minute as day fraction
     if dt_arr.dtype.name == "datetime64[D]":
@@ -545,25 +555,28 @@ def combine_dt(dataset: xr.Dataset, id_coord: bool = True) -> xr.Dataset:
         dims=date.dims,
         attrs={
             "standard_name": "time",
-            "axis": "T",
-            "whp_name": ["DATE", "TIME"],
+            "whp_name": whp_name,
             "resolution": precision,
         },
     )
+    if is_coord is True:
+        time_var.attrs["axis"] = "T"
+
     # if the thing being combined is a coordinate, it may not contain vill values
-    time_var.encoding["_FillValue"] = None if id_coord else np.nan
+    time_var.encoding["_FillValue"] = None if is_coord else np.nan
     time_var.encoding["units"] = "days since 1950-01-01T00:00Z"
     time_var.encoding["calendar"] = "gregorian"
     time_var.encoding["dtype"] = "double"
 
     try:
-        del dataset["time"]
+        del dataset[time_name.nc_name]
     except KeyError:
         pass
 
     # this is being done in a funny way to retain the variable ordering
-    dataset["date"] = time_var
-    return dataset.rename({"date": "time"})
+    # we will always keep the "time" variable name
+    dataset[date_name.nc_name] = time_var
+    return dataset.rename({date_name.nc_name: time_name.nc_name})
 
 
 def set_axis_attrs(dataset: xr.Dataset) -> xr.Dataset:
@@ -799,6 +812,14 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
 
     # The order of the following is somewhat important
     ds = combine_dt(ds)
+
+    # these are the only two we know of for now
+    ds = combine_dt(
+        ds,
+        is_coord=False,
+        date_name=WHPNames["BTL_DATE"],
+        time_name=WHPNames["BTL_TIME"],
+    )
     ds = ds.set_coords([coord.nc_name for coord in COORDS if coord.nc_name in ds])
     ds = sort_ds(ds)
     ds = set_axis_attrs(ds)
