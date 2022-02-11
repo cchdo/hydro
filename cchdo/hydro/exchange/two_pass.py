@@ -549,7 +549,6 @@ def combine_dt(
     if dt_arr.dtype.name == "datetime64[D]":
         precision = 1
 
-    # TODO: Handle non Coordinate variable combining
     time_var = xr.DataArray(
         dt_arr,
         dims=date.dims,
@@ -681,8 +680,6 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     N_LEVELS = max((fp.shape[0] for fp in exchange_data))
 
     log.debug((N_PROF, N_LEVELS))
-
-    # TODO sort profiles
 
     params = set(chain(*[exd.param_cols.keys() for exd in exchange_data]))
     flags = set(chain(*[exd.flag_cols.keys() for exd in exchange_data]))
