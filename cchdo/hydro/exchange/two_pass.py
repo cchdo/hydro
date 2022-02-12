@@ -193,6 +193,10 @@ class _ExchangeData:
             raise ValueError("orphan error")
 
     def split_profiles(self):
+        """Split into single profile containing _ExchangeData instances
+
+        Done by looking at the expocode+station+cast composate keys
+        """
         expocode = self.param_cols[EXPOCODE]
         station = self.param_cols[STNNBR]
         cast = self.param_cols[CASTNO]
@@ -226,12 +230,12 @@ class _ExchangeData:
             for profile in profiles
         ]
 
-    @property
-    def parameters(self):
-        return self.param_cols.keys()
-
     @cached_property
     def str_lens(self) -> Dict[WHPName, int]:
+        """Figure out the length of all the string params
+
+        The char size can vary by platform.
+        """
         np_char_size = np.dtype("U1").itemsize
         lens = {}
         for param, data in self.param_cols.items():
@@ -256,27 +260,38 @@ class _ExchangeInfo:
 
     @property
     def stamp(self):
+        """Returns the filestamp of the exchange file
+
+        e.g. "BOTTLE,20210301CCHSIOAMB"
+        """
         return self._raw_lines[self.stamp_slice]
 
     @property
     def comments(self):
+        """Returns the comments of the exchange file with leading # stripped"""
         raw_comments = self._raw_lines[self.comments_slice]
         return [c[1:] if c.startswith("#") else c for c in raw_comments]
 
     @property
     def ctd_headers(self):
+        """Returns a dict of the CTD headers and their value"""
         return dict(
             [_ctd_get_header(line) for line in self._raw_lines[self.ctd_headers_slice]]
         )
 
     @cached_property
     def params(self):
+        """Returns a list of all parameters in the file (including CTD "headers")"""
         ctd_params = self.ctd_headers.keys()
         data_params = self._raw_lines[self.params_idx].split(",")
         return [param.strip() for param in [*ctd_params, *data_params]]
 
     @cached_property
     def units(self):
+        """Returns a list of all the units in the file (including CTD "headers")
+
+        Will have the same shape as params
+        """
         # we can have a bunch of empty strings as units, we want these to be
         # None to match what would be in a WHPName object
         ctd_units = [None for _ in self.ctd_headers]
@@ -291,14 +306,22 @@ class _ExchangeInfo:
 
     @property
     def data(self):
+        """Returns the data block of an exchange file as a tuple of strs.
+        One line per entry.
+        """
         return self._raw_lines[self.data_slice]
 
     @property
     def post_data(self):
+        """Returns any post data content as a tuple of strs"""
         return self._raw_lines[self.post_data_slice]
 
     @cached_property
     def whp_params(self):
+        """Parses the params and units for base parameters
+
+        Returns a dict with a WHPName to column index mapping
+        """
         # TODO remove when min pyver is 3.10
         if len(self.params) != len(set(self.params)):
             raise ExchangeDuplicateParameterError
@@ -323,10 +346,18 @@ class _ExchangeInfo:
 
     @cached_property
     def whp_flags(self):
+        """Parses the params and units for flag values
+
+        returns a dict with a WHPName to column index of flags mapping
+        """
         return _bottle_get_flags(zip(self.params, self.units), self.whp_params)
 
     @cached_property
     def whp_errors(self):
+        """Parses the params and units for uncertanty values
+
+        returns a dict with a WHPName to column index of errors mapping
+        """
         return _bottle_get_errors(zip(self.params, self.units), self.whp_params)
 
     @property
@@ -670,6 +701,7 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
 
 
 def all_same(ndarr: np.ndarray) -> np.bool_:
+    """Test if all the values of an ndarray are the same value"""
     return np.all(ndarr == ndarr.flat[0])
 
 
