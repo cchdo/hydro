@@ -122,8 +122,31 @@ def add_profile_type(dataset: xr.Dataset, ftype: FileType) -> xr.Dataset:
     return dataset
 
 
+def finalize_ancillary_variables(dataset: xr.Dataset):
+    """Turn the ancillary variable attr into a space seperated string
+
+    It is nice to have the ancillary variable be a list while things are being read into it
+    """
+    for var in dataset.variables:
+        if "ancillary_variables" not in dataset[var].attrs:
+            continue
+        ancillary_variables = dataset[var].attrs["ancillary_variables"]
+        if isinstance(ancillary_variables, str):
+            continue
+        elif isinstance(ancillary_variables, list):
+            dataset[var].attrs["ancillary_variables"] = " ".join(
+                set(ancillary_variables)
+            )
+        else:
+            raise ValueError("ancillary variables are crazy")
+
+    return dataset
+
+
 @dataclasses.dataclass
 class ExchangeData:
+    """Dataclass containing exchange data which has been parsed into ndarrays"""
+
     single_profile: bool
     param_cols: Dict[WHPName, np.ndarray]
     flag_cols: Dict[WHPName, np.ndarray]
@@ -312,7 +335,10 @@ class ExchangeInfo:
         return np.array(_raw_data, dtype="U")
 
     def finalize(self) -> ExchangeData:
-        # TODO clean up this function
+        """Parse all the data into ndarrays of the correct dtype and shape
+
+        Returns an ExchangeData dataclass
+        """
         log.debug("Finializing...")
         single_profile = any(self.ctd_headers)
 
@@ -335,10 +361,12 @@ class ExchangeInfo:
             if param.dtype == "string":
                 param_col[fill_spaces] = ""
             whp_param_cols[param] = param_col.astype(dtype_map[param.dtype])
+
         for param, idx in self.whp_flags.items():
             fill_spaces = np.char.startswith(param_col, "9")
             param_col[fill_spaces] = "nan"
             whp_flag_cols[param] = np_db[:, idx].astype("float16")
+
         for param, idx in self.whp_errors.items():
             param_col = np_db[:, idx]
             fill_spaces = np.char.startswith(param_col, "-999")
@@ -376,6 +404,8 @@ class ExchangeInfo:
         post_data_end = 1
 
         class LookingFor(Enum):
+            """States for the FSM that is this parser"""
+
             FILE_STAMP = auto()
             COMMENTS = auto()
             CTD_HEADERS = auto()
@@ -467,25 +497,27 @@ ExchangeIO = Union[str, Path, io.BufferedIOBase]
 def _combine_dt_ndarray(
     date_arr: npt.NDArray[np.str_], time_arr: Optional[npt.NDArray[np.str_]] = None
 ) -> np.ndarray:
-    def _parse_date(dt):
-        if dt == "":
-            return np.datetime64("nat")
-        return datetime.strptime(dt, "%Y%m%d")
 
-    def _parse_datetime(dt):
-        if dt == "":
+    # TODO: When min pyver is 3.10, maybe consider pattern matching here
+    def _parse_date(date_val: str) -> np.datetime64:
+        if date_val == "":
             return np.datetime64("nat")
-        return datetime.strptime(dt, "%Y%m%d%H%M")
+        return np.datetime64(datetime.strptime(date_val, "%Y%m%d"))
+
+    def _parse_datetime(date_val: str) -> np.datetime64:
+        if date_val == "":
+            return np.datetime64("nat")
+        return np.datetime64(datetime.strptime(date_val, "%Y%m%d%H%M"))
 
     # vectorize here doesn't speed things, it just nice for the interface
-    parseDate = np.vectorize(_parse_date, ["datetime64"])
-    parseDatetime = np.vectorize(_parse_datetime, ["datetime64"])
+    parse_date = np.vectorize(_parse_date, ["datetime64"])
+    parse_datetime = np.vectorize(_parse_datetime, ["datetime64"])
 
     if time_arr is None:
-        return parseDate(date_arr).astype("datetime64[D]")
+        return parse_date(date_arr).astype("datetime64[D]")
 
     arr = np.char.add(date_arr, time_arr)
-    return parseDatetime(arr).astype("datetime64[m]")
+    return parse_datetime(arr).astype("datetime64[m]")
 
 
 def sort_ds(dataset: xr.Dataset) -> xr.Dataset:
@@ -518,6 +550,9 @@ def sort_ds(dataset: xr.Dataset) -> xr.Dataset:
     return dataset.sortby(["time", "latitude", "longitude"])
 
 
+WHPNameAttr = Union[str, list[str]]
+
+
 def combine_dt(
     dataset: xr.Dataset,
     is_coord: bool = True,
@@ -540,7 +575,7 @@ def combine_dt(
 
     if time is None:
         dt_arr = _combine_dt_ndarray(date.values)
-        whp_name = date_name.whp_name
+        whp_name: WHPNameAttr = date_name.whp_name
     else:
         dt_arr = _combine_dt_ndarray(date.values, time.values)
         whp_name = [date_name.whp_name, time_name.whp_name]
@@ -579,6 +614,13 @@ def combine_dt(
 
 
 def set_axis_attrs(dataset: xr.Dataset) -> xr.Dataset:
+    """Set the CF axis attribute on our axis variables (XYZT)
+
+    * longitude = "X"
+    * latitude = "Y"
+    * pressure = "Z", addtionally, positive is down
+    * time = "T"
+    """
     dataset.longitude.attrs["axis"] = "X"
     dataset.latitude.attrs["axis"] = "Y"
     dataset.pressure.attrs["axis"] = "Z"
@@ -594,8 +636,8 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
 
     elif isinstance(filename_or_obj, (str, Path)):
         log.info("Loading object from local file path")
-        with open(filename_or_obj, "rb") as f:
-            data_raw = io.BytesIO(f.read())
+        with open(filename_or_obj, "rb") as local_file:
+            data_raw = io.BytesIO(local_file.read())
 
     elif isinstance(filename_or_obj, io.BufferedIOBase):
         log.info("Loading object open file object")
@@ -605,11 +647,11 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
     if is_zipfile(data_raw):
 
         data_raw.seek(0)  # is_zipfile moves the "tell" position
-        with ZipFile(data_raw) as zf:
-            for zipinfo in zf.infolist():
+        with ZipFile(data_raw) as zipfile:
+            for zipinfo in zipfile.infolist():
                 log.debug("Reading %s", zipinfo)
                 try:
-                    data.append(zf.read(zipinfo).decode("utf8"))
+                    data.append(zipfile.read(zipinfo).decode("utf8"))
                 except UnicodeDecodeError as error:
                     raise ExchangeEncodingError from error
     else:
@@ -626,23 +668,6 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
 
 def all_same(ndarr: np.ndarray) -> np.bool_:
     return np.all(ndarr == ndarr.flat[0])
-
-
-def process_coords() -> Dict[WHPName, xr.DataArray]:
-    """There is a special set of variables that make up two types of coordinates.
-
-    CCHDO Indexing coordinates:
-    * Expocode
-    * Station
-    * Cast
-    * Sample
-
-    Spatiotemporal coordinates:
-    * X: longitude
-    * Y: latitude
-    * Z: pressure
-    * T: the combined date and time
-    """
 
 
 def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
@@ -733,29 +758,32 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
                 "conventions": odv_conventions_map[param.flag_w],  # type: ignore
             }
 
-        da = xr.DataArray(arr, dims=DIMS[: arr.ndim], attrs=attrs)
+        var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], attrs=attrs)
 
         if param.dtype == "string":
-            da.encoding["dtype"] = "S1"
+            var_da.encoding["dtype"] = "S1"
 
-        da.encoding["zlib"] = True
+        var_da.encoding["zlib"] = True
         if ctype == "flag":
-            da.encoding["dtype"] = "int8"
-            da.encoding["_FillValue"] = 9
+            var_da.encoding["dtype"] = "int8"
+            var_da.encoding["_FillValue"] = 9
 
-        return da
+        return var_da
 
     log.debug("Init DataArrays")
     for param in sorted(params):
         dataarrays[param.nc_name] = _dataarray_factory(param)
 
+        dataarrays[param.nc_name].attrs["ancillary_variables"] = []
         if param in flags:
-            dataarrays[f"{param.nc_name}_qc"] = _dataarray_factory(param, ctype="flag")
+            qc_name = f"{param.nc_name}_qc"
+            dataarrays[qc_name] = _dataarray_factory(param, ctype="flag")
+            dataarrays[param.nc_name].attrs["ancillary_variables"].append(qc_name)
 
         if param in errors:
-            dataarrays[f"{param.nc_name}_error"] = _dataarray_factory(
-                param, ctype="error"
-            )
+            error_name = f"{param.nc_name}_error"
+            dataarrays[error_name] = _dataarray_factory(param, ctype="error")
+            dataarrays[param.nc_name].attrs["ancillary_variables"].append(error_name)
 
     log.debug("Put data in arrays")
     comments = exchange_data[0].comments
@@ -796,7 +824,7 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
                     data = exd.error_cols[param]
                     dataarrays[f"{param.nc_name}_error"][n_prof, : len(data)] = data
 
-    ds = xr.Dataset(
+    ex_dataset = xr.Dataset(
         dataarrays,
         attrs={
             "Conventions": f"CF-1.8 CCHDO-{CCHDO_VERSION}",
@@ -808,19 +836,22 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     )
 
     # The order of the following is somewhat important
-    ds = combine_dt(ds)
+    ex_dataset = combine_dt(ex_dataset)
 
     # these are the only two we know of for now
-    ds = ds.set_coords([coord.nc_name for coord in COORDS if coord.nc_name in ds])
-    ds = sort_ds(ds)
-    ds = set_axis_attrs(ds)
-    ds = add_profile_type(ds, ftype=ftype)
-    ds = add_geometry_var(ds)
-    if WHPNames["BTL_DATE"].nc_name in ds:
-        ds = combine_dt(
-            ds,
+    ex_dataset = ex_dataset.set_coords(
+        [coord.nc_name for coord in COORDS if coord.nc_name in ex_dataset]
+    )
+    ex_dataset = sort_ds(ex_dataset)
+    ex_dataset = set_axis_attrs(ex_dataset)
+    ex_dataset = add_profile_type(ex_dataset, ftype=ftype)
+    ex_dataset = add_geometry_var(ex_dataset)
+    ex_dataset = finalize_ancillary_variables(ex_dataset)
+    if WHPNames["BTL_DATE"].nc_name in ex_dataset:
+        ex_dataset = combine_dt(
+            ex_dataset,
             is_coord=False,
             date_name=WHPNames["BTL_DATE"],
             time_name=WHPNames["BTL_TIME"],
         )
-    return ds
+    return ex_dataset
