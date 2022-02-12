@@ -146,6 +146,28 @@ def finalize_ancillary_variables(dataset: xr.Dataset):
     return dataset
 
 
+def check_is_subset(a1, a2, strict="disallowed"):
+    """Ensure that the shape of the data in a2 is a subset (or strict subset) of the data shape of a1
+
+    For a given set of param, flag, and error arrays you would want to ensure that:
+    * errors are a subset of params (strict is allowed)
+    * params are a subset of flags (strict is allowed)
+
+    For string vars, the empty string is considered the "nothing" value.
+    For woce flags, flag 9s should be converted to nans (depending on scheme flag 5 and 1 may not have param values)
+
+    Return a boolean array of invalid locations
+    """
+
+
+def check_flags():
+    """Check flag values agaisnt their param and ensure that the param either has a value or is "nan"
+    depedning on the flag definition.
+
+    Return a boolean array of invalid locations
+    """
+
+
 @dataclasses.dataclass
 class _ExchangeData:
     """Dataclass containing exchange data which has been parsed into ndarrays"""
