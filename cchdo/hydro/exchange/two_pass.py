@@ -23,6 +23,7 @@ from .exceptions import (
     ExchangeDataInconsistentCoordinateError,
     ExchangeEncodingError,
     ExchangeBOMError,
+    ExchangeInconsistentMergeType,
     ExchangeLEError,
     ExchangeMagicNumberError,
     ExchangeDuplicateParameterError,
@@ -131,8 +132,10 @@ def finalize_ancillary_variables(dataset: xr.Dataset):
         if "ancillary_variables" not in dataset[var].attrs:
             continue
         ancillary_variables = dataset[var].attrs["ancillary_variables"]
-        if isinstance(ancillary_variables, str):
-            continue
+        if len(ancillary_variables) == 0:
+            del dataset[var].attrs["ancillary_variables"]
+        elif isinstance(ancillary_variables, str):
+            pass
         elif isinstance(ancillary_variables, list):
             dataset[var].attrs["ancillary_variables"] = " ".join(
                 set(ancillary_variables)
@@ -689,8 +692,10 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
         ftype = FileType.BOTTLE
     elif all((df.startswith("CTD") for df in data)):
         ftype = FileType.CTD
+    elif all((df.startswith(("CTD", "BOTTLE")) for df in data)):
+        # Mixed CTD and BOTTLE files (probably in a zip)
+        raise ExchangeInconsistentMergeType
     else:
-        # TODO this is where the "mixed" check is happening now
         raise ExchangeMagicNumberError
 
     log.info("Found filetype: %s", ftype.name)
