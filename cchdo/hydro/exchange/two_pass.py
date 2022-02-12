@@ -144,7 +144,7 @@ def finalize_ancillary_variables(dataset: xr.Dataset):
 
 
 @dataclasses.dataclass
-class ExchangeData:
+class _ExchangeData:
     """Dataclass containing exchange data which has been parsed into ndarrays"""
 
     single_profile: bool
@@ -205,7 +205,7 @@ class ExchangeData:
 
         log.debug("Actually splitting profiles")
         return [
-            ExchangeData(
+            _ExchangeData(
                 single_profile=True,
                 param_cols={
                     param: data[profile] for param, data in self.param_cols.items()
@@ -239,7 +239,7 @@ class ExchangeData:
 
 
 @dataclasses.dataclass
-class ExchangeInfo:
+class _ExchangeInfo:
     """Low level dataclass containing the parts of an exchange file"""
 
     stamp_slice: slice
@@ -334,7 +334,7 @@ class ExchangeInfo:
         )
         return np.array(_raw_data, dtype="U")
 
-    def finalize(self) -> ExchangeData:
+    def finalize(self) -> _ExchangeData:
         """Parse all the data into ndarrays of the correct dtype and shape
 
         Returns an ExchangeData dataclass
@@ -378,7 +378,7 @@ class ExchangeInfo:
         comments = "\n".join([*self.stamp, *self.comments])
         del self._raw_lines
 
-        return ExchangeData(
+        return _ExchangeData(
             single_profile,
             whp_param_cols,
             whp_flag_cols,
@@ -671,6 +671,8 @@ def all_same(ndarr: np.ndarray) -> np.bool_:
 
 
 def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
+    """Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
+    CF/netCDF structure"""
 
     data = _load_raw_exchange(filename_or_obj)
 
@@ -694,7 +696,7 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     log.info("Found filetype: %s", ftype.name)
 
     exchange_data = [
-        ExchangeInfo.from_lines(tuple(df.splitlines()), ftype=ftype).finalize()
+        _ExchangeInfo.from_lines(tuple(df.splitlines()), ftype=ftype).finalize()
         for df in data
     ]
 
@@ -784,6 +786,16 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
             error_name = f"{param.nc_name}_error"
             dataarrays[error_name] = _dataarray_factory(param, ctype="error")
             dataarrays[param.nc_name].attrs["ancillary_variables"].append(error_name)
+
+        # Check for ancillary temperature data and connect to the parent
+        if param.analytical_temperature_name is not None:
+            ancilary_temp_param = WHPNames[
+                (param.analytical_temperature_name, param.analytical_temperature_units)
+            ]
+            if ancilary_temp_param in params:
+                dataarrays[param.nc_name].attrs["ancillary_variables"].append(
+                    ancilary_temp_param.nc_name
+                )
 
     log.debug("Put data in arrays")
     comments = exchange_data[0].comments
