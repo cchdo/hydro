@@ -146,7 +146,9 @@ def finalize_ancillary_variables(dataset: xr.Dataset):
     return dataset
 
 
-def check_is_subset(a1, a2, strict="disallowed"):
+def check_is_subset_shape(
+    a1: npt.NDArray, a2: npt.NDArray, strict="disallowed"
+) -> npt.NDArray[np.bool_]:
     """Ensure that the shape of the data in a2 is a subset (or strict subset) of the data shape of a1
 
     For a given set of param, flag, and error arrays you would want to ensure that:
@@ -158,6 +160,13 @@ def check_is_subset(a1, a2, strict="disallowed"):
 
     Return a boolean array of invalid locations
     """
+    if a1.shape != a2.shape:
+        raise ValueError("Cannot compare diffing shaped arrays")
+
+    a1_values = np.isfinite(a1)
+    a2_values = np.isfinite(a2)
+
+    return a1_values != a2_values
 
 
 def check_flags():
@@ -419,6 +428,7 @@ class _ExchangeInfo:
             whp_param_cols[param] = param_col.astype(dtype_map[param.dtype])
 
         for param, idx in self.whp_flags.items():
+            param_col = np_db[:, idx]
             fill_spaces = np.char.startswith(param_col, "9")
             param_col[fill_spaces] = "nan"
             whp_flag_cols[param] = np_db[:, idx].astype("float16")
