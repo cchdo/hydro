@@ -169,12 +169,37 @@ def check_is_subset_shape(
     return a1_values != a2_values
 
 
-def check_flags():
-    """Check flag values agaisnt their param and ensure that the param either has a value or is "nan"
+def check_flags(dataset: xr.Dataset):
+    """Check WOCE flag values agaisnt their param and ensure that the param either has a value or is "nan"
     depedning on the flag definition.
 
-    Return a boolean array of invalid locations
+    Return a boolean array of invalid locations?
     """
+    woce_flags = {
+        "WOCESAMPLE": ExchangeBottleFlag,
+        "WOCECTD": ExchangeCTDFlag,
+        "WOCEBOTTLE": ExchangeSampleFlag,
+    }
+    # In some cases, a coordinate variable might have flags, so we are not using filter_by_attrs
+    # get all the flag vars (that also have conventions)
+    flag_vars = []
+    for var_name, data in dataset.variables.items():
+        if not {"standard_name", "conventions"} <= data.attrs.keys():
+            continue
+        if not any(flag in data.attrs["conventions"] for flag in woce_flags):
+            continue
+        if "status_flag" in data.attrs["standard_name"]:
+            flag_vars.append(var_name)
+
+    # match flags with their data vars
+    # it is legal in CF for one set of flags to apply to multiple vars
+    data_vars = {}
+    for flag_var in flag_vars:
+        for var_name, data in dataset.variables.items():
+            if "ancillary_variables" not in data.attrs:
+                continue
+            if flag_var in data.attrs["ancillary_variables"].split(" "):
+                data_vars[flag_var] = var_name
 
 
 @dataclasses.dataclass
@@ -935,4 +960,5 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
             date_name=WHPNames["BTL_DATE"],
             time_name=WHPNames["BTL_TIME"],
         )
+    check_flags(ex_dataset)
     return ex_dataset
