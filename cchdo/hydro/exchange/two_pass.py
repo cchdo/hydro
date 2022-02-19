@@ -21,6 +21,8 @@ from cchdo.params._version import version as params_version
 
 from .exceptions import (
     ExchangeDataInconsistentCoordinateError,
+    ExchangeDataPartialKeyError,
+    ExchangeDuplicateKeyError,
     ExchangeEncodingError,
     ExchangeBOMError,
     ExchangeInconsistentMergeType,
@@ -244,6 +246,14 @@ class _ExchangeData:
                 if not np.unique(data).shape[0] == 1:
                     raise ValueError("inconsistent param")
 
+            # sample must be unique
+            try:
+                sample_ids = self.param_cols[SAMPNO]
+            except KeyError as err:
+                raise ExchangeDataPartialKeyError("Missing SAMPNO") from err
+            if np.unique(sample_ids).shape != sample_ids.shape:
+                raise ExchangeDuplicateKeyError
+
         # make sure flags and errors are strict subsets
         if not self.flag_cols.keys() <= self.param_cols.keys():
             raise ExchangeOrphanFlagError()
@@ -255,9 +265,18 @@ class _ExchangeData:
 
         Done by looking at the expocode+station+cast composate keys
         """
-        expocode = self.param_cols[EXPOCODE]
-        station = self.param_cols[STNNBR]
-        cast = self.param_cols[CASTNO]
+        try:
+            expocode = self.param_cols[EXPOCODE]
+        except KeyError as err:
+            raise ExchangeDataPartialKeyError("Missing EXPOCODE") from err
+        try:
+            station = self.param_cols[STNNBR]
+        except KeyError as err:
+            raise ExchangeDataPartialKeyError("Missing STNNBR") from err
+        try:
+            cast = self.param_cols[CASTNO]
+        except KeyError as err:
+            raise ExchangeDataPartialKeyError("Missing CASTNO") from err
 
         # need to split up by profiles and _not_ assume the bottles are in order
         # use the actual values to sort things out
