@@ -251,8 +251,20 @@ class _ExchangeData:
                 sample_ids = self.param_cols[SAMPNO]
             except KeyError as err:
                 raise ExchangeDataPartialKeyError("Missing SAMPNO") from err
-            if np.unique(sample_ids).shape != sample_ids.shape:
-                raise ExchangeDuplicateKeyError
+
+            unique_sample_ids, unique_sample_counts = np.unique(
+                sample_ids, return_counts=True
+            )
+            if unique_sample_ids.shape != sample_ids.shape:
+                duplicated_values = unique_sample_ids[unique_sample_counts > 1]
+                raise ExchangeDuplicateKeyError(
+                    {
+                        "EXPOCODE": self.param_cols[EXPOCODE][0],
+                        "STNNBR": self.param_cols[STNNBR][0],
+                        "CASTNO": self.param_cols[CASTNO][0],
+                        "SAMPNO": str(duplicated_values),
+                    }
+                )
 
         # make sure flags and errors are strict subsets
         if not self.flag_cols.keys() <= self.param_cols.keys():
@@ -935,7 +947,7 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
 
             if param.scope == "profile":
                 if not all_same(exd.param_cols[param]):
-                    raise ExchangeDataInconsistentCoordinateError()
+                    raise ExchangeDataInconsistentCoordinateError(param)
                 dataarrays[param.nc_name][n_prof] = exd.param_cols[param][0]
 
                 if param in flags:
