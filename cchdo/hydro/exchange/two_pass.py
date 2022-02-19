@@ -789,6 +789,15 @@ def set_axis_attrs(dataset: xr.Dataset) -> xr.Dataset:
     return dataset
 
 
+def set_coordinate_encoding_fill(dataset: xr.Dataset) -> xr.Dataset:
+    """Sets the _FillValue encoidng to None for 1D coordinate vars"""
+    for coord in COORDS:
+        if len(dataset[coord.nc_name].dims) == 1:
+            dataset[coord.nc_name].encoding["_FillValue"] = None
+
+    return dataset
+
+
 def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
         log.info("Loading object over http")
@@ -1013,6 +1022,7 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     )
 
     # The order of the following is somewhat important
+    ex_dataset = set_coordinate_encoding_fill(ex_dataset)
     ex_dataset = combine_dt(ex_dataset)
 
     # these are the only two we know of for now
