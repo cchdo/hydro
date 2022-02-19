@@ -150,6 +150,31 @@ def finalize_ancillary_variables(dataset: xr.Dataset):
     return dataset
 
 
+def combine_bottle_time(dataset: xr.Dataset):
+    """Combine the bottle dates and times if present
+
+    Raises if only one is present
+    """
+    BTL_TIME = WHPNames["BTL_TIME"]
+    BTL_DATE = WHPNames["BTL_DATE"]
+
+    if BTL_TIME.nc_name in dataset and BTL_DATE.nc_name not in dataset:
+        raise ValueError("BTL_TIME with no BTL_DATE")
+    if BTL_DATE.nc_name in dataset and BTL_TIME.nc_name not in dataset:
+        raise ValueError("BTL_DATE with no BTL_TIME")
+
+    if BTL_DATE.nc_name not in dataset and BTL_TIME.nc_name not in dataset:
+        return dataset
+
+    return combine_dt(
+        dataset,
+        is_coord=False,
+        date_name=BTL_DATE,
+        time_name=BTL_TIME,
+        time_pad=True,
+    )
+
+
 def check_is_subset_shape(
     a1: npt.NDArray, a2: npt.NDArray, strict="disallowed"
 ) -> npt.NDArray[np.bool_]:
@@ -624,7 +649,9 @@ ExchangeIO = Union[str, Path, io.BufferedIOBase]
 
 
 def _combine_dt_ndarray(
-    date_arr: npt.NDArray[np.str_], time_arr: Optional[npt.NDArray[np.str_]] = None
+    date_arr: npt.NDArray[np.str_],
+    time_arr: Optional[npt.NDArray[np.str_]] = None,
+    time_pad=False,
 ) -> np.ndarray:
 
     # TODO: When min pyver is 3.10, maybe consider pattern matching here
@@ -634,9 +661,9 @@ def _combine_dt_ndarray(
         return np.datetime64(datetime.strptime(date_val, "%Y%m%d"))
 
     def _parse_datetime(date_val: str) -> np.datetime64:
-        if date_val == "":
+        if date_val == "TZ":
             return np.datetime64("nat")
-        return np.datetime64(datetime.strptime(date_val, "%Y%m%d%H%M"))
+        return np.datetime64(datetime.strptime(date_val, "%Y%m%dT%H%M%z"))
 
     # vectorize here doesn't speed things, it just nice for the interface
     parse_date = np.vectorize(_parse_date, ["datetime64"])
@@ -645,7 +672,10 @@ def _combine_dt_ndarray(
     if time_arr is None:
         return parse_date(date_arr).astype("datetime64[D]")
 
-    arr = np.char.add(date_arr, time_arr)
+    if time_pad:
+        time_arr[time_arr != ""] = np.char.zfill(time_arr[time_arr != ""], 4)
+
+    arr = np.char.add(np.char.add(date_arr, "T"), np.char.add(time_arr, "Z"))
     return parse_datetime(arr).astype("datetime64[m]")
 
 
@@ -687,6 +717,7 @@ def combine_dt(
     is_coord: bool = True,
     date_name: WHPName = DATE,
     time_name: WHPName = TIME,
+    time_pad=False,
 ) -> xr.Dataset:
     """Combine the exchange style string variables of date and optinally time into a single
     variable containing real datetime objects
@@ -706,7 +737,7 @@ def combine_dt(
         dt_arr = _combine_dt_ndarray(date.values)
         whp_name: WHPNameAttr = date_name.whp_name
     else:
-        dt_arr = _combine_dt_ndarray(date.values, time.values)
+        dt_arr = _combine_dt_ndarray(date.values, time.values, time_pad=time_pad)
         whp_name = [date_name.whp_name, time_name.whp_name]
 
     precision = 1 / 24 / 60  # minute as day fraction
@@ -797,6 +828,8 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
 
 def all_same(ndarr: np.ndarray) -> np.bool_:
     """Test if all the values of an ndarray are the same value"""
+    if np.issubdtype(ndarr.dtype, np.number) and np.isnan(ndarr.flat[0]):
+        return np.all(np.isnan(ndarr))
     return np.all(ndarr == ndarr.flat[0])
 
 
@@ -991,12 +1024,6 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     ex_dataset = add_profile_type(ex_dataset, ftype=ftype)
     ex_dataset = add_geometry_var(ex_dataset)
     ex_dataset = finalize_ancillary_variables(ex_dataset)
-    if WHPNames["BTL_DATE"].nc_name in ex_dataset:
-        ex_dataset = combine_dt(
-            ex_dataset,
-            is_coord=False,
-            date_name=WHPNames["BTL_DATE"],
-            time_name=WHPNames["BTL_TIME"],
-        )
+    ex_dataset = combine_bottle_time(ex_dataset)
     check_flags(ex_dataset)
     return ex_dataset
