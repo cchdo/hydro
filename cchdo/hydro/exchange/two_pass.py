@@ -28,6 +28,8 @@ from .exceptions import (
     ExchangeMagicNumberError,
     ExchangeDuplicateParameterError,
     ExchangeParameterUnitAlignmentError,
+    ExchangeOrphanFlagError,
+    ExchangeOrphanErrorError,
 )
 from .containers import FileType
 from .flags import ExchangeBottleFlag, ExchangeCTDFlag, ExchangeSampleFlag
@@ -244,9 +246,9 @@ class _ExchangeData:
 
         # make sure flags and errors are strict subsets
         if not self.flag_cols.keys() <= self.param_cols.keys():
-            raise ValueError("orphan flag")
+            raise ExchangeOrphanFlagError()
         if not self.error_cols.keys() <= self.param_cols.keys():
-            raise ValueError("orphan error")
+            raise ExchangeOrphanErrorError()
 
     def split_profiles(self):
         """Split into single profile containing _ExchangeData instances
@@ -398,7 +400,12 @@ class _ExchangeInfo:
         if len(self.units) != column_count:
             raise ExchangeParameterUnitAlignmentError
 
-        return _bottle_get_params(zip(self.params, self.units))
+        params_idx = _bottle_get_params(zip(self.params, self.units))
+
+        if any(self.ctd_headers):
+            params_idx[SAMPNO] = params_idx[CTDPRS]
+
+        return params_idx
 
     @cached_property
     def whp_flags(self):
