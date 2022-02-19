@@ -792,6 +792,8 @@ def set_axis_attrs(dataset: xr.Dataset) -> xr.Dataset:
 def set_coordinate_encoding_fill(dataset: xr.Dataset) -> xr.Dataset:
     """Sets the _FillValue encoidng to None for 1D coordinate vars"""
     for coord in COORDS:
+        if coord is TIME and coord.nc_name not in dataset:
+            continue
         if len(dataset[coord.nc_name].dims) == 1:
             dataset[coord.nc_name].encoding["_FillValue"] = None
 
