@@ -209,6 +209,11 @@ def check_flags(dataset: xr.Dataset):
         "WOCECTD": ExchangeCTDFlag,
         "WOCEBOTTLE": ExchangeSampleFlag,
     }
+    flag_has_value = {
+        "WOCESAMPLE": {flag.value: flag.has_value for flag in ExchangeBottleFlag},
+        "WOCECTD": {flag.value: flag.has_value for flag in ExchangeCTDFlag},
+        "WOCEBOTTLE": {flag.value: flag.has_value for flag in ExchangeSampleFlag},
+    }
     # In some cases, a coordinate variable might have flags, so we are not using filter_by_attrs
     # get all the flag vars (that also have conventions)
     flag_vars = []
@@ -222,13 +227,50 @@ def check_flags(dataset: xr.Dataset):
 
     # match flags with their data vars
     # it is legal in CF for one set of flags to apply to multiple vars
-    data_vars = {}
     for flag_var in flag_vars:
+
+        # get the flag and check attrs for defs
+        flag_da = dataset[flag_var]
+        conventions = None
+        for flag in woce_flags:
+            if flag_da.attrs.get("conventions", "").startswith(flag):
+                conventions = flag
+                break
+
+        # we don't know these flags, skip the check
+        if not conventions:
+            continue
+
+        allowed_values = np.array(list(flag_has_value[conventions]))
+        illegal_flags = np.isin(flag_da.fillna(9), allowed_values, invert=True)
+        if np.any(illegal_flags):
+            raise NotImplementedError("Report where there are bad flags")
+
         for var_name, data in dataset.variables.items():
             if "ancillary_variables" not in data.attrs:
                 continue
-            if flag_var in data.attrs["ancillary_variables"].split(" "):
-                data_vars[flag_var] = var_name
+            if flag_var not in data.attrs["ancillary_variables"].split(" "):
+                continue
+
+            # check data against flags
+            has_value_f = [
+                flag
+                for flag, value in flag_has_value[conventions].items()
+                if value is True
+            ]
+            has_fill_f = [
+                flag
+                for flag, value in flag_has_value[conventions].items()
+                if value is False
+            ]
+
+            has_value = np.isin(flag_da, has_value_f)
+            has_fill = np.isin(flag_da, has_fill_f)
+
+            # TODO deal with strs
+            if np.issubdtype(data.values.dtype, np.number):
+                print(np.all(np.isfinite(data.values[has_value])))
+                print(np.all(np.isnan(data.values[has_fill])))
 
 
 @dataclasses.dataclass
