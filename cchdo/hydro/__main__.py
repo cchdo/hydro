@@ -175,6 +175,11 @@ def status_exchange(dtype, out_dir):
                     )
             f.write("</tbody></table></body></html>")
 
+    success_len = len(list(filter(lambda x: x[0] == 200, results)))
+    log.info(
+        f"Converted {success_len} of {len(results)} ({success_len/len(results) * 100}%)"
+    )
+
 
 cli = click.CommandCollection(sources=[convert, status])
 
