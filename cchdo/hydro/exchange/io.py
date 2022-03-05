@@ -262,6 +262,8 @@ def _bottle_merge_sample_times(date, time):
 
 def _ctd_get_header(line, dtype=str):
     header, value = (part.strip() for part in line.split("="))
+    if header in ("_SAMPLING_RATE", "SAMPLING_RATE") and value.lower().endswith("hz"):
+        value = value.rstrip(" HZhz")
     return header, dtype(value)
 
 
