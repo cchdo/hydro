@@ -20,6 +20,7 @@ from cchdo.params import WHPName, WHPNames
 from cchdo.params._version import version as params_version
 
 from .exceptions import (
+    ExchangeDataFlagPairError,
     ExchangeDataInconsistentCoordinateError,
     ExchangeDataPartialKeyError,
     ExchangeDuplicateKeyError,
@@ -198,7 +199,7 @@ def check_is_subset_shape(
     return a1_values != a2_values
 
 
-def check_flags(dataset: xr.Dataset):
+def check_flags(dataset: xr.Dataset, raises=True):
     """Check WOCE flag values agaisnt their param and ensure that the param either has a value or is "nan"
     depedning on the flag definition.
 
@@ -217,7 +218,10 @@ def check_flags(dataset: xr.Dataset):
     # In some cases, a coordinate variable might have flags, so we are not using filter_by_attrs
     # get all the flag vars (that also have conventions)
     flag_vars = []
-    for var_name, data in dataset.variables.items():
+    for var_name in dataset.variables:
+        # do not replace the above with .items() it will give you xr.Variable objects that you don't want to use
+        # the following gets a real xr.DataArray
+        data = dataset[var_name]
         if not {"standard_name", "conventions"} <= data.attrs.keys():
             continue
         if not any(flag in data.attrs["conventions"] for flag in woce_flags):
@@ -227,6 +231,7 @@ def check_flags(dataset: xr.Dataset):
 
     # match flags with their data vars
     # it is legal in CF for one set of flags to apply to multiple vars
+    flag_errors = {}
     for flag_var in flag_vars:
 
         # get the flag and check attrs for defs
@@ -242,35 +247,45 @@ def check_flags(dataset: xr.Dataset):
             continue
 
         allowed_values = np.array(list(flag_has_value[conventions]))
-        illegal_flags = np.isin(flag_da.fillna(9), allowed_values, invert=True)
+        illegal_flags = ~flag_da.fillna(9).isin(allowed_values)
         if np.any(illegal_flags):
-            raise NotImplementedError("Report where there are bad flags")
+            illegal_flags.attrs[
+                "comments"
+            ] = f"This is a boolean array in the same shape as '{flag_da.name}' which is truthy where invalid values exist"
+            flag_errors[f"{flag_da.name}_value_errors"] = illegal_flags
+            continue
 
-        for var_name, data in dataset.variables.items():
+        for var_name in dataset.variables:
+            data = dataset[var_name]
             if "ancillary_variables" not in data.attrs:
                 continue
             if flag_var not in data.attrs["ancillary_variables"].split(" "):
                 continue
 
             # check data against flags
-            has_value_f = [
-                flag
-                for flag, value in flag_has_value[conventions].items()
-                if value is True
-            ]
             has_fill_f = [
                 flag
                 for flag, value in flag_has_value[conventions].items()
                 if value is False
             ]
 
-            has_value = np.isin(flag_da, has_value_f)
-            has_fill = np.isin(flag_da, has_fill_f)
+            has_fill = flag_da.isin(has_fill_f) | np.isnan(flag_da)
 
             # TODO deal with strs
+
             if np.issubdtype(data.values.dtype, np.number):
-                print(np.all(np.isfinite(data.values[has_value])))
-                print(np.all(np.isnan(data.values[has_fill])))
+                fill_value_mismatch = ~(np.isfinite(data) ^ has_fill)
+                if np.any(fill_value_mismatch):
+                    fill_value_mismatch.attrs[
+                        "comments"
+                    ] = f"This is a boolean array in the same shape as '{data.name}' which is truthy where invalid values exist"
+                    flag_errors[f"{data.name}_value_errors"] = fill_value_mismatch
+
+    flag_errors_ds = xr.Dataset(flag_errors)
+    if raises and any(flag_errors_ds):
+        raise ExchangeDataFlagPairError(flag_errors_ds)
+
+    return flag_errors_ds
 
 
 @dataclasses.dataclass
@@ -551,6 +566,8 @@ class _ExchangeInfo:
             param_col = np_db[:, idx]
             fill_spaces = np.char.startswith(param_col, "-999")
             if param.dtype == "decimal":
+                if not _is_valid_exchange_numeric(param_col):
+                    raise ValueError("exchange numeric data has bad chars")
                 whp_param_precisions[param] = _extract_numeric_precisions(param_col)
                 param_col[fill_spaces] = "nan"
             if param.dtype == "string":
@@ -567,6 +584,8 @@ class _ExchangeInfo:
             param_col = np_db[:, idx]
             fill_spaces = np.char.startswith(param_col, "-999")
             if param.dtype == "decimal":
+                if not _is_valid_exchange_numeric(param_col):
+                    raise ValueError("exchange numeric data has bad chars")
                 whp_error_precisions[param] = _extract_numeric_precisions(param_col)
                 param_col[fill_spaces] = "nan"
             whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
@@ -685,6 +704,16 @@ def _extract_numeric_precisions(data: npt.NDArray[np.str_]) -> npt.NDArray[np.in
     numeric_parts = np.char.partition(data, ".")[..., 2]
     str_lens = np.char.str_len(numeric_parts)
     return np.max(str_lens, axis=0)
+
+
+def _is_valid_exchange_numeric(data: npt.NDArray[np.str_]) -> npt.NDArray[np.int_]:
+    # see allowed code points of the exchange doc
+    # essentially, only %f types (not %g)
+    allowed_exchange_numeric_data_chars = [
+        c.encode("utf-8") for c in list("0123456789.-")
+    ] + [b""]
+    aligned = np.require(data, requirements=["C_CONTIGUOUS"])
+    return np.all(np.isin(aligned.view("|S1"), allowed_exchange_numeric_data_chars))
 
 
 ExchangeIO = Union[str, Path, io.BufferedIOBase]
