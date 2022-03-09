@@ -1,7 +1,7 @@
 import logging
 import io
 import dataclasses
-from typing import Tuple, Dict, Union, Optional
+from typing import Set, Tuple, Dict, Union, Optional
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
@@ -86,6 +86,8 @@ FLAG_SCHEME = {
 }
 
 GEOMETRY_VARS = ("expocode", "station", "cast", "section_id", "time")
+
+FILLS_MAP = {"string": "", "integer": np.nan, "decimal": np.nan}
 
 
 def add_geometry_var(dataset: xr.Dataset) -> xr.Dataset:
@@ -354,6 +356,44 @@ class _ExchangeData:
         if not self.error_cols.keys() <= self.param_cols.keys():
             raise ExchangeOrphanErrorError()
 
+    def set_expected(
+        self, params: Set[WHPName], flags: Set[WHPName], errors: Set[WHPName]
+    ):
+        """Puts fill columns for expected params which are missing
+
+        This can occur when there are disjoint columns in CTD files
+        """
+        ref_cols = {
+            "string": EXPOCODE,
+            "integer": CASTNO,
+            "decimal": LATITUDE,
+        }
+
+        # we need to detect if just the flag is misisng and set to flag 0 or 9 depending on where data are
+        # else set to flag 9
+        for name in flags:
+            if name in self.flag_cols:
+                continue
+            self.flag_cols[name] = np.full_like(
+                self.param_cols[ref_cols["integer"]], fill_value=np.nan
+            )
+            if name in self.param_cols:
+                self.flag_cols[name][np.isfinite(self.param_cols[name])] = 0
+
+        for name in params:
+            if name in self.param_cols:
+                continue
+            self.param_cols[name] = np.full_like(
+                self.param_cols[ref_cols[name.dtype]], fill_value=FILLS_MAP[name.dtype]
+            )
+
+        for name in errors:
+            if name in self.error_cols:
+                continue
+            self.error_cols[name] = np.full_like(
+                self.param_cols[ref_cols[name.dtype]], fill_value=FILLS_MAP[name.dtype]
+            )
+
     def split_profiles(self):
         """Split into single profile containing _ExchangeData instances
 
@@ -414,6 +454,14 @@ class _ExchangeData:
                 lens[param] = data.itemsize // np_char_size
 
         return lens
+
+
+def _get_fill_locs(arr, fill_values: Tuple[str, ...] = ("-999",)):
+    fill = np.char.startswith(arr, fill_values[0])
+    if len(fill_values) > 1:
+        for fill_value in fill_values[1:]:
+            fill = fill | np.char.startswith(arr, fill_value)
+    return fill
 
 
 @dataclasses.dataclass
@@ -544,7 +592,7 @@ class _ExchangeInfo:
         )
         return np.array(_raw_data, dtype="U")
 
-    def finalize(self) -> _ExchangeData:
+    def finalize(self, fill_values=("-999",)) -> _ExchangeData:
         """Parse all the data into ndarrays of the correct dtype and shape
 
         Returns an ExchangeData dataclass
@@ -564,7 +612,7 @@ class _ExchangeInfo:
 
         for param, idx in self.whp_params.items():
             param_col = np_db[:, idx]
-            fill_spaces = np.char.startswith(param_col, "-999")
+            fill_spaces = _get_fill_locs(param_col, fill_values)
             if param.dtype == "decimal":
                 if not _is_valid_exchange_numeric(param_col):
                     raise ValueError("exchange numeric data has bad chars")
@@ -582,7 +630,7 @@ class _ExchangeInfo:
 
         for param, idx in self.whp_errors.items():
             param_col = np_db[:, idx]
-            fill_spaces = np.char.startswith(param_col, "-999")
+            fill_spaces = _get_fill_locs(param_col, fill_values)
             if param.dtype == "decimal":
                 if not _is_valid_exchange_numeric(param_col):
                     raise ValueError("exchange numeric data has bad chars")
@@ -915,7 +963,7 @@ def all_same(ndarr: np.ndarray) -> np.bool_:
     return np.all(ndarr == ndarr.flat[0])
 
 
-def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
+def read_exchange(filename_or_obj: ExchangeIO, fill_values=("-999",)) -> xr.Dataset:
     """Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
     CF/netCDF structure"""
 
@@ -943,7 +991,9 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     log.info("Found filetype: %s", ftype.name)
 
     exchange_data = [
-        _ExchangeInfo.from_lines(tuple(df.splitlines()), ftype=ftype).finalize()
+        _ExchangeInfo.from_lines(tuple(df.splitlines()), ftype=ftype).finalize(
+            fill_values=fill_values
+        )
         for df in data
     ]
 
@@ -958,6 +1008,9 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
     params = set(chain(*[exd.param_cols.keys() for exd in exchange_data]))
     flags = set(chain(*[exd.flag_cols.keys() for exd in exchange_data]))
     errors = set(chain(*[exd.error_cols.keys() for exd in exchange_data]))
+    for exd in exchange_data:
+        exd.set_expected(params, flags, errors)
+
     log.debug("Dealing with strings")
     str_len = 1
     for exd in exchange_data:
@@ -966,15 +1019,14 @@ def read_exchange(filename_or_obj: ExchangeIO) -> xr.Dataset:
 
     dataarrays = {}
     dtype_map = {"string": f"U{str_len}", "integer": "float32", "decimal": "float64"}
-    fills_map = {"string": "", "integer": np.nan, "decimal": np.nan}
 
     def _dataarray_factory(param: WHPName, ctype="data") -> xr.DataArray:
         dtype = dtype_map[param.dtype]
-        fill = fills_map[param.dtype]
+        fill = FILLS_MAP[param.dtype]
 
         if ctype == "flag":
             dtype = dtype_map["integer"]
-            fill = fills_map["integer"]
+            fill = FILLS_MAP["integer"]
 
         if param.scope == "profile":
             arr = np.full((N_PROF), fill_value=fill, dtype=dtype)
