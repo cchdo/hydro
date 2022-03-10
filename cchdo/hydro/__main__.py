@@ -3,6 +3,7 @@ from pathlib import Path
 from multiprocessing import Pool
 from tempfile import TemporaryDirectory
 import shutil
+from html import escape
 
 import click
 from rich.logging import RichHandler
@@ -121,9 +122,11 @@ def status_exchange(dtype, out_dir):
             f.write(
                 f"""<html>
             <head>
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
             </head>
-            <body><table class="table"><thead>
+            <body>
+            <div class="container-fluid">
+            <table class="table"><thead>
             <h2>Versions</h2>
             cchdo.hydro: {hydro_version}</br>
             cchdo.params: {params_version.version}
@@ -165,15 +168,23 @@ def status_exchange(dtype, out_dir):
                             </tr>"""
                     )
                 else:
+                    error = escape(path_or_err)
                     f.write(
                         f"""<tr class='table-warning'>
                     <td>{crs}</td>
                     <td>{file_id}</td>
-                    <td><a href="https://cchdo.ucsd.edu/data/{file_id}/{fn}">{fn}</a></td>
-                    <td>Error:{path_or_err}</td>
-                    </tr>"""
+                    <td><a href="https://cchdo.ucsd.edu/data/{file_id}/{fn}">{fn}</a></td>"""
                     )
-            f.write("</tbody></table></body></html>")
+
+                    if "ExchangeDataFlagPairError" in path_or_err:
+                        f.write(
+                            f"""<td><pre style="width: fit-content"><code>{error}</code></pre></td>"""
+                        )
+                    else:
+                        f.write(f"""<td>{error}</td>""")
+
+                    f.write("""</tr>""")
+            f.write("</tbody></table></div></body></html>")
 
     success_len = len(list(filter(lambda x: x[0] == 200, results)))
     log.info(
