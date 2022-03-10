@@ -1034,6 +1034,8 @@ def read_exchange(filename_or_obj: ExchangeIO, fill_values=("-999",)) -> xr.Data
             arr = np.full((N_PROF, N_LEVELS), fill_value=fill, dtype=dtype)
 
         attrs = param.get_nc_attrs()
+        if "C_format" in attrs:
+            attrs["C_format_source"] = "database"
 
         if ctype == "error":
             attrs = param.get_nc_attrs(error=True)
@@ -1105,12 +1107,16 @@ def read_exchange(filename_or_obj: ExchangeIO, fill_values=("-999",)) -> xr.Data
         for param in params:
             if param in exd.param_precisions:
                 dataarrays[param.nc_name].attrs[
-                    "source_C_format"
+                    "C_format"
                 ] = f"%.{exd.param_precisions[param]}f"
+                dataarrays[param.nc_name].attrs["C_format_source"] = "input_file"
             if param in exd.error_precisions:
                 dataarrays[f"{param.nc_name}_error"].attrs[
-                    "source_C_format"
+                    "C_format"
                 ] = f"%.{exd.error_precisions[param]}f"
+                dataarrays[f"{param.nc_name}_error"].attrs[
+                    "C_format_source"
+                ] = "input_file"
 
             if param.scope == "profile":
                 if not all_same(exd.param_cols[param]):
