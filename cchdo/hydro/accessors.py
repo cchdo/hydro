@@ -372,6 +372,8 @@ class ExchangeAccessor(CCHDOAccessorBase):
             for combined in param:
                 params.append(WHPNames[(combined, unit)])
         else:
+            if param in WHPNames.error_cols:
+                return []
             params.append(WHPNames[(param, unit)])
         return params
 
@@ -431,7 +433,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
                 ancillary = ds[ancillary_var]
 
                 standard_name = ancillary.attrs.get("standard_name")
-                if standard_name is None:
+                if standard_name is None and ancillary.attrs.get("whp_name") is None:
                     # TODO maybe raise...
                     continue
 
@@ -446,7 +448,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
                         flags[param] = ancillary
 
                 # TODO find a way to test this
-                if standard_name == "standard_error":
+                if ancillary.attrs.get("whp_name") in WHPNames.error_cols:
                     for param in whp_params:
                         errors[param] = ancillary
 
