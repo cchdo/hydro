@@ -1,9 +1,11 @@
+from math import isnan
 from textwrap import indent
 from typing import List, Dict, Union
 import xarray as xr
 import pandas as pd
 import numpy as np
 import string
+from datetime import datetime
 
 from cchdo.hydro.exchange.two_pass import all_same
 from cchdo.params import WHPNames, WHPName
@@ -307,6 +309,33 @@ class ExchangeAccessor(CCHDOAccessorBase):
     """Class containing the to_exchange functionn"""
 
     @staticmethod
+    def get_formatter(whpname: WHPName, da: xr.DataArray):
+        """Generate a string formatting function for this name"""
+        fmt_str = da.attrs.get("C_format")
+        if fmt_str is None and whpname.numeric_precision is not None:
+            fmt_str = f"%.{whpname.numeric_precision}f"
+
+        def _fmt(value) -> str:
+            if whpname in {WHPNames["DATE"], WHPNames["BTL_DATE"]}:
+                return f"{value.astype('datetime64[s]').item():%Y%m%d}"
+            if whpname in {WHPNames["TIME"], WHPNames["BTL_TIME"]}:
+                return f"{value.astype('datetime64[s]').item():%H%M}"
+            if whpname.dtype == "decimal":
+                if isnan(value):
+                    v = "-999"
+                else:
+                    v = fmt_str % value
+                return v.rjust(whpname.field_width)
+            elif whpname.dtype == "integer":
+                return str(int(value)).ljust(whpname.field_width)
+            else:
+                if value == "":
+                    return "-999".ljust(whpname.field_width)
+                return str(value).ljust(whpname.field_width)
+
+        return _fmt
+
+    @staticmethod
     def _make_params_units_line(
         params: Dict[WHPName, xr.DataArray],
         flags: Dict[WHPName, xr.DataArray],
@@ -362,7 +391,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
                 "longitude",
                 "pressure",
             ]
-        )
+        ).stack(ex=("N_PROF", "N_LEVELS"))
 
         # TODO profile_type is guaranteed to be present
         # TODO profile_type must have C or D as the value
@@ -425,11 +454,30 @@ class ExchangeAccessor(CCHDOAccessorBase):
         output.extend(self._make_params_units_line(params, flags, errors))
 
         # TODO N_PROF is guaranteed
-        for _, prof in self._obj.groupby("N_PROF"):
-            # TODO sample is empty string for... non samples
-            valid_levels = prof.sample != ""
+        # for _, prof in ds.groupby("N_PROF"):
+        #    # TODO sample is empty/null string for... non samples
+        #    valid_levels = prof.sample != ""
+        valid_levels = params[WHPNames["SAMPNO"]] != ""
+        data_block = []
+        for param, da in params.items():
+            fmt = self.get_formatter(param, da)
+            values = [fmt(v) for v in np.nditer(da[valid_levels])]
 
-        output.append("END_DATA")
+            data_block.append(values)
+
+            if param in flags:
+                flag = [
+                    str(int(v)) for v in np.nditer(flags[param][valid_levels].fillna(9))
+                ]
+                data_block.append(flag)
+            if param in errors:
+                error = [fmt(v) for v in np.nditer(errors[param][valid_levels])]
+                data_block.append(error)
+
+        for row in zip(*data_block):
+            output.append(",".join(str(cell) for cell in row))
+
+        output.append("END_DATA\n")
 
         return "\n".join(output)
 
