@@ -22,6 +22,7 @@ from cchdo.params._version import version as params_version
 from .exceptions import (
     ExchangeDataFlagPairError,
     ExchangeDataInconsistentCoordinateError,
+    ExchangeDataPartialCoordinateError,
     ExchangeDataPartialKeyError,
     ExchangeDuplicateKeyError,
     ExchangeEncodingError,
@@ -349,6 +350,22 @@ class _ExchangeData:
                         "SAMPNO": str(duplicated_values),
                     }
                 )
+
+            # check coordinates are "full"
+            for coord in COORDS:
+                if coord is TIME and TIME not in self.param_cols:
+                    continue
+                data = self.param_cols[coord]
+                print(data.dtype)
+                if data.dtype.char in {"S", "U"}:
+                    if np.any(data == ""):
+                        raise ExchangeDataPartialCoordinateError(
+                            f"{coord} has missing values"
+                        )
+                elif np.any(np.isnan(data)):
+                    raise ExchangeDataPartialCoordinateError(
+                        f"{coord} has missing values"
+                    )
 
         # make sure flags and errors are strict subsets
         if not self.flag_cols.keys() <= self.param_cols.keys():
