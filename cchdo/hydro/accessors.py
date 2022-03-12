@@ -5,7 +5,6 @@ import xarray as xr
 import pandas as pd
 import numpy as np
 import string
-from datetime import datetime
 
 from cchdo.hydro.exchange.two_pass import all_same
 from cchdo.params import WHPNames, WHPName
@@ -285,19 +284,32 @@ class GeoAccessor(CCHDOAccessorBase):
 class MiscAccessor(CCHDOAccessorBase):
     """Accessor with misc functions that don't fit in some other category"""
 
-    def gen_fname(self) -> str:
+    def gen_fname(self, ftype="cf") -> str:
         """Generate a human friendly netCDF filename for this object"""
         ds = self._obj
         allowed_chars = set(f"._{string.ascii_letters}{string.digits}")
 
-        if ds["profile_type"][0].item() == FileType.BOTTLE.value:
-            fname = f"{ds['expocode'][0].item()}_bottle.nc"
-        elif (
-            ds["profile_type"][0].item() == FileType.CTD.value and len(ds["N_PROF"]) > 1
-        ):
-            fname = f"{ds['expocode'][0].item()}_ctd.nc"
+        ctd_one = "ctd.nc"
+        ctd_many = "ctd.nc"
+        bottle = "bottle.nc"
+
+        if ftype == "exchange":
+            ctd_one = "ct1.csv"
+            ctd_many = "ct1.zip"
+            bottle = "hy1.csv"
+
+        expocode = np.atleast_1d(ds["expocode"])[0]
+        station = np.atleast_1d(ds["station"])[0]
+        cast = np.atleast_1d(ds["cast"])[0]
+
+        profile_type = np.atleast_1d(ds["profile_type"])[0]
+
+        if profile_type == FileType.BOTTLE.value:
+            fname = f"{expocode}_{bottle}"
+        elif profile_type == FileType.CTD.value and len(ds.get("N_PROF", [])) > 1:
+            fname = f"{expocode}_{ctd_many}"
         else:
-            fname = f"{ds['expocode'][0].item()}_{ds['station'][0].item()}_{ds['cast'][0].item()}_ctd.nc"
+            fname = f"{expocode}_{station}_{cast:.0f}_{ctd_one}"
 
         for char in set(fname) - allowed_chars:
             fname = fname.replace(char, "_")

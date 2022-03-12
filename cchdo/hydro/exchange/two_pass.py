@@ -356,7 +356,6 @@ class _ExchangeData:
                 if coord is TIME and TIME not in self.param_cols:
                     continue
                 data = self.param_cols[coord]
-                print(data.dtype)
                 if data.dtype.char in {"S", "U"}:
                     if np.any(data == ""):
                         raise ExchangeDataPartialCoordinateError(
@@ -565,9 +564,6 @@ class _ExchangeInfo:
         # In initial testing, it was discovered that approx half the ctd files
         # had trailing commas in just the params and units lines
         if self.params[-1] == "" and self.units[-1] is None:
-            log.warning(
-                "Removed trailing empty param/unit pair, this indicates these lines have trailing commas."
-            )
             self.params.pop()
             self.units.pop()
 
