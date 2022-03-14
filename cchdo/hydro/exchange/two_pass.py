@@ -1079,10 +1079,20 @@ def read_exchange(filename_or_obj: ExchangeIO, fill_values=("-999",)) -> xr.Data
         if param.dtype == "string":
             var_da.encoding["dtype"] = "S1"
 
-        var_da.encoding["zlib"] = True
+        if param.dtype == "integer":
+            var_da.encoding["dtype"] = "int32"
+            var_da.encoding["_FillValue"] = -999  # classic
+
+        if param in COORDS:
+            var_da.encoding["_FillValue"] = None
+            if param.dtype == "integer":
+                var_da = var_da.fillna(-999).astype("int32")
+
         if ctype == "flag":
             var_da.encoding["dtype"] = "int8"
             var_da.encoding["_FillValue"] = 9
+
+        var_da.encoding["zlib"] = True
 
         return var_da
 
