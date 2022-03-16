@@ -9,6 +9,7 @@ from zipfile import ZipFile, is_zipfile
 from pathlib import Path
 from datetime import datetime
 from enum import Enum, auto
+from collections import Counter
 
 import requests
 import numpy as np
@@ -27,6 +28,7 @@ from .exceptions import (
     ExchangeDuplicateKeyError,
     ExchangeEncodingError,
     ExchangeBOMError,
+    ExchangeError,
     ExchangeInconsistentMergeType,
     ExchangeLEError,
     ExchangeMagicNumberError,
@@ -557,9 +559,10 @@ class _ExchangeInfo:
 
         Returns a dict with a WHPName to column index mapping
         """
-        # TODO remove when min pyver is 3.10
         if len(self.params) != len(set(self.params)):
-            raise ExchangeDuplicateParameterError
+            raise ExchangeDuplicateParameterError(
+                [param for param, count in Counter(self.params).items() if count > 1]
+            )
 
         # In initial testing, it was discovered that approx half the ctd files
         # had trailing commas in just the params and units lines
@@ -767,7 +770,7 @@ def _extract_numeric_precisions(data: npt.NDArray[np.str_]) -> npt.NDArray[np.in
     return np.max(str_lens, axis=0)
 
 
-def _is_valid_exchange_numeric(data: npt.NDArray[np.str_]) -> npt.NDArray[np.int_]:
+def _is_valid_exchange_numeric(data: npt.NDArray[np.str_]) -> np.bool_:
     # see allowed code points of the exchange doc
     # essentially, only %f types (not %g)
     allowed_exchange_numeric_data_chars = [
@@ -865,12 +868,17 @@ def combine_dt(
         time_name.nc_name
     )  # not be present, this is allowed
 
-    if time is None:
-        dt_arr = _combine_dt_ndarray(date.values)
-        whp_name: WHPNameAttr = date_name.whp_name
-    else:
-        dt_arr = _combine_dt_ndarray(date.values, time.values, time_pad=time_pad)
-        whp_name = [date_name.whp_name, time_name.whp_name]
+    try:
+        if time is None:
+            dt_arr = _combine_dt_ndarray(date.values)
+            whp_name: WHPNameAttr = date_name.whp_name
+        else:
+            dt_arr = _combine_dt_ndarray(date.values, time.values, time_pad=time_pad)
+            whp_name = [date_name.whp_name, time_name.whp_name]
+    except ValueError as err:
+        raise ExchangeError(
+            f"Could not parse date/time cols {date_name.whp_name} {time_name.whp_name}"
+        ) from err
 
     precision = 1 / 24 / 60  # minute as day fraction
     if dt_arr.dtype.name == "datetime64[D]":
