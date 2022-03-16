@@ -1,4 +1,4 @@
-v1.0.1.4 (unreleased)
+v1.0.2.0 (unreleased)
 =====================
 * Fixed an issue where the WOCE sumfile accessor would missalign latitude columns near the equator since they lacked a digit in the tens place.
 * Fixed an issue where the WOCE sumfile accessor would use "pressure levels" of CTD source netcdf files as the number of bottles.

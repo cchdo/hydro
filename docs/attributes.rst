@@ -157,36 +157,38 @@ While all the temperatures are degree C, users doing precice work need to know t
 
 CF Definiton
 ````````````
-.. todo::
-  See if CF talks about this
+``C_format`` is not mentioned at all in the CF-1.8 docs.
 
 CCHDO Usage
 ```````````
-The ``C_format`` attribute will contain the format string from the internal database of parameters.
+The ``C_format`` attribute will contain the format string from either the internal database of parameters or calcualted when converting from a text input.
 The presence or lack of presence of this attribute will not change the underlyying values in the variable (e.g. you cannot round the values to the nearst integer using C_format).
 This attribute is sometimes used when _displaying_ data values to a user.
 When performing calculations in most software, the underlying data values are almost always used directly.
+The only software we have seen respect the ``C_format`` attribute is ncdump when dumping to CDL.
 
-.. todo::
-   footnote about ncdump being the only one that respects C_format
+If the data soure for this variable came from a text source, the ``C_format`` will contain the format string which represents the largest string seen.
+For example, if a data source had text values of "0.001" and "0.0010", the ``C_format`` attribute would be set to ``"%.4f"``.
+This can be tricky for data managers: if for example, the data source was an excel file, it is important to use the underlying value as the actual data and not a copy/paste or text based export.
+
 
 .. warning::
-  Use ``C_format` and ``source_C_format`` as implied uncertanty if you have `no other` source of uncertanty (including statistical methods across the dataset).
+  Use ``C_format`` as implied uncertanty if you have `no other` source of uncertanty (including statistical methods across the dataset).
 
-  Historically, the tradeoff between storing numeric values in text and the cost of storage meant there was a tradeoff.
+  Historically, storing numeric values in text and the cost of storage meant there was a tradeoff between cost and precision.
   When looking though our database of format strings, the text print precision was almost always set at one decimal place more than the actual measuremnt uncertanty.
-  Having these values published in the WOCE manual also lead to values being reported a certain way to conform to the format which disconnected "print precision" from uncertanty.
+  Having these values published in the WOCE manual also lead to values being reported a certain way to conform to the WOCE format, which disconnected "print precision" from uncertanty.
   Additionally, the WOCE format was designed when IEEE floating point numbers were quite new.
 
   More recent measuremnets have started to include explicit uncertanties which will be reported along side the data values.
   Often, the cruise report will contain some charicterizaion of the uncertanty of a given measumrnet.
 
 
-``source_C_format``
+``C_format_source``
 -------------------
 :dtype:      char
 :usage:      variables
-:required:   no
+:required:   yes if C_format is present
 :reference:  CCHDO
 
 CF Definiton
@@ -195,15 +197,8 @@ This attribute is not used in CF.
 
 CCHDO Usage
 ```````````
-If the data soure for this variable came from a text source, the ``source_C_format`` will contain the format string which represents the largest string seen.
-For example, if a data source had text values of "0.001" and "0.0010", the ``source_C_format`` attribute would be set to ``"%.4f"``.
-This can be tricky for data managers: if for example, the data source was an excel file, it is important to use the underlying value as the actual data and not a copy/paste or text based export.
-
-.. warning::
-  See the warning in ``C_format``
-
-.. todo::
-  if the print format is set in excel, should _that_ value be set as the source_C_format?)
+This attribute describes where the value in ``C_format`` came from.
+This attribute will only have the values of either ``"database"`` to indicate the ``C_format`` was taken from the internal parameters table, or ``"source_file"`` if the values was calcualted from input text.
 
 
 .. todo::

@@ -6,23 +6,11 @@ API
 Exchange Format
 ---------------
 
-
-containers
-~~~~~~~~~~
-
-.. automodule:: cchdo.hydro.exchange.containers
+.. automodule:: cchdo.hydro.exchange
     :members: 
     :undoc-members:
     :private-members:
-
-
-io
-~~
-
-.. automodule:: cchdo.hydro.exchange.io
-    :members: 
-    :undoc-members:
-    :private-members:
+    :ignore-module-all:
 
 
 exceptions
@@ -38,15 +26,6 @@ flags
 ~~~~~~~~~~
 
 .. automodule:: cchdo.hydro.exchange.flags
-    :members: 
-    :undoc-members:
-    :private-members:
-
-
-merge
-~~~~~~~~~~
-
-.. automodule:: cchdo.hydro.exchange.merge
     :members: 
     :undoc-members:
     :private-members:
