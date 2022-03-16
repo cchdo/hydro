@@ -473,6 +473,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
         valid_levels = params[WHPNames["SAMPNO"]] != ""
         data_block = []
         for param, da in params.items():
+            # TODO use the param formatter...
             fmt = self.get_formatter(param, da)
             values = [fmt(v) for v in np.nditer(da[valid_levels])]
 

@@ -1,7 +1,7 @@
 import logging
 import io
 import dataclasses
-from typing import Set, Tuple, Dict, Union, Optional, Iterable
+from typing import Set, Tuple, Dict, Union, Optional, Iterable, List
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
@@ -979,7 +979,7 @@ def sort_ds(dataset: xr.Dataset) -> xr.Dataset:
     return dataset.sortby(["time", "latitude", "longitude"])
 
 
-WHPNameAttr = Union[str, list[str]]
+WHPNameAttr = Union[str, List[str]]
 
 
 def combine_dt(
@@ -1075,7 +1075,7 @@ def set_coordinate_encoding_fill(dataset: xr.Dataset) -> xr.Dataset:
     return dataset
 
 
-def _load_raw_exchange(filename_or_obj: ExchangeIO) -> list[str]:
+def _load_raw_exchange(filename_or_obj: ExchangeIO) -> List[str]:
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
         log.info("Loading object over http")
         data_raw = io.BytesIO(requests.get(filename_or_obj).content)
