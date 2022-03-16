@@ -327,6 +327,9 @@ class ExchangeAccessor(CCHDOAccessorBase):
             fmt_str = f"%.{whpname.numeric_precision}f"
 
         def _fmt(value) -> str:
+            # TODO remove once field_width is non optional upstream
+            assert whpname.field_width is not None
+
             if whpname in {WHPNames["DATE"], WHPNames["BTL_DATE"]}:
                 return f"{value.astype('datetime64[s]').item():%Y%m%d}"
             if whpname in {WHPNames["TIME"], WHPNames["BTL_TIME"]}:
