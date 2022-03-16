@@ -1,6 +1,6 @@
 import os
 
-from .exchange.two_pass import read_exchange
+from .exchange import read_exchange
 from cchdo.params import WHPNames
 from .exchange.exceptions import ExchangeDataFlagPairError
 from . import accessors  # noqa

@@ -6,10 +6,9 @@ import pandas as pd
 import numpy as np
 import string
 
-from cchdo.hydro.exchange.two_pass import all_same
 from cchdo.params import WHPNames, WHPName
 
-from .exchange.containers import FileType
+from .exchange import FileType, all_same
 
 
 class CCHDOAccessorBase:

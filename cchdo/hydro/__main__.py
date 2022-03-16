@@ -28,7 +28,7 @@ def convert():
 @click.argument("out_path")
 def convert_exchnage(exchange_path, out_path):
     log.info("Loading read_exchange")
-    from .exchange.two_pass import read_exchange
+    from .exchange import read_exchange
 
     ex = read_exchange(exchange_path)
     log.info("Saving to netCDF")
