@@ -5,6 +5,7 @@ from typing import Set, Tuple, Dict, Union, Optional, Iterable, List
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
+from warnings import warn
 from zipfile import ZipFile, is_zipfile
 from pathlib import Path
 from datetime import datetime
@@ -933,7 +934,7 @@ def _combine_dt_ndarray(
     def _parse_datetime(date_val: str) -> np.datetime64:
         if date_val == "TZ":
             return np.datetime64("nat")
-        return np.datetime64(datetime.strptime(date_val, "%Y%m%dT%H%M%z"))
+        return np.datetime64(datetime.strptime(date_val, "%Y%m%dT%H%M"))
 
     # vectorize here doesn't speed things, it just nice for the interface
     parse_date = np.vectorize(_parse_date, ["datetime64"])
@@ -943,9 +944,11 @@ def _combine_dt_ndarray(
         return parse_date(date_arr).astype("datetime64[D]")
 
     if time_pad:
+        if np.any(np.char.str_len(time_arr[time_arr != ""]) < 4):
+            warn("Time values are being padded with zeros")
         time_arr[time_arr != ""] = np.char.zfill(time_arr[time_arr != ""], 4)
 
-    arr = np.char.add(np.char.add(date_arr, "T"), np.char.add(time_arr, "Z"))
+    arr = np.char.add(np.char.add(date_arr, "T"), time_arr)
     return parse_datetime(arr).astype("datetime64[m]")
 
 
