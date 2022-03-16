@@ -52,6 +52,10 @@ class ExchangeOrphanFlagError(ExchangeParameterError):
     """Error raised when there exists a flag column with no corresponding parameter column."""
 
 
+class ExchangeOrphanErrorError(ExchangeParameterError):
+    """Error raised when there exists an error column with no corresponding parameter column."""
+
+
 class ExchangeFlaglessParameterError(ExchangeParameterError):
     """Error raised when a parameter has a flag column when it is not supposed to."""
 

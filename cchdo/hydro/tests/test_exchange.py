@@ -4,12 +4,12 @@ import pytest
 import numpy as np
 
 from hydro.exchange import read_exchange
+
 from hydro.exchange.exceptions import (
     ExchangeLEError,
     ExchangeBOMError,
     ExchangeEncodingError,
 )
-from cchdo.params import WHPNames
 
 
 def simple_bottle_exchange(params=None, units=None, data=None, comments: str = None):
@@ -56,17 +56,11 @@ def simple_bottle_exchange(params=None, units=None, data=None, comments: str = N
 
 
 def test_btl_date_time():
-    BTL_DATE = WHPNames["BTL_DATE"]
-    BTL_TIME = WHPNames["BTL_TIME"]
     raw = simple_bottle_exchange(
         params=("BTL_DATE", "BTL_TIME"), units=("", ""), data=("20200101", "1234")
     )
-    ex = read_exchange(io.BytesIO(raw))
+    ex_xr = read_exchange(io.BytesIO(raw))
 
-    assert BTL_DATE in ex.parameters
-    assert BTL_TIME in ex.parameters
-
-    ex_xr = ex.to_xarray()
     assert "bottle_time" in ex_xr.variables
     assert "bottle_date" not in ex_xr.variables
     assert ex_xr["bottle_time"].values == [[np.datetime64("2020-01-01T12:34")]]
@@ -86,7 +80,9 @@ def test_btl_date_time_missing_warn():
         params=("BTL_DATE", "BTL_TIME"), units=("", ""), data=("20200101", "34")
     )
     with pytest.warns(UserWarning):
-        read_exchange(io.BytesIO(raw))
+        ex_xr = read_exchange(io.BytesIO(raw))
+
+    assert ex_xr["bottle_time"].values == [[np.datetime64("2020-01-01T00:34")]]
 
 
 @pytest.mark.parametrize(
@@ -110,17 +106,3 @@ def test_http_loads(uri, requests_mock):
     requests_mock.get(uri, content="BOTTLE\r".encode("utf8"))
     with pytest.raises(ExchangeLEError):
         read_exchange(uri)
-
-
-def test_write_exchange():
-    raw = simple_bottle_exchange(comments=" test comment1\n test comment2")
-    ex = read_exchange(io.BytesIO(raw))
-    csv = ex.to_exchange_csv()
-    ex2 = read_exchange(io.BytesIO(csv))
-
-    # comment of the second file will have the stamp of the first in it
-    # ignore for the round trip purposes
-    assert ex.comments.split("\n") == ex2.comments.split("\n")[1:]
-    assert ex.data == ex2.data
-    assert ex.coordinates == ex2.coordinates
-    assert ex.parameters == ex2.parameters

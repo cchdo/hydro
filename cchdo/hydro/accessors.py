@@ -1,18 +1,30 @@
+from math import isnan
+from textwrap import indent
+from typing import List, Dict, Union
 import xarray as xr
 import pandas as pd
 import numpy as np
 import string
 
-from .exchange.containers import FileType
+from cchdo.params import WHPNames, WHPName
+
+from .exchange import FileType, all_same
 
 
 class CCHDOAccessorBase:
-    def __init__(self, xarray_obj):
+    """Class base for CCHDO accessors
+
+    saves the xarray object to self._obj for all the subclasses
+    """
+
+    def __init__(self, xarray_obj: Union[xr.DataArray, xr.Dataset]):
         self._obj = xarray_obj
 
 
 class MatlabAccessor(CCHDOAccessorBase):
-    def savemat(self, fname):
+    """Accessor containing the experimental matlab machinery"""
+
+    def to_mat(self, fname):
         """Experimental Matlab .mat data file generator
 
         The support for netCDF files in Matlab is really bad.
@@ -62,7 +74,9 @@ class MatlabAccessor(CCHDOAccessorBase):
 
 
 class WoceAccessor(CCHDOAccessorBase):
-    def sum_file(self, path=None):
+    """Accessor containing woce file output machinery"""
+
+    def to_sum(self, path=None):
         """netCDF to WOCE sumfile maker
 
         This is missing some information that is not included anymore (wire out, height above bottom).
@@ -144,7 +158,7 @@ class WoceAccessor(CCHDOAccessorBase):
             dec_len = len(dec)
             dec = int(dec)
 
-            min = 60 * (dec / (10 ** dec_len))
+            min = 60 * (dec / (10**dec_len))
 
             return f"{deg:>2d} {min:05.2f} {hem}"
 
@@ -161,7 +175,7 @@ class WoceAccessor(CCHDOAccessorBase):
             dec_len = len(dec)
             dec = int(dec)
 
-            min = 60 * (dec / (10 ** dec_len))
+            min = 60 * (dec / (10**dec_len))
 
             return f"{deg:>3d} {min:05.2f} {hem}"
 
@@ -230,7 +244,7 @@ class WoceAccessor(CCHDOAccessorBase):
 
         sum_file = "\n".join([COMMENTS, HEADERS_1, HEADERS_2, SEP_LINE, *SUM_ROWS])
         if path is not None:
-            with open(path, "w") as f:
+            with open(path, "w", encoding="ascii") as f:
                 f.write(sum_file)
                 return
 
@@ -238,6 +252,8 @@ class WoceAccessor(CCHDOAccessorBase):
 
 
 class GeoAccessor(CCHDOAccessorBase):
+    """Accessor providing geo_interface machinery"""
+
     @property
     def __geo_interface__(self):
         """The station positions as a MultiPoint geo interface
@@ -265,18 +281,34 @@ class GeoAccessor(CCHDOAccessorBase):
 
 
 class MiscAccessor(CCHDOAccessorBase):
-    def gen_fname(self) -> str:
+    """Accessor with misc functions that don't fit in some other category"""
+
+    def gen_fname(self, ftype="cf") -> str:
+        """Generate a human friendly netCDF filename for this object"""
         ds = self._obj
         allowed_chars = set(f"._{string.ascii_letters}{string.digits}")
 
-        if ds["profile_type"][0].item() == FileType.BOTTLE.value:
-            fname = f"{ds['expocode'][0].item()}_bottle.nc"
-        elif (
-            ds["profile_type"][0].item() == FileType.CTD.value and len(ds["N_PROF"]) > 1
-        ):
-            fname = f"{ds['expocode'][0].item()}_ctd.nc"
+        ctd_one = "ctd.nc"
+        ctd_many = "ctd.nc"
+        bottle = "bottle.nc"
+
+        if ftype == "exchange":
+            ctd_one = "ct1.csv"
+            ctd_many = "ct1.zip"
+            bottle = "hy1.csv"
+
+        expocode = np.atleast_1d(ds["expocode"])[0]
+        station = np.atleast_1d(ds["station"])[0]
+        cast = np.atleast_1d(ds["cast"])[0]
+
+        profile_type = np.atleast_1d(ds["profile_type"])[0]
+
+        if profile_type == FileType.BOTTLE.value:
+            fname = f"{expocode}_{bottle}"
+        elif profile_type == FileType.CTD.value and len(ds.get("N_PROF", [])) > 1:
+            fname = f"{expocode}_{ctd_many}"
         else:
-            fname = f"{ds['expocode'][0].item()}_{ds['station'][0].item()}_{ds['cast'][0].item()}_ctd.nc"
+            fname = f"{expocode}_{station}_{cast:.0f}_{ctd_one}"
 
         for char in set(fname) - allowed_chars:
             fname = fname.replace(char, "_")
@@ -284,9 +316,195 @@ class MiscAccessor(CCHDOAccessorBase):
         return fname
 
 
-class CCHDOAccessor(GeoAccessor, WoceAccessor, MatlabAccessor, MiscAccessor):
+class ExchangeAccessor(CCHDOAccessorBase):
+    """Class containing the to_exchange functionn"""
+
+    @staticmethod
+    def get_formatter(whpname: WHPName, da: xr.DataArray):
+        """Generate a string formatting function for this name"""
+        fmt_str = da.attrs.get("C_format")
+        if fmt_str is None and whpname.numeric_precision is not None:
+            fmt_str = f"%.{whpname.numeric_precision}f"
+
+        def _fmt(value) -> str:
+            # TODO remove once field_width is non optional upstream
+            assert whpname.field_width is not None
+
+            if whpname in {WHPNames["DATE"], WHPNames["BTL_DATE"]}:
+                return f"{value.astype('datetime64[s]').item():%Y%m%d}"
+            if whpname in {WHPNames["TIME"], WHPNames["BTL_TIME"]}:
+                return f"{value.astype('datetime64[s]').item():%H%M}"
+            if whpname.dtype == "decimal":
+                if isnan(value):
+                    v = "-999"
+                else:
+                    v = fmt_str % value
+                return v.rjust(whpname.field_width)
+            elif whpname.dtype == "integer":
+                return str(int(value)).ljust(whpname.field_width)
+            else:
+                if value == "":
+                    return "-999".ljust(whpname.field_width)
+                return str(value).ljust(whpname.field_width)
+
+        return _fmt
+
+    @staticmethod
+    def _make_params_units_line(
+        params: Dict[WHPName, xr.DataArray],
+        flags: Dict[WHPName, xr.DataArray],
+        errors: Dict[WHPName, xr.DataArray],
+    ):
+        plist = []
+        ulist = []
+        for param in params:
+            plist.append(param.whp_name)
+            unit = param.whp_unit
+            if unit is None:
+                unit = ""
+
+            ulist.append(unit)
+
+            if param in flags:
+                plist.append(f"{param.whp_name}_FLAG_W")
+                ulist.append("")
+
+            if param in errors:
+                if param.error_name is None:
+                    raise ValueError(f"No error name for {param}")
+                plist.append(param.error_name)
+                ulist.append(unit)
+
+        return ",".join(plist), ",".join(ulist)
+
+    @staticmethod
+    def _whpname_from_attrs(attrs) -> List[WHPName]:
+        params = []
+        param = attrs["whp_name"]
+        unit = attrs.get("whp_unit")
+        if isinstance(param, list):
+            for combined in param:
+                params.append(WHPNames[(combined, unit)])
+        else:
+            if param in WHPNames.error_cols:
+                return []
+            params.append(WHPNames[(param, unit)])
+        return params
+
+    def to_exchange(self):
+        """Convert a CCHDO CF netCDF dataset to exchange"""
+        # all of the todo comments are for documenting/writing validators
+
+        # TODO guarantee these coordinates
+        ds = self._obj.reset_coords(
+            [
+                "expocode",
+                "station",
+                "cast",
+                "sample",
+                "time",
+                "latitude",
+                "longitude",
+                "pressure",
+            ]
+        ).stack(ex=("N_PROF", "N_LEVELS"))
+
+        # TODO profile_type is guaranteed to be present
+        # TODO profile_type must have C or D as the value
+        profile_type = ds.profile_type
+        if not all_same(profile_type.values):
+            raise NotImplementedError(
+                "Unable to convert a mix of ctd and bottle dtypes"
+            )
+
+        if profile_type[0] != FileType.BOTTLE.value:
+            raise NotImplementedError("CTD conversion not implimentaed yet")
+
+        output = []
+        output.append("BOTTLE,date_initals")
+
+        if len(comments := ds.attrs.get("comments", "")) > 0:
+            output.append(indent(comments, "#", lambda line: True))
+
+        # collect all the Exchange variables
+        # TODO, all things that appear in an exchange file, must have WHP name
+        exchange_vars = ds.filter_by_attrs(whp_name=lambda name: name is not None)
+        params = {}
+        flags = {}
+        errors = {}
+        for var in exchange_vars.values():
+            whp_params = self._whpname_from_attrs(var.attrs)
+            for param in whp_params:
+                params[param] = var
+
+            ancillary_vars_attr = var.attrs.get("ancillary_variables")
+            if ancillary_vars_attr is None:
+                continue
+
+            # CF says these need to be space seperated
+            ancillary_vars = ancillary_vars_attr.split(" ")
+            for ancillary_var in ancillary_vars:
+                ancillary = ds[ancillary_var]
+
+                standard_name = ancillary.attrs.get("standard_name")
+                if standard_name is None and ancillary.attrs.get("whp_name") is None:
+                    # TODO maybe raise...
+                    continue
+
+                # currently there are three types of ancillary: flags, errors, and analytical temps (e.g. for pH)
+                if standard_name == "temperature_of_analysis_of_sea_water":
+                    # this needs to get treated like a param
+                    for param in self._whpname_from_attrs(ancillary.attrs):
+                        params[param] = ancillary
+
+                if standard_name == "status_flag":
+                    for param in whp_params:
+                        flags[param] = ancillary
+
+                # TODO find a way to test this
+                if ancillary.attrs.get("whp_name") in WHPNames.error_cols:
+                    for param in whp_params:
+                        errors[param] = ancillary
+
+        # add the params and units line
+        output.extend(self._make_params_units_line(params, flags, errors))
+
+        # TODO N_PROF is guaranteed
+        # for _, prof in ds.groupby("N_PROF"):
+        #    # TODO sample is empty/null string for... non samples
+        #    valid_levels = prof.sample != ""
+        valid_levels = params[WHPNames["SAMPNO"]] != ""
+        data_block = []
+        for param, da in params.items():
+            # TODO use the param formatter...
+            fmt = self.get_formatter(param, da)
+            values = [fmt(v) for v in np.nditer(da[valid_levels])]
+
+            data_block.append(values)
+
+            if param in flags:
+                flag = [
+                    str(int(v)) for v in np.nditer(flags[param][valid_levels].fillna(9))
+                ]
+                data_block.append(flag)
+            if param in errors:
+                error = [fmt(v) for v in np.nditer(errors[param][valid_levels])]
+                data_block.append(error)
+
+        for row in zip(*data_block):
+            output.append(",".join(str(cell) for cell in row))
+
+        output.append("END_DATA\n")
+
+        return "\n".join(output)
+
+
+class CCHDOAccessor(
+    ExchangeAccessor, GeoAccessor, WoceAccessor, MatlabAccessor, MiscAccessor
+):
+    """Collect all the accessors into a single class"""
+
     ...
 
 
-def register():
-    xr.register_dataset_accessor("cchdo")(CCHDOAccessor)
+xr.register_dataset_accessor("cchdo")(CCHDOAccessor)
