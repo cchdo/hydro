@@ -932,7 +932,7 @@ def _combine_dt_ndarray(
         return np.datetime64(datetime.strptime(date_val, "%Y%m%d"))
 
     def _parse_datetime(date_val: str) -> np.datetime64:
-        if date_val == "TZ":
+        if date_val == "T":
             return np.datetime64("nat")
         return np.datetime64(datetime.strptime(date_val, "%Y%m%dT%H%M"))
 
@@ -980,6 +980,23 @@ def sort_ds(dataset: xr.Dataset) -> xr.Dataset:
 
     # now we can just use the xarray sorting, which only supports 1D
     return dataset.sortby(["time", "latitude", "longitude"])
+
+
+def check_sorted(dataset: xr.Dataset) -> bool:
+    """Check that the dataset is sorted by the rules in :py:`sort_ds`"""
+    sorted_ds = sort_ds(dataset.copy(deep=True))
+
+    return all(
+        [
+            np.allclose(sorted_ds.pressure, dataset.pressure, equal_nan=True),
+            np.all(
+                (sorted_ds.time == dataset.time)
+                | (np.isnat(sorted_ds.time) == np.isnat(dataset.time))
+            ),
+            np.allclose(sorted_ds.latitude, dataset.latitude, equal_nan=True),
+            np.allclose(sorted_ds.longitude, dataset.longitude, equal_nan=True),
+        ]
+    )
 
 
 WHPNameAttr = Union[str, List[str]]
