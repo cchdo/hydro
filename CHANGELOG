@@ -1,7 +1,22 @@
-v1.0.2.0 (unreleased)
+v1.0.2.1 (unreleased)
 =====================
-* Fixed an issue where the WOCE sumfile accessor would missalign latitude columns near the equator since they lacked a digit in the tens place.
-* Fixed an issue where the WOCE sumfile accessor would use "pressure levels" of CTD source netcdf files as the number of bottles.
+* No changes yet
+
+v1.0.2.0 (2022-04-12)
+=====================
+This release includes an almost complete rewrite of how the exchange to netCDF conversion works.
+It now more directly uses numpy and has significant memory reduction and speed improvements when converting CTD (bottle is about the same).
+
+* (breaking) The CLI was changed to support multiple actions which caused the exchange to netCDF functions to be moved to a sub-command "convert-exchnage" with the same interface as before.
+* (breaking) The "source_C_format" attribute has been removed in favor of only having one "C_format" attribute, the "source" of the value in the C_format attribute will be listed in a new attribute "C_format_source" with the value of either "input_file" if the C_format was calculated from a text based input, or "database" if the C_format was taken from the internal database.
+* (temporary) the netCDF to exchange function is not quite ready yet to work as an xarray accessor.
+* (provisional) the order which netCDF variables appear is now in "exchange preferred" order.
+
+Bug Fixes
+---------
+* Fixed an issue where the WOCE sumfile accessor would misalign latitude columns near the equator since they lacked a digit in the tens place.
+* Fixed an issue where the WOCE sumfile accessor would use "pressure levels" of CTD source netCDF files as the number of bottles.
+* Fixed an issue where stations might occur in an unexpected order.
 
 v1.0.1.3 (2021-08-25)
 =====================
