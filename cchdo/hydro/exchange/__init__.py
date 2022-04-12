@@ -134,7 +134,7 @@ def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
         if param.endswith("_FLAG_W"):
             continue
         try:
-            params[WHPNames[(param, unit)]] = index
+            params[WHPNames[(param, unit)]] = index  # type: ignore
         except KeyError as error:
             raise ExchangeParameterUndefError(
                 f"missing parameter def {(param, unit)}"
