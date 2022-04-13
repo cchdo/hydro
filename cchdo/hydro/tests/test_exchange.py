@@ -106,3 +106,21 @@ def test_http_loads(uri, requests_mock):
     requests_mock.get(uri, content="BOTTLE\r".encode("utf8"))
     with pytest.raises(ExchangeLEError):
         read_exchange(uri)
+
+
+@pytest.mark.parametrize("flag", ["1", "2", "3", "4", "6", "7"])
+def test_pressure_flags(flag):
+    raw = simple_bottle_exchange(params=("CTDPRS_FLAG_W",), units=("",), data=(flag,))
+    ex_xr = read_exchange(io.BytesIO(raw))
+
+    assert "pressure_qc" in ex_xr.variables
+    assert "pressure_qc" in ex_xr.pressure.attrs["ancillary_variables"]
+    assert ex_xr.pressure_qc.data == [int(flag)]
+    assert "pressure" in ex_xr.coords
+
+
+@pytest.mark.parametrize("flag", ["5", "8", "9"])
+def test_pressure_flags_bad(flag):
+    raw = simple_bottle_exchange(params=("CTDPRS_FLAG_W",), units=("",), data=(flag,))
+    with pytest.raises(ValueError):
+        read_exchange(io.BytesIO(raw))
