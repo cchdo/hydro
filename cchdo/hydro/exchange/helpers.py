@@ -74,6 +74,20 @@ def gen_complete_bottle():
         params.append(name.whp_name)
         units.append(name.whp_unit if name.whp_unit is not None else "")
         data.append("-999")
+        if name.flag_w is not None and name.flag_w != "no_flags":
+            params.append(f"{name.whp_name}_FLAG_W")
+            units.append("")
+            data.append("9")
+
+        if name.error_name is not None:
+            params.append(name.error_name)
+            units.append(name.whp_unit if name.whp_unit is not None else "")
+            data.append("-999")
+
+    # special case
+    params.extend(["BTL_DATE", "BTL_TIME"])
+    units.extend(["", ""])
+    data.extend(["20220421", "0944"])
 
     ex = simple_bottle_exchange(params=params, units=units, data=data)
     return read_exchange(io.BytesIO(ex))
