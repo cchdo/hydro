@@ -10,7 +10,6 @@ from zipfile import ZipFile, is_zipfile
 from pathlib import Path
 from datetime import datetime
 from enum import Enum, auto
-from collections import Counter
 
 import requests
 import numpy as np
@@ -128,17 +127,25 @@ def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
     :raises ExchangeParameterUndefError: if the parameter unit pair cannot be found in the built in database
     """
     params = {}
+    errors = []
     for index, (param, unit) in enumerate(params_units):
         if param in WHPNames.error_cols:
             continue
         if param.endswith("_FLAG_W"):
             continue
         try:
-            params[WHPNames[(param, unit)]] = index  # type: ignore
+            whpname = WHPNames[(param, unit)]
         except KeyError as error:
             raise ExchangeParameterUndefError(
                 f"missing parameter def {(param, unit)}"
             ) from error
+        if whpname in params:
+            errors.append(whpname)
+        params[whpname] = index  # type: ignore
+    if any(errors):
+        raise ExchangeDuplicateParameterError(
+            f"The following params are duplicate: {errors}"
+        )
     return params
 
 
@@ -695,11 +702,6 @@ class _ExchangeInfo:
 
         Returns a dict with a WHPName to column index mapping
         """
-        if len(self.params) != len(set(self.params)):
-            raise ExchangeDuplicateParameterError(
-                [param for param, count in Counter(self.params).items() if count > 1]
-            )
-
         # In initial testing, it was discovered that approx half the ctd files
         # had trailing commas in just the params and units lines
         if self.params[-1] == "" and self.units[-1] is None:
