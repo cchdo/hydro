@@ -510,9 +510,30 @@ class ExchangeAccessor(CCHDOAccessorBase):
 
         return "\n".join(output)
 
+class CFIndxer:
+    def __init__(self, obj:xr.DataArray) -> None:
+        self.n_prof = {
+            (
+                prof.expocode.data.item(),
+                prof.station.data.item(),
+                prof.cast.data.item(),
+            ): prof.data.item() for prof in obj.N_PROF}
+
+    def __getitem__(self, key):
+        return (self.n_prof[key], )
+
+class MergeFQAccessor(CCHDOAccessorBase):
+    # Until I figure out how to use the pandas machinery (or the explict index project of xarray pays off)
+    # I will use a "custom" indexer here to index into the variables
+    # This will rely on the N_PROF and N_LEVELS (with extra at some point)
+    # * N_PROF will be indexed with (expocode, station, cast)
+    # * N_LEVELS will be subindexd with (sample)
+    def merge_fq(self, fq):
+        idxer = CFIndxer(self._obj)
+        return self._obj
 
 class CCHDOAccessor(
-    ExchangeAccessor, GeoAccessor, WoceAccessor, MatlabAccessor, MiscAccessor
+    ExchangeAccessor, GeoAccessor, WoceAccessor, MatlabAccessor, MiscAccessor, MergeFQAccessor
 ):
     """Collect all the accessors into a single class"""
 
