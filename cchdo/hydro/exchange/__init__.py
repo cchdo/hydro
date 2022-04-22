@@ -134,7 +134,8 @@ def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
         if param.endswith("_FLAG_W"):
             continue
         try:
-            whpname = WHPNames[(param, unit)]
+            # TODO: remove ignore type error when upstream is fixed
+            whpname = WHPNames[(param, unit)]  # type: ignore
         except KeyError as error:
             raise ExchangeParameterUndefError(
                 f"missing parameter def {(param, unit)}"

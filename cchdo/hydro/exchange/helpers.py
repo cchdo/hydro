@@ -47,7 +47,7 @@ def simple_bottle_exchange(params=None, units=None, data=None, comments: str = N
 
 
 def gen_complete_bottle():
-    from cchdo.hydro.exchange import read_exchange
+    from . import read_exchange
 
     exclude = set(
         [
