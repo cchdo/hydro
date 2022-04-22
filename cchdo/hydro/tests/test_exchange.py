@@ -9,6 +9,7 @@ from hydro.exchange.exceptions import (
     ExchangeLEError,
     ExchangeBOMError,
     ExchangeEncodingError,
+    ExchangeDuplicateParameterError,
 )
 
 from hydro.exchange.helpers import simple_bottle_exchange
@@ -98,5 +99,5 @@ def test_duplicate_name_same_units():
     raw = simple_bottle_exchange(
         params=("CTDTMP", "CTDTMP"), units=("ITS-90", "ITS-90"), data=("-999", "-999")
     )
-    with pytest.raises(ValueError):
+    with pytest.raises(ExchangeDuplicateParameterError):
         read_exchange(io.BytesIO(raw))
