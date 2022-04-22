@@ -89,7 +89,9 @@ def test_duplicate_name_different_units():
     raw = simple_bottle_exchange(
         params=("CTDTMP", "CTDTMP"), units=("ITS-90", "IPTS-68"), data=("-999", "-999")
     )
-    read_exchange(io.BytesIO(raw))
+    ex_xr = read_exchange(io.BytesIO(raw))
+    assert "ctd_temperature" in ex_xr.variables
+    assert "ctd_temperature_68" in ex_xr.variables
 
 
 def test_duplicate_name_same_units():
