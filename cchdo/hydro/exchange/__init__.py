@@ -1261,7 +1261,7 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> List[str]:
         log.info("Loading object over http")
         data_raw = io.BytesIO(requests.get(filename_or_obj).content)
 
-    elif isinstance(filename_or_obj, (str, Path)):
+    elif isinstance(filename_or_obj, (str, Path)) and Path(filename_or_obj).exists():
         log.info("Loading object from local file path")
         with open(filename_or_obj, "rb") as local_file:
             data_raw = io.BytesIO(local_file.read())
@@ -1270,6 +1270,10 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> List[str]:
     elif hasattr(filename_or_obj, "read"):
         log.info("Loading object open file object")
         data_raw = io.BytesIO(filename_or_obj.read())
+
+    elif isinstance(filename_or_obj, (bytes, bytearray)):
+        log.info("Loading raw data bytes")
+        data_raw = io.BytesIO(filename_or_obj)
 
     data = []
     if is_zipfile(data_raw):
