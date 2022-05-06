@@ -30,15 +30,16 @@ def convert():
 @convert.command()
 @click.argument("exchange_path")
 @click.argument("out_path")
+@click.argument("precision_source", default="file")
 @click.option("--check-flag/--no-check-flag", default=True)
-def convert_exchange(exchange_path, out_path, check_flag):
+def convert_exchange(exchange_path, out_path, check_flag, precision_source):
     setup_logging("DEBUG")
     log.info("Loading read_exchange")
     from .exchange import read_exchange
 
     checks = {"flags": check_flag}
 
-    ex = read_exchange(exchange_path, checks=checks)
+    ex = read_exchange(exchange_path, checks=checks, precision_source=precision_source)
     log.info("Saving to netCDF")
     ex.to_netcdf(out_path)
     log.info("Done :)")

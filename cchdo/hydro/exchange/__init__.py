@@ -897,7 +897,7 @@ class _ExchangeInfo:
         )
         return np.array(_raw_data, dtype="U")
 
-    def finalize(self, fill_values=("-999",)) -> _ExchangeData:
+    def finalize(self, fill_values=("-999",), precision_source="file") -> _ExchangeData:
         """Parse all the data into ndarrays of the correct dtype and shape
 
         Returns an ExchangeData dataclass
@@ -921,7 +921,8 @@ class _ExchangeInfo:
             if param.dtype in ("decimal", "integer"):
                 if not _is_valid_exchange_numeric(param_col):
                     raise ValueError("exchange numeric data has bad chars")
-                whp_param_precisions[param] = _extract_numeric_precisions(param_col)
+                if precision_source == "file":
+                    whp_param_precisions[param] = _extract_numeric_precisions(param_col)
                 param_col[fill_spaces] = "nan"
             if param.dtype == "string":
                 param_col[fill_spaces] = ""
@@ -941,7 +942,8 @@ class _ExchangeInfo:
                     raise ValueError(
                         f"{param} error col exchange numeric data has bad chars"
                     )
-                whp_error_precisions[param] = _extract_numeric_precisions(param_col)
+                if precision_source == "file":
+                    whp_error_precisions[param] = _extract_numeric_precisions(param_col)
                 param_col[fill_spaces] = "nan"
             whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
 
@@ -1313,6 +1315,7 @@ def read_exchange(
     filename_or_obj: ExchangeIO,
     fill_values=("-999",),
     checks: Optional[CheckOptions] = None,
+    precision_source="file",
 ) -> xr.Dataset:
     """Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
     CF/netCDF structure"""
@@ -1344,7 +1347,8 @@ def read_exchange(
 
     exchange_data = [
         _ExchangeInfo.from_lines(tuple(df.splitlines()), ftype=ftype).finalize(
-            fill_values=fill_values
+            fill_values=fill_values,
+            precision_source=precision_source,
         )
         for df in data
     ]
