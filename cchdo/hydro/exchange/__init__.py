@@ -129,7 +129,7 @@ def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
     params = {}
     errors = []
     for index, (param, unit) in enumerate(params_units):
-        if param in WHPNames.error_cols:
+        if (param, unit) in WHPNames.error_cols:
             continue
         if param.endswith("_FLAG_W"):
             continue
@@ -219,8 +219,8 @@ def _bottle_get_errors(
     """
     param_errs = {}
 
-    for index, (param, _unit) in enumerate(params_units):
-        if param not in WHPNames.error_cols:
+    for index, (param, unit) in enumerate(params_units):
+        if (param, unit) not in WHPNames.error_cols:
             continue
 
         for name in whp_params.keys():

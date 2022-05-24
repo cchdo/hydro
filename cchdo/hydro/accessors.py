@@ -386,7 +386,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
             for combined in param:
                 params.append(WHPNames[(combined, unit)])
         else:
-            if param in WHPNames.error_cols:
+            if (param, unit) in WHPNames.error_cols:
                 return []
             params.append(WHPNames[(param, unit)])
         return params

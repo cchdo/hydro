@@ -1,6 +1,6 @@
 v1.0.2.1 (unreleased)
 =====================
-* No changes yet
+* Update the WHP error name lookup to be compatable with cchdo.params v0.1.18
 
 v1.0.2.0 (2022-04-12)
 =====================
