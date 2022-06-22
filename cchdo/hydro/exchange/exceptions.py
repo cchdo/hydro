@@ -1,3 +1,6 @@
+from typing import Tuple, List, Optional
+
+
 class ExchangeError(ValueError):
     """This is the base exception which all the other exceptions derive from.
     It is a subclass of ValueError.
@@ -38,6 +41,10 @@ class ExchangeParameterError(ExchangeError):
 
 class ExchangeParameterUndefError(ExchangeParameterError):
     """Error raised when the library does not have a definition for a parameter/unit pair in the exchange file."""
+
+    def __init__(self, error_data: List[Tuple[str, Optional[str]]]):
+        super().__init__(error_data)
+        self.error_data = error_data
 
 
 class ExchangeParameterUnitAlignmentError(ExchangeParameterError):

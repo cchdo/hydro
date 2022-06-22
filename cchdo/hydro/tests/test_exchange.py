@@ -10,6 +10,7 @@ from hydro.exchange.exceptions import (
     ExchangeBOMError,
     ExchangeEncodingError,
     ExchangeDuplicateParameterError,
+    ExchangeParameterUndefError,
 )
 
 from hydro.exchange.helpers import simple_bottle_exchange
@@ -101,3 +102,14 @@ def test_duplicate_name_same_units():
     )
     with pytest.raises(ExchangeDuplicateParameterError):
         read_exchange(io.BytesIO(raw))
+
+
+def test_multiple_unknown_params():
+    raw = simple_bottle_exchange(
+        params=("TEST1", "TEST2"), units=("TEST3", "TEST4"), data=("-999", "-999")
+    )
+    with pytest.raises(ExchangeParameterUndefError) as execinfo:
+        read_exchange(io.BytesIO(raw))
+
+    assert hasattr(execinfo.value, "error_data")
+    assert execinfo.value.error_data == [("TEST1", "TEST3"), ("TEST2", "TEST4")]

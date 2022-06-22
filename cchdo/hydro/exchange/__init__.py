@@ -127,7 +127,8 @@ def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
     :raises ExchangeParameterUndefError: if the parameter unit pair cannot be found in the built in database
     """
     params = {}
-    errors = []
+    unknown_errors = []
+    duplicate_errors = []
     for index, (param, unit) in enumerate(params_units):
         if (param, unit) in WHPNames.error_cols:
             continue
@@ -136,16 +137,18 @@ def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
         try:
             # TODO: remove ignore type error when upstream is fixed
             whpname = WHPNames[(param, unit)]  # type: ignore
-        except KeyError as error:
-            raise ExchangeParameterUndefError(
-                f"missing parameter def {(param, unit)}"
-            ) from error
+        except KeyError:
+            unknown_errors.append((param, unit))
         if whpname in params:
-            errors.append(whpname)
+            duplicate_errors.append(whpname)
         params[whpname] = index  # type: ignore
-    if any(errors):
+
+    if any(unknown_errors):
+        raise ExchangeParameterUndefError(unknown_errors)
+
+    if any(duplicate_errors):
         raise ExchangeDuplicateParameterError(
-            f"The following params are duplicate: {errors}"
+            f"The following params are duplicate: {duplicate_errors}"
         )
     return params
 
