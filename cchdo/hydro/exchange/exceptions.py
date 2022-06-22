@@ -1,5 +1,7 @@
 from typing import Tuple, List, Optional
 
+import xarray as xr
+
 
 class ExchangeError(ValueError):
     """This is the base exception which all the other exceptions derive from.
@@ -87,6 +89,10 @@ class ExchangeDataFlagPairError(ExchangeDataError):
     * something with a flag of ``9`` has a non fill value
     * something with a flag of ``2`` as a fill value instead of data
     """
+
+    def __init__(self, error_data: xr.Dataset):
+        super().__init__(error_data)
+        self.error_data = error_data
 
 
 class ExchangeDataPartialKeyError(ExchangeDataError):
