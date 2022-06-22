@@ -1,5 +1,6 @@
 import io
 import pytest
+from importlib.resources import open_binary
 
 import numpy as np
 
@@ -25,15 +26,6 @@ def test_btl_date_time():
     assert "bottle_time" in ex_xr.variables
     assert "bottle_date" not in ex_xr.variables
     assert ex_xr["bottle_time"].values == [[np.datetime64("2020-01-01T12:34")]]
-
-
-def test_btl_date_time_missing_part():
-    raw = simple_bottle_exchange(params=("BTL_DATE",), units=("",), data=("20200101",))
-    with pytest.raises(ValueError):
-        read_exchange(io.BytesIO(raw))
-    raw = simple_bottle_exchange(params=("BTL_TIME",), units=("",), data=("0012",))
-    with pytest.raises(ValueError):
-        read_exchange(io.BytesIO(raw))
 
 
 def test_btl_date_time_missing_warn():
@@ -113,3 +105,55 @@ def test_multiple_unknown_params():
 
     assert hasattr(execinfo.value, "error_data")
     assert execinfo.value.error_data == [("TEST1", "TEST3"), ("TEST2", "TEST4")]
+
+
+def test_fix_bottle_time_span():
+    test_data = open_binary("cchdo.hydro.tests.data", "btl_time_span.csv")
+    expected = np.array(
+        [
+            [
+                "2012-09-05T01:15:00.000000000",
+                "2012-09-05T01:33:00.000000000",
+                "2012-09-05T01:32:00.000000000",
+                "2012-09-05T01:28:00.000000000",
+                "2012-09-05T01:27:00.000000000",
+                "2012-09-05T01:26:00.000000000",
+                "2012-09-05T01:25:00.000000000",
+                "2012-09-05T01:23:00.000000000",
+                "2012-09-05T01:22:00.000000000",
+                "2012-09-05T01:20:00.000000000",
+                "2012-09-05T01:18:00.000000000",
+                "2012-09-05T01:16:00.000000000",
+                "2012-09-05T01:13:00.000000000",
+                "2012-09-05T01:10:00.000000000",
+                "2012-09-05T01:08:00.000000000",
+                "2012-09-05T01:05:00.000000000",
+                "2012-09-05T01:02:00.000000000",
+                "2012-09-05T00:59:00.000000000",
+                "2012-09-05T00:55:00.000000000",
+                "2012-09-05T00:50:00.000000000",
+                "2012-09-05T00:45:00.000000000",
+                "2012-09-05T00:41:00.000000000",
+                "2012-09-05T00:36:00.000000000",
+                "2012-09-05T00:31:00.000000000",
+                "2012-09-05T00:26:00.000000000",
+                "2012-09-05T00:20:00.000000000",
+                "2012-09-05T00:15:00.000000000",
+                "2012-09-05T00:15:00.000000000",
+                "2012-09-05T00:10:00.000000000",
+                "2012-09-05T00:04:00.000000000",
+                "2012-09-05T00:04:00.000000000",
+                "2012-09-04T23:59:00.000000000",
+                "2012-09-04T23:54:00.000000000",
+                "2012-09-04T23:54:00.000000000",
+                "2012-09-04T23:48:00.000000000",
+                "2012-09-04T23:43:00.000000000",
+                "2012-09-04T23:41:00.000000000",
+            ]
+        ],
+        dtype="datetime64[ns]",
+    )
+
+    ex = read_exchange(test_data)
+
+    np.testing.assert_array_equal(ex.bottle_time.values, expected)

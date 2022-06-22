@@ -312,21 +312,36 @@ def combine_bottle_time(dataset: xr.Dataset):
     BTL_TIME = WHPNames["BTL_TIME"]
     BTL_DATE = WHPNames["BTL_DATE"]
 
-    if BTL_TIME.nc_name in dataset and BTL_DATE.nc_name not in dataset:
-        raise ValueError("BTL_TIME with no BTL_DATE")
-    if BTL_DATE.nc_name in dataset and BTL_TIME.nc_name not in dataset:
-        raise ValueError("BTL_DATE with no BTL_TIME")
-
     if BTL_DATE.nc_name not in dataset and BTL_TIME.nc_name not in dataset:
         return dataset
 
-    return combine_dt(
+    if BTL_TIME.nc_name in dataset and BTL_DATE.nc_name not in dataset:
+        dates = np.char.replace(
+            np.datetime_as_string(dataset[TIME.nc_name].values, unit="D"), "-", ""
+        )
+
+        dataset[BTL_DATE.nc_name] = dataset[BTL_TIME.nc_name].copy()
+        dataset[BTL_DATE.nc_name].values.T[:] = dates
+        dataset[BTL_DATE.nc_name].values[dataset[BTL_TIME.nc_name].values == ""] = ""
+
+    ds = combine_dt(
         dataset,
         is_coord=False,
         date_name=BTL_DATE,
         time_name=BTL_TIME,
         time_pad=True,
     )
+
+    # Take the station time as BO and go back one hour for "safty"
+    reference_time = ds.time - np.timedelta64(1, "h")
+
+    # Add a day to anything before the ref time
+    next_day = (ds.bottle_time < reference_time).values
+    ds.bottle_time.values[next_day] = ds.bottle_time.values[next_day] + np.timedelta64(
+        1, "D"
+    )
+
+    return ds
 
 
 def check_is_subset_shape(
@@ -1117,7 +1132,8 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> List[str]:
         with open(filename_or_obj, "rb") as local_file:
             data_raw = io.BytesIO(local_file.read())
 
-    elif isinstance(filename_or_obj, io.BufferedIOBase):
+    # lets just try "reading"
+    elif hasattr(filename_or_obj, "read"):
         log.info("Loading object open file object")
         data_raw = io.BytesIO(filename_or_obj.read())
 
@@ -1161,6 +1177,7 @@ def read_exchange(filename_or_obj: ExchangeIO, fill_values=("-999",)) -> xr.Data
     if any((df.startswith("\ufeff") for df in data)):
         raise ExchangeBOMError
 
+    # TODO remove this check, and rely on python's "universal newlines"
     log.info("Checking Line Endings")
     if any(("\r" in df for df in data)):
         raise ExchangeLEError
