@@ -66,6 +66,7 @@ TIME = WHPNames["TIME"]
 LATITUDE = WHPNames["LATITUDE"]
 LONGITUDE = WHPNames["LONGITUDE"]
 CTDPRS = WHPNames[("CTDPRS", "DBAR")]
+BTLNBR = WHPNames["BTLNBR"]
 
 COORDS = [
     EXPOCODE,
@@ -484,7 +485,12 @@ class _ExchangeData:
             try:
                 sample_ids = self.param_cols[SAMPNO]
             except KeyError as err:
-                raise ExchangeDataPartialKeyError("Missing SAMPNO") from err
+                log.warn("SAMPNO not in file, attempting BTLNBR fallback")
+                if BTLNBR in self.param_cols:
+                    sample_ids = self.param_cols[BTLNBR]
+                    self.param_cols[SAMPNO] = self.param_cols[BTLNBR]
+                else:
+                    raise ExchangeDataPartialKeyError("Missing SAMPNO") from err
 
             unique_sample_ids, unique_sample_counts = np.unique(
                 sample_ids, return_counts=True

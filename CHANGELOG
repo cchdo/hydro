@@ -3,6 +3,7 @@ v1.0.2.1 (unreleased)
 * Update the WHP error name lookup to be compatable with cchdo.params v0.1.18
 * Add an ``error_data`` attribute to ``ExchangeParameterUndefError`` that will contain a list of all the unknown ``(param, unit)`` pairs in an exchange file when attempting to read one.
 * Add an ``error_data`` attribute to ``ExchangeDataFlagPairError`` that will contain a list of all the found flag errors as an xarray.Dataset
+* Automatically attempt to use BTLNBR as a fallback if SAMPNO is not present in a bottle file.
 
 v1.0.2.0 (2022-04-12)
 =====================
