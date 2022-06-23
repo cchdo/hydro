@@ -2,12 +2,13 @@ import os
 
 from .exchange import read_exchange
 from cchdo.params import WHPNames
-from .exchange.exceptions import ExchangeDataFlagPairError
+from .exchange.exceptions import ExchangeDataFlagPairError, ExchangeParameterUndefError
 from . import accessors  # noqa
 
 
 def p_file(file_m):
     t_dir, file, file_metadata = file_m
+    unknown_params = []
     if file_metadata["data_type"] == "ctd" and ("NITRATE", "UMOL/KG") not in WHPNames:
 
         # HOT names that are a little dangerous to have in the real DB
@@ -22,14 +23,16 @@ def p_file(file_m):
 
     try:
         ex_xr = read_exchange(file)
+    except ExchangeParameterUndefError as err:
+        return (500, repr(err), file_metadata, err.error_data)
     except ExchangeDataFlagPairError:
         try:
             ex_xr = read_exchange(file, fill_values=("-999", "-99"))
         except (ValueError, KeyError) as err:
-            return (500, repr(err), file_metadata)
+            return (500, repr(err), file_metadata, unknown_params)
     except (ValueError, KeyError) as err:
-        return (500, repr(err), file_metadata)
+        return (500, repr(err), file_metadata, unknown_params)
 
     to_path = os.path.join(t_dir, f"{file_metadata['id']}_{ex_xr.cchdo.gen_fname()}")
     ex_xr.to_netcdf(to_path)
-    return (200, to_path, file_metadata)
+    return (200, to_path, file_metadata, unknown_params)

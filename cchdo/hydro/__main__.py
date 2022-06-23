@@ -4,6 +4,7 @@ from multiprocessing import Pool
 from tempfile import TemporaryDirectory
 import shutil
 from html import escape
+import json
 
 import click
 from rich.logging import RichHandler
@@ -26,7 +27,7 @@ def convert():
 @convert.command()
 @click.argument("exchange_path")
 @click.argument("out_path")
-def convert_exchnage(exchange_path, out_path):
+def convert_exchange(exchange_path, out_path):
     log.info("Loading read_exchange")
     from .exchange import read_exchange
 
@@ -87,7 +88,8 @@ from . import __main_helpers as mh
 @status.command()
 @click.argument("dtype")
 @click.argument("out_dir")
-def status_exchange(dtype, out_dir):
+@click.option("--dump-unknown-params", is_flag=True)
+def status_exchange(dtype, out_dir, dump_unknown_params):
     """Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset"""
     from cchdo.hydro._version import version as hydro_version  # type: ignore
     from cchdo.params import _version as params_version  # type: ignore
@@ -99,6 +101,7 @@ def status_exchange(dtype, out_dir):
         file_paths.append((cached_file_loader(file), file))
 
     results = []
+    all_unknown_params = {}
     with TemporaryDirectory() as temp_dir:
         with Pool() as pool:
             for result in track(
@@ -108,7 +111,7 @@ def status_exchange(dtype, out_dir):
                 total=len(file_paths),
                 description="Converting ex to netCDF",
             ):
-                status, path_or_err, metadata = result
+                status, path_or_err, metadata, unknown_params = result
                 if status == 200:
                     log.info(f"Processed: {metadata['file_name']}")
                 else:
@@ -118,6 +121,8 @@ def status_exchange(dtype, out_dir):
         out_path.mkdir(parents=True, exist_ok=True)
         nc_path = out_path / "nc"
         nc_path.mkdir(exist_ok=True)
+        success_len = len(list(filter(lambda x: x[0] == 200, results)))
+        success_str = f"Converted {success_len} of {len(results)} ({success_len/len(results) * 100}%)"
         with (out_path / f"index_{dtype}.html").open("w") as f:
             f.write(
                 f"""<html>
@@ -129,7 +134,8 @@ def status_exchange(dtype, out_dir):
             <table class="table"><thead>
             <h2>Versions</h2>
             cchdo.hydro: {hydro_version}</br>
-            cchdo.params: {params_version.version}
+            cchdo.params: {params_version.version}</br>
+            stats: {success_str}
             <h2>Files</h2>
             <tr>
             <th>Cruise(s)</th>
@@ -138,14 +144,14 @@ def status_exchange(dtype, out_dir):
             <th>NetCDF File</th>
             </tr></thead><tbody>"""
             )
-            for result in sorted(results, key=lambda x: x[-1]["id"]):
-                status, path_or_err, metadata = result
+            for result in sorted(results, key=lambda x: x[2]["id"]):
+                status, path_or_err, metadata, unknown_params = result
                 try:
-                    crs = [cruises[c]["expocode"] for c in metadata["cruises"]]
+                    expos = [cruises[c]["expocode"] for c in metadata["cruises"]]
                     crs = ", ".join(
                         [
                             f"<a href='https://cchdo.ucsd.edu/cruise/{ex}'>{ex}</a>"
-                            for ex in crs
+                            for ex in expos
                         ]
                     )
                 except KeyError:
@@ -168,6 +174,8 @@ def status_exchange(dtype, out_dir):
                             </tr>"""
                     )
                 else:
+                    if len(unknown_params) > 0:
+                        all_unknown_params[expos[0]] = unknown_params
                     error = escape(path_or_err)
                     f.write(
                         f"""<tr class='table-warning'>
@@ -186,10 +194,10 @@ def status_exchange(dtype, out_dir):
                     f.write("""</tr>""")
             f.write("</tbody></table></div></body></html>")
 
-    success_len = len(list(filter(lambda x: x[0] == 200, results)))
-    log.info(
-        f"Converted {success_len} of {len(results)} ({success_len/len(results) * 100}%)"
-    )
+    log.info(success_str)
+    if dump_unknown_params:
+        with open(out_path / f"unknown_params_{dtype}.json", "w") as f:
+            json.dump(all_unknown_params, f)
 
 
 cli = click.CommandCollection(sources=[convert, status])
