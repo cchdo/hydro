@@ -1,7 +1,7 @@
 import logging
 import io
 import dataclasses
-from typing import Set, Tuple, Dict, Union, Optional, Iterable, List
+from typing import Set, Tuple, Dict, Union, Optional, Iterable, List, TypedDict
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
@@ -500,7 +500,7 @@ class _ExchangeData:
             try:
                 sample_ids = self.param_cols[SAMPNO]
             except KeyError as err:
-                log.warn("SAMPNO not in file, attempting BTLNBR fallback")
+                log.debug("SAMPNO not in file, attempting BTLNBR fallback")
                 if BTLNBR in self.param_cols:
                     sample_ids = self.param_cols[BTLNBR]
                     self.param_cols[SAMPNO] = self.param_cols[BTLNBR]
@@ -1167,9 +1167,23 @@ def all_same(ndarr: np.ndarray) -> np.bool_:
     return np.all(ndarr == ndarr.flat[0])
 
 
-def read_exchange(filename_or_obj: ExchangeIO, fill_values=("-999",)) -> xr.Dataset:
+class CheckOptions(TypedDict, total=False):
+    flags: bool
+
+
+def read_exchange(
+    filename_or_obj: ExchangeIO,
+    fill_values=("-999",),
+    checks: Optional[CheckOptions] = None,
+) -> xr.Dataset:
     """Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
     CF/netCDF structure"""
+
+    _checks: CheckOptions = {"flags": False}
+    if checks is not None:
+        _checks.update(checks)
+
+    log.debug(f"Check options: {_checks}")
 
     data = _load_raw_exchange(filename_or_obj)
 
@@ -1381,5 +1395,9 @@ def read_exchange(filename_or_obj: ExchangeIO, fill_values=("-999",)) -> xr.Data
     ex_dataset = add_geometry_var(ex_dataset)
     ex_dataset = finalize_ancillary_variables(ex_dataset)
     ex_dataset = combine_bottle_time(ex_dataset)
-    check_flags(ex_dataset)
+
+    if _checks["flags"]:
+        log.debug("Checking flags")
+        check_flags(ex_dataset)
+
     return ex_dataset

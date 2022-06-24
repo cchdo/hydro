@@ -10,13 +10,15 @@ import click
 from rich.logging import RichHandler
 from rich.progress import track
 
-
-FORMAT = "%(funcName)s: %(message)s"
-logging.basicConfig(
-    level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[RichHandler()]
-)
-
 log = logging.getLogger(__name__)
+
+
+def setup_logging(level):
+    FORMAT = "%(funcName)s: %(message)s"
+    log_handler = RichHandler(level=level)
+    logging.basicConfig(
+        level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[log_handler]
+    )
 
 
 @click.group()
@@ -27,11 +29,15 @@ def convert():
 @convert.command()
 @click.argument("exchange_path")
 @click.argument("out_path")
-def convert_exchange(exchange_path, out_path):
+@click.option("--check-flag/--no-check-flag", default=True)
+def convert_exchange(exchange_path, out_path, check_flag):
+    setup_logging("DEBUG")
     log.info("Loading read_exchange")
     from .exchange import read_exchange
 
-    ex = read_exchange(exchange_path)
+    checks = {"flags": check_flag}
+
+    ex = read_exchange(exchange_path, checks=checks)
     log.info("Saving to netCDF")
     ex.to_netcdf(out_path)
     log.info("Done :)")
@@ -71,13 +77,13 @@ def cached_file_loader(file):
     file_dest = cache_dir / file["file_hash"]
 
     if file_dest.exists() and file_dest.stat().st_size == file["file_size"]:
-        log.info(f"Using cached file {file_dest}")
+        log.debug(f"Using cached file {file_dest}")
         return file_dest
 
     f_body = s.get(f"https://cchdo.ucsd.edu{file['file_path']}")
     if f_body.status_code == codes.ok:
         file_dest.write_bytes(f_body.content)
-        log.info(f"Written to {file_dest}")
+        log.debug(f"Written to {file_dest}")
 
     return file_dest
 
@@ -89,10 +95,18 @@ from . import __main_helpers as mh
 @click.argument("dtype")
 @click.argument("out_dir")
 @click.option("--dump-unknown-params", is_flag=True)
-def status_exchange(dtype, out_dir, dump_unknown_params):
+@click.option("-v", "--verbose", count=True)
+def status_exchange(dtype, out_dir, dump_unknown_params, verbose):
     """Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset"""
     from cchdo.hydro._version import version as hydro_version  # type: ignore
     from cchdo.params import _version as params_version  # type: ignore
+
+    if verbose == 0:
+        setup_logging("CRITICAL")
+    if verbose == 1:
+        setup_logging("INFO")
+    if verbose == 2:
+        setup_logging("DEBUG")
 
     out_path = Path(out_dir)
     cruises, files = cchdo_loader(dtype)

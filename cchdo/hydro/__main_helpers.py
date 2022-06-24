@@ -8,6 +8,7 @@ from . import accessors  # noqa
 
 def p_file(file_m):
     t_dir, file, file_metadata = file_m
+    checks = {"flags": False}
     unknown_params = []
     if file_metadata["data_type"] == "ctd" and ("NITRATE", "UMOL/KG") not in WHPNames:
 
@@ -22,12 +23,12 @@ def p_file(file_m):
         WHPNames.add_alias(("CTDSAL", "PPS-78"), ("CTDSAL", "PSS-78"))
 
     try:
-        ex_xr = read_exchange(file)
+        ex_xr = read_exchange(file, checks=checks)
     except ExchangeParameterUndefError as err:
         return (500, repr(err), file_metadata, err.error_data)
     except ExchangeDataFlagPairError:
         try:
-            ex_xr = read_exchange(file, fill_values=("-999", "-99"))
+            ex_xr = read_exchange(file, fill_values=("-999", "-99"), checks=checks)
         except (ValueError, KeyError) as err:
             return (500, repr(err), file_metadata, unknown_params)
     except (ValueError, KeyError) as err:
