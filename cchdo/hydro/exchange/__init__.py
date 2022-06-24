@@ -970,6 +970,9 @@ def _combine_dt_ndarray(
     if time_arr is None:
         return parse_date(date_arr).astype("datetime64[D]")
 
+    if np.all(time_arr == "0"):
+        return parse_date(date_arr).astype("datetime64[D]")
+
     if time_pad:
         if np.any(np.char.str_len(time_arr[time_arr != ""]) < 4):
             warn("Time values are being padded with zeros")
@@ -1050,13 +1053,12 @@ def combine_dt(
         time_name.nc_name
     )  # not be present, this is allowed
 
+    whp_name: WHPNameAttr = [date_name.whp_name, time_name.whp_name]
     try:
         if time is None:
             dt_arr = _combine_dt_ndarray(date.values)
-            whp_name: WHPNameAttr = date_name.whp_name
         else:
             dt_arr = _combine_dt_ndarray(date.values, time.values, time_pad=time_pad)
-            whp_name = [date_name.whp_name, time_name.whp_name]
     except ValueError as err:
         raise ExchangeError(
             f"Could not parse date/time cols {date_name.whp_name} {time_name.whp_name}"
@@ -1065,6 +1067,7 @@ def combine_dt(
     precision = 1 / 24 / 60  # minute as day fraction
     if dt_arr.dtype.name == "datetime64[D]":
         precision = 1
+        whp_name = date_name.whp_name
 
     time_var = xr.DataArray(
         dt_arr,
@@ -1179,7 +1182,7 @@ def read_exchange(
     """Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
     CF/netCDF structure"""
 
-    _checks: CheckOptions = {"flags": False}
+    _checks: CheckOptions = {"flags": True}
     if checks is not None:
         _checks.update(checks)
 

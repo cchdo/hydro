@@ -105,7 +105,7 @@ def status_exchange(dtype, out_dir, dump_unknown_params, verbose):
         setup_logging("CRITICAL")
     if verbose == 1:
         setup_logging("INFO")
-    if verbose == 2:
+    if verbose >= 2:
         setup_logging("DEBUG")
 
     out_path = Path(out_dir)
