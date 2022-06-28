@@ -19,6 +19,7 @@ def setup_logging(level):
     logging.basicConfig(
         level="NOTSET", format=FORMAT, datefmt="[%X]", handlers=[log_handler]
     )
+    logging.captureWarnings(True)
 
 
 @click.group()

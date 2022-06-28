@@ -1,4 +1,5 @@
 import os
+import warnings
 
 from .exchange import read_exchange
 from cchdo.params import WHPNames
@@ -10,6 +11,11 @@ def p_file(file_m):
     t_dir, file, file_metadata = file_m
     checks = {"flags": False}
     unknown_params = []
+
+    warnings.simplefilter("ignore")
+    if ("OSNUM", None) not in WHPNames:
+        WHPNames.add_alias(("OSNUM", None), ("EVENT_NUMBER", None))
+
     if file_metadata["data_type"] == "ctd" and ("NITRATE", "UMOL/KG") not in WHPNames:
 
         # HOT names that are a little dangerous to have in the real DB
