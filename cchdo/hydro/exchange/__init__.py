@@ -30,7 +30,6 @@ from .exceptions import (
     ExchangeBOMError,
     ExchangeError,
     ExchangeInconsistentMergeType,
-    ExchangeLEError,
     ExchangeMagicNumberError,
     ExchangeDuplicateParameterError,
     ExchangeParameterUnitAlignmentError,
@@ -738,7 +737,16 @@ class _ExchangeInfo:
         column_count = len(self.params)
 
         if len(self.units) != column_count:
-            raise ExchangeParameterUnitAlignmentError
+            if len(self.units) > column_count:
+                # attempt to fix trailing commas in units (assume PARAMS is canonical)
+                while len(self.units) > column_count:
+                    if self.units[-1] is not None:
+                        break
+                    self.units.pop()
+
+            # check to see if above fixed it
+            if len(self.units) != column_count:
+                raise ExchangeParameterUnitAlignmentError
 
         params_idx = _bottle_get_params(zip(self.params, self.units))
 
@@ -1193,11 +1201,6 @@ def read_exchange(
     log.info("Checking for BOM")
     if any((df.startswith("\ufeff") for df in data)):
         raise ExchangeBOMError
-
-    # TODO remove this check, and rely on python's "universal newlines"
-    log.info("Checking Line Endings")
-    if any(("\r" in df for df in data)):
-        raise ExchangeLEError
 
     log.info("Detecting file type")
     if all((df.startswith("BOTTLE") for df in data)):
