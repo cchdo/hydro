@@ -240,6 +240,109 @@ def _ctd_get_header(line, dtype=str):
     return header, dtype(value)
 
 
+def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
+    """Find all the paraters in the cdom group and add their wavelength in a new coordinate"""
+
+    # this needs to be a set to deal with the potential for aliasesd names
+    cdom_names = {
+        name.nc_name
+        for name in filter(lambda x: x.nc_group == "cdom", WHPNames.values())
+    }
+
+    # done in a way the preserves the order of the params and QC flags in the dataset
+    cdom_data = [
+        dataarray for dataarray in dataset.values() if dataarray.name in cdom_names
+    ]
+
+    # nothing to do
+    if len(cdom_data) == 0:
+        return dataset
+
+    cdom_qc = [
+        dataset.get(dataarray.attrs.get("ancillary_variables"))
+        for dataarray in cdom_data
+    ]
+
+    # useful for later coping of attrs
+    first = cdom_data[0]
+
+    # "None in" doesn't seem to work due to xarray comparison
+    none_in_qc = [da is None for da in cdom_qc]
+    if any(none_in_qc) and not all(none_in_qc):
+        raise NotImplementedError("partial QC for CDOM is not handled yet")
+
+    radiation_wavelengths = []
+    for dataarray in cdom_data:
+        whp_name = dataarray.attrs["whp_name"]
+        whp_unit = dataarray.attrs["whp_unit"]
+        whpname = WHPNames[(whp_name, whp_unit)]
+        radiation_wavelengths.append(whpname.radiation_wavelength)
+
+    cdom_wavelengths = xr.DataArray(
+        np.array(radiation_wavelengths, dtype=np.int32),
+        dims="CDOM_WAVELENGTHS",
+        name="CDOM_WAVELENGTHS",
+        attrs={
+            "standard_name": "radiation_wavelength",
+            "units": "nm",
+        },
+    )
+
+    new_cdom_dims = ("N_PROF", "N_LEVELS", "CDOM_WAVELENGTHS")
+    new_cdom_coords = {**first.coords, "CDOM_WAVELENGTHS": cdom_wavelengths}
+
+    has_qc = False
+    # qc flags first if any
+    if not all(none_in_qc):
+        has_qc = True
+        cdom_qc_arrays = np.stack(cdom_qc, axis=-1)
+        first_qc = cdom_qc[0]
+
+        new_cdom_qc_attrs = {**first_qc.attrs}
+        new_cdom_qc = xr.DataArray(
+            cdom_qc_arrays,
+            dims=new_cdom_dims,
+            coords=new_cdom_coords,
+            attrs=new_cdom_qc_attrs,
+        )
+        new_cdom_qc.encoding = first_qc.encoding
+
+    cdom_arrays = np.stack(cdom_data, axis=-1)
+
+    new_cdom_attrs = {**first.attrs, "whp_name": "CDOM{CDOM_WAVELENGTHS}"}
+
+    new_qc_name = f"{whpname.nc_group}_qc"
+
+    if has_qc:
+        new_cdom_attrs["ancillary_variables"] = new_qc_name
+
+    new_cdom = xr.DataArray(
+        cdom_arrays, dims=new_cdom_dims, coords=new_cdom_coords, attrs=new_cdom_attrs
+    )
+    new_cdom.encoding = first.encoding
+
+    dataset[first.name] = new_cdom
+    dataset = dataset.rename({first.name: whpname.nc_group})
+
+    if has_qc:
+        dataset[first_qc.name] = new_cdom_qc
+        dataset = dataset.rename({first_qc.name: new_qc_name})
+
+    for old_name in cdom_names:
+        try:
+            del dataset[old_name]
+        except KeyError:
+            pass
+
+    for old_name in cdom_names:
+        try:
+            del dataset[f"{old_name}_qc"]
+        except KeyError:
+            pass
+
+    return dataset
+
+
 def add_geometry_var(dataset: xr.Dataset) -> xr.Dataset:
     """Adds a CF-1.8 Geometry container variable to the dataset
 
@@ -1401,6 +1504,7 @@ def read_exchange(
     ex_dataset = add_geometry_var(ex_dataset)
     ex_dataset = finalize_ancillary_variables(ex_dataset)
     ex_dataset = combine_bottle_time(ex_dataset)
+    ex_dataset = add_cdom_coordinate(ex_dataset)
 
     if _checks["flags"]:
         log.debug("Checking flags")

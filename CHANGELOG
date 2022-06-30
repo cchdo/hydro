@@ -1,12 +1,13 @@
 v1.0.2.1 (unreleased)
 =====================
+* (breaking) fix misspelling of ``convert_exchange``subcommand
+* Will now combine CDOM parameters into a single variable with a new wavelength dimmension in the last axis.
 * Update the WHP error name lookup to be compatable with cchdo.params v0.1.18
 * Add an ``error_data`` attribute to ``ExchangeParameterUndefError`` that will contain a list of all the unknown ``(param, unit)`` pairs in an exchange file when attempting to read one.
 * Add an ``error_data`` attribute to ``ExchangeDataFlagPairError`` that will contain a list of all the found flag errors as an xarray.Dataset
 * Automatically attempt to use BTLNBR as a fallback if SAMPNO is not present in a bottle file.
 * Automatically reconstruct the date of a missing BTL_DATE param if only BTL_TIME is present.
 * Add ``--dump-unknown-params`` option to the status_exchange subcommand which will dump an unknown param list into a json format into the ``out_dir``.
-* (breaking) fix misspelling of ``convert_exchange``subcommand
 * Performing a flag check is now behind a feature switch (defaults to true, for the status-exchange it is set to false)
 * If a TIME column contains entirely the string "0" (not 0000) it will be ignored
 
