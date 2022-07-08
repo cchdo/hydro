@@ -596,7 +596,7 @@ class _ExchangeData:
                 if param.scope != "profile":
                     continue
                 if not np.unique(data).shape[0] == 1:
-                    raise ValueError("inconsistent param")
+                    raise ValueError(f"inconsistent {param} {data}")
 
             # sample must be unique
             try:
