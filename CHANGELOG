@@ -1,8 +1,9 @@
 v1.0.2.1 (unreleased)
 =====================
 * (breaking) fix misspelling of ``convert_exchange``subcommand
+* Will not rely on the python universal newlines for reading exchange data
 * Will now combine CDOM parameters into a single variable with a new wavelength dimmension in the last axis.
-* Update the WHP error name lookup to be compatable with cchdo.params v0.1.18
+* Update the WHP error name lookup to be compatable with cchdo.params v0.1.18, this is now the minimum version
 * Add an ``error_data`` attribute to ``ExchangeParameterUndefError`` that will contain a list of all the unknown ``(param, unit)`` pairs in an exchange file when attempting to read one.
 * Add an ``error_data`` attribute to ``ExchangeDataFlagPairError`` that will contain a list of all the found flag errors as an xarray.Dataset
 * Automatically attempt to use BTLNBR as a fallback if SAMPNO is not present in a bottle file.
