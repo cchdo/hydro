@@ -2,6 +2,7 @@ import logging
 import io
 import dataclasses
 from typing import Set, Tuple, Dict, Union, Optional, Iterable, List, TypedDict
+from typing_extensions import TypeGuard  # move to stdlib when min ver is 3.10
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
@@ -240,6 +241,10 @@ def _ctd_get_header(line, dtype=str):
     return header, dtype(value)
 
 
+def _is_all_dataarray(val: List[object]) -> TypeGuard[List[xr.DataArray]]:
+    return all(isinstance(obj, xr.DataArray) for obj in val)
+
+
 def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
     """Find all the paraters in the cdom group and add their wavelength in a new coordinate"""
 
@@ -266,7 +271,7 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
     # useful for later coping of attrs
     first = cdom_data[0]
 
-    # "None in" doesn't seem to work due to xarray comparison
+    # "None in" doesn't seem to work due to xarray comparison?
     none_in_qc = [da is None for da in cdom_qc]
     if any(none_in_qc) and not all(none_in_qc):
         raise NotImplementedError("partial QC for CDOM is not handled yet")
@@ -293,7 +298,7 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
 
     has_qc = False
     # qc flags first if any
-    if not all(none_in_qc):
+    if _is_all_dataarray(cdom_qc):
         has_qc = True
         cdom_qc_arrays = np.stack(cdom_qc, axis=-1)
         first_qc = cdom_qc[0]
