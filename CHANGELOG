@@ -1,5 +1,9 @@
 v1.0.2.1 (unreleased)
 =====================
+No Changes yet
+
+v1.0.2.1 (2022-07-08)
+=====================
 * (breaking) fix misspelling of ``convert_exchange``subcommand
 * Will not rely on the python universal newlines for reading exchange data
 * Will now combine CDOM parameters into a single variable with a new wavelength dimmension in the last axis.

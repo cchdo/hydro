@@ -2,7 +2,6 @@ import logging
 import io
 import dataclasses
 from typing import Set, Tuple, Dict, Union, Optional, Iterable, List, TypedDict
-from typing_extensions import TypeGuard  # move to stdlib when min ver is 3.10
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
@@ -11,6 +10,8 @@ from zipfile import ZipFile, is_zipfile
 from pathlib import Path
 from datetime import datetime
 from enum import Enum, auto
+
+from typing_extensions import TypeGuard  # move to stdlib when min ver is 3.10
 
 import requests
 import numpy as np
