@@ -229,7 +229,7 @@ def _bottle_get_errors(
             continue
 
         for name in whp_params.keys():
-            if name.error_name == param:
+            if name.error_name == param and name.whp_unit == unit:
                 param_errs[name] = index
 
     return param_errs
@@ -909,7 +909,7 @@ class _ExchangeInfo:
         for param, idx in self.whp_params.items():
             param_col = np_db[:, idx]
             fill_spaces = _get_fill_locs(param_col, fill_values)
-            if param.dtype == "decimal":
+            if param.dtype in ("decimal", "integer"):
                 if not _is_valid_exchange_numeric(param_col):
                     raise ValueError("exchange numeric data has bad chars")
                 whp_param_precisions[param] = _extract_numeric_precisions(param_col)
@@ -927,9 +927,11 @@ class _ExchangeInfo:
         for param, idx in self.whp_errors.items():
             param_col = np_db[:, idx]
             fill_spaces = _get_fill_locs(param_col, fill_values)
-            if param.dtype == "decimal":
+            if param.dtype in ("decimal", "integer"):
                 if not _is_valid_exchange_numeric(param_col):
-                    raise ValueError("exchange numeric data has bad chars")
+                    raise ValueError(
+                        f"{param} error col exchange numeric data has bad chars"
+                    )
                 whp_error_precisions[param] = _extract_numeric_precisions(param_col)
                 param_col[fill_spaces] = "nan"
             whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
