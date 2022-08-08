@@ -1,7 +1,7 @@
 import logging
 import io
 import dataclasses
-from typing import Set, Tuple, Dict, Union, Optional, Iterable, List, TypedDict
+from typing import Any, Set, Tuple, Dict, Union, Optional, Iterable, List, TypedDict
 from operator import attrgetter
 from functools import cached_property
 from itertools import chain
@@ -242,7 +242,7 @@ def _ctd_get_header(line, dtype=str):
     return header, dtype(value)
 
 
-def _is_all_dataarray(val: List[object]) -> TypeGuard[List[xr.DataArray]]:
+def _is_all_dataarray(val: List[Any]) -> TypeGuard[List[xr.DataArray]]:
     return all(isinstance(obj, xr.DataArray) for obj in val)
 
 
@@ -295,7 +295,11 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
     )
 
     new_cdom_dims = ("N_PROF", "N_LEVELS", "CDOM_WAVELENGTHS")
-    new_cdom_coords = {**first.coords, "CDOM_WAVELENGTHS": cdom_wavelengths}
+    new_cdom_coords = {
+        "N_PROF": first.coords["N_PROF"],
+        "N_LEVELS": first.coords["N_LEVELS"],
+        "CDOM_WAVELENGTHS": cdom_wavelengths,
+    }
 
     has_qc = False
     # qc flags first if any
@@ -550,7 +554,7 @@ def check_flags(dataset: xr.Dataset, raises=True):
             # TODO deal with strs
 
             if np.issubdtype(data.values.dtype, np.number):
-                fill_value_mismatch = ~(np.isfinite(data) ^ has_fill)
+                fill_value_mismatch: xr.DataArray = ~(np.isfinite(data) ^ has_fill)  # type: ignore # numpy doesn't support __array_ufunc__ types yet
                 if np.any(fill_value_mismatch):
                     fill_value_mismatch.attrs[
                         "comments"
