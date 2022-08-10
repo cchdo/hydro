@@ -46,7 +46,7 @@ def simple_bottle_exchange(params=None, units=None, data=None, comments: str = N
     return simple.encode("utf8")
 
 
-def gen_complete_bottle():
+def gen_complete_bottle(ctd_params_only=False):
     from . import read_exchange
 
     exclude = set(
@@ -70,6 +70,12 @@ def gen_complete_bottle():
     data = []
     for name in set(WHPNames.values()):
         if name.whp_name in exclude:
+            continue
+        if ctd_params_only is True and name.flag_w in {
+            "woce_discrete",
+            "woce_bottle",
+            "no_flags",
+        }:
             continue
         params.append(name.whp_name)
         units.append(name.whp_unit if name.whp_unit is not None else "")
