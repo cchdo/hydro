@@ -1,6 +1,6 @@
 v1.0.2.1 (unreleased)
 =====================
-No Changes yet
+* Support for time values that are equal to 2400, when this is encountered, the date will be set to midnight of the next day.
 
 v1.0.2.1 (2022-07-08)
 =====================

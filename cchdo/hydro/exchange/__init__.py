@@ -8,7 +8,7 @@ from itertools import chain
 from warnings import warn
 from zipfile import ZipFile, is_zipfile
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum, auto
 
 from typing_extensions import TypeGuard  # move to stdlib when min ver is 3.10
@@ -1084,6 +1084,9 @@ def _combine_dt_ndarray(
     def _parse_datetime(date_val: str) -> np.datetime64:
         if date_val == "T":
             return np.datetime64("nat")
+        if date_val.endswith("2400"):
+            date, _ = date_val.split("T")
+            return np.datetime64(datetime.strptime(date, "%Y%m%d") + timedelta(days=1))
         return np.datetime64(datetime.strptime(date_val, "%Y%m%dT%H%M"))
 
     # vectorize here doesn't speed things, it just nice for the interface
