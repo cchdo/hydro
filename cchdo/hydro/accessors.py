@@ -1,5 +1,4 @@
 from math import isnan
-from textwrap import indent
 from typing import List, Dict, Union
 import xarray as xr
 import pandas as pd
@@ -395,6 +394,9 @@ class ExchangeAccessor(CCHDOAccessorBase):
         """Convert a CCHDO CF netCDF dataset to exchange"""
         # all of the todo comments are for documenting/writing validators
 
+        date_names = {WHPNames["DATE"], WHPNames["BTL_DATE"]}
+        time_names = {WHPNames["TIME"], WHPNames["BTL_TIME"]}
+
         # TODO guarantee these coordinates
         ds = self._obj.reset_coords(
             [
@@ -424,12 +426,13 @@ class ExchangeAccessor(CCHDOAccessorBase):
         output.append("BOTTLE,date_initals")
 
         if len(comments := ds.attrs.get("comments", "")) > 0:
-            output.append(indent(comments, "#", lambda line: True))
+            for comment_line in comments.splitlines():
+                output.append(f"#{comment_line}")
 
         # collect all the Exchange variables
         # TODO, all things that appear in an exchange file, must have WHP name
         exchange_vars = ds.filter_by_attrs(whp_name=lambda name: name is not None)
-        params = {}
+        params: Dict[WHPName, xr.DataArray] = {}
         flags = {}
         errors = {}
         for var in exchange_vars.values():
@@ -476,19 +479,28 @@ class ExchangeAccessor(CCHDOAccessorBase):
         valid_levels = params[WHPNames["SAMPNO"]] != ""
         data_block = []
         for param, da in params.items():
-            # TODO use the param formatter...
-            fmt = self.get_formatter(param, da)
-            values = [fmt(v) for v in np.nditer(da[valid_levels])]
+            date_or_time = None
+            if param in date_names:
+                date_or_time = "date"
+                print(np.any(da[valid_levels] == np.datetime64("NaT")))
+                values = da[valid_levels].dt.strftime("%Y%m%d").to_numpy().tolist()
+            elif param in time_names:
+                date_or_time = "time"
+                values = da[valid_levels].dt.strftime("%H%M").to_numpy().tolist()
+            else:
+                data = np.nditer(da[valid_levels], flags=["refs_ok"])
+                values = [param.strfex(v, date_or_time=date_or_time) for v in data]
 
             data_block.append(values)
 
             if param in flags:
-                flag = [
-                    str(int(v)) for v in np.nditer(flags[param][valid_levels].fillna(9))
-                ]
+                data = np.nditer(flags[param][valid_levels])
+                flag = [param.strfex(v, flag=True) for v in data]
                 data_block.append(flag)
+
             if param in errors:
-                error = [fmt(v) for v in np.nditer(errors[param][valid_levels])]
+                data = np.nditer(errors[param][valid_levels])
+                error = [param.strfex(v) for v in data]
                 data_block.append(error)
 
         for row in zip(*data_block):
