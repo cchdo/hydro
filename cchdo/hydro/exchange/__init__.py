@@ -714,7 +714,12 @@ class _ExchangeData:
         # use the actual values to sort things out
         # we don't care what the values are, they just need to work
         log.debug("Grouping Profiles by Key")
-        prof_ids = np.char.add(np.char.add(expocode, station), cast.astype("U"))
+        # we need to add seperators to avoid conflicts
+        # TODO: add test for when these might conflict
+        expocode_sep = np.char.add(expocode, ",")
+        station_sep = np.char.add(station, ",")
+        # numpy concat basically
+        prof_ids = np.char.add(np.char.add(expocode_sep, station_sep), cast.astype("U"))
         unique_profile_ids = np.unique(prof_ids)
         log.debug("Found %s unique profile keys", len(unique_profile_ids))
         profiles = [np.nonzero(prof_ids == prof) for prof in unique_profile_ids]
@@ -1507,7 +1512,7 @@ def read_exchange(
 
     # The order of the following is somewhat important
     ex_dataset = set_coordinate_encoding_fill(ex_dataset)
-    ex_dataset = combine_dt(ex_dataset)
+    ex_dataset = combine_dt(ex_dataset, time_pad=True)
 
     # these are the only two we know of for now
     ex_dataset = ex_dataset.set_coords(
