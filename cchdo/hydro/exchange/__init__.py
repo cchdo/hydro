@@ -1271,7 +1271,8 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> List[str]:
     # lets just try "reading"
     elif hasattr(filename_or_obj, "read"):
         log.info("Loading object open file object")
-        data_raw = io.BytesIO(filename_or_obj.read())
+        # https://github.com/python/mypy/issues/1424
+        data_raw = io.BytesIO(filename_or_obj.read())  # type: ignore
 
     elif isinstance(filename_or_obj, (bytes, bytearray)):
         log.info("Loading raw data bytes")
