@@ -527,7 +527,14 @@ class WHPIndxer:
         ]
 
     def __getitem__(self, key):
-        return self.n_prof.get_loc(*key)
+        expocode = str(key.pop("EXPOCODE"))
+        station = str(key.pop("STNNBR"))
+        cast = int(key.pop("CASTNO"))
+        sample = str(key.pop("SAMPNO"))
+        prof_idx = self.n_prof.get_loc((expocode, station, cast))
+        level_idx = self.n_level[prof_idx].get_loc((sample))
+
+        return prof_idx, level_idx
 
 
 class MergeFQAccessor(CCHDOAccessorBase):
@@ -537,8 +544,23 @@ class MergeFQAccessor(CCHDOAccessorBase):
     # * N_PROF will be indexed with (expocode, station, cast)
     # * N_LEVELS will be subindexd with (sample)
     def merge_fq(self, fq):
-        idxer = WHPIndxer(self._obj)
-        return idxer
+        new_obj = self._obj.copy(deep=True)
+        idxer = WHPIndxer(new_obj)
+
+        for line in fq:
+            prof, level = idxer[line]
+            for param, value in line.items():
+                if param in WHPNames.error_cols:
+                    whpname = WHPNames.error_cols[param]
+                    new_obj[whpname.nc_name_error][prof, level] = value
+                if param.endswith("_FLAG_W"):
+                    whpname = WHPNames[param[:-7]]
+                    new_obj[whpname.nc_name_flag][prof, level] = value
+                else:
+                    whpname = WHPNames[param]
+                    new_obj[whpname.nc_name][prof, level] = value
+
+        return new_obj
 
 
 class CCHDOAccessor(
