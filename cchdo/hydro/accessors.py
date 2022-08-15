@@ -7,7 +7,7 @@ import string
 
 from cchdo.params import WHPNames, WHPName
 
-from .exchange import FileType, all_same
+from .exchange import FileType, all_same, check_flags
 
 
 class CCHDOAccessorBase:
@@ -560,6 +560,7 @@ class MergeFQAccessor(CCHDOAccessorBase):
                     whpname = WHPNames[param]
                     new_obj[whpname.nc_name][prof, level] = value
 
+        check_flags(new_obj)
         return new_obj
 
 
