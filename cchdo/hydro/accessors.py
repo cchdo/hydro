@@ -1,13 +1,13 @@
-from math import isnan
-from typing import List, Dict, Union
+from typing import List, Dict, Optional, Union
 import xarray as xr
 import pandas as pd
 import numpy as np
 import string
+import re
 
 from cchdo.params import WHPNames, WHPName
 
-from .exchange import FileType, all_same, check_flags
+from .exchange import FileType, all_same, check_flags as _check_flags
 
 
 class CCHDOAccessorBase:
@@ -319,34 +319,14 @@ class ExchangeAccessor(CCHDOAccessorBase):
     """Class containing the to_exchange functionn"""
 
     @staticmethod
-    def get_formatter(whpname: WHPName, da: xr.DataArray):
-        """Generate a string formatting function for this name"""
-        fmt_str = da.attrs.get("C_format")
-        if fmt_str is None and whpname.numeric_precision is not None:
-            fmt_str = f"%.{whpname.numeric_precision}f"
+    def cchdo_c_format_precision(c_format: str) -> Optional[int]:
+        if not c_format.endswith("f"):
+            return None
 
-        def _fmt(value) -> str:
-            # TODO remove once field_width is non optional upstream
-            assert whpname.field_width is not None
-
-            if whpname in {WHPNames["DATE"], WHPNames["BTL_DATE"]}:
-                return f"{value.astype('datetime64[s]').item():%Y%m%d}"
-            if whpname in {WHPNames["TIME"], WHPNames["BTL_TIME"]}:
-                return f"{value.astype('datetime64[s]').item():%H%M}"
-            if whpname.dtype == "decimal":
-                if isnan(value):
-                    v = "-999"
-                else:
-                    v = fmt_str % value
-                return v.rjust(whpname.field_width)
-            elif whpname.dtype == "integer":
-                return str(int(value)).ljust(whpname.field_width)
-            else:
-                if value == "":
-                    return "-999".ljust(whpname.field_width)
-                return str(value).ljust(whpname.field_width)
-
-        return _fmt
+        f_format = re.compile(r"\.(\d+)f")
+        if (match := f_format.search(c_format)) is not None:
+            return int(match.group(1))
+        return match
 
     @staticmethod
     def _make_params_units_line(
@@ -482,14 +462,23 @@ class ExchangeAccessor(CCHDOAccessorBase):
             date_or_time = None
             if param in date_names:
                 date_or_time = "date"
-                print(np.any(da[valid_levels] == np.datetime64("NaT")))
                 values = da[valid_levels].dt.strftime("%Y%m%d").to_numpy().tolist()
             elif param in time_names:
                 date_or_time = "time"
                 values = da[valid_levels].dt.strftime("%H%M").to_numpy().tolist()
             else:
                 data = np.nditer(da[valid_levels], flags=["refs_ok"])
-                values = [param.strfex(v, date_or_time=date_or_time) for v in data]
+                numeric_precision_override = self.cchdo_c_format_precision(
+                    da.attrs.get("C_format", "")
+                )
+                values = [
+                    param.strfex(
+                        v,
+                        date_or_time=date_or_time,
+                        numeric_precision_override=numeric_precision_override,
+                    )
+                    for v in data
+                ]
 
             data_block.append(values)
 
@@ -500,7 +489,17 @@ class ExchangeAccessor(CCHDOAccessorBase):
 
             if param in errors:
                 data = np.nditer(errors[param][valid_levels])
-                error = [param.strfex(v) for v in data]
+                numeric_precision_override = (
+                    self.cchdo_c_format_precision(da.attrs.get("C_format", "")),
+                )
+                error = [
+                    param.strfex(
+                        v,
+                        date_or_time=date_or_time,
+                        numeric_precision_override=numeric_precision_override,
+                    )
+                    for v in data
+                ]
                 data_block.append(error)
 
         for row in zip(*data_block):
@@ -543,7 +542,7 @@ class MergeFQAccessor(CCHDOAccessorBase):
     # This will rely on the N_PROF and N_LEVELS (with extra at some point)
     # * N_PROF will be indexed with (expocode, station, cast)
     # * N_LEVELS will be subindexd with (sample)
-    def merge_fq(self, fq):
+    def merge_fq(self, fq, check_flags=True):
         new_obj = self._obj.copy(deep=True)
         idxer = WHPIndxer(new_obj)
 
@@ -560,7 +559,8 @@ class MergeFQAccessor(CCHDOAccessorBase):
                     whpname = WHPNames[param]
                     new_obj[whpname.nc_name][prof, level] = value
 
-        check_flags(new_obj)
+        if check_flags:
+            _check_flags(new_obj)
         return new_obj
 
 
