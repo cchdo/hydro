@@ -1,4 +1,8 @@
-v1.0.2.2 (unreleased)
+v1.0.2.3 (unreleased)
+=====================
+* None yet
+
+v1.0.2.2 (2022-08-18)
 =====================
 * Support for time values that are equal to 2400, when this is encountered, the date will be set to midnight of the next day.
 * `read_exchange()` will now accept bytes and bytearray objects as input, wrapping data in an `io.BytesIO` is not needed anymore.
