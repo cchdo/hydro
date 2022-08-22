@@ -36,7 +36,10 @@ class MatlabAccessor(CCHDOAccessorBase):
 
         The file it produces is in no way stable.
         """
-        from scipy.io import savemat as scipy_savemat
+        try:
+            from scipy.io import savemat as scipy_savemat  # noqa
+        except ImportError as error:
+            raise ImportError("scipy is required for mat file saving") from error
 
         mat_dict = {}
         data = self._obj.to_dict()
@@ -157,9 +160,9 @@ class WoceAccessor(CCHDOAccessorBase):
             dec_len = len(dec)
             dec = int(dec)
 
-            min = 60 * (dec / (10**dec_len))
+            mins = 60 * (dec / (10**dec_len))
 
-            return f"{deg:>2d} {min:05.2f} {hem}"
+            return f"{deg:>2d} {mins:05.2f} {hem}"
 
         def sum_lon(deg_str):
             deg_str = str(deg_str)
@@ -174,9 +177,9 @@ class WoceAccessor(CCHDOAccessorBase):
             dec_len = len(dec)
             dec = int(dec)
 
-            min = 60 * (dec / (10**dec_len))
+            mins = 60 * (dec / (10**dec_len))
 
-            return f"{deg:>3d} {min:05.2f} {hem}"
+            return f"{deg:>3d} {mins:05.2f} {hem}"
 
         col_widths = [len(s) for s in SUM_COLUMN_HEADERS_1]
         col_widths = [max(x, len(s)) for x, s in zip(col_widths, SUM_COLUMN_HEADERS_2)]
@@ -453,13 +456,11 @@ class ExchangeAccessor(CCHDOAccessorBase):
         output.extend(self._make_params_units_line(params, flags, errors))
 
         # TODO N_PROF is guaranteed
-        # for _, prof in ds.groupby("N_PROF"):
-        #    # TODO sample is empty/null string for... non samples
-        #    valid_levels = prof.sample != ""
         valid_levels = params[WHPNames["SAMPNO"]] != ""
         data_block = []
         for param, da in params.items():
             date_or_time = None
+            # TODO, deal with missing time in BTL_DATE
             if param in date_names:
                 date_or_time = "date"
                 values = da[valid_levels].dt.strftime("%Y%m%d").to_numpy().tolist()
