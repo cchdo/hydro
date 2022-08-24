@@ -1,4 +1,7 @@
+from io import BytesIO
+from datetime import datetime, timezone
 from typing import List, Dict, Optional, Union
+from zipfile import ZIP_DEFLATED, ZipFile
 import xarray as xr
 import pandas as pd
 import numpy as np
@@ -322,6 +325,26 @@ class MiscAccessor(CCHDOAccessorBase):
 class ExchangeAccessor(CCHDOAccessorBase):
     """Class containing the to_exchange functionn"""
 
+    date_names = {WHPNames["DATE"], WHPNames["BTL_DATE"]}
+    time_names = {WHPNames["TIME"], WHPNames["BTL_TIME"]}
+
+    @property
+    def file_type(self):
+        # TODO profile_type is guaranteed to be present
+        # TODO profile_type must have C or D as the value
+        profile_type = self._obj.profile_type
+        if not all_same(profile_type.values):
+            raise NotImplementedError(
+                "Unable to convert a mix of ctd and bottle (or unknown) dtypes"
+            )
+
+        if profile_type[0] == FileType.CTD.value:
+            return FileType.CTD
+        elif profile_type[0] == FileType.BOTTLE.value:
+            return FileType.BOTTLE
+        else:
+            raise NotImplementedError("Unknown profile type encountered")
+
     @staticmethod
     def cchdo_c_format_precision(c_format: str) -> Optional[int]:
         if not c_format.endswith("f"):
@@ -332,8 +355,8 @@ class ExchangeAccessor(CCHDOAccessorBase):
             return int(match.group(1))
         return match
 
-    @staticmethod
     def _make_params_units_line(
+        self,
         params: Dict[WHPName, xr.DataArray],
         flags: Dict[WHPName, xr.DataArray],
         errors: Dict[WHPName, xr.DataArray],
@@ -341,6 +364,12 @@ class ExchangeAccessor(CCHDOAccessorBase):
         plist = []
         ulist = []
         for param in sorted(params):
+            if (
+                self.file_type == FileType.CTD
+                and param.scope != "sample"
+                or param.nc_name == "sample"
+            ):
+                continue
             plist.append(param.whp_name)
             unit = param.whp_unit
             if unit is None:
@@ -374,47 +403,103 @@ class ExchangeAccessor(CCHDOAccessorBase):
             params.append(WHPNames[(param, unit)])
         return params
 
-    def to_exchange(self):
-        """Convert a CCHDO CF netCDF dataset to exchange"""
-        # all of the todo comments are for documenting/writing validators
+    def _make_ctd_headers(self, params) -> List[str]:
+        headers = {}
+        for param, da in params.items():
+            if param.scope != "profile":
+                continue
 
-        date_names = {WHPNames["DATE"], WHPNames["BTL_DATE"]}
-        time_names = {WHPNames["TIME"], WHPNames["BTL_TIME"]}
+            date_or_time = None
+            if param in self.date_names:
+                date_or_time = "date"
+                value = da.dt.strftime("%Y%m%d").to_numpy()[0]
+            elif param in self.time_names:
+                date_or_time = "time"
+                value = da.dt.strftime("%H%M").to_numpy()[0]
+            else:
+                try:
+                    data = da.values[0].item()
+                except AttributeError:
+                    data = da.values[0]
 
-        ds = flatten_cdom_coordinate(self._obj)
+                numeric_precision_override = self.cchdo_c_format_precision(
+                    da.attrs.get("C_format", "")
+                )
+                value = param.strfex(
+                    data,
+                    date_or_time=date_or_time,
+                    numeric_precision_override=numeric_precision_override,
+                )
+            headers[param.whp_name] = value.strip()
+        return [
+            f"NUMBER_HEADERS = {len(headers) + 1}",
+            *[f"{key} = {value}" for key, value in headers.items()],
+        ]
 
-        # TODO guarantee these coordinates
-        ds = ds.reset_coords(
-            [
-                "expocode",
-                "station",
-                "cast",
-                "sample",
-                "time",
-                "latitude",
-                "longitude",
-                "pressure",
-            ]
-        ).stack(ex=("N_PROF", "N_LEVELS"))
+    def _make_data_block(self, params, flags, errors) -> List[str]:
+        # TODO N_PROF is guaranteed
+        valid_levels = params[WHPNames["SAMPNO"]] != ""
+        data_block = []
+        for param, da in sorted(params.items()):
+            if (
+                self.file_type == FileType.CTD
+                and param.scope != "sample"
+                or param.nc_name == "sample"
+            ):
+                continue
+            date_or_time = None
+            # TODO, deal with missing time in BTL_DATE
+            if param in self.date_names:
+                date_or_time = "date"
+                values = da[valid_levels].dt.strftime("%Y%m%d").to_numpy().tolist()
+            elif param in self.time_names:
+                date_or_time = "time"
+                values = da[valid_levels].dt.strftime("%H%M").to_numpy().tolist()
+            else:
+                data = np.nditer(da[valid_levels], flags=["refs_ok"])
+                numeric_precision_override = self.cchdo_c_format_precision(
+                    da.attrs.get("C_format", "")
+                )
+                values = [
+                    param.strfex(
+                        v,
+                        date_or_time=date_or_time,
+                        numeric_precision_override=numeric_precision_override,
+                    )
+                    for v in data
+                ]
 
-        # TODO profile_type is guaranteed to be present
-        # TODO profile_type must have C or D as the value
-        profile_type = ds.profile_type
-        if not all_same(profile_type.values):
-            raise NotImplementedError(
-                "Unable to convert a mix of ctd and bottle dtypes"
-            )
+            data_block.append(values)
 
-        if profile_type[0] != FileType.BOTTLE.value:
-            raise NotImplementedError("CTD conversion not implimentaed yet")
+            if param in flags:
+                data = np.nditer(flags[param][valid_levels])
+                flag = [param.strfex(v, flag=True) for v in data]
+                data_block.append(flag)
 
+            if param in errors:
+                data = np.nditer(errors[param][valid_levels])
+                numeric_precision_override = self.cchdo_c_format_precision(
+                    da.attrs.get("C_format", "")
+                )
+                error = [
+                    param.strfex(
+                        v,
+                        date_or_time=date_or_time,
+                        numeric_precision_override=numeric_precision_override,
+                    )
+                    for v in data
+                ]
+                data_block.append(error)
+        return data_block
+
+    def _get_comments(self):
         output = []
-        output.append("BOTTLE,date_initals")
-
-        if len(comments := ds.attrs.get("comments", "")) > 0:
+        if len(comments := self._obj.attrs.get("comments", "")) > 0:
             for comment_line in comments.splitlines():
                 output.append(f"#{comment_line}")
+        return output
 
+    def _get_params_flags_errors(self, ds):
         # collect all the Exchange variables
         # TODO, all things that appear in an exchange file, must have WHP name
         exchange_vars = ds.filter_by_attrs(whp_name=lambda name: name is not None)
@@ -455,63 +540,79 @@ class ExchangeAccessor(CCHDOAccessorBase):
                     for param in whp_params:
                         errors[param] = ancillary
 
-        # add the params and units line
-        output.extend(self._make_params_units_line(params, flags, errors))
+        return params, flags, errors
 
-        # TODO N_PROF is guaranteed
-        valid_levels = params[WHPNames["SAMPNO"]] != ""
-        data_block = []
-        for param, da in sorted(params.items()):
-            date_or_time = None
-            # TODO, deal with missing time in BTL_DATE
-            if param in date_names:
-                date_or_time = "date"
-                values = da[valid_levels].dt.strftime("%Y%m%d").to_numpy().tolist()
-            elif param in time_names:
-                date_or_time = "time"
-                values = da[valid_levels].dt.strftime("%H%M").to_numpy().tolist()
-            else:
-                data = np.nditer(da[valid_levels], flags=["refs_ok"])
-                numeric_precision_override = self.cchdo_c_format_precision(
-                    da.attrs.get("C_format", "")
-                )
-                values = [
-                    param.strfex(
-                        v,
-                        date_or_time=date_or_time,
-                        numeric_precision_override=numeric_precision_override,
-                    )
-                    for v in data
-                ]
+    def to_exchange(self):
+        """Convert a CCHDO CF netCDF dataset to exchange"""
+        # all of the todo comments are for documenting/writing validators
 
-            data_block.append(values)
+        ds = flatten_cdom_coordinate(self._obj)
 
-            if param in flags:
-                data = np.nditer(flags[param][valid_levels])
-                flag = [param.strfex(v, flag=True) for v in data]
-                data_block.append(flag)
+        # TODO guarantee these coordinates
+        ds = ds.reset_coords(
+            [
+                "expocode",
+                "station",
+                "cast",
+                "sample",
+                "time",
+                "latitude",
+                "longitude",
+                "pressure",
+            ]
+        )
 
-            if param in errors:
-                data = np.nditer(errors[param][valid_levels])
-                numeric_precision_override = (
-                    self.cchdo_c_format_precision(da.attrs.get("C_format", "")),
-                )
-                error = [
-                    param.strfex(
-                        v,
-                        date_or_time=date_or_time,
-                        numeric_precision_override=numeric_precision_override,
-                    )
-                    for v in data
-                ]
-                data_block.append(error)
+        output_files = {}
 
-        for row in zip(*data_block):
-            output.append(",".join(str(cell) for cell in row))
+        if self.file_type == FileType.CTD:
+            for _, ds1 in ds.groupby("N_PROF", squeeze=False):
+                fname = ds1.cchdo.gen_fname(ftype="exchange")
 
-        output.append("END_DATA\n")
+                output = []
+                output.append(f"CTD,{datetime.now(timezone.utc):%Y%m%d}CCHHYDRO")
+                output.extend(self._get_comments())
 
-        return "\n".join(output)
+                ds1 = ds1.stack(ex=("N_PROF", "N_LEVELS"))
+                params, flags, errors = self._get_params_flags_errors(ds1)
+                output.extend(self._make_ctd_headers(params))
+                output.extend(self._make_params_units_line(params, flags, errors))
+
+                data_block = self._make_data_block(params, flags, errors)
+                for row in zip(*data_block):
+                    output.append(",".join(str(cell) for cell in row))
+
+                output.append("END_DATA\n")
+                output_files[fname] = "\n".join(output).encode("utf8")
+
+        if self.file_type == FileType.BOTTLE:
+            fname = ds.cchdo.gen_fname(ftype="exchange")
+            ds = ds.stack(ex=("N_PROF", "N_LEVELS"))
+
+            output = []
+            output.append(f"BOTTLE,{datetime.now(timezone.utc):%Y%m%d}CCHHYDRO")
+            output.extend(self._get_comments())
+            params, flags, errors = self._get_params_flags_errors(ds)
+
+            # add the params and units line
+            output.extend(self._make_params_units_line(params, flags, errors))
+
+            data_block = self._make_data_block(params, flags, errors)
+
+            for row in zip(*data_block):
+                output.append(",".join(str(cell) for cell in row))
+
+            output.append("END_DATA\n")
+            output_files[fname] = "\n".join(output).encode("utf8")
+
+        if len(output_files) == 1:
+            return list(output_files.values())[0]
+        output_zip = BytesIO()
+        with ZipFile(output_zip, "w", compression=ZIP_DEFLATED) as zipfile:
+            for fname, data in output_files.items():
+                zipfile.writestr(fname, data)
+
+        output_zip.seek(0)
+        return output_zip.read()
 
 
 class WHPIndxer:
