@@ -8,6 +8,7 @@ import re
 from cchdo.params import WHPNames, WHPName
 
 from .exchange import FileType, all_same, check_flags as _check_flags
+from .exchange import flatten_cdom_coordinate
 
 
 class CCHDOAccessorBase:
@@ -339,7 +340,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
     ):
         plist = []
         ulist = []
-        for param in params:
+        for param in sorted(params):
             plist.append(param.whp_name)
             unit = param.whp_unit
             if unit is None:
@@ -380,8 +381,10 @@ class ExchangeAccessor(CCHDOAccessorBase):
         date_names = {WHPNames["DATE"], WHPNames["BTL_DATE"]}
         time_names = {WHPNames["TIME"], WHPNames["BTL_TIME"]}
 
+        ds = flatten_cdom_coordinate(self._obj)
+
         # TODO guarantee these coordinates
-        ds = self._obj.reset_coords(
+        ds = ds.reset_coords(
             [
                 "expocode",
                 "station",
@@ -458,7 +461,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
         # TODO N_PROF is guaranteed
         valid_levels = params[WHPNames["SAMPNO"]] != ""
         data_block = []
-        for param, da in params.items():
+        for param, da in sorted(params.items()):
             date_or_time = None
             # TODO, deal with missing time in BTL_DATE
             if param in date_names:

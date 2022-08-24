@@ -246,6 +246,40 @@ def _is_all_dataarray(val: List[Any]) -> TypeGuard[List[xr.DataArray]]:
     return all(isinstance(obj, xr.DataArray) for obj in val)
 
 
+def flatten_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
+    """Takes the a dataset with a CDOM wavelength and explocdes it back into individual variables"""
+    if "cdom" not in dataset:
+        return dataset
+
+    keys = ["cdom"]
+    if "cdom_qc" in dataset:
+        keys.append("cdom_qc")
+
+    ds = dataset.copy()
+    cdom_var = ds[keys]
+    for cdom_wavelength, arr in cdom_var.groupby("CDOM_WAVELENGTHS"):
+        cdom = arr["cdom"].copy()
+
+        cdom_qc = arr.get("cdom_qc")
+        if cdom_qc is not None:
+            cdom_qc = cdom_qc.copy()
+
+        cdom.attrs["whp_name"] = cdom.attrs["whp_name"].format(
+            CDOM_WAVELENGTHS=cdom_wavelength
+        )
+
+        whp_name = WHPNames[f'{cdom.attrs["whp_name"]} [{cdom.attrs["whp_unit"]}]']
+
+        if cdom_qc is not None:
+            cdom.attrs["ancillary_variables"] = whp_name.nc_name_flag
+
+        ds[whp_name.nc_name] = cdom
+        if cdom_qc is not None:
+            ds[whp_name.nc_name_flag] = cdom_qc
+
+    return ds.drop(keys)
+
+
 def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
     """Find all the paraters in the cdom group and add their wavelength in a new coordinate"""
 
