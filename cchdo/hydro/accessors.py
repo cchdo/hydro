@@ -289,9 +289,15 @@ class GeoAccessor(CCHDOAccessorBase):
 class MiscAccessor(CCHDOAccessorBase):
     """Accessor with misc functions that don't fit in some other category"""
 
-    def gen_fname(self, ftype="cf") -> str:
-        """Generate a human friendly netCDF filename for this object"""
-        ds = self._obj
+    @staticmethod
+    def _gen_fname(
+        expocode: str,
+        station: str,
+        cast: int,
+        profile_type: FileType,
+        profile_count: int = 1,
+        ftype="cf",
+    ) -> str:
         allowed_chars = set(f"._{string.ascii_letters}{string.digits}")
 
         ctd_one = "ctd.nc"
@@ -303,15 +309,9 @@ class MiscAccessor(CCHDOAccessorBase):
             ctd_many = "ct1.zip"
             bottle = "hy1.csv"
 
-        expocode = np.atleast_1d(ds["expocode"])[0]
-        station = np.atleast_1d(ds["station"])[0]
-        cast = np.atleast_1d(ds["cast"])[0]
-
-        profile_type = np.atleast_1d(ds["profile_type"])[0]
-
-        if profile_type == FileType.BOTTLE.value:
+        if profile_type == FileType.BOTTLE:
             fname = f"{expocode}_{bottle}"
-        elif profile_type == FileType.CTD.value and len(ds.get("N_PROF", [])) > 1:
+        elif profile_type == FileType.CTD and profile_count > 1:
             fname = f"{expocode}_{ctd_many}"
         else:
             fname = f"{expocode}_{station}_{cast:.0f}_{ctd_one}"
@@ -320,6 +320,20 @@ class MiscAccessor(CCHDOAccessorBase):
             fname = fname.replace(char, "_")
 
         return fname
+
+    def gen_fname(self, ftype="cf") -> str:
+        """Generate a human friendly netCDF filename for this object"""
+
+        expocode = np.atleast_1d(self._obj["expocode"])[0]
+        station = np.atleast_1d(self._obj["station"])[0]
+        cast = np.atleast_1d(self._obj["cast"])[0]
+
+        profile_type = FileType(np.atleast_1d(self._obj["profile_type"])[0])
+        profile_count = len(self._obj.get("N_PROF", []))
+
+        return self._gen_fname(
+            expocode, station, cast, profile_type, profile_count, ftype
+        )
 
 
 class ExchangeAccessor(CCHDOAccessorBase):
