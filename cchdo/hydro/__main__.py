@@ -5,10 +5,15 @@ from tempfile import TemporaryDirectory
 import shutil
 from html import escape
 import json
+from collections import Counter
+from typing import List
 
 import click
 from rich.logging import RichHandler
 from rich.progress import track
+
+import xarray as xr
+import numpy as np
 
 log = logging.getLogger(__name__)
 
@@ -93,12 +98,24 @@ def cached_file_loader(file):
 from . import __main_helpers as mh
 
 
+def vars_with_value(ds: xr.Dataset) -> List[str]:
+    vars_with_data: List[str] = []
+    for name, var in ds.variables.items():
+        if var.dtype.kind == "f":
+            if np.any(np.isfinite(var)).item():
+                vars_with_data.append(str(name))
+        else:
+            vars_with_data.append(str(name))
+    return vars_with_data
+
+
 @status.command()
 @click.argument("dtype")
 @click.argument("out_dir")
 @click.option("--dump-unknown-params", is_flag=True)
 @click.option("-v", "--verbose", count=True)
-def status_exchange(dtype, out_dir, dump_unknown_params, verbose):
+@click.option("--dump-data-counts", is_flag=True)
+def status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_counts):
     """Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset"""
     from cchdo.hydro._version import version as hydro_version  # type: ignore
     from cchdo.params import _version as params_version  # type: ignore
@@ -118,6 +135,7 @@ def status_exchange(dtype, out_dir, dump_unknown_params, verbose):
 
     results = []
     all_unknown_params = {}
+    variables_with_data = []
     with TemporaryDirectory() as temp_dir:
         with Pool() as pool:
             for result in track(
@@ -180,6 +198,11 @@ def status_exchange(dtype, out_dir, dump_unknown_params, verbose):
                 if status == 200:
                     tmp_nc = Path(path_or_err)
                     res_nc = nc_path / tmp_nc.name
+
+                    if dump_data_counts:
+                        ds = xr.load_dataset(tmp_nc)
+                        variables_with_data.extend(vars_with_value(ds))
+
                     shutil.copy(tmp_nc, res_nc)
                     f.write(
                         f"""<tr class='table-success'>
@@ -214,6 +237,9 @@ def status_exchange(dtype, out_dir, dump_unknown_params, verbose):
     if dump_unknown_params:
         with open(out_path / f"unknown_params_{dtype}.json", "w") as f:
             json.dump(all_unknown_params, f)
+    if dump_data_counts:
+        with open(out_path / f"params_with_data_{dtype}.json", "w") as f:
+            json.dump(Counter(variables_with_data), f)
 
 
 cli = click.CommandCollection(sources=[convert, status])

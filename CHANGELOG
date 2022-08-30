@@ -4,6 +4,8 @@ v1.0.2.3 (unreleased)
   * While this might seem like an odd choice for a library that started as one to convert WHP Exchange files to netCDf, netCDF 
     itself is not called untill the very end of the conversion process. Internally, everything is an `xarray.Dataset`. This means you can
     install this library to read exchange files in tricky enviornments like pyodide or jupyterlite which already tend to have pandas and numpy in them.
+* Add `--dump-data-counts` option to the exchange status generator which will dump a json document containing a object with nc_var name strings to count integers of how many 
+  variables with this name actually contain any data (i.e. are not just entirely fill value).
 
 v1.0.2.2 (2022-08-18)
 =====================
