@@ -1180,7 +1180,7 @@ def sort_ds(dataset: xr.Dataset) -> xr.Dataset:
 
 
 def check_sorted(dataset: xr.Dataset) -> bool:
-    """Check that the dataset is sorted by the rules in :py:`sort_ds`"""
+    """Check that the dataset is sorted by the rules in :func:`sort_ds`"""
     sorted_ds = sort_ds(dataset.copy(deep=True))
 
     return all(

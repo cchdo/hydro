@@ -45,6 +45,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
+    "sphinx_design",
 ]
 
 autosummary_generate = True

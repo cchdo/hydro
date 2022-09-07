@@ -1,4 +1,5 @@
 import io
+from typing import Optional, Dict
 
 from cchdo.params import WHPNames
 
@@ -46,7 +47,12 @@ def simple_bottle_exchange(params=None, units=None, data=None, comments: str = N
     return simple.encode("utf8")
 
 
-def gen_complete_bottle(ctd_params_only=False):
+def gen_complete_bottle(
+    ctd_params_only=False,
+    param_counts: Optional[Dict[str, int]] = None,
+    min_count=5,
+    filter_erddap=False,
+):
     from . import read_exchange
 
     exclude = set(
@@ -69,8 +75,13 @@ def gen_complete_bottle(ctd_params_only=False):
     units = []
     data = []
     for name in set(WHPNames.values()):
+        if filter_erddap and not name.in_erddap:
+            continue
         if name.whp_name in exclude:
             continue
+        if param_counts is not None:
+            if param_counts.get(name.nc_name, 0) < min_count:
+                continue
         if ctd_params_only is True and name.flag_w in {
             "woce_discrete",
             "woce_bottle",

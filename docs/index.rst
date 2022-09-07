@@ -11,6 +11,7 @@ Welcome to hydro's documentation!
    :caption: Contents:
 
    attributes
+   erddap
    api
    changelog
 
