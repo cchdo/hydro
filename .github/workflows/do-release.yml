@@ -28,7 +28,7 @@ jobs:
       run: |
         cd dist && pip install $(ls *.whl)'[selftest]' && python -m pytest --pyargs cchdo.hydro && twine check *
     - name: Publish Python distribution to PyPI
-      uses: pypa/gh-action-pypi-publish@master
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
         password: ${{ secrets.PYPI_PASSWORD }}
