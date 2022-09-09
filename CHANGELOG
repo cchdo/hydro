@@ -1,11 +1,14 @@
 v1.0.2.3 (unreleased)
 =====================
 * Dropped netCDF4 as requried for installation, if netCDF4 isn't installed already you can install with the `cchdo.hydro[netcdf4]` optional.
+
   * While this might seem like an odd choice for a library that started as one to convert WHP Exchange files to netCDf, netCDF 
     itself is not called untill the very end of the conversion process. Internally, everything is an `xarray.Dataset`. This means you can
     install this library to read exchange files in tricky enviornments like pyodide or jupyterlite which already tend to have pandas and numpy in them.
+
 * Add `--dump-data-counts` option to the exchange status generator which will dump a json document containing a object with nc_var name strings to count integers of how many 
   variables with this name actually contain any data (i.e. are not just entirely fill value).
+* Bump min `cchdo.params` version to 0.1.20
 
 v1.0.2.2 (2022-08-18)
 =====================
@@ -14,7 +17,7 @@ v1.0.2.2 (2022-08-18)
 
 v1.0.2.1 (2022-07-08)
 =====================
-* (breaking) fix misspelling of ``convert_exchange``subcommand
+* (breaking) fix misspelling of ``convert_exchange`` subcommand
 * Will not rely on the python universal newlines for reading exchange data
 * Will now combine CDOM parameters into a single variable with a new wavelength dimmension in the last axis.
 * Update the WHP error name lookup to be compatable with cchdo.params v0.1.18, this is now the minimum version
