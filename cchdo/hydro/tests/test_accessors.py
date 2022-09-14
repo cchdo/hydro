@@ -3,8 +3,11 @@ import json
 
 import pytest
 
+from xarray.testing import assert_identical
+
 from hydro.accessors import MiscAccessor
 from hydro.exchange import FileType
+from hydro.exchange import read_exchange
 
 exp_stn_cast = json.loads(read_text("cchdo.hydro.tests.data", "stns_test_data.json"))
 
@@ -19,3 +22,40 @@ def test_gen_fname_machinery(
     expocode, station, cast, profile_type, profile_count, ftype
 ):
     MiscAccessor._gen_fname(expocode, station, cast, profile_type, profile_count, ftype)
+
+
+def test_exchange_bottle_round_trip():
+    # note that the differet bottle and sampno are intentional
+    test_data = b"""BOTTLE,test
+# some comment
+EXPOCODE,STNNBR,CASTNO,SAMPNO,BTLNBR,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS
+,,,,,,,,,DBAR
+TEST          ,1       ,  1,1          ,2          ,20200101,0000,        0,        0,        0
+END_DATA
+"""
+    ds = read_exchange(test_data)
+    # the magic slice removes the stamp and the newline with #
+    rt = read_exchange(ds.cchdo.to_exchange()[25:])
+    assert_identical(ds, rt)
+
+
+def test_exchange_ctd_round_trip():
+    test_data = b"""CTD,test
+# some comment
+NUMBER_HEADERS = 8
+EXPOCODE = TEST
+STNNBR = 1
+CASTNO = 1
+DATE = 20200101
+TIME = 0000
+LATITUDE = 0
+LONGITUDE = 0
+CTDPRS
+DBAR
+0
+END_DATA
+"""
+    ds = read_exchange(test_data)
+    # the magic slice removes the stamp and the newline with #
+    rt = read_exchange(ds.cchdo.to_exchange()[22:])
+    assert_identical(ds, rt)

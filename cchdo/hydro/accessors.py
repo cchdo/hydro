@@ -378,10 +378,8 @@ class ExchangeAccessor(CCHDOAccessorBase):
         plist = []
         ulist = []
         for param in sorted(params):
-            if (
-                self.file_type == FileType.CTD
-                and param.scope != "sample"
-                or param.nc_name == "sample"
+            if self.file_type == FileType.CTD and (
+                param.scope != "sample" or param.nc_name == "sample"
             ):
                 continue
             plist.append(param.whp_name)
@@ -455,10 +453,8 @@ class ExchangeAccessor(CCHDOAccessorBase):
         valid_levels = params[WHPNames["SAMPNO"]] != ""
         data_block = []
         for param, da in sorted(params.items()):
-            if (
-                self.file_type == FileType.CTD
-                and param.scope != "sample"
-                or param.nc_name == "sample"
+            if self.file_type == FileType.CTD and (
+                param.scope != "sample" or param.nc_name == "sample"
             ):
                 continue
             date_or_time = None
