@@ -37,6 +37,26 @@ def test_btl_date_time_missing_warn():
     assert ex_xr["bottle_time"].values == [[np.datetime64("2020-01-01T00:34")]]
 
 
+def test_ctd_nan():
+    test_data = b"""CTD,test
+# some comment
+NUMBER_HEADERS = 8
+EXPOCODE = TEST
+STNNBR = 1
+CASTNO = 1
+DATE = 20200101
+TIME = 0000
+LATITUDE = nan
+LONGITUDE = 0
+CTDPRS
+DBAR
+0
+END_DATA
+"""
+    with pytest.raises(ValueError):
+        read_exchange(test_data)
+
+
 @pytest.mark.parametrize(
     "data,error",
     [
