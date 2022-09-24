@@ -17,6 +17,8 @@ import numpy as np
 
 log = logging.getLogger(__name__)
 
+from . import __version__
+
 
 def setup_logging(level):
     FORMAT = "%(funcName)s: %(message)s"
@@ -242,7 +244,9 @@ def status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_coun
             json.dump(Counter(variables_with_data), f)
 
 
-cli = click.CommandCollection(sources=[convert, status])
+cli = click.version_option(__version__)(
+    click.CommandCollection(sources=[convert, status])
+)
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ v1.0.2.3 (unreleased)
 * Add `--dump-data-counts` option to the exchange status generator which will dump a json document containing a object with nc_var name strings to count integers of how many 
   variables with this name actually contain any data (i.e. are not just entirely fill value).
 * Bump min `cchdo.params` version to 0.1.20
+* Add a `--version` option to the cli interface
 
 v1.0.2.2 (2022-08-18)
 =====================
