@@ -57,6 +57,26 @@ END_DATA
         read_exchange(test_data)
 
 
+def test_file_seperator():
+    test_data = b"""CTD,test
+# some comment
+NUMBER_HEADERS = 8
+EXPOCODE = TEST
+STNNBR = 1
+CASTNO = 1
+DATE = 20200101
+TIME = 0000
+LATITUDE = 0
+LONGITUDE = 0
+CTDPRS
+DBAR
+0
+END_DATA
+"""
+    ex = read_exchange(test_data + test_data, file_seperator="END_DATA")
+    assert ex.dims["N_PROF"] == 2
+
+
 @pytest.mark.parametrize(
     "data,error",
     [

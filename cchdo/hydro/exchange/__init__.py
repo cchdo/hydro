@@ -1292,7 +1292,12 @@ def set_coordinate_encoding_fill(dataset: xr.Dataset) -> xr.Dataset:
     return dataset
 
 
-def _load_raw_exchange(filename_or_obj: ExchangeIO) -> List[str]:
+def _load_raw_exchange(
+    filename_or_obj: ExchangeIO,
+    *,
+    file_seperator: Optional[str] = None,
+    keep_seperator=True,
+) -> List[str]:
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
         log.info("Loading object over http")
         data_raw = io.BytesIO(requests.get(filename_or_obj).content)
@@ -1312,8 +1317,18 @@ def _load_raw_exchange(filename_or_obj: ExchangeIO) -> List[str]:
         log.info("Loading raw data bytes")
         data_raw = io.BytesIO(filename_or_obj)
 
-    data = []
-    if is_zipfile(data_raw):
+    data: List[str] = []
+
+    if file_seperator is not None:
+        data = data_raw.read().decode("utf8").strip().split(file_seperator)
+        data = list(filter(lambda x: x != "", data))
+
+        if keep_seperator:
+            data = [(datum + file_seperator).strip() for datum in data]
+
+        data = [datum.strip() for datum in data]
+
+    elif is_zipfile(data_raw):
 
         data_raw.seek(0)  # is_zipfile moves the "tell" position
         with ZipFile(data_raw) as zipfile:
@@ -1348,9 +1363,12 @@ class CheckOptions(TypedDict, total=False):
 
 def read_exchange(
     filename_or_obj: ExchangeIO,
+    *,
     fill_values=("-999",),
     checks: Optional[CheckOptions] = None,
     precision_source="file",
+    file_seperator=None,
+    keep_seperator=True,
 ) -> xr.Dataset:
     """Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
     CF/netCDF structure"""
@@ -1361,7 +1379,9 @@ def read_exchange(
 
     log.debug(f"Check options: {_checks}")
 
-    data = _load_raw_exchange(filename_or_obj)
+    data = _load_raw_exchange(
+        filename_or_obj, file_seperator=file_seperator, keep_seperator=keep_seperator
+    )
 
     log.info("Checking for BOM")
     if any((df.startswith("\ufeff") for df in data)):

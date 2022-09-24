@@ -10,6 +10,10 @@ v1.0.2.3 (unreleased)
   variables with this name actually contain any data (i.e. are not just entirely fill value).
 * Bump min `cchdo.params` version to 0.1.20
 * Add a `--version` option to the cli interface
+* Add the a `file_seperator` and `keep_seperator` to `cchdo.hydro.exchange.read_exchange()`.
+  The `keep_seperator` argument defualts to True.
+  This is specifically to allow the reading of CTD exchange files that have been concatenated together (rather than zipped).
+  Assuming there is nothing after "END_DATA" and you cat a bunch of _ct1.csv files together, they should be readable if "END_DATA" is passed into the `file_seperator` argument.
 
 v1.0.2.2 (2022-08-18)
 =====================
