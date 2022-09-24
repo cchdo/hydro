@@ -1,5 +1,7 @@
 from importlib.metadata import version, PackageNotFoundError
 
+__version__ = "not installed"
+
 try:
     __version__ = version(__name__)
 except PackageNotFoundError:
@@ -9,3 +11,8 @@ except PackageNotFoundError:
 from appdirs import AppDirs
 
 _hydro_appdirs = AppDirs("edu.ucsd.cchdo.hydro")
+
+from .exchange import read_exchange
+
+
+__all__ = ["read_exchange"]
