@@ -151,11 +151,11 @@ class WoceAccessor(CCHDOAccessorBase):
             "<",  # comments
         ]
 
-        def sum_lat(deg_str):
-            deg_str = str(deg_str)
+        def sum_lat(deg_float):
+            deg_str = str(deg_float)
             deg, dec = deg_str.split(".")
             deg = int(deg)
-            if deg > 0:
+            if deg_float >= 0:
                 hem = "N"
             else:
                 hem = "S"
@@ -168,11 +168,11 @@ class WoceAccessor(CCHDOAccessorBase):
 
             return f"{deg:>2d} {mins:05.2f} {hem}"
 
-        def sum_lon(deg_str):
-            deg_str = str(deg_str)
+        def sum_lon(deg_float):
+            deg_str = str(deg_float)
             deg, dec = deg_str.split(".")
             deg = int(deg)
-            if deg > 0:
+            if deg_float >= 0:
                 hem = "E"
             else:
                 hem = "W"
