@@ -152,36 +152,28 @@ class WoceAccessor(CCHDOAccessorBase):
         ]
 
         def sum_lat(deg_float):
-            deg_str = str(deg_float)
-            deg, dec = deg_str.split(".")
-            deg = int(deg)
+            deg = abs(int(deg_float))
             if deg_float >= 0:
                 hem = "N"
+                dec = deg_float % 1
             else:
                 hem = "S"
-            deg = abs(deg)
+                dec = -(deg_float % -1)
 
-            dec_len = len(dec)
-            dec = int(dec)
-
-            mins = 60 * (dec / (10**dec_len))
+            mins = 60 * dec
 
             return f"{deg:>2d} {mins:05.2f} {hem}"
 
         def sum_lon(deg_float):
-            deg_str = str(deg_float)
-            deg, dec = deg_str.split(".")
-            deg = int(deg)
+            deg = abs(int(deg_float))
             if deg_float >= 0:
                 hem = "E"
+                dec = deg_float % 1
             else:
                 hem = "W"
-            deg = abs(deg)
+                dec = -(deg_float % -1)
 
-            dec_len = len(dec)
-            dec = int(dec)
-
-            mins = 60 * (dec / (10**dec_len))
+            mins = 60 * dec
 
             return f"{deg:>3d} {mins:05.2f} {hem}"
 
