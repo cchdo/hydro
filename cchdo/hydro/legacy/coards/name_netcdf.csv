@@ -1,0 +1,141 @@
+name,name_netcdf,format,units_name,mnemonic
+14C-DOC,dissolved_organic_carbon_14,%8.1f,0/00,/MILLE
+17DELTA,17delta,%11s,/MEG,/MEG
+ALKALI,alkalinity,%8.1f,µmol/kg,UMOL/KG
+ALUMIN,dissolved_aluminum,%8.1f,nmol/l,NMOL/L
+AR-39,argon_39,%8.1f,%modern,PCTMOD
+ARABI,arabinose,%11s,nmol/kg,NMOL/KG
+ARGON,argon,%8.2f,µmol/kg,UMOL/KG
+BACT,bacterial_cell_count,%8.2f,E8/L,E8/L
+BARIUM,barium1,%8.1f,nmol/kg,NMOL/KG
+BARIUML,barium,%11s,nmol/l,NMOL/L
+BRDU,bromodeoxyuridine,%8.2f,pmol/l/h,PMOL/L/H
+C13ERR,delc13_error,%8.1f,0/00,/MILLE
+C14ERR,delc14_error,%8.1f,0/00,/MILLE
+CCL4,carbon_tetrachloride1,%8.3f,pmol/kg,PMOL/KG
+CCL4L,carbon_tetrachloride,%11s,pmol/l,PMOL/L
+CDOM325,cdom325,%9.4f,1/m,1/M
+CDOM340,cdom340,%9.4f,1/m,1/M
+CDOM380,cdom380,%9.4f,1/m,1/M
+CDOM412,cdom412,%9.4f,1/m,1/M
+CDOM443,cdom443,%9.4f,1/m,1/M
+CDOM490,cdom490,%9.4f,1/m,1/M
+CDOM555,cdom555,%9.4f,1/m,1/M
+CDOMSL,cdomsl,%9.4f,1/nm,1/NM
+CDOMSN,cdomsn,%9.4f,1/nm,1/NM
+CF113ER,cfc_113_error,%11s,pmol/kg,PMOL/KG
+CFC-11,freon_11,%8.3f,pmol/kg,PMOL/KG
+CFC-11L,freon_11l,%11s,pmol/l,PMOL/L
+CFC-12,freon_12,%8.3f,pmol/kg,PMOL/KG
+CFC-12L,freon_12l,%11s,pmol/l,PMOL/L
+CFC113,freon_113,%8.3f,pmol/kg,PMOL/KG
+CH3Br,methyl_bromide_monobromomethane,%8.3f,pmol/kg,PMOL/KG
+CH3CL,methyl_chloride_chloromethane,%8.3f,pmol/kg,PMOL/KG
+CH3I,methyl_iodide_iodomethane,%8.3f,pmol/kg,PMOL/KG
+CH4,methane,%11s,nmol/kg,NMOL/KG
+CHLORA,chlorophyll_a,%8.2f,µg/kg,UG/KG
+COMON,carbon_monoxide,%11s,µmol/kg,UMOL/KG
+CS-137,cesium_137,%8.2f,dpm/100 kg,DM/.1MG
+CS137ER,cs_137_error,%11s,bq/m3,BQ/M^3
+CTDOXY,oxygen1,%9.4f,µmol/kg,UMOL/KG
+CTDPRS,pressure,%8.1f,decibar,DBAR
+CTDRAW,ctd_raw,%8.2f,decibar,DBAR
+CTDSAL,salinity,%8.4f,PSS-78,PSS-78
+CTDTMP,temperature,%8.4f,°C (ITS-90),ITS-90
+D15N_NO3,isotopic_composision_of_nitrate,%8.1f,per ml relative to atmospheric air,
+DCNS,dissolved_combined_neutral_sugars,%11s,nmol/kg,NMOL/KG
+DELC13,carbon_13,%8.2f,0/00,/MILLE
+DELC14,carbon_14,%8.1f,0/00,/MILLE
+DELHE3,delta_helium_3,%8.2f,%,PERCNT
+DELHER,delhe3_error,%8.2f,%,PERCNT
+DELO17,delo17,%11s,/MEG,/MEG
+DELO18,18o_16o_ratio,%8.2f,0/00,/MILLE
+DEPTH,depth,%11s,meters,METERS
+DNA,deoxyribonucleic_acid,%11s,e8/l,E8/L
+DOC,dissolved_organic_carbon,%8.2f,µmol/kg,UMOL/KG
+DON,dissolved_organic_nitrogen,%8.2f,µmol/kg,UMOL/KG
+DWNOXY,dwnoxy,%11s,μmol/kg,UMOL/KG
+DWNPRS,dwnprs,%11s,decibar,DBAR
+FCO2,fugacity,%9.1f,uatm,UATM
+FCO2TMP,fco2_temperature,%9.2f,deg c,DEG C
+FE,iron,%8.1f,nmol/l,NMOL/L
+FLUOR,fluorescence,%8.4f,mg/m3,MG/M^3
+FUCO,fucose,%11s,nmol/kg,NMOL/KG
+GALA,galactose,%11s,nmol/kg,NMOL/KG
+GLUC,glucose,%11s,nmol/kg,NMOL/KG
+HAARDT,haardt,%11s,volts,VOLTS
+HCFC-141b,dichlorofluoroethane,%11s,pmol/kg,PMOL/KG
+HCFC-142b,chlorodifluoroethane,%11s,pmol/kg,PMOL/KG
+HCFC-22,chlorodifluoromethane,%11s,pmol/kg,PMOL/KG
+HELIER,helium_error,%8.4f,nmol/kg,NMOL/KG
+HELIUM,helium,%8.4f,nmol/kg,NMOL/KG
+HGT,total_mercury,%11s,pmol/kg,PMOL/KG
+I-129,iodine_129,%11s,at/lx10^7,
+IODATE,iodate,%11s,nmol/kg,NMOL/KG
+IODIDE,iodide,%11s,nmol/kg,NMOL/KG
+KR-85,krypton_85,%8.2f,dpm/1000 kg,DM/MG
+MAN,mannose,%11s,nmol/kg,NMOL/KG
+MCHFRM,methyl_chloroform,%8.3f,pmol/kg,PMOL/KG
+MEHG,methylated_mercury,%11s,fmol/kg,FMOL/KG
+MN,manganese,%8.1f,nmol/l,NMOL/L
+N2O,nitrous_oxide,%11s,nmol/kg,NMOL/KG
+NEON,neon,%8.3f,nmol/kg,NMOL/KG
+NEONER,neon_error,%8.3f,nmol/kg,NMOL/KG
+NH4,ammonium1,%8.2f,µmol/kg,UMOL/KG
+NH4L,ammonium,%11s,umol/liter,UMOL/L
+NITRAT,nitrate,%8.2f,µmol/kg,UMOL/KG
+NITRATL,nitratel,%11s,umol/liter,UMOL/L
+NITRIT,nitrite,%8.2f,µmol/kg,UMOL/KG
+NITRITL,nitritel,%11s,umol/liter,UMOL/L
+NO2+NO3,nitrite_nitrate,%8.2f,µmol/kg,UMOL/KG
+NRAUNC,nitrate_uncertainty,%11s,µmol/kg,UMOL/KG
+NRIUNC,nitrite_uncertainty,%11s,µmol/kg,UMOL/KG
+OXYGEN,bottle_oxygen,%8.1f,µmol/kg,UMOL/KG
+OXYGENL ,oxygen,%11s,ml/liter,ML/L
+PAR,par,%11s,volts,VOLTS
+PCO2,partial_pressure_of_co2,%8.1f,µatm,UATM
+PCO2TMP,partial_co2_temperature,%8.2f,°C (DEG C),DEG C
+PEUK,pigmented_picoeukaryotes,%8.2f,E6/L,E6/L
+PHOTOLYS,photolysis,%11s,1/m,1/M
+PHPUNC,phosphate_uncertainty,%11s,µmol/kg,UMOL/KG
+PHSPHT,phosphate,%8.2f,µmol/kg,UMOL/KG
+PHSPHTL,phosphate1,%11s,umol/liter,UMOL/L
+PH_TMP,ph_temperature,%9.2f,°C (DEG C),DEG C
+PLUTO,plutonium,%11s,mbq/m3,MBQ/M^3
+PLUTOER,plutonium_error,%11s,mbq/m3,MBQ/M^3
+POC,particulate_organic_carbon,%8.3f,µg/kg,UG/KG
+PON,particulate_organic_nitrogen,%8.3f,µg/kg,UG/KG
+PPHYTN,phaeophytin,%8.2f,µg/kg,UG/KG
+PROC,prochlorophytes,%8.2f,E7/L,E7/L
+R226ER,radium_226_error,%8.2f,dpm/100 kg,DM/.1MG
+R228ER,radium_228_error,%8.2f,dpm/100 kg,DM/.1MG
+RA-226,radium_226,%8.2f,dpm/100 kg,DM/.1MG
+RA-228,radium_228,%8.2f,dpm/100 kg,DM/.1MG
+RA-8/6,ra_228_226,%11s,dpm/100 kg,DM/.1MG
+RA-8/6E,ra_228_226_error,%11s,dpm/100 kg,DM/.1MG
+REFTMP,reference_temperature,%8.4f,°C (DEG C),DEG C
+REVPRS,revprs,%8.1f,decibar,DBAR
+REVTMP,revtmp,%8.3f,°C (ITS-90),ITS-90
+RHAM,rhamnose,%11s,nmol/kg,NMOL/KG
+SALNTY,bottle_salinity,%8.4f,PSS-78,PSS-78
+SALTREF,reference_salinity,%11s,g/kg,G/KG
+SAMPNO,sample_number,%11s,character,
+SBE35,sbe35,%8.4f,°C (ITS-90),ITS-90
+SF5CF3,trifluoromethyl_sulfur_pentafluoride,%11s,fmol/kg,FMOL/KG
+SF6,sulfur_hexifluoride,%8.4f,fmol/kg,FMOL/KG
+SIG0,sigma_theta,%11s,kg/m3,KG/M^3
+SILCAT,silicate,%8.2f,µmol/kg,UMOL/KG
+SILCATL,silicate1,%11s,umol/liter,UMOL/L
+SILUNC,silicate_uncertainty,%11s,µmol/kg,UMOL/KG
+SOMSAL,somsal,%11s,PSS-78,PSS-78
+SPAR,spar,%11s,volts,VOLTS
+SR-90,strontium_90,%8.2f,dpm/100 kg,DM/.1MG
+STNNBR,station_number,%8s,character,
+SYN,synechococcus,%8.2f,E6/L,E6/L
+TCARBN,total_carbon,%8.1f,µmol/kg,UMOL/KG
+TDN,total_dissolved_nitrogen,%8.2f,µmol/kg,UMOL/KG
+THETA,theta,%8.4f,°C (DEG C),DEG C
+TRITER,tritium_error,%8.3f,TU,TU
+TRITUM,tritium,%8.3f,TU,TU
+UREA,urea,%11s,μmol/kg,UMOL/KG
+XMISS,transmissometer,%8.2f,%light transmitted,%TRANS
