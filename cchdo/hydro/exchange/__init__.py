@@ -1481,7 +1481,7 @@ def read_exchange(
             var_da.encoding["dtype"] = "int32"
             var_da.encoding["_FillValue"] = -999  # classic
 
-        if param in COORDS:
+        if param in COORDS and param != CTDPRS:
             var_da.encoding["_FillValue"] = None
             if param.dtype == "integer":
                 var_da = var_da.fillna(-999).astype("int32")
