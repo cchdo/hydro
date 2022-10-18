@@ -16,6 +16,7 @@ v1.0.2.3 (unreleased)
   Assuming there is nothing after "END_DATA" and you cat a bunch of _ct1.csv files together, they should be readable if "END_DATA" is passed into the `file_seperator` argument.
 * Export `read_exchange` from the top level `cchdo.hydro` namespace.
 * (bug) fix `pressure` variable not having a `_FillValue` attribute
+* Add a `compact_profile()` accessor that drops the trailing fill values from a profile
 
 v1.0.2.2 (2022-08-18)
 =====================

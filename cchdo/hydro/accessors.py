@@ -327,6 +327,19 @@ class MiscAccessor(CCHDOAccessorBase):
             expocode, station, cast, profile_type, profile_count, ftype
         )
 
+    def compact_profile(self):
+        """Drop the trailing empty data from a profile.
+
+        Because we use the incomplete multidimensional array representation of profiles
+        there is often "wasted space" at the end of any profile that is not the longest one.
+        This accessor drops that wasted space for xr.Dataset objects containing a single profile
+        """
+        if self._obj.dims["N_PROF"] != 1:
+            raise NotImplementedError(
+                "Cannot compact Dataset with more than one profile"
+            )
+        return self._obj.isel(N_LEVELS=(self._obj.sample != "")[0])
+
 
 class ExchangeAccessor(CCHDOAccessorBase):
     """Class containing the to_exchange functionn"""
