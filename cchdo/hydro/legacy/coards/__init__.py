@@ -36,7 +36,7 @@ with open_text("cchdo.hydro.legacy.coards", "name_netcdf.csv") as params:
 # These consts are taken directly from libcchdo
 FILL_VALUE = -999.0
 
-QC_SUFFIX = b"_QC"
+QC_SUFFIX = "_QC"
 FILE_EXTENSION = "nc"
 EPOCH = datetime.datetime(1980, 1, 1, 0, 0, 0)
 
@@ -89,8 +89,8 @@ def strftime_woce_date_time(dt: xr.DataArray):
 # utility functions from libcchdo.formats.netcdf
 
 # name change ascii -> _ascii to avoid builtin conflict
-def _ascii(x: str) -> bytes:
-    return x.encode("ascii", "replace")
+def _ascii(x: str) -> str:
+    return x.encode("ascii", "replace").decode("ascii")
 
 
 def simplest_str(s) -> str:
@@ -178,7 +178,7 @@ def create_common_variables(
     var_time = nc_file.createVariable("time", "i", ("time",))
     var_time.long_name = "time"
     # Java OceanAtlas 5.0.2 requires ISO 8601 with space separator.
-    var_time.units = "minutes since %s" % EPOCH.isoformat(" ")
+    var_time.units = f"minutes since {EPOCH.isoformat(' ')}"
     var_time.data_min = int(minutes_since_epoch(woce_datetime, var_time.units))
     var_time.data_max = var_time.data_min
     var_time.C_format = "%10d"
@@ -256,19 +256,21 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
 
         parameter = PARAMS.get(parameter_key, {})
 
-        pname = parameter.get("name_netcdf")
-        if not pname:
-            log.warn(
-                f"No netcdf name for {parameter_key}. Using mnemonic {parameter_name}."
+        _pname = parameter.get("name_netcdf")
+        if not _pname:
+            log.warning(
+                "No netcdf name for %s. Using mnemonic %s.",
+                parameter_key,
+                parameter_name,
             )
-            pname = parameter_name
-        if not pname:
-            raise AttributeError("No name found for {0}".format(parameter_name))
-        pname = _ascii(pname)
+            _pname = parameter_name
+        if not _pname:
+            raise AttributeError(f"No name found for {parameter_name}")
+        pname = _ascii(_pname)
 
         # XXX HACK
-        if pname == b"oxygen1":
-            pname = b"oxygen"
+        if pname == "oxygen1":
+            pname = "oxygen"
 
         var = nc_file.createVariable(pname, "f8", ("pressure",))
         var.long_name = pname
@@ -300,17 +302,18 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
             var.C_format = _ascii(parameter["format"])
         else:
             # TODO TEST this
-            log.warn(
-                "Parameter {0} has no format. defaulting to '%f'".format(parameter_name)
+            log.warning(
+                "Parameter %s has no format. defaulting to '%%f'", parameter_name
             )
-            var.C_format = b"%f"
-        if var.C_format.endswith(b"s"):
-            log.warn(
-                "Parameter {0} does not have a format string acceptable for "
-                "numeric data. Defaulting to '%f' to prevent ncdump "
-                "segfault.".format(parameter_name)
+            var.C_format = "%f"
+        if var.C_format.endswith("s"):
+            log.warning(
+                "Parameter %s does not have a format string acceptable for "
+                "numeric data. Defaulting to '%%f' to prevent ncdump "
+                "segfault.",
+                parameter_name,
             )
-            var.C_format = b"%f"
+            var.C_format = "%f"
         var.WHPO_Variable_Name = parameter_name
         var[:] = data
 
@@ -318,7 +321,7 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
             qc_name = pname + QC_SUFFIX
             var.OBS_QC_VARIABLE = qc_name
             vfw = nc_file.createVariable(qc_name, "i2", ("pressure",))
-            vfw.long_name = qc_name + b"_flag"
+            vfw.long_name = qc_name + "_flag"
             vfw.units = "woce_flags"
             vfw.C_format = "%1d"
             vfw[:] = ds[f"{variable_name}_qc"]
