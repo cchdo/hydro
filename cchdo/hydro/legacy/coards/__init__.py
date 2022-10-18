@@ -160,13 +160,12 @@ def define_attributes(
     )
 
 
-# This will just be the "comment" attribute of the Dataset in CCHDO CF/netCDF
-# which will already be formatted correctly
 def set_original_header(nc_file: Dataset, ds: xr.Dataset):  # dfile, datatype):
-    # nc_file.ORIGINAL_HEADER = '\n'.join([
-    #    '{0},{1}'.format(datatype, dfile.globals.get('stamp', '')),
-    #    dfile.globals.get('header', '')])
-    nc_file.ORIGINAL_HEADER = ds.attrs.get("comments", "")
+    # emulates the libcchdo behavior with having # and an extra end line
+    comments = ds.attrs.get("comments", "").splitlines()
+    nc_file.ORIGINAL_HEADER = "\n".join(
+        [comments[0], *[f"#{line}" for line in comments[1:]], ""]
+    )
 
 
 def create_common_variables(
