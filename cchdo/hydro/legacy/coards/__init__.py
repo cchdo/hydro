@@ -8,6 +8,8 @@ Exchange -> COARDS netCDF (using libcchdo)
 import datetime
 from csv import DictReader
 from logging import getLogger
+from io import BytesIO
+from zipfile import ZipFile, ZIP_DEFLATED
 
 # TODO: switch to files().joinpath().open when python 3.8 is dropped
 # 2023-04-16
@@ -21,6 +23,7 @@ from netCDF4 import Dataset
 from cftime import date2num
 
 from .. import woce
+from ... import accessors  # noqa
 
 log = getLogger(__name__)
 
@@ -32,6 +35,9 @@ with open_text("cchdo.hydro.legacy.coards", "name_netcdf.csv") as params:
     for param in reader:
         PARAMS[f"{param['name']} [{param['mnemonic']}]"] = param
 
+# collection exts
+CTD_ZIP_FILE_EXTENSION = "nc_ctd.zip"
+BOTTLE_ZIP_FILE_EXTENSION = "nc_hyd.zip"
 
 # These consts are taken directly from libcchdo
 FILL_VALUE = -999.0
@@ -114,6 +120,17 @@ def _pad_station_cast(x):
          x - a string to be padded
     """
     return simplest_str(x).rjust(5, "0")
+
+
+def get_filename(expocode, station, cast, extension):
+    if extension not in ["hy1", "ctd"]:
+        log.warning("File extension is not recognized.")
+    station = _pad_station_cast(station)
+    cast = _pad_station_cast(cast)
+    return "%s.%s" % (
+        "_".join((expocode, station, cast, extension)),
+        FILE_EXTENSION,
+    )
 
 
 def minutes_since_epoch(dt: xr.DataArray, epoch, error=-9):
@@ -240,6 +257,11 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
         ds.reset_coords().filter_by_attrs(whp_name=lambda x: x is not None).items()
     ):
         parameter_name = variable.attrs["whp_name"]
+
+        # TODO fix this
+        if isinstance(parameter_name, list):
+            continue
+
         parameter_unit = variable.attrs.get("whp_unit", "")
         parameter_key = f"{parameter_name} [{parameter_unit}]"
 
@@ -257,7 +279,7 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
 
         _pname = parameter.get("name_netcdf")
         if not _pname:
-            log.warning(
+            log.debug(
                 "No netcdf name for %s. Using mnemonic %s.",
                 parameter_key,
                 parameter_name,
@@ -291,22 +313,24 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
         # I think this is just checking if there are any holes in the data
         # xarray will basically gaurantee holes will be "nan" for numeric
         if data.dtype.kind in "iuf":
-            var.data_min = np.min(data)
-            var.data_max = np.max(data)
-            if np.any(np.isnan(var.data_min)):
+            var.data_min = np.nanmin(data)
+            var.data_max = np.nanmax(data)
+            if np.all(np.isnan(var.data_min)):
                 var.data_min = float("-inf")
                 var.data_max = float("inf")
+
+        # hack for new string params that would crash the old converter anyway
+        if data.dtype.kind in "OSU":
+            data = np.nan
 
         if parameter.get("format"):
             var.C_format = _ascii(parameter["format"])
         else:
             # TODO TEST this
-            log.warning(
-                "Parameter %s has no format. defaulting to '%%f'", parameter_name
-            )
+            log.debug("Parameter %s has no format. defaulting to '%%f'", parameter_name)
             var.C_format = "%f"
         if var.C_format.endswith("s"):
-            log.warning(
+            log.debug(
                 "Parameter %s does not have a format string acceptable for "
                 "numeric data. Defaulting to '%%f' to prevent ncdump "
                 "segfault.",
@@ -323,10 +347,10 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
             vfw.long_name = qc_name + "_flag"
             vfw.units = "woce_flags"
             vfw.C_format = "%1d"
-            vfw[:] = ds[f"{variable_name}_qc"]
+            vfw[:] = ds[f"{variable_name}_qc"].fillna(9)
 
 
-def ctd_create_common_variables(nc_file, ds):
+def _create_common_variables(nc_file, ds):
     # Lon and lat are now guaranteed
     latitude = float(ds.latitude)
     longitude = float(ds.longitude)
@@ -373,7 +397,78 @@ def write_ctd(ds: xr.Dataset) -> bytes:
     except KeyError:
         pass
 
-    ctd_create_common_variables(nc_file, ds)
+    _create_common_variables(nc_file, ds)
 
-    data = bytes(nc_file.close())
-    return data
+    return bytes(nc_file.close())
+
+
+def write_bottle(ds: xr.Dataset) -> bytes:
+    """How to write a Bottle NetCDF file."""
+    nc_file = Dataset("inmemory.nc", "w", format="NETCDF3_CLASSIC", memory=0)
+
+    define_dimensions(nc_file, ds.dims["N_LEVELS"])
+
+    # Define dataset attributes
+    define_attributes(
+        nc_file,
+        ds.expocode,  # self.globals.get('EXPOCODE', UNKNOWN),
+        ds.get("section_id", UNKNOWN),  # self.globals.get('SECT_ID', UNKNOWN),
+        "WOCE Bottle",
+        ds.station,  # self.globals.get('STNNBR', UNKNOWN),
+        ds["cast"].astype(str),  # self.globals.get('CASTNO', UNKNOWN),
+        int(
+            ds.get("btm_depth", FILL_VALUE)
+        ),  # int(self.globals.get('DEPTH', FILL_VALUE)),
+    )
+
+    set_original_header(nc_file, ds)
+
+    try:
+        bottle_column = ds["bottle_number"]
+    except KeyError:
+        bottle_column = ds.sample
+
+    nc_file.BOTTLE_NUMBERS = " ".join(map(simplest_str, bottle_column.values[0]))
+    if "bottle_number_qc" in ds:
+        # Java OceanAtlas 5.0.2 and possibly before requires bottle quality
+        # codes to be shorts.
+        btl_quality_codes = ds.bottle_number_qc.to_numpy().astype(np.int16)[0]
+        nc_file.BOTTLE_QUALITY_CODES = btl_quality_codes
+
+    nc_file.WOCE_BOTTLE_FLAG_DESCRIPTION = woce.BOTTLE_FLAG_DESCRIPTION
+    nc_file.WOCE_WATER_SAMPLE_FLAG_DESCRIPTION = woce.WATER_SAMPLE_FLAG_DESCRIPTION
+
+    create_and_fill_data_variables(nc_file, ds)
+    _create_common_variables(nc_file, ds)
+
+    return bytes(nc_file.close())
+
+
+def to_coards(ds: xr.Dataset):
+    output_files = {}
+    for _, profile in ds.groupby("N_PROF", squeeze=False):
+        compact = profile.cchdo.compact_profile()
+        if profile.profile_type.item() == "C":
+            data = write_ctd(compact)
+            extension = "ctd"
+        elif profile.profile_type.item() == "B":
+            extension = "hy1"
+            data = write_bottle(compact)
+        else:
+            raise NotImplementedError()
+
+        filename = get_filename(
+            profile.expocode.item(),
+            profile.station.item(),
+            profile.cast.item(),
+            extension=extension,
+        )
+        output_files[filename] = data
+
+    output_zip = BytesIO()
+    with ZipFile(output_zip, "w", compression=ZIP_DEFLATED) as zipfile:
+        for fname, data in output_files.items():
+            zipfile.writestr(fname, data)
+
+    output_zip.seek(0)
+    return output_zip.read()
