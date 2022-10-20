@@ -513,9 +513,26 @@ class ExchangeAccessor(CCHDOAccessorBase):
                 output.append(f"#{comment_line}")
         return output
 
-    def _get_params_flags_errors(self, ds):
+    def to_whp_columns(self):
         # collect all the Exchange variables
         # TODO, all things that appear in an exchange file, must have WHP name
+        ds = flatten_cdom_coordinate(self._obj)
+
+        ds = self._obj.reset_coords(
+            [
+                "expocode",
+                "station",
+                "cast",
+                "sample",
+                "time",
+                "latitude",
+                "longitude",
+                "pressure",
+            ]
+        )
+
+        ds = ds.stack(ex=("N_PROF", "N_LEVELS"))
+
         exchange_vars = ds.filter_by_attrs(whp_name=lambda name: name is not None)
         params: Dict[WHPName, xr.DataArray] = {}
         for var in exchange_vars.values():
@@ -561,35 +578,16 @@ class ExchangeAccessor(CCHDOAccessorBase):
     def to_exchange(self):
         """Convert a CCHDO CF netCDF dataset to exchange"""
         # all of the todo comments are for documenting/writing validators
-
-        ds = flatten_cdom_coordinate(self._obj)
-
-        # TODO guarantee these coordinates
-        ds = ds.reset_coords(
-            [
-                "expocode",
-                "station",
-                "cast",
-                "sample",
-                "time",
-                "latitude",
-                "longitude",
-                "pressure",
-            ]
-        )
-
         output_files = {}
-
         if self.file_type == FileType.CTD:
-            for _, ds1 in ds.groupby("N_PROF", squeeze=False):
+            for _, ds1 in self._obj.groupby("N_PROF", squeeze=False):
                 fname = ds1.cchdo.gen_fname(ftype="exchange")
 
                 output = []
                 output.append(f"CTD,{datetime.now(timezone.utc):%Y%m%d}CCHHYDRO")
                 output.extend(self._get_comments())
 
-                ds1 = ds1.stack(ex=("N_PROF", "N_LEVELS"))
-                params = self._get_params_flags_errors(ds1)
+                params = ds1.cchdo.to_whp_columns()
                 output.extend(self._make_ctd_headers(params))
                 output.extend(self._make_params_units_line(params))
 
@@ -601,13 +599,12 @@ class ExchangeAccessor(CCHDOAccessorBase):
                 output_files[fname] = "\n".join(output).encode("utf8")
 
         if self.file_type == FileType.BOTTLE:
-            fname = ds.cchdo.gen_fname(ftype="exchange")
-            ds = ds.stack(ex=("N_PROF", "N_LEVELS"))
+            fname = self._obj.cchdo.gen_fname(ftype="exchange")
 
             output = []
             output.append(f"BOTTLE,{datetime.now(timezone.utc):%Y%m%d}CCHHYDRO")
             output.extend(self._get_comments())
-            params = self._get_params_flags_errors(ds)
+            params = self._obj.cchdo.to_whp_columns()
 
             # add the params and units line
             output.extend(self._make_params_units_line(params))
