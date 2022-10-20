@@ -23,7 +23,7 @@ from netCDF4 import Dataset
 from cftime import date2num
 
 from .. import woce
-from ... import accessors  # noqa
+from ... import accessors as acc
 
 log = getLogger(__name__)
 
@@ -73,23 +73,23 @@ STRLEN = 40
 
 
 # utility functions from libcchdo.formats.woce
-def strftime_woce_date(dt: datetime.datetime):
-    return dt.strftime("%Y%m%d")
+def strftime_woce_date(dt: xr.DataArray):
+    return dt.dt.strftime("%Y%m%d")
 
 
-def strftime_woce_time(dt: datetime.datetime):
-    return dt.strftime("%H%M")
+def strftime_woce_time(dt: xr.DataArray):
+    return dt.dt.strftime("%H%M")
 
 
 # new behavior will always have the input be a datetime.datetime (Or np.datetime64)
 # this function needs modification
 def strftime_woce_date_time(dt: xr.DataArray):
-    pydate = dt.values.astype("<M8[ms]").astype(datetime.datetime).item()
+    # pydate = dt.values.astype("<M8[ms]").astype(datetime.datetime).item()
     if dt is None:
         return (None, None)
     if dt.attrs.get("resolution", 0) >= 1:
-        return (strftime_woce_date(pydate), None)
-    return (strftime_woce_date(pydate), strftime_woce_time(pydate))
+        return (strftime_woce_date(dt), None)
+    return (strftime_woce_date(dt), strftime_woce_time(dt))
 
 
 # utility functions from libcchdo.formats.netcdf
@@ -253,16 +253,10 @@ def create_common_variables(
 # This one will be hard, needs emulation of the legacy params interface
 def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
     """Add variables to the netcdf file object that correspond to data."""
-    for variable_name, variable in (
-        ds.reset_coords().filter_by_attrs(whp_name=lambda x: x is not None).items()
-    ):
-        parameter_name = variable.attrs["whp_name"]
+    for whpname, variable in ds.cchdo.to_whp_columns().items():
+        parameter_name = whpname.whp_name
 
-        # TODO fix this
-        if isinstance(parameter_name, list):
-            continue
-
-        parameter_unit = variable.attrs.get("whp_unit", "")
+        parameter_unit = whpname.whp_unit or ""
         parameter_key = f"{parameter_name} [{parameter_unit}]"
 
         # Hacks to match behavior of previous
@@ -306,22 +300,24 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
             units = parameter_unit
         var.units = _ascii(units)
 
-        # since this function always operates on single profiles with the N_PROF
-        # dim still present, we always want the first and only profile
-        data = variable.to_numpy()[0]
-
-        # I think this is just checking if there are any holes in the data
-        # xarray will basically gaurantee holes will be "nan" for numeric
-        if data.dtype.kind in "iuf":
-            var.data_min = np.nanmin(data)
-            var.data_max = np.nanmax(data)
-            if np.all(np.isnan(var.data_min)):
-                var.data_min = float("-inf")
-                var.data_max = float("inf")
+        if parameter_name == "BTL_DATE":
+            data = variable.dt.strftime("%Y%m%d").astype(float)
+        elif parameter_name == "BTL_TIME":
+            data = variable.dt.strftime("%H%M").astype(float)
+        else:
+            data = variable.to_numpy()
 
         # hack for new string params that would crash the old converter anyway
         if data.dtype.kind in "OSU":
-            data = np.nan
+            data = np.full_like(data, np.nan, dtype=float)
+
+        if data.dtype.kind in "iuf":
+            if np.all(np.isnan(data)):
+                var.data_min = float("-inf")
+                var.data_max = float("inf")
+            else:
+                var.data_min = np.nanmin(data)
+                var.data_max = np.nanmax(data)
 
         if parameter.get("format"):
             var.C_format = _ascii(parameter["format"])
@@ -340,14 +336,14 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
         var.WHPO_Variable_Name = parameter_name
         var[:] = data
 
-        if f"{variable_name}_qc" in ds:
+        if (qc_variable := variable.attrs.get(acc.FLAG_NAME)) is not None:
             qc_name = pname + QC_SUFFIX
             var.OBS_QC_VARIABLE = qc_name
             vfw = nc_file.createVariable(qc_name, "i2", ("pressure",))
             vfw.long_name = qc_name + "_flag"
             vfw.units = "woce_flags"
             vfw.C_format = "%1d"
-            vfw[:] = ds[f"{variable_name}_qc"].fillna(9)
+            vfw[:] = qc_variable.fillna(9)
 
 
 def _create_common_variables(nc_file, ds):
@@ -386,7 +382,7 @@ def write_ctd(ds: xr.Dataset) -> bytes:
     create_and_fill_data_variables(nc_file, ds)
 
     try:
-        nobs_data = ds["CTDNOBS"].to_numpy()[0]
+        nobs_data = ds["ctd_number_of_observations"].to_numpy()
         var_number = nc_file.createVariable("number_observations", "i4", ("pressure",))
         var_number.long_name = "number_observations"
         var_number.units = "integer"
