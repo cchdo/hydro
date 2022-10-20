@@ -82,8 +82,13 @@ class MatlabAccessor(CCHDOAccessorBase):
         scipy_savemat(fname, mat_dict)
 
 
-class WoceAccessor(CCHDOAccessorBase):
-    """Accessor containing woce file output machinery"""
+class LegacyFormatAccessor(CCHDOAccessorBase):
+    """Accessor containing legacy format outputs (coards, woce)"""
+
+    def to_coards(self):
+        from .legacy.coards import to_coards
+
+        return to_coards(self._obj)
 
     def to_sum(self, path=None):
         """netCDF to WOCE sumfile maker
@@ -685,7 +690,7 @@ class MergeFQAccessor(CCHDOAccessorBase):
 class CCHDOAccessor(
     ExchangeAccessor,
     GeoAccessor,
-    WoceAccessor,
+    LegacyFormatAccessor,
     MatlabAccessor,
     MiscAccessor,
     MergeFQAccessor,
