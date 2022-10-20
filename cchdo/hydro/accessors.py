@@ -13,6 +13,9 @@ from cchdo.params import WHPNames, WHPName
 from .exchange import FileType, all_same, check_flags as _check_flags
 from .exchange import flatten_cdom_coordinate
 
+FLAG_NAME = "cchdo.hydro._qc"
+ERROR_NAME = "cchdo.hydro._error"
+
 
 class CCHDOAccessorBase:
     """Class base for CCHDO accessors
@@ -377,12 +380,10 @@ class ExchangeAccessor(CCHDOAccessorBase):
     def _make_params_units_line(
         self,
         params: Dict[WHPName, xr.DataArray],
-        flags: Dict[WHPName, xr.DataArray],
-        errors: Dict[WHPName, xr.DataArray],
     ):
         plist = []
         ulist = []
-        for param in sorted(params):
+        for param, dataarray in sorted(params.items()):
             if self.file_type == FileType.CTD and (
                 param.scope != "sample" or param.nc_name == "sample"
             ):
@@ -394,14 +395,12 @@ class ExchangeAccessor(CCHDOAccessorBase):
 
             ulist.append(unit)
 
-            if param in flags:
-                plist.append(f"{param.whp_name}_FLAG_W")
+            if (flag := dataarray.attrs.get(FLAG_NAME)) is not None:
+                plist.append(flag.attrs["whp_name"])
                 ulist.append("")
 
-            if param in errors:
-                if param.error_name is None:
-                    raise ValueError(f"No error name for {param}")
-                plist.append(param.error_name)
+            if (error := dataarray.attrs.get(ERROR_NAME)) is not None:
+                plist.append(error.attrs["whp_name"])
                 ulist.append(unit)
 
         return ",".join(plist), ",".join(ulist)
@@ -453,7 +452,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
             *[f"{key} = {value}" for key, value in headers.items()],
         ]
 
-    def _make_data_block(self, params, flags, errors) -> List[str]:
+    def _make_data_block(self, params) -> List[str]:
         # TODO N_PROF is guaranteed
         valid_levels = params[WHPNames["SAMPNO"]] != ""
         data_block = []
@@ -486,13 +485,13 @@ class ExchangeAccessor(CCHDOAccessorBase):
 
             data_block.append(values)
 
-            if param in flags:
-                data = np.nditer(flags[param][valid_levels])
+            if (flags := da.attrs.get(FLAG_NAME)) is not None:
+                data = np.nditer(flags[valid_levels])
                 flag = [param.strfex(v, flag=True) for v in data]
                 data_block.append(flag)
 
-            if param in errors:
-                data = np.nditer(errors[param][valid_levels])
+            if (errors := da.attrs.get("_errors")) is not None:
+                data = np.nditer(errors[valid_levels])
                 numeric_precision_override = self.cchdo_c_format_precision(
                     da.attrs.get("C_format", "")
                 )
@@ -519,8 +518,6 @@ class ExchangeAccessor(CCHDOAccessorBase):
         # TODO, all things that appear in an exchange file, must have WHP name
         exchange_vars = ds.filter_by_attrs(whp_name=lambda name: name is not None)
         params: Dict[WHPName, xr.DataArray] = {}
-        flags = {}
-        errors = {}
         for var in exchange_vars.values():
             whp_params = self._whpname_from_attrs(var.attrs)
             for param in whp_params:
@@ -548,14 +545,18 @@ class ExchangeAccessor(CCHDOAccessorBase):
 
                 if standard_name == "status_flag":
                     for param in whp_params:
-                        flags[param] = ancillary
+                        ancillary.attrs["whp_name"] = f"{param.whp_name}_FLAG_W"
+                        params[param].attrs[FLAG_NAME] = ancillary
 
                 # TODO find a way to test this
                 if ancillary.attrs.get("whp_name") in WHPNames.error_cols:
                     for param in whp_params:
-                        errors[param] = ancillary
+                        if param.error_name is None:
+                            raise ValueError(f"No error name for {param}")
+                        ancillary.attrs["whp_name"] = param.error_name
+                        params[param].attrs[ERROR_NAME] = ancillary
 
-        return params, flags, errors
+        return params
 
     def to_exchange(self):
         """Convert a CCHDO CF netCDF dataset to exchange"""
@@ -588,11 +589,11 @@ class ExchangeAccessor(CCHDOAccessorBase):
                 output.extend(self._get_comments())
 
                 ds1 = ds1.stack(ex=("N_PROF", "N_LEVELS"))
-                params, flags, errors = self._get_params_flags_errors(ds1)
+                params = self._get_params_flags_errors(ds1)
                 output.extend(self._make_ctd_headers(params))
-                output.extend(self._make_params_units_line(params, flags, errors))
+                output.extend(self._make_params_units_line(params))
 
-                data_block = self._make_data_block(params, flags, errors)
+                data_block = self._make_data_block(params)
                 for row in zip(*data_block):
                     output.append(",".join(str(cell) for cell in row))
 
@@ -606,12 +607,12 @@ class ExchangeAccessor(CCHDOAccessorBase):
             output = []
             output.append(f"BOTTLE,{datetime.now(timezone.utc):%Y%m%d}CCHHYDRO")
             output.extend(self._get_comments())
-            params, flags, errors = self._get_params_flags_errors(ds)
+            params = self._get_params_flags_errors(ds)
 
             # add the params and units line
-            output.extend(self._make_params_units_line(params, flags, errors))
+            output.extend(self._make_params_units_line(params))
 
-            data_block = self._make_data_block(params, flags, errors)
+            data_block = self._make_data_block(params)
 
             for row in zip(*data_block):
                 output.append(",".join(str(cell) for cell in row))
