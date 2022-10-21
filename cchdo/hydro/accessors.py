@@ -1,12 +1,14 @@
-from io import BytesIO
+from io import BytesIO, BufferedWriter
+import string
+import re
+import os
 from datetime import datetime, timezone
 from typing import List, Dict, Optional, Union
 from zipfile import ZIP_DEFLATED, ZipFile
+
 import xarray as xr
 import pandas as pd
 import numpy as np
-import string
-import re
 
 from cchdo.params import WHPNames, WHPName
 
@@ -15,6 +17,27 @@ from .exchange import flatten_cdom_coordinate
 
 FLAG_NAME = "cchdo.hydro._qc"
 ERROR_NAME = "cchdo.hydro._error"
+
+PathType = Union[str, bytes, os.PathLike]
+
+
+def write_or_return(
+    data: bytes, path_or_fobj: Optional[Union[PathType, BufferedWriter]] = None
+) -> Optional[bytes]:
+    # assume path_or_fobj is an open filelike
+    if path_or_fobj is None:
+        return data
+
+    if isinstance(path_or_fobj, BufferedWriter):
+        try:
+            path_or_fobj.write(data)
+        except TypeError as error:
+            raise TypeError("File must be open for bytes writing") from error
+    else:
+        with open(path_or_fobj, "wb") as f:
+            f.write(data)
+
+    return None
 
 
 class CCHDOAccessorBase:
@@ -85,10 +108,10 @@ class MatlabAccessor(CCHDOAccessorBase):
 class LegacyFormatAccessor(CCHDOAccessorBase):
     """Accessor containing legacy format outputs (coards, woce)"""
 
-    def to_coards(self):
+    def to_coards(self, path=None):
         from .legacy.coards import to_coards
 
-        return to_coards(self._obj)
+        return write_or_return(to_coards(self._obj), path)
 
     def to_sum(self, path=None):
         """netCDF to WOCE sumfile maker
@@ -248,13 +271,10 @@ class LegacyFormatAccessor(CCHDOAccessorBase):
         for row in sum_rows:
             SUM_ROWS.append(format_str.format(*row))
 
-        sum_file = "\n".join([COMMENTS, HEADERS_1, HEADERS_2, SEP_LINE, *SUM_ROWS])
-        if path is not None:
-            with open(path, "w", encoding="ascii") as f:
-                f.write(sum_file)
-                return
-
-        return sum_file
+        sum_file = "\n".join(
+            [COMMENTS, HEADERS_1, HEADERS_2, SEP_LINE, *SUM_ROWS]
+        ).encode("ascii")
+        return write_or_return(sum_file, path)
 
 
 class GeoAccessor(CCHDOAccessorBase):
@@ -580,7 +600,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
 
         return params
 
-    def to_exchange(self):
+    def to_exchange(self, path=None):
         """Convert a CCHDO CF netCDF dataset to exchange"""
         # all of the todo comments are for documenting/writing validators
         output_files = {}
@@ -623,14 +643,14 @@ class ExchangeAccessor(CCHDOAccessorBase):
             output_files[fname] = "\n".join(output).encode("utf8")
 
         if len(output_files) == 1:
-            return list(output_files.values())[0]
+            return write_or_return(list(output_files.values())[0], path)
         output_zip = BytesIO()
         with ZipFile(output_zip, "w", compression=ZIP_DEFLATED) as zipfile:
             for fname, data in output_files.items():
                 zipfile.writestr(fname, data)
 
         output_zip.seek(0)
-        return output_zip.read()
+        return write_or_return(output_zip.read(), path)
 
 
 class WHPIndxer:

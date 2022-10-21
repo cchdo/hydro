@@ -343,7 +343,7 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
             vfw.long_name = qc_name + "_flag"
             vfw.units = "woce_flags"
             vfw.C_format = "%1d"
-            vfw[:] = qc_variable.fillna(9)
+            vfw[:] = np.nan_to_num(qc_variable.to_numpy(), nan=9)
 
 
 def _create_common_variables(nc_file, ds):
