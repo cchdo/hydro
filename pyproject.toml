@@ -13,5 +13,7 @@ module = [
     "appdirs.*",
     "pandas",
     "scipy.*",
+    "netCDF4.*",
+    "cftime.*",
 ]
 ignore_missing_imports = true
