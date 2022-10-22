@@ -538,7 +538,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
                 output.append(f"#{comment_line}")
         return output
 
-    def to_whp_columns(self):
+    def to_whp_columns(self, compact=False):
         # collect all the Exchange variables
         # TODO, all things that appear in an exchange file, must have WHP name
         ds = flatten_cdom_coordinate(self._obj)
@@ -557,6 +557,8 @@ class ExchangeAccessor(CCHDOAccessorBase):
         )
 
         ds = ds.stack(ex=("N_PROF", "N_LEVELS"))
+        if compact:
+            ds = ds.isel(ex=(ds.sample != ""))
 
         exchange_vars = ds.filter_by_attrs(whp_name=lambda name: name is not None)
         params: Dict[WHPName, xr.DataArray] = {}
