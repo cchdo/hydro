@@ -113,6 +113,11 @@ class LegacyFormatAccessor(CCHDOAccessorBase):
 
         return write_or_return(to_coards(self._obj), path)
 
+    def to_woce(self, path=None):
+        from .legacy.woce import to_woce
+
+        return write_or_return(to_woce(self._obj), path)
+
     def to_sum(self, path=None):
         """netCDF to WOCE sumfile maker
 
