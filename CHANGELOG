@@ -1,22 +1,24 @@
 v1.0.2.3 (unreleased)
 =====================
-* Dropped netCDF4 as requried for installation, if netCDF4 isn't installed already you can install with the `cchdo.hydro[netcdf4]` optional.
+* (new) Add `to_coards()` and `to_woce()` accessors to maintain legacy formats at CCHDO.
+* (new) All the `to_*` accessors now support a path argument that will accept a writeable binary mode file like object or a filesystem path to write to.
+* (new) Add a `compact_profile()` accessor that drops the trailing fill values from a profile
+* (new) Add the a `file_seperator` and `keep_seperator` to `cchdo.hydro.exchange.read_exchange()`.
+  The `keep_seperator` argument defualts to True.
+  This is specifically to allow the reading of CTD exchange files that have been concatenated together (rather than zipped).
+  Assuming there is nothing after "END_DATA" and you cat a bunch of _ct1.csv files together, they should be readable if "END_DATA" is passed into the `file_seperator` argument.
+* (new) Add `--dump-data-counts` option to the exchange status generator which will dump a json document containing a object with nc_var name strings to count integers of how many 
+  variables with this name actually contain any data (i.e. are not just entirely fill value).
+* Add a `--version` option to the cli interface
+* (changed) Export `read_exchange` from the top level `cchdo.hydro` namespace.
+* (changed) Bump min `cchdo.params` version to 0.1.20
+* (changed) Dropped netCDF4 as requried for installation, if netCDF4 isn't installed already you can install with the `cchdo.hydro[netcdf4]` optional.
 
   * While this might seem like an odd choice for a library that started as one to convert WHP Exchange files to netCDf, netCDF 
     itself is not called untill the very end of the conversion process. Internally, everything is an `xarray.Dataset`. This means you can
     install this library to read exchange files in tricky enviornments like pyodide or jupyterlite which already tend to have pandas and numpy in them.
 
-* Add `--dump-data-counts` option to the exchange status generator which will dump a json document containing a object with nc_var name strings to count integers of how many 
-  variables with this name actually contain any data (i.e. are not just entirely fill value).
-* Bump min `cchdo.params` version to 0.1.20
-* Add a `--version` option to the cli interface
-* Add the a `file_seperator` and `keep_seperator` to `cchdo.hydro.exchange.read_exchange()`.
-  The `keep_seperator` argument defualts to True.
-  This is specifically to allow the reading of CTD exchange files that have been concatenated together (rather than zipped).
-  Assuming there is nothing after "END_DATA" and you cat a bunch of _ct1.csv files together, they should be readable if "END_DATA" is passed into the `file_seperator` argument.
-* Export `read_exchange` from the top level `cchdo.hydro` namespace.
 * (bug) fix `pressure` variable not having a `_FillValue` attribute
-* Add a `compact_profile()` accessor that drops the trailing fill values from a profile
 
 v1.0.2.2 (2022-08-18)
 =====================
