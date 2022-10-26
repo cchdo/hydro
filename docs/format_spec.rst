@@ -19,7 +19,7 @@ At the time of writing, the two most common at rest formats include HDF5, the tr
 
 Requirement Levels
 ------------------
-When specifying our requirements, we will follow the quitelines set in `BCP 14`_:
+When specifying our requirements, we will follow the guidelines set in `BCP 14`_:
 
     The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in `BCP 14`_ [`RFC2119`_] [`RFC8174`_] when, and only when, they appear in all capitals, as shown here.
 
@@ -57,7 +57,7 @@ When data are being distributed or shared using files, computer systems often re
 
 .. admonition:: Requirements
 
-    As per `CF-1.8 Section 2.1`_, netCDF files SHOULD have the extension ``.nc``
+    As per `CF-1.8 Section 2.1`_, netCDF HDF5 files SHOULD have the extension ``.nc``
 
 At CCHDO, out usual data management granularity is cruise/leg, separated by discrete sample (bottle) and continuous sample (CTD) data types.
 As a convenience, an additional suffix may be added to easily identify data containing only bottle or CTD data.
@@ -91,7 +91,49 @@ variable
     It is also important to understand that variable names are simple labels and not data descriptors.
     If the name does have some human readable meaning, it often meant to help quickly identify which variables might be of interest, not describe the variable with scientific rigor.
     Do not rely on the inferred meaning of a variable name unless you have no other source of information (attributes, documentation, emails from colleagues, etc.).
+
+ancillary variable
+  In CF, an ancillary variable is still a normal variable described above, but it contains information about other variables.
+  Perhaps the most common example of an ancillary variable is the quality control flag, but also include information such as uncertainties.
+  Some of the carbon data have strong temperature dependencies and so the temperature of analysis might be reported along side in an ancillary variable.
   
+coordinate
+  Coordinates are variables that provide the labels for some axis, usually for identifying data in space and time.
+  The typical examples of coordinates are longitude (X-axis), latitude (Y-axis), and time (T-axis).
+  The vertical coordinate is a little more varied, usually oceanographic observation data will use pressure as the Z-axis coordinate.
+
+  Xarray calls these "coordinates"
+
+coordinate variables
+  In many netCDF aware applications there is a special case of variables called "coordinate variables" or "Dimension coordinate".
+  The technical way you will see this defined is as a single dimensional variable that has the same name as its dimension.
+  There tend to be other rules most programs enforce: there must be no missing values, values must be numeric, and values must be monotonic.
+  These are most useful when the data occur on some regular grid.
+
+  Perhaps a good way to think of coordinates variables is as the values the ticks would be in a figure plot.
+
+  Xarray calls these "Dimension coordinates" and will be shown with a little asterisk ``*`` when exploring an xarray Dataset.
+
+auxiliary coordinate
+  Auxiliary coordinates or "Non-dimension coordinates" are variables that do not share the same names as a dimension.
+  These variables still label axes, but are more flexible for when the data do not occur on a regular grid or when there are multiple sets of coordinates in use.
+  Auxiliary coordinates may be multidimensional.
+  CF requires auxiliary coordinates to appear in the ``coordinates`` attribute of the variables it labels.
+
+  Xarray calls these "Non-dimension coordinates" and will not have an asterisk next to their names when exploring an xarray dataset.
+
+attribute
+  Attributes are extra peices of data that are attached to each variable and is where the flexibility of netCDF to describe data is greatly enhanced.
+  Attributes may also be attached at the "global" level
+  Attributes are simple "key" to "value" mappings, the computer science term for these is "associative array".
+  Python and Julia calles these "dictionaries", in matlab these are usually "Structure Arrays".
+
+  Most of the focus of the common community data standards, CF, ACDD, OceanSITES etc., are on defining attribute keys, values, and how to interpret them.
+  CF defines and controls attributes important to CF, but then allows any number of extra attributes.
+
+Dataset Structure
+----
+
 
 .. _BCP 14: https://www.rfc-editor.org/info/bcp14
 .. _RFC2119: https://datatracker.ietf.org/doc/html/rfc2119
