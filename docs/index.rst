@@ -13,7 +13,6 @@ Welcome to hydro's documentation!
    format_spec
    attributes
    erddap
-   api
    changelog
 
 

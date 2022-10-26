@@ -44,11 +44,13 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
-    "sphinx.ext.autosummary",
     "sphinx_design",
+    "autoapi.extension",
 ]
 
-autosummary_generate = True
+autoapi_dirs = ["../cchdo", "../cchdo/hydro"]
+autoapi_python_use_implicit_namespaces = True
+
 autodoc_typehints = "none"
 
 # Add any paths that contain templates here, relative to this directory.
