@@ -123,17 +123,127 @@ auxiliary coordinate
   Xarray calls these "Non-dimension coordinates" and will not have an asterisk next to their names when exploring an xarray dataset.
 
 attribute
-  Attributes are extra peices of data that are attached to each variable and is where the flexibility of netCDF to describe data is greatly enhanced.
+  Attributes are extra pieces of data that are attached to each variable and is where the flexibility of netCDF to describe data is greatly enhanced.
   Attributes may also be attached at the "global" level
   Attributes are simple "key" to "value" mappings, the computer science term for these is "associative array".
-  Python and Julia calles these "dictionaries", in matlab these are usually "Structure Arrays".
+  Python and Julia calls these "dictionaries", in matlab these are usually "Structure Arrays".
 
   Most of the focus of the common community data standards, CF, ACDD, OceanSITES etc., are on defining attribute keys, values, and how to interpret them.
   CF defines and controls attributes important to CF, but then allows any number of extra attributes.
 
 Dataset Structure
-----
+-----------------
+.. todo:: 
 
+    write overview
+
+    * which CF DSG
+    * Dims
+      * Strings vs Char arrays
+    * Global attributes
+    * Required variables
+    * Technical variables and attrs (the geometry ones)
+    * Notes on strings and chars
+      * Encoding, line endings
+      * where are actual strings allowed, netCDF4 python forces string types if non ascii
+
+Dimensions
+``````````
+There are two basic dimensions in the data file, how many profiles there are, and how many vertical levels there are.
+The two dimension names match the dimenion names found in argo profile files: N_PROF and N_LEVELS.
+
+While netCDF4 supports an actual string data type, for compatibility and compression reasons, character arrays will be used to represent text data.
+Character arrays have the string length as their last dimension, the number and values of these string dimensions is currently uncontrolled (xarray sets these automatically).
+All char arrays or strings will be UTF-8 encoded.
+
+
+.. admonition:: Requirements
+
+    * There MUST be a dimension named ``N_PROF`` that describes the first axis of variables with a "profile" dimension.
+    * There MUST be a dimension named ``N_LEVELS`` that describes the first axis of variables with no "profile" dimension, or the second axis of variables with a "profile" dimension
+    * There MAY be zero or more string length dimensions.
+    * Extra dimensions MAY exist if needed by data variables, these extra names are not standardized.
+    * Any char array or strings, both in variable and attributes, MUST be UTF-8 encoded and MUST NOT have a byte order mark.
+
+.. note::
+
+    There is currently a single variable which requires an additional dimension to describe the radiation wavelength of its measurement.
+    This dimension is currently called ``CDOM_WAVELENGTHS`` and is stored as the only coordinate variable in use.
+    The actual relationship between the parent variable and this coordinate is contained in attributes defined by the CF conventions.
+
+Global Attributes
+`````````````````
+Global attributes contain information that applies to the entire dataset.
+Some of these are defined by community standards, other by this document for internal use.
+The following, case sensitive, global attributes are REQUIRED to be present:
+
+``Conventions``
+  Conventions is a char array listing what community standards and their versions are being followed.
+  It MUST have the value ``"CF-1.8 CCHDO-1.0"`` and will change as new conventions are adopted
+``featureType``
+  The feature type char array attribute comes from the CF conventions section about discrete sampling geometries.
+  It MUST have the value ``"profile"``
+``cchdo_software_version``
+  The cchdo software version is a char array containing the version of the cchdo.hydro library used to create or manipulate the dataset.
+  It currently takes the form of ``"hydro w.x.y.z"`` where w.x is the data conventions version, and y.z is the actual software library version.
+``cchdo_parameters_version``
+  The cchdo parameters version char array contains the version for the internal parameters database the software was using at the time of dataset creation or manipulation.
+  It currently takes the form of ``"params x.y.z"``.
+
+The following, case sensitive, global attributes are OPTIONAL:
+
+``comments``
+  Comments human readable string containing information not captured in any other attributes or variables.
+
+.. admonition:: Requirements
+
+    * There MUST be a ``Conventions`` global attribute char array with space separate convention version strings defined by those conventions.
+    * There MUST be a ``featureType`` global attribute char array with the value "profile".
+    * There MUST be a ``cchdo_software_version`` global attribute char array with the version string of the cchdo.hydro software.
+    * There MUST be a ``cchdo_parameters_version`` global attribute char array with the version string of the cchdo.params database.
+    * There MAY be a ``comments`` attribute with more information. This attribute MAY be a string rather than a char array if there are non ASCII code points present.
+
+Variable Attributes
+```````````````````
+.. todo:: 
+
+    Attrs to talk about:
+
+    * whp_name
+    * whp_unit
+    * geometry
+    * _Encoding
+    * coordinates
+    * ancillary_variables
+    * standard_name
+    * flag_values
+    * flag_meanings
+    * conventions
+    * resolution (time)
+    * axis
+    * units
+    * calendar
+    * C_format
+    * C_format_source
+    * positive
+    * reference_scale
+    * geometry_type
+    * node_coordinates
+
+Required Variables
+``````````````````
+The following variables are required in all files:
+
+* ``geometry_container``
+* ``profile_type``
+* ``expocode``
+* ``station``
+* ``cast``
+* ``sample``
+* ``longitude``
+* ``latitude``
+* ``pressure``
+* ``time``
 
 .. _BCP 14: https://www.rfc-editor.org/info/bcp14
 .. _RFC2119: https://datatracker.ietf.org/doc/html/rfc2119
