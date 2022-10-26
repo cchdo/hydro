@@ -109,8 +109,8 @@ _UNWRITTEN_COLUMNS = [
 
 def simplest_str(s) -> str:
     """Give the simplest string representation.
-    If a float is almost equivalent to an integer, swap out for the
-    integer.
+
+    If a float is almost equivalent to an integer, swap out for the integer.
     """
     # if type(s) is float:
     if isinstance(s, float):
@@ -121,11 +121,12 @@ def simplest_str(s) -> str:
     return str(s)
 
 
-def _pad_station_cast(x):
+def _pad_station_cast(x: str) -> str:
     """Pad a station or cast identifier out to 5 characters. This is usually
     for use in a file name.
-    Args:
-         x - a string to be padded
+
+    :param x: a string to be padded
+    :type x: str
     """
     return simplest_str(x).rjust(5, "0")
 
@@ -144,8 +145,8 @@ def get_filename(expocode, station, cast, file_ext):
 
 def convert_fortran_format_to_c(ffmt: str):
     """Simplistic conversion from Fortran format string to C format string.
-    This only operates on F formats.
 
+    This only operates on F formats.
     """
     if not ffmt:
         return ffmt
@@ -165,10 +166,7 @@ def convert_fortran_format_to_c(ffmt: str):
 def get_exwoce_params():
     """Return a dictionary of WOCE parameters allowed for Exchange conversion.
 
-    Returns:
-        {'PMNEMON': {
-            'unit_mnemonic': 'WOCE', 'range': [0.0, 10.0], 'format': '%8.3f'}}
-
+    :return: {'PMNEMON': {'unit_mnemonic': 'WOCE', 'range': [0.0, 10.0], 'format': '%8.3f'}}
     """
     with open_text(
         "cchdo.hydro.legacy.woce", "woce_params_for_exchange_to_woce.csv"
@@ -244,7 +242,6 @@ def truncate_row(lll):
     """Return a new row where all items are less than or equal to column width.
 
     Warnings will be given for any truncations.
-
     """
     truncated = []
     for xxx in lll:
@@ -262,7 +259,6 @@ def write_data(ds, columns, base_format):
 
     columns and base_format should be obtained from
     columns_and_base_format()
-
     """
 
     def parameter_name_of(column):

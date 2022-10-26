@@ -2,8 +2,8 @@
 
 The goal is, as much as possible, to use the old code with minimal changes such that the following outputs are identical:
 
-Exchange -> CF/netCDF -> COARDS netCDF (this library)
-Exchange -> COARDS netCDF (using libcchdo)
+* Exchange -> CF/netCDF -> COARDS netCDF (this library)
+* Exchange -> COARDS netCDF (using libcchdo)
 """
 import datetime
 from csv import DictReader
@@ -101,8 +101,8 @@ def _ascii(x: str) -> str:
 
 def simplest_str(s) -> str:
     """Give the simplest string representation.
-    If a float is almost equivalent to an integer, swap out for the
-    integer.
+
+    If a float is almost equivalent to an integer, swap out for the integer.
     """
     # if type(s) is float:
     if isinstance(s, float):
@@ -113,11 +113,13 @@ def simplest_str(s) -> str:
     return str(s)
 
 
-def _pad_station_cast(x):
-    """Pad a station or cast identifier out to 5 characters. This is usually
-    for use in a file name.
-    Args:
-         x - a string to be padded
+def _pad_station_cast(x: str) -> str:
+    """Pad a station or cast identifier out to 5 characters.
+
+    This is usually for use in a file name.
+
+    :param x: a string to be padded
+    :type x: str
     """
     return simplest_str(x).rjust(5, "0")
 

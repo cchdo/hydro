@@ -51,7 +51,7 @@ extensions = [
 autoapi_dirs = ["../cchdo", "../cchdo/hydro"]
 autoapi_python_use_implicit_namespaces = True
 
-autodoc_typehints = "none"
+autodoc_typehints = "description"
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']
