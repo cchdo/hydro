@@ -13,9 +13,9 @@ def nc_empty():
 
 @pytest.fixture
 def nc_placeholder():
-    params = ("OXYGEN", "OXYGEN_FLAG_W")
-    units = ("UMOL/KG", "")
-    data = ("-999", "1")
+    params = ("OXYGEN", "OXYGEN_FLAG_W", "DELC14", "DELC14_FLAG_W", "C14ERR")
+    units = ("UMOL/KG", "", "/MILLE", "", "/MILLE")
+    data = ("-999", "1", "-999", "1", "-999")
     return read_exchange(
         io.BytesIO(simple_bottle_exchange(params=params, units=units, data=data))
     )
