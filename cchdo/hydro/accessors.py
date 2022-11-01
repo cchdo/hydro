@@ -702,7 +702,7 @@ class MergeFQAccessor(CCHDOAccessorBase):
                 if param in WHPNames.error_cols:
                     whpname = WHPNames.error_cols[param]
                     new_obj[whpname.nc_name_error][prof, level] = value
-                if param.endswith("_FLAG_W"):
+                elif param.endswith("_FLAG_W"):
                     whpname = WHPNames[param[:-7]]
                     new_obj[whpname.nc_name_flag][prof, level] = value
                 else:
