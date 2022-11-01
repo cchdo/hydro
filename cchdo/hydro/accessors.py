@@ -692,7 +692,7 @@ class MergeFQAccessor(CCHDOAccessorBase):
     # This will rely on the N_PROF and N_LEVELS (with extra at some point)
     # * N_PROF will be indexed with (expocode, station, cast)
     # * N_LEVELS will be subindexd with (sample)
-    def merge_fq(self, fq, check_flags=True):
+    def merge_fq(self, fq, *, check_flags=True):
         new_obj = self._obj.copy(deep=True)
         idxer = WHPIndxer(new_obj)
 
