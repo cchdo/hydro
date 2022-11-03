@@ -26,25 +26,36 @@ from .. import woce
 from ... import accessors as acc
 
 log = getLogger(__name__)
+"""logger object for message logging"""
 
 # Load the WHP to nc name mapping
 # this was dumped from old libcchdo
 with open_text("cchdo.hydro.legacy.coards", "name_netcdf.csv") as params:
-    reader = DictReader(params)
     PARAMS = {}
-    for param in reader:
+    """mapping of whp names to nc names
+
+    This is loaded at module import time from a dump from the old internal params sqlite database
+    """
+    for param in DictReader(params):
         PARAMS[f"{param['name']} [{param['mnemonic']}]"] = param
 
 # collection exts
 CTD_ZIP_FILE_EXTENSION = "nc_ctd.zip"
+"""Filename extention for a zipped collection ctd coards netcdf files"""
 BOTTLE_ZIP_FILE_EXTENSION = "nc_hyd.zip"
+"""Filename extention for a zipped collection bottle coards netcdf files"""
 
 # These consts are taken directly from libcchdo
 FILL_VALUE = -999.0
+"""Const from old libcchdo, -999.0"""
 
 QC_SUFFIX = "_QC"
+"""Variable name suffix for flag variables"""
 FILE_EXTENSION = "nc"
+"""filenmae extention for all netcdf files"""
+
 EPOCH = datetime.datetime(1980, 1, 1, 0, 0, 0)
+"""dateime referenced in the units of time variables in netCDF files: 1980-01-01"""
 
 STATIC_PARAMETERS_PER_CAST = (
     "EXPOCODE",
@@ -62,14 +73,22 @@ STATIC_PARAMETERS_PER_CAST = (
     "DATE",
     "TIME",
 )
+"""List of WHP names that are ignored when calling :func:`create_and_fill_data_variables`"""
 
 NON_FLOAT_PARAMETERS = ("CTDNOBS",)
+"""params not in :attr:`STATIC_PARAMETERS_PER_CAST` that are also ignored by :func:`create_and_fill_data_variables`"""
 
 UNKNOWN = "UNKNOWN"
+"""Value used when some string value isn't found
+
+This is mmostly mitigated by the guarantees of the new CF format, but e.g. section id might be missing
+"""
 
 UNSPECIFIED_UNITS = "unspecified"
+"""Value used when there are no units"""
 
 STRLEN = 40
+"""length of char array variables, hardcoded to 40"""
 
 
 # utility functions from libcchdo.formats.woce
@@ -96,6 +115,13 @@ def strftime_woce_date_time(dt: xr.DataArray):
 
 # name change ascii -> _ascii to avoid builtin conflict
 def _ascii(x: str) -> str:
+    """Force all codepoints into valid ascii range
+
+    Works by encoding the str into ascii bytes with the replace err param, then decoding the bytes to str again
+
+    :param x: string with any unicode codepoint in it
+    :returns: string with all non ascii codepoints replaced with whatever "replace" does in :py:meth:`str.encode`
+    """
     return x.encode("ascii", "replace").decode("ascii")
 
 
@@ -401,7 +427,11 @@ def write_ctd(ds: xr.Dataset) -> bytes:
 
 
 def write_bottle(ds: xr.Dataset) -> bytes:
-    """How to write a Bottle NetCDF file."""
+    """How to write a Bottle NetCDF file.
+
+    :param ds: CCHDO CF/netCDF xarray dataset containing only a single bottle profile
+    :returns: the bytes of a netCDF3 COARDS file
+    """
     nc_file = Dataset("inmemory.nc", "w", format="NETCDF3_CLASSIC", memory=0)
 
     define_dimensions(nc_file, ds.dims["N_LEVELS"])
@@ -442,7 +472,15 @@ def write_bottle(ds: xr.Dataset) -> bytes:
     return bytes(nc_file.close())
 
 
-def to_coards(ds: xr.Dataset):
+def to_coards(ds: xr.Dataset) -> bytes:
+    """Convert an xr.Dataset to a zipfile with COARDS netCDF files inside
+
+    This function does support mixed CTD and Bottle datasets and will convert using profile_type var on a per profile basis.
+
+
+    :param ds: A dataset conforming to CCHDO CF/netCDF
+    :returns: a zipfile with one or more COARDS netCDF files as members.
+    """
     output_files = {}
     for _, profile in ds.groupby("N_PROF", squeeze=False):
         compact = profile.cchdo.compact_profile()
