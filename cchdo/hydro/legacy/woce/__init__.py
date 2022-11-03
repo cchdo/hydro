@@ -358,8 +358,8 @@ def write_bottle(ds: xr.Dataset):
     """How to write a Bottle WOCE file."""
 
     # Look through datetime for begin and end dates
-    begin_date = np.min(ds.time).dt.strftime("%Y%m%d")
-    end_date = np.max(ds.time).dt.strftime("%Y%m%d")
+    begin_date = np.min(ds.time).dt.strftime("%Y%m%d").values
+    end_date = np.max(ds.time).dt.strftime("%Y%m%d").values
 
     expocodes = "/".join(np.unique(ds.expocode))
     sect_id = "NONE"
