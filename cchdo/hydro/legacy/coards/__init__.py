@@ -4,6 +4,8 @@ The goal is, as much as possible, to use the old code with minimal changes such 
 
 * Exchange -> CF/netCDF -> COARDS netCDF (this library)
 * Exchange -> COARDS netCDF (using libcchdo)
+
+The entrypoint function is :func:`to_coards`
 """
 import datetime
 from csv import DictReader
@@ -91,24 +93,15 @@ STRLEN = 40
 """length of char array variables, hardcoded to 40"""
 
 
-# utility functions from libcchdo.formats.woce
-def strftime_woce_date(dt: xr.DataArray):
-    return dt.dt.strftime("%Y%m%d")
-
-
-def strftime_woce_time(dt: xr.DataArray):
-    return dt.dt.strftime("%H%M")
-
-
 # new behavior will always have the input be a datetime.datetime (Or np.datetime64)
 # this function needs modification
 def strftime_woce_date_time(dt: xr.DataArray):
-    # pydate = dt.values.astype("<M8[ms]").astype(datetime.datetime).item()
+    """Take an xr.DataArray with time values in it and convert to strings"""
     if dt is None:
         return (None, None)
     if dt.attrs.get("resolution", 0) >= 1:
-        return (strftime_woce_date(dt), None)
-    return (strftime_woce_date(dt), strftime_woce_time(dt))
+        return (dt.dt.strftime("%Y%m%d"), None)
+    return (dt.dt.strftime("%Y%m%d"), dt.dt.strftime("%H%M"))
 
 
 # utility functions from libcchdo.formats.netcdf
@@ -151,17 +144,25 @@ def _pad_station_cast(x: str) -> str:
 
 
 def get_filename(expocode, station, cast, extension):
+    """Generate the filename for COARDS netCDF files
+
+    Was ported directly from libcchdo and should have the same formatting behavior
+    """
     if extension not in ["hy1", "ctd"]:
         log.warning("File extension is not recognized.")
     station = _pad_station_cast(station)
     cast = _pad_station_cast(cast)
-    return "%s.%s" % (
-        "_".join((expocode, station, cast, extension)),
-        FILE_EXTENSION,
-    )
+
+    stem = "_".join((expocode, station, cast, extension))
+    return f"{stem}.{FILE_EXTENSION}"
 
 
 def minutes_since_epoch(dt: xr.DataArray, epoch, error=-9):
+    """Make the time value for netCDF files
+
+    The custom implimentation in libcchdo was discarded in favor of the date2num function from cftime.
+    Not sure if cftime exsited in the netCDF4 python library at the time.
+    """
     return date2num(
         dt.values.astype("<M8[ms]").astype(datetime.datetime),
         epoch,
@@ -173,7 +174,17 @@ def minutes_since_epoch(dt: xr.DataArray, epoch, error=-9):
 
 
 def define_dimensions(nc_file: Dataset, length: int):
-    """Create NetCDF file dimensions."""
+    """Create NetCDF file dimensions.
+
+    This creates all the COARDS dimensions in the input nc_file as a side effect (does not return)
+    Dimensions created are:
+
+    * time
+    * pressure
+    * latitude
+    * longitude
+    * string_dimension
+    """
     makeDim = nc_file.createDimension
     makeDim("time", 1)
     makeDim("pressure", length)
@@ -191,6 +202,7 @@ def define_attributes(
     castno,
     bottom_depth,
 ):
+    """Sets the global attributes of the input nc_file as a side effect"""
     nc_file.EXPOCODE = expocode
     nc_file.Conventions = "COARDS/WOCE"
     nc_file.WOCE_VERSION = "3.0"
@@ -206,6 +218,7 @@ def define_attributes(
 
 
 def set_original_header(nc_file: Dataset, ds: xr.Dataset):  # dfile, datatype):
+    """Sets the ORIGINAL_HEADER global attribute to whatever is in ds.attrs["comments"]"""
     # emulates the libcchdo behavior with having # and an extra end line
     comments = ds.attrs.get("comments", "").splitlines()
     nc_file.ORIGINAL_HEADER = "\n".join(
@@ -374,7 +387,11 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
             vfw[:] = np.nan_to_num(qc_variable.to_numpy(), nan=9)
 
 
-def _create_common_variables(nc_file, ds):
+def _create_common_variables(nc_file: Dataset, ds: xr.Dataset):
+    """Extracts the latitude, longitude, station, and cast from ds and passes them to create_common_variables
+
+    This logic could eventually just move to create_common_variables as it was previously rather complicated
+    """
     # Lon and lat are now guaranteed
     latitude = float(ds.latitude)
     longitude = float(ds.longitude)

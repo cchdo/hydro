@@ -52,8 +52,6 @@ try:
 except ImportError:
     hydro_version = CCHDO_VERSION = "unknown"
 
-__all__ = ["read_exchange"]
-
 log = logging.getLogger(__name__)
 
 DIMS = ("N_PROF", "N_LEVELS")
