@@ -13,6 +13,7 @@ Welcome to hydro's documentation!
    format_spec
    attributes
    erddap
+   ODF_CCHDO_netCDF_ops
    changelog
 
 
