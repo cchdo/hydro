@@ -1,6 +1,9 @@
 """Core operations on a CCHDO CF/netCDF file
 """
+from typing import Dict, Hashable, Tuple
+
 import numpy as np
+import numpy.typing as npt
 import xarray as xr
 
 from cchdo.params import WHPNames, WHPName
@@ -116,13 +119,13 @@ def _dataarray_factory(
 
 def add_prof(
     ds: xr.Dataset,
-    expocode: str,
-    station: str,
-    cast: int,
-    time,
-    latitude: float,
-    longitude: float,
-    profile_type: str,
+    expocode: npt.ArrayLike,
+    station: npt.ArrayLike,
+    cast: npt.ArrayLike,
+    time: npt.ArrayLike,
+    latitude: npt.ArrayLike,
+    longitude: npt.ArrayLike,
+    profile_type: npt.ArrayLike,
 ) -> xr.Dataset:
     ds = ds.reset_coords()
 
@@ -137,7 +140,7 @@ def add_prof(
     ) = np.broadcast_arrays(
         np.atleast_1d(expocode), station, cast, time, latitude, longitude, profile_type
     )
-    new_profs = {
+    new_profs: Dict[Hashable, npt.NDArray] = {
         "expocode": expocode,
         "station": station,
         "cast": cast,
@@ -147,7 +150,7 @@ def add_prof(
         "profile_type": profile_type,
     }
 
-    dataarrays = {}
+    dataarrays: Dict[Hashable, Tuple[Tuple[str, ...], npt.ArrayLike]] = {}
     for name, variable in ds.variables.items():
         if name in new_profs:
             data = new_profs[name].astype(variable.dtype.kind)
