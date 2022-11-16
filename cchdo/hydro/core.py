@@ -117,7 +117,19 @@ def _dataarray_factory(
     return var_da
 
 
-def add_prof(
+def add_param(ds: xr.Dataset, param: WHPName, with_flag=False) -> xr.Dataset:
+    return ds
+
+
+def add_profile_level(ds: xr.Dataset, idx, levels) -> xr.Dataset:
+    return ds
+
+
+def add_level(ds: xr.Dataset, n_levels=1) -> xr.Dataset:
+    return ds
+
+
+def add_profile(
     ds: xr.Dataset,
     expocode: npt.ArrayLike,
     station: npt.ArrayLike,
@@ -164,6 +176,9 @@ def add_prof(
                 np.empty((1, ds.dims["N_LEVELS"]), dtype=variable.dtype),
             )
     ds = xr.concat([ds, xr.Dataset(dataarrays)], dim="N_PROF")
+
+    # scalar var is expanded... squish it
+    ds["geometry_container"] = ds.geometry_container.squeeze()
 
     ds = ds.set_coords([coord.nc_name for coord in COORDS if coord.nc_name in ds])
     return ds
