@@ -520,7 +520,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
                 flag = [param.strfex(v, flag=True) for v in data]
                 data_block.append(flag)
 
-            if (errors := da.attrs.get("_errors")) is not None:
+            if (errors := da.attrs.get(ERROR_NAME)) is not None:
                 data = np.nditer(errors[valid_levels])
                 numeric_precision_override = self.cchdo_c_format_precision(
                     da.attrs.get("C_format", "")
@@ -586,24 +586,27 @@ class ExchangeAccessor(CCHDOAccessorBase):
                     # TODO maybe raise...
                     continue
 
-                # currently there are three types of ancillary: flags, errors, and analytical temps (e.g. for pH)
-                if standard_name == "temperature_of_analysis_of_sea_water":
-                    # this needs to get treated like a param
-                    for param in self._whpname_from_attrs(ancillary.attrs):
-                        params[param] = ancillary
-
-                if standard_name == "status_flag":
-                    for param in whp_params:
-                        ancillary.attrs["whp_name"] = f"{param.whp_name}_FLAG_W"
-                        params[param].attrs[FLAG_NAME] = ancillary
-
                 # TODO find a way to test this
-                if ancillary.attrs.get("whp_name") in WHPNames.error_cols:
+                if (
+                    ancillary.attrs.get("whp_name"),
+                    ancillary.attrs.get("whp_unit"),
+                ) in WHPNames.error_cols:
                     for param in whp_params:
                         if param.error_name is None:
                             raise ValueError(f"No error name for {param}")
                         ancillary.attrs["whp_name"] = param.error_name
                         params[param].attrs[ERROR_NAME] = ancillary
+
+                # currently there are three types of ancillary: flags, errors, and analytical temps (e.g. for pH)
+                elif standard_name == "temperature_of_analysis_of_sea_water":
+                    # this needs to get treated like a param
+                    for param in self._whpname_from_attrs(ancillary.attrs):
+                        params[param] = ancillary
+
+                elif standard_name == "status_flag":
+                    for param in whp_params:
+                        ancillary.attrs["whp_name"] = f"{param.whp_name}_FLAG_W"
+                        params[param].attrs[FLAG_NAME] = ancillary
 
         return params
 
