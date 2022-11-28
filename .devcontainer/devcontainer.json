@@ -9,7 +9,7 @@
 			// Update 'VARIANT' to pick a Python version: 3, 3.10, 3.9, 3.8, 3.7, 3.6
 			// Append -bullseye or -buster to pin to an OS version.
 			// Use -bullseye variants on local on arm64/Apple Silicon.
-			"VARIANT": "3.8-bullseye",
+			"VARIANT": "3.9-bullseye",
 			// Options
 			"NODE_VERSION": "none"
 		}
@@ -42,7 +42,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "sudo pip install -e '.[complete]' && pre-commit && pre-commit install",
+	"postCreateCommand": "git config --global --add safe.directory '*'; sudo pip install -e '.[complete]' && pre-commit && pre-commit install",
 
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
