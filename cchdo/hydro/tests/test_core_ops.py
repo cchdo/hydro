@@ -44,7 +44,7 @@ def test_create_new():
                 attrs={"whp_name": "SAMPNO"},
             ),
             "time": xr.DataArray(
-                np.empty((0), np.dtype("datetime64")),
+                np.empty((0), np.dtype("datetime64[ns]")),
                 dims=["N_PROF"],
                 attrs={
                     "standard_name": "time",
