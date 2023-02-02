@@ -1,5 +1,6 @@
 v1.0.2.3 (unreleased)
 =====================
+* (bug) Remove the `C_format` and `C_format_source` attributes for non floating point variables. Integer and string values are exact so do not need any sort of format hint. Including a format string for non floating point values is undefined behavior in the netCDF-C Library and can result in crashing.
 * (new) Add `to_coards()` and `to_woce()` accessors to maintain legacy formats at CCHDO.
 * (new) All the `to_*` accessors now support a path argument that will accept a writeable binary mode file like object or a filesystem path to write to.
 * (new) Add a `compact_profile()` accessor that drops the trailing fill values from a profile
