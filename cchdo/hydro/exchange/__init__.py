@@ -1472,6 +1472,16 @@ def read_exchange(
 
         var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], attrs=attrs)
 
+        if param.dtype != "decimal":
+            try:
+                del var_da.attrs["C_format"]
+            except KeyError:
+                pass
+            try:
+                del var_da.attrs["C_format_source"]
+            except KeyError:
+                pass
+
         if param.dtype == "string":
             var_da.encoding["dtype"] = "S1"
 
@@ -1524,12 +1534,12 @@ def read_exchange(
             comments = f"{comments}\n----file_break----\n{exd.comments}"
 
         for param in params:
-            if param in exd.param_precisions:
+            if param in exd.param_precisions and param.dtype == "decimal":
                 dataarrays[param.nc_name].attrs[
                     "C_format"
                 ] = f"%.{exd.param_precisions[param]}f"
                 dataarrays[param.nc_name].attrs["C_format_source"] = "input_file"
-            if param in exd.error_precisions:
+            if param in exd.error_precisions and param.dtype == "decimal":
                 dataarrays[f"{param.nc_name}_error"].attrs[
                     "C_format"
                 ] = f"%.{exd.error_precisions[param]}f"
