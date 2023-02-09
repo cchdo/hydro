@@ -5,9 +5,9 @@ import pytest
 
 from xarray.testing import assert_identical
 
-from hydro.accessors import MiscAccessor
-from hydro.exchange import FileType
-from hydro.exchange import read_exchange
+from ..accessors import MiscAccessor
+from ..exchange import FileType
+from ..exchange import read_exchange
 
 exp_stn_cast = json.loads(read_text("cchdo.hydro.tests.data", "stns_test_data.json"))
 

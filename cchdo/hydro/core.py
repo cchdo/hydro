@@ -162,12 +162,12 @@ def add_profile(
         "profile_type": profile_type,
     }
 
-    dataarrays: Dict[Hashable, Tuple[Tuple[str, ...], npt.ArrayLike]] = {}
+    dataarrays: Dict[Hashable, Tuple[Tuple[Hashable, ...], npt.ArrayLike]] = {}
     for name, variable in ds.variables.items():
         if name in new_profs:
             data = new_profs[name].astype(variable.dtype.kind)
         if len(variable.dims) == 0:
-            dataarrays[name] = (variable.dims, float("nan"))
+            dataarrays[name] = (variable.dims, np.nan)
         elif len(variable.dims) == 1:
             dataarrays[name] = (variable.dims, data)
         elif len(variable.dims) == 2:

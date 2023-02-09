@@ -1,6 +1,6 @@
 import xarray as xr
 
-from hydro.rename import rename_with_bookkeeping, to_argo_variable_names
+from ..rename import rename_with_bookkeeping, to_argo_variable_names
 
 
 def is_not_none(a):

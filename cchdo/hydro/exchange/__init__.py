@@ -545,7 +545,6 @@ def check_flags(dataset: xr.Dataset, raises=True):
     # it is legal in CF for one set of flags to apply to multiple vars
     flag_errors = {}
     for flag_var in flag_vars:
-
         # get the flag and check attrs for defs
         flag_da = dataset[flag_var]
         conventions = None
@@ -1113,7 +1112,6 @@ def _combine_dt_ndarray(
     time_arr: Optional[npt.NDArray[np.str_]] = None,
     time_pad=False,
 ) -> np.ndarray:
-
     # TODO: When min pyver is 3.10, maybe consider pattern matching here
     def _parse_date(date_val: str) -> np.datetime64:
         if date_val == "":
@@ -1327,7 +1325,6 @@ def _load_raw_exchange(
         data = [datum.strip() for datum in data]
 
     elif is_zipfile(data_raw):
-
         data_raw.seek(0)  # is_zipfile moves the "tell" position
         with ZipFile(data_raw) as zipfile:
             for zipinfo in zipfile.infolist():

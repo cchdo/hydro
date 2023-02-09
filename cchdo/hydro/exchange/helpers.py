@@ -4,7 +4,9 @@ from typing import Optional, Dict
 from cchdo.params import WHPNames
 
 
-def simple_bottle_exchange(params=None, units=None, data=None, comments: str = None):
+def simple_bottle_exchange(
+    params=None, units=None, data=None, comments: Optional[str] = None
+):
     stamp = "BOTTLE,test"
     min_params = [
         "EXPOCODE",

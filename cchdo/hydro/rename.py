@@ -49,4 +49,4 @@ def rename_with_bookkeeping(
 
 
 def to_argo_variable_names(xarray_obj: Dataset) -> Dataset:
-    ...
+    return xarray_obj

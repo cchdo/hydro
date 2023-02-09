@@ -106,6 +106,7 @@ def strftime_woce_date_time(dt: xr.DataArray):
 
 # utility functions from libcchdo.formats.netcdf
 
+
 # name change ascii -> _ascii to avoid builtin conflict
 def _ascii(x: str) -> str:
     """Force all codepoints into valid ascii range

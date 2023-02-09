@@ -1,19 +1,20 @@
 import io
-import pytest
 from importlib.resources import open_binary
+
+import pytest
 
 import numpy as np
 
-from hydro.exchange import read_exchange
+from ..exchange import read_exchange
 
-from hydro.exchange.exceptions import (
+from ..exchange.exceptions import (
     ExchangeBOMError,
     ExchangeEncodingError,
     ExchangeDuplicateParameterError,
     ExchangeParameterUndefError,
 )
 
-from hydro.exchange.helpers import simple_bottle_exchange
+from ..exchange.helpers import simple_bottle_exchange
 
 
 def test_btl_date_time():

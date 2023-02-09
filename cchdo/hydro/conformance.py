@@ -28,7 +28,6 @@ class CheckResult:
 
 
 class CCHDOnetCDF10:
-
     __cchdo_version__ = "1.0"
 
     def check_cf_version(self, ds):

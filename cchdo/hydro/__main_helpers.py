@@ -17,7 +17,6 @@ def p_file(file_m):
         WHPNames.add_alias(("OSNUM", None), ("EVENT_NUMBER", None))
 
     if file_metadata["data_type"] == "ctd" and ("NITRATE", "UMOL/KG") not in WHPNames:
-
         # HOT names that are a little dangerous to have in the real DB
         WHPNames.add_alias(("NITRATE", "UMOL/KG"), ("CTDNITRATE", "UMOL/KG"))
         WHPNames.add_alias(("CHLPIG", "uG/L"), ("CTDFLUOR", "MG/M^3"))
