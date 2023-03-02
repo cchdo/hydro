@@ -46,7 +46,7 @@ class CCHDOAccessorBase:
     saves the xarray object to self._obj for all the subclasses
     """
 
-    def __init__(self, xarray_obj: Union[xr.DataArray, xr.Dataset]):
+    def __init__(self, xarray_obj: xr.Dataset):
         self._obj = xarray_obj
 
 
@@ -695,7 +695,12 @@ class MergeFQAccessor(CCHDOAccessorBase):
     # This will rely on the N_PROF and N_LEVELS (with extra at some point)
     # * N_PROF will be indexed with (expocode, station, cast)
     # * N_LEVELS will be subindexd with (sample)
-    def merge_fq(self, fq, *, check_flags=True):
+    def merge_fq(self, fq: List[Dict[str, Union[str, float]]], *, check_flags=True):
+        # TODOs...
+        # * (default True) restrict to open "slots" of non flag 9s
+        # * Get precision info from str inputs
+        # * Vectorize updates
+        # * Update history attribute
         new_obj = self._obj.copy(deep=True)
         idxer = WHPIndxer(new_obj)
 
@@ -705,8 +710,8 @@ class MergeFQAccessor(CCHDOAccessorBase):
                 if param in WHPNames.error_cols:
                     whpname = WHPNames.error_cols[param]
                     new_obj[whpname.nc_name_error][prof, level] = value
-                elif param.endswith("_FLAG_W"):
-                    whpname = WHPNames[param[:-7]]
+                elif (whpname := param.removesuffix("_FLAG_W")) != param:
+                    whpname = WHPNames[whpname]
                     new_obj[whpname.nc_name_flag][prof, level] = value
                 else:
                     whpname = WHPNames[param]
