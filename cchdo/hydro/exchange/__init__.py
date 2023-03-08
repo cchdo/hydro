@@ -1083,7 +1083,9 @@ class _ExchangeInfo:
         )
 
 
-def extract_numeric_precisions(data: npt.NDArray[np.str_]) -> npt.NDArray[np.int_]:
+def extract_numeric_precisions(
+    data: Union[List[str], npt.NDArray[np.str_]]
+) -> npt.NDArray[np.int_]:
     """Get the numeric precision of a printed decimal number"""
     # magic number explain: np.char.partition expands each element into a 3-tuple
     # of (pre, sep, post) of some sep, in our case a "." char.

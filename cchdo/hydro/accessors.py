@@ -14,7 +14,7 @@ import numpy as np
 from cchdo.params import WHPNames, WHPName
 
 from .exchange import FileType, all_same, check_flags as _check_flags
-from .exchange import flatten_cdom_coordinate
+from .exchange import flatten_cdom_coordinate, extract_numeric_precisions
 
 FLAG_NAME = "cchdo.hydro._qc"
 ERROR_NAME = "cchdo.hydro._error"
@@ -703,10 +703,13 @@ class WHPIndxer:
         return prof_idx, level_idx
 
 
+NormalizedFQ = Dict[Union[FQProfileKey, FQPointKey], Dict[str, Union[str, float]]]
+
+
 def normalize_fq(
     fq: List[Dict[str, Union[str, float]]], *, check_dupes=True
-) -> Dict[Union[FQProfileKey, FQPointKey], Dict[str, Union[str, float]]]:
-    normalized: defaultdict[Union[FQProfileKey, FQPointKey], dict] = defaultdict(dict)
+) -> NormalizedFQ:
+    normalized: NormalizedFQ = defaultdict(dict)
     key: Union[FQProfileKey, FQPointKey]
     for line in fq:
         expocode = str(line.pop("EXPOCODE"))
@@ -729,6 +732,19 @@ def normalize_fq(
     return normalized
 
 
+def fq_get_precisions(fq: NormalizedFQ) -> Dict[str, int]:
+    collect: Dict[str, List[str]] = defaultdict(list)
+    for value in fq.values():
+        for param, data in value.items():
+            if isinstance(data, str):
+                collect[param].append(data)
+
+    return {
+        param: extract_numeric_precisions(data).item()
+        for param, data in collect.items()
+    }
+
+
 class MergeFQAccessor(CCHDOAccessorBase):
     # Until I figure out how to use the pandas machinery (or the explict index project of xarray pays off)
     # I will use a "custom" indexer here to index into the variables
@@ -737,7 +753,6 @@ class MergeFQAccessor(CCHDOAccessorBase):
     # * N_LEVELS will be subindexd with (sample)
     def merge_fq(self, fq: List[Dict[str, Union[str, float]]], *, check_flags=True):
         # TODOs...
-        # * Get precision info from str inputs
         # * (default True) restrict to open "slots" of non flag 9s
         # * Vectorize updates
         # * Update history attribute
@@ -745,6 +760,7 @@ class MergeFQAccessor(CCHDOAccessorBase):
         idxer = WHPIndxer(new_obj)
 
         normalized_fq = normalize_fq(fq)
+        input_precisions = fq_get_precisions(normalized_fq)
 
         for key, values in normalized_fq.items():
             prof, level = idxer[key]
@@ -752,12 +768,24 @@ class MergeFQAccessor(CCHDOAccessorBase):
                 if param in WHPNames.error_cols:
                     whpname = WHPNames.error_cols[param]
                     new_obj[whpname.nc_name_error][prof, level] = value
+                    if param in input_precisions and whpname.dtype == "decimal":
+                        new_obj[whpname.nc_name_error].attrs[
+                            "C_format"
+                        ] = f"%.{input_precisions[param]}f"
+                        new_obj[whpname.nc_name_error].attrs[
+                            "C_format_source"
+                        ] = "input_file"
                 elif (whpname := param.removesuffix("_FLAG_W")) != param:
                     whpname = WHPNames[whpname]
                     new_obj[whpname.nc_name_flag][prof, level] = value
                 else:
                     whpname = WHPNames[param]
                     new_obj[whpname.nc_name][prof, level] = value
+                    if param in input_precisions and whpname.dtype == "decimal":
+                        new_obj[whpname.nc_name].attrs[
+                            "C_format"
+                        ] = f"%.{input_precisions[param]}f"
+                        new_obj[whpname.nc_name].attrs["C_format_source"] = "input_file"
 
         if check_flags:
             _check_flags(new_obj)
