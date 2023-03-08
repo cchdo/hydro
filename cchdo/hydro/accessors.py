@@ -755,7 +755,8 @@ class MergeFQAccessor(CCHDOAccessorBase):
         # TODOs...
         # * (default True) restrict to open "slots" of non flag 9s
         # * Vectorize updates
-        # * Update history attribute
+        # * Update history attribute...
+        now = datetime.now(timezone.utc)
         new_obj = self._obj.copy(deep=True)
         idxer = WHPIndxer(new_obj)
 
@@ -767,26 +768,43 @@ class MergeFQAccessor(CCHDOAccessorBase):
             for param, value in values.items():
                 if param in WHPNames.error_cols:
                     whpname = WHPNames.error_cols[param]
-                    new_obj[whpname.nc_name_error][prof, level] = value
+                    col_ref = new_obj[whpname.nc_name_error]
+                    col_ref[prof, level] = value
+                    col_ref.attrs["date_modified"] = now.isoformat(timespec="seconds")
                     if param in input_precisions and whpname.dtype == "decimal":
-                        new_obj[whpname.nc_name_error].attrs[
-                            "C_format"
-                        ] = f"%.{input_precisions[param]}f"
-                        new_obj[whpname.nc_name_error].attrs[
-                            "C_format_source"
-                        ] = "input_file"
+                        new_c_format = f"%.{input_precisions[param]}f"
+                        new_c_format_source = "input_file"
+                        if (
+                            col_ref.attrs.get("C_format") != new_c_format
+                            or col_ref.attrs.get("C_format_source")
+                            != new_c_format_source
+                        ):
+                            col_ref.attrs["C_format"] = new_c_format
+                            col_ref.attrs["C_format_source"] = new_c_format_source
+                            col_ref.attrs["date_metadata_modified"] = now.isoformat(
+                                timespec="seconds"
+                            )
                 elif (whpname := param.removesuffix("_FLAG_W")) != param:
                     whpname = WHPNames[whpname]
                     new_obj[whpname.nc_name_flag][prof, level] = value
                 else:
                     whpname = WHPNames[param]
-                    new_obj[whpname.nc_name][prof, level] = value
+                    col_ref = new_obj[whpname.nc_name]
+                    col_ref[prof, level] = value
+                    col_ref.attrs["date_modified"] = now.isoformat(timespec="seconds")
                     if param in input_precisions and whpname.dtype == "decimal":
-                        new_obj[whpname.nc_name].attrs[
-                            "C_format"
-                        ] = f"%.{input_precisions[param]}f"
-                        new_obj[whpname.nc_name].attrs["C_format_source"] = "input_file"
-
+                        new_c_format = f"%.{input_precisions[param]}f"
+                        new_c_format_source = "input_file"
+                        if (
+                            col_ref.attrs.get("C_format") != new_c_format
+                            or col_ref.attrs.get("C_format_source")
+                            != new_c_format_source
+                        ):
+                            col_ref.attrs["C_format"] = new_c_format
+                            col_ref.attrs["C_format_source"] = new_c_format_source
+                            col_ref.attrs["date_metadata_modified"] = now.isoformat(
+                                timespec="seconds"
+                            )
         if check_flags:
             _check_flags(new_obj)
         return new_obj
