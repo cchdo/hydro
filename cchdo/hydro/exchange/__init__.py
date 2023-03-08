@@ -953,7 +953,7 @@ class _ExchangeInfo:
                 if not _is_valid_exchange_numeric(param_col):
                     raise ValueError("exchange numeric data has bad chars")
                 if precision_source == "file":
-                    whp_param_precisions[param] = _extract_numeric_precisions(param_col)
+                    whp_param_precisions[param] = extract_numeric_precisions(param_col)
                 param_col[fill_spaces] = "nan"
             if param.dtype == "string":
                 param_col[fill_spaces] = ""
@@ -974,7 +974,7 @@ class _ExchangeInfo:
                         f"{param} error col exchange numeric data has bad chars"
                     )
                 if precision_source == "file":
-                    whp_error_precisions[param] = _extract_numeric_precisions(param_col)
+                    whp_error_precisions[param] = extract_numeric_precisions(param_col)
                 param_col[fill_spaces] = "nan"
             whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
 
@@ -1083,7 +1083,7 @@ class _ExchangeInfo:
         )
 
 
-def _extract_numeric_precisions(data: npt.NDArray[np.str_]) -> npt.NDArray[np.int_]:
+def extract_numeric_precisions(data: npt.NDArray[np.str_]) -> npt.NDArray[np.int_]:
     """Get the numeric precision of a printed decimal number"""
     # magic number explain: np.char.partition expands each element into a 3-tuple
     # of (pre, sep, post) of some sep, in our case a "." char.
