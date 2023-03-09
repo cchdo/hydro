@@ -462,7 +462,7 @@ class ExchangeAccessor(CCHDOAccessorBase):
                 value = da.dt.strftime("%Y%m%d").to_numpy()[0]
             elif param in self.time_names:
                 date_or_time = "time"
-                value = da.dt.strftime("%H%M").to_numpy()[0]
+                value = da.dt.round("T").dt.strftime("%H%M").to_numpy()[0]
             else:
                 try:
                     data = da.values[0].item()
@@ -499,7 +499,13 @@ class ExchangeAccessor(CCHDOAccessorBase):
                 values = da[valid_levels].dt.strftime("%Y%m%d").to_numpy().tolist()
             elif param in self.time_names:
                 date_or_time = "time"
-                values = da[valid_levels].dt.strftime("%H%M").to_numpy().tolist()
+                values = (
+                    da[valid_levels]
+                    .dt.round("T")
+                    .dt.strftime("%H%M")
+                    .to_numpy()
+                    .tolist()
+                )
             else:
                 data = np.nditer(da[valid_levels], flags=["refs_ok"])
                 numeric_precision_override = self.cchdo_c_format_precision(
