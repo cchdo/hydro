@@ -5,7 +5,7 @@ import pytest
 
 from xarray.testing import assert_identical
 
-from ..accessors import MiscAccessor
+from ..accessors import CCHDOAccessor
 from ..exchange import FileType
 from ..exchange import read_exchange
 
@@ -21,7 +21,9 @@ exp_stn_cast = json.loads(read_text("cchdo.hydro.tests.data", "stns_test_data.js
 def test_gen_fname_machinery(
     expocode, station, cast, profile_type, profile_count, ftype
 ):
-    MiscAccessor._gen_fname(expocode, station, cast, profile_type, profile_count, ftype)
+    CCHDOAccessor._gen_fname(
+        expocode, station, cast, profile_type, profile_count, ftype
+    )
 
 
 def test_exchange_bottle_round_trip():

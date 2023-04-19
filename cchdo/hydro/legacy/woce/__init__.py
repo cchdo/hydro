@@ -389,14 +389,16 @@ def write_ctd(ds: xr.Dataset):
     if ds.dims["N_PROF"] != 1:
         raise NotImplementedError("can only write single profile")
 
-    expocode = ds.expocode[0]
-    section = ds.get("section_id", [""])[0]
+    expocode = "/".join(np.unique(ds.expocode))
+    section = "NONE"
+    if "section_id" in ds:
+        section = "/".join(np.unique(ds.section_id))
     station = ds.station[0]
     cast = ds.cast[0]
 
     columns, base_format = columns_and_base_format(ds, is_ctd=True)
 
-    date = ds.time.dt.strftime("%m%d%y")[0]
+    date = ds.time.dt.strftime("%m%d%y")[0].item()
 
     record1 = f"EXPOCODE {expocode} WHP-ID {section} DATE {date}"
     # 2 at end of line denotes record 2

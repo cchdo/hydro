@@ -41,18 +41,90 @@ def write_or_return(
     return None
 
 
-class CCHDOAccessorBase:
-    """Class base for CCHDO accessors
+# maybe temp location for FQ merge machinery
+class FQPointKey(NamedTuple):
+    expocode: str
+    station: str
+    cast: int
+    sample: str
 
-    saves the xarray object to self._obj for all the subclasses
-    """
 
+class FQProfileKey(NamedTuple):
+    expocode: str
+    station: str
+    cast: int
+
+
+class WHPIndxer:
+    def __init__(self, obj: xr.Dataset) -> None:
+        self.n_prof = pd.MultiIndex.from_arrays(
+            [
+                obj.expocode.data,
+                obj.station.data,
+                obj.cast.data,
+            ],
+            names=["expocode", "station", "cast"],
+        )
+        self.n_level = [
+            pd.MultiIndex.from_arrays([prof.sample.data], names=["sample"])
+            for _, prof in obj.groupby("N_PROF")
+        ]
+
+    def __getitem__(self, key: Union[FQProfileKey, FQPointKey]):
+        prof_idx = self.n_prof.get_loc((key.expocode, key.station, key.cast))
+        if isinstance(key, FQPointKey):
+            level_idx = self.n_level[prof_idx].get_loc((key.sample))
+        else:
+            level_idx = slice(None)
+
+        return prof_idx, level_idx
+
+
+NormalizedFQ = Dict[Union[FQProfileKey, FQPointKey], Dict[str, Union[str, float]]]
+
+
+def normalize_fq(
+    fq: List[Dict[str, Union[str, float]]], *, check_dupes=True
+) -> NormalizedFQ:
+    normalized: NormalizedFQ = defaultdict(dict)
+    key: Union[FQProfileKey, FQPointKey]
+    for line in fq:
+        expocode = str(line.pop("EXPOCODE"))
+        station = str(line.pop("STNNBR"))
+        cast = int(line.pop("CASTNO"))
+        try:
+            sample = str(line.pop("SAMPNO"))
+        except KeyError:
+            key = FQProfileKey(expocode, station, cast)
+        else:
+            key = FQPointKey(expocode, station, cast, sample)
+
+        if check_dupes is True:
+            shared_keys = normalized[key].keys() & line.keys()
+            if len(shared_keys) != 0:
+                raise ValueError(f"Duplicate input data found: {key}")
+
+        normalized[key].update(line)
+
+    return normalized
+
+
+def fq_get_precisions(fq: NormalizedFQ) -> Dict[str, int]:
+    collect: Dict[str, List[str]] = defaultdict(list)
+    for value in fq.values():
+        for param, data in value.items():
+            if isinstance(data, str):
+                collect[param].append(data)
+
+    return {
+        param: extract_numeric_precisions(data).item()
+        for param, data in collect.items()
+    }
+
+
+class CCHDOAccessor:
     def __init__(self, xarray_obj: xr.Dataset):
         self._obj = xarray_obj
-
-
-class MatlabAccessor(CCHDOAccessorBase):
-    """Accessor containing the experimental matlab machinery"""
 
     def to_mat(self, fname):
         """Experimental Matlab .mat data file generator
@@ -104,10 +176,6 @@ class MatlabAccessor(CCHDOAccessorBase):
                 value["data"] = np.nan_to_num(value["data"], nan=9)
 
         scipy_savemat(fname, mat_dict)
-
-
-class LegacyFormatAccessor(CCHDOAccessorBase):
-    """Accessor containing legacy format outputs (coards, woce)"""
 
     def to_coards(self, path=None):
         from .legacy.coards import to_coards
@@ -282,10 +350,6 @@ class LegacyFormatAccessor(CCHDOAccessorBase):
         ).encode("ascii")
         return write_or_return(sum_file, path)
 
-
-class GeoAccessor(CCHDOAccessorBase):
-    """Accessor providing geo_interface machinery"""
-
     @property
     def __geo_interface__(self):
         """The station positions as a MultiPoint geo interface
@@ -310,10 +374,6 @@ class GeoAccessor(CCHDOAccessorBase):
 
         geo["type"] = "LineString"
         return geo
-
-
-class MiscAccessor(CCHDOAccessorBase):
-    """Accessor with misc functions that don't fit in some other category"""
 
     @staticmethod
     def _gen_fname(
@@ -373,10 +433,6 @@ class MiscAccessor(CCHDOAccessorBase):
                 "Cannot compact Dataset with more than one profile"
             )
         return self._obj.isel(N_LEVELS=(self._obj.sample != "")[0])
-
-
-class ExchangeAccessor(CCHDOAccessorBase):
-    """Class containing the to_exchange functionn"""
 
     date_names = {WHPNames["DATE"], WHPNames["BTL_DATE"]}
     time_names = {WHPNames["TIME"], WHPNames["BTL_TIME"]}
@@ -669,89 +725,6 @@ class ExchangeAccessor(CCHDOAccessorBase):
         output_zip.seek(0)
         return write_or_return(output_zip.read(), path)
 
-
-# maybe temp location for FQ merge machinery
-class FQPointKey(NamedTuple):
-    expocode: str
-    station: str
-    cast: int
-    sample: str
-
-
-class FQProfileKey(NamedTuple):
-    expocode: str
-    station: str
-    cast: int
-
-
-class WHPIndxer:
-    def __init__(self, obj: xr.Dataset) -> None:
-        self.n_prof = pd.MultiIndex.from_arrays(
-            [
-                obj.expocode.data,
-                obj.station.data,
-                obj.cast.data,
-            ],
-            names=["expocode", "station", "cast"],
-        )
-        self.n_level = [
-            pd.MultiIndex.from_arrays([prof.sample.data], names=["sample"])
-            for _, prof in obj.groupby("N_PROF")
-        ]
-
-    def __getitem__(self, key: Union[FQProfileKey, FQPointKey]):
-        prof_idx = self.n_prof.get_loc((key.expocode, key.station, key.cast))
-        if isinstance(key, FQPointKey):
-            level_idx = self.n_level[prof_idx].get_loc((key.sample))
-        else:
-            level_idx = slice(None)
-
-        return prof_idx, level_idx
-
-
-NormalizedFQ = Dict[Union[FQProfileKey, FQPointKey], Dict[str, Union[str, float]]]
-
-
-def normalize_fq(
-    fq: List[Dict[str, Union[str, float]]], *, check_dupes=True
-) -> NormalizedFQ:
-    normalized: NormalizedFQ = defaultdict(dict)
-    key: Union[FQProfileKey, FQPointKey]
-    for line in fq:
-        expocode = str(line.pop("EXPOCODE"))
-        station = str(line.pop("STNNBR"))
-        cast = int(line.pop("CASTNO"))
-        try:
-            sample = str(line.pop("SAMPNO"))
-        except KeyError:
-            key = FQProfileKey(expocode, station, cast)
-        else:
-            key = FQPointKey(expocode, station, cast, sample)
-
-        if check_dupes is True:
-            shared_keys = normalized[key].keys() & line.keys()
-            if len(shared_keys) != 0:
-                raise ValueError(f"Duplicate input data found: {key}")
-
-        normalized[key].update(line)
-
-    return normalized
-
-
-def fq_get_precisions(fq: NormalizedFQ) -> Dict[str, int]:
-    collect: Dict[str, List[str]] = defaultdict(list)
-    for value in fq.values():
-        for param, data in value.items():
-            if isinstance(data, str):
-                collect[param].append(data)
-
-    return {
-        param: extract_numeric_precisions(data).item()
-        for param, data in collect.items()
-    }
-
-
-class MergeFQAccessor(CCHDOAccessorBase):
     # Until I figure out how to use the pandas machinery (or the explict index project of xarray pays off)
     # I will use a "custom" indexer here to index into the variables
     # This will rely on the N_PROF and N_LEVELS (with extra at some point)
@@ -814,19 +787,6 @@ class MergeFQAccessor(CCHDOAccessorBase):
         if check_flags:
             _check_flags(new_obj)
         return new_obj
-
-
-class CCHDOAccessor(
-    ExchangeAccessor,
-    GeoAccessor,
-    LegacyFormatAccessor,
-    MatlabAccessor,
-    MiscAccessor,
-    MergeFQAccessor,
-):
-    """Collect all the accessors into a single class"""
-
-    ...
 
 
 xr.register_dataset_accessor("cchdo")(CCHDOAccessor)
