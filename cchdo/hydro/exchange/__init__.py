@@ -951,7 +951,9 @@ class _ExchangeInfo:
             fill_spaces = _get_fill_locs(param_col, fill_values)
             if param.dtype in ("decimal", "integer"):
                 if not _is_valid_exchange_numeric(param_col):
-                    raise ValueError("exchange numeric data has bad chars")
+                    raise ValueError(
+                        f"exchange numeric data for {param.whp_name} has bad chars"
+                    )
                 if precision_source == "file":
                     whp_param_precisions[param] = extract_numeric_precisions(param_col)
                 param_col[fill_spaces] = "nan"
@@ -1358,6 +1360,66 @@ class CheckOptions(TypedDict, total=False):
     flags: bool
 
 
+def read_csv(
+    filename_or_obj: ExchangeIO,
+    *,
+    ftype: FileType = FileType.BOTTLE,
+    checks: Optional[CheckOptions] = None,
+) -> xr.Dataset:
+    @dataclasses.dataclass
+    class DummyParam:
+        whp_name: str
+        whp_unit: str
+
+    _checks: CheckOptions = {"flags": True}
+    if checks is not None:
+        _checks.update(checks)
+
+    data = _load_raw_exchange(
+        filename_or_obj,
+        file_seperator="something_very_unliekly~~~",
+        keep_seperator=False,
+    )
+
+    if len(data) != 1:
+        raise ValueError("read_csv can only read a single file")
+
+    splitdata = data[0].splitlines()
+
+    params_units = splitdata[0]
+    whp_params: list[WHPName | DummyParam] = []
+    for name in params_units.split(","):
+        try:
+            whp_params.append(WHPNames[name])
+        except KeyError:
+            try:
+                WHPNames.error_cols[name]
+            except KeyError:
+                whp_params.append(DummyParam(name, ""))
+
+    params = [name.whp_name for name in whp_params]
+    units = [
+        name.whp_unit if (name.whp_unit is not None) else "" for name in whp_params
+    ]
+
+    NONE_SLICE = slice(
+        0,
+        0,
+    )
+    new_data = tuple((",".join(params), ",".join(units), *splitdata[1:]))
+    exchange_data = _ExchangeInfo(
+        stamp_slice=NONE_SLICE,
+        comments_slice=NONE_SLICE,
+        ctd_headers_slice=NONE_SLICE,
+        params_idx=0,
+        units_idx=1,
+        data_slice=slice(2, None),
+        post_data_slice=NONE_SLICE,
+        _raw_lines=new_data,
+    ).finalize()
+    return _from_exchange_data([exchange_data], ftype=ftype, checks=_checks)
+
+
 def read_exchange(
     filename_or_obj: ExchangeIO,
     *,
@@ -1404,6 +1466,19 @@ def read_exchange(
         )
         for df in data
     ]
+
+    return _from_exchange_data(exchange_data, ftype=ftype, checks=_checks)
+
+
+def _from_exchange_data(
+    exchange_data: list[_ExchangeData],
+    *,
+    ftype=FileType.BOTTLE,
+    checks: Optional[CheckOptions] = None,
+) -> xr.Dataset:
+    _checks: CheckOptions = {"flags": True}
+    if checks is not None:
+        _checks.update(checks)
 
     if not all((fp.single_profile for fp in exchange_data)):
         exchange_data = list(chain(*[exd.split_profiles() for exd in exchange_data]))
