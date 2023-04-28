@@ -147,6 +147,18 @@ Dataset Structure
       * Encoding, line endings
       * where are actual strings allowed, netCDF4 python forces string types if non ascii
 
+The CF conventions document is long, verbose, and (we think) intimidating at first glance.
+This is due to the wide range of data structures supported by CF, and the need to carefully describe things in detail.
+It is hard to know what parts are important for your, or our, data.
+For any given dataset, only a small portion of the CF conventions will be used.
+This is true not just for GO-SHIP data, but any data claiming to be compatable with CF.
+We selected what we hope will be an easy entry point into the data stored in this standardized structure.
+
+Chapter 9 of the CF conventions define what are called discrete sampling geometries, often refered to as a DSG.
+Specifically, we selected the incomplete multidimensional array representation defined in 9.3.2 (TODO Ref).
+This representation has two primary dimmensions, one of the profile and the other as the vertical level in that profile.
+When each profile has different number of vertical levels, fill values will be in the trailing data slots.
+
 Dimensions
 ``````````
 There are two basic dimensions in the data file, how many profiles there are, and how many vertical levels there are.
@@ -173,6 +185,9 @@ All char arrays or strings will be UTF-8 encoded.
 
 Global Attributes
 `````````````````
+Attributes are bits of metadata with a name and a value attached to it.
+Almost all the "work" being done by the CF conventions and other metadata standards are happening in the attributes, CF for example, doesn't standardize the variable names at all.
+
 Global attributes contain information that applies to the entire dataset.
 Some of these are defined by community standards, other by this document for internal use.
 The following, case sensitive, global attributes are REQUIRED to be present:
@@ -229,6 +244,12 @@ Variable Attributes
     * reference_scale
     * geometry_type
     * node_coordinates
+
+Variable attributes are like the global attributes, but instead of being attached to the entire dataset, are attached to variables.
+These attributes are where almost all the metadata about a variable exist, things such as what the units of the measuremnet are or what the flag values mean.
+The list of attributes is a bit long so it is in another section.
+
+See :ref:`Attributes`
 
 Required Variables
 ``````````````````

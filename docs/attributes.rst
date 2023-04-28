@@ -1,3 +1,5 @@
+.. _attributes:
+
 **********
 Attributes
 **********
@@ -10,7 +12,6 @@ Variable Level Attributes
 --------------
 
 :dtype:      same as the variable
-:usage:      variables
 :required:   only if there are missing data
 :reference:  CF-1.8, NUG
 
@@ -29,10 +30,11 @@ When the size of the variable is known (i.e. the variable does not have an "unli
 This is usually almost entirely transparent to you the user, some software will change the data type when a variable still contains ``_FillValue`` values.
 Matlab for example, will change byte (integers between 0 and 255) data into IEEE floating point values while replacing the fill value with NaNs.
 
+.. _whp_name:
+
 ``whp_name``
 ------------
 :dtype:      char or array of strings
-:usage:      variables
 :required:   conditionally (see CCHDO Usage)
 :reference:  CCHDO
 
@@ -50,13 +52,16 @@ Some variables cannot be represented by a single column in the WHP Exchange form
 The most frequent example will be the ``time`` variable, in WHP Exchange files, this may either be a pair of columns (DATE, TIME) or a single column (DATE) when time of day is not reported.
 This will very likly be used to represet ex and em wavelengths for optical sensors with multiple channels.
 
-There is no requiremnt that all variables in a netCDF file contain unique ``whp_name`` and ``whp_unit`` pairs.
+.. warning::
 
+  There is no requiremnt that all variables in a netCDF file contain unique ``whp_name`` and ``whp_unit`` pairs.
+
+
+.. _whp_unit:
 
 ``whp_unit``
 ------------
 :dtype:      char or array of strings
-:usage:      variables
 :required:   conditionally (see CCHDO Usage)
 :reference:  CCHDO
 
@@ -67,14 +72,13 @@ Not used or defined in the CF conventions.
 CCHDO Usage
 ```````````
 For this variable, the value which would appear in the units line of the WHP Exchange or WOCE sea/ctd file.
-Forms a pair with :ref:``whp_name``
+Forms a pair with :ref:`whp_name`
 Usage is the same as ``whp_name``
 
 
 ``standard_name``
 -----------------
 :dtype:      char
-:usage:      variables
 :required:   conditionally (see CF Usage)
 :reference:  CF 1.8
 
@@ -89,7 +93,7 @@ The CF usage will be followed, if a CF standard name exists for physical quantit
 The CF standard names table is updated frequently, as names are added they will be evaluated for including in the CCHDO netCDF files to both be more specific or to add a standard name to a variable that did not have one previously.
 Always check the param version attribute to see which version of the standard name table is in use for a particular file.
 
-It is important to understand that standard names represet the physical quantity of the variable and not how that physical quantity was made.
+It is important to understand that standard names represet the physical quantity of the variable and not how the data was made.
 Standard names cannot distinguish between salinity measured in situ with a CTD, salinity measured with an autosal, or even salinity from a model output.
 The names are meant to help with intercomparison of the values themselves, not methods of determing that value.
 
@@ -97,7 +101,6 @@ The names are meant to help with intercomparison of the values themselves, not m
 ``units``
 -----------------
 :dtype:      char
-:usage:      variables
 :required:   conditionally
 :reference:  CF 1.8
 
@@ -127,7 +130,6 @@ Some examples:
 ``reference_scale``
 -------------------
 :dtype:      char
-:usage:      variables
 :required:   conditionally
 :reference:  OceanSITES 1.4
 
@@ -151,7 +153,6 @@ While all the temperatures are degree C, users doing precice work need to know t
 ``C_format``
 ------------
 :dtype:      char
-:usage:      variables
 :required:   no
 :reference:  NUG
 
@@ -187,7 +188,6 @@ This can be tricky for data managers: if for example, the data source was an exc
 ``C_format_source``
 -------------------
 :dtype:      char
-:usage:      variables
 :required:   yes if C_format is present
 :reference:  CCHDO
 
@@ -200,22 +200,170 @@ CCHDO Usage
 This attribute describes where the value in ``C_format`` came from.
 This attribute will only have the values of either ``"database"`` to indicate the ``C_format`` was taken from the internal parameters table, or ``"source_file"`` if the values was calcualted from input text.
 
+``geometry``
+------------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``_Encoding``
+-------------
+:dtype:      char
+:required:   no
+:reference:  ref?
+
+CF Definiton
+````````````
+This is not defined by CF, it is however a reserved attribute in `Appendix B`_ of the netCDF4-C manual.
+
+.. _Appendix B: https://docs.unidata.ucar.edu/netcdf-c/current/file_format_specifications.html
+
+CCHDO Usage
+```````````
+This attribute is set by the libraries we use to make our data.
+It will almost always be set on string or char array data with a value of "utf8".
+
+``coordinates``
+---------------
+:dtype:      char
+:required:   conditionally
+:reference:  CF 1.8
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``ancillary_variables``
+-----------------------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``flag_values``
+---------------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``flag_meanings``
+-----------------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``conventions``
+---------------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``resolution (time)``
+---------------------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``axis``
+--------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``calendar``
+------------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``positive``
+------------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``geometry_type``
+------------------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
+``node_coordinates``
+--------------------
+:dtype:      dtype
+:required:   maybe
+:reference:  Ref
+
+CF Definiton
+````````````
+
+CCHDO Usage
+```````````
+
 
 .. todo::
   Attrs:
-
-  Variable Level:
-
-  * ancillary_variables
-  * coordinates
-  * flag_values
-  * flag_meanings
-  * conventions
-  * _Encoding
-  * geometry_type
-  * node_coordinates
-  * axis
-  * geometry
 
   Global Level:
 
