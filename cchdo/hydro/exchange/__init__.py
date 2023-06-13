@@ -173,7 +173,7 @@ def _bottle_get_flags(
     :raises ExchangeOrphanFlagError: if the flag column is for a parameter not in the passed in mapping of whp_params
     """
     param_flags = {}
-    whp_params_names = {x.whp_name: x for x in whp_params.keys()}
+    whp_params_names = whp_params.keys()
 
     for index, (param, unit) in enumerate(params_units):
         if not param.endswith("_FLAG_W"):
@@ -184,7 +184,11 @@ def _bottle_get_flags(
 
         data_col = param.replace("_FLAG_W", "")
         try:
-            whpname = whp_params_names[data_col]
+            whpname = WHPNames[data_col]
+
+            if whpname not in whp_params_names:
+                raise KeyError
+
             if whpname.flag_w is None:
                 raise ExchangeFlaglessParameterError(f"{data_col}")
             param_flags[whpname] = index
