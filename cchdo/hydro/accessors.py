@@ -3,7 +3,7 @@ import string
 import re
 import os
 from datetime import datetime, timezone
-from typing import List, Dict, Optional, Union, NamedTuple
+from typing import List, Dict, Optional, Union, NamedTuple, Literal
 from zipfile import ZIP_DEFLATED, ZipFile
 from collections import defaultdict
 
@@ -120,6 +120,9 @@ def fq_get_precisions(fq: NormalizedFQ) -> Dict[str, int]:
         param: extract_numeric_precisions(data).item()
         for param, data in collect.items()
     }
+
+
+FTypeOptions = Literal["cf", "exchange"]
 
 
 class CCHDOAccessor:
@@ -382,7 +385,7 @@ class CCHDOAccessor:
         cast: int,
         profile_type: FileType,
         profile_count: int = 1,
-        ftype="cf",
+        ftype: FTypeOptions = "cf",
     ) -> str:
         allowed_chars = set(f"._{string.ascii_letters}{string.digits}")
 
@@ -407,7 +410,7 @@ class CCHDOAccessor:
 
         return fname
 
-    def gen_fname(self, ftype="cf") -> str:
+    def gen_fname(self, ftype: FTypeOptions = "cf") -> str:
         """Generate a human friendly netCDF filename for this object"""
 
         expocode = np.atleast_1d(self._obj["expocode"])[0]

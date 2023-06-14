@@ -1241,7 +1241,7 @@ def combine_dt(
         whp_name = date_name.whp_name
 
     time_var = xr.DataArray(
-        dt_arr,
+        dt_arr.astype("datetime64[ns]"),
         dims=date.dims,
         attrs={
             "standard_name": "time",

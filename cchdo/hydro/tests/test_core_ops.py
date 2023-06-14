@@ -140,7 +140,7 @@ def test_add_profile():
                 attrs={"whp_name": "SAMPNO"},
             ),
             "time": xr.DataArray(
-                np.array(["2020-01-01T00:00:00"], np.dtype("datetime64")),
+                np.array(["2020-01-01T00:00:00"], np.dtype("datetime64[ns]")),
                 dims=["N_PROF"],
                 attrs={
                     "standard_name": "time",

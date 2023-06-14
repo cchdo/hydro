@@ -156,7 +156,7 @@ def add_profile(
         "expocode": expocode,
         "station": station,
         "cast": cast,
-        "time": time,
+        "time": time.astype("datetime64[ns]"),  # ensure ns precision for now
         "latitude": latitude,
         "longitude": longitude,
         "profile_type": profile_type,
