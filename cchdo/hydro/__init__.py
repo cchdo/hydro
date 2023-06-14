@@ -12,7 +12,7 @@ from appdirs import AppDirs
 
 _hydro_appdirs = AppDirs("edu.ucsd.cchdo.hydro")
 
-from .exchange import read_exchange
+from .exchange import read_exchange, read_csv
 
 
-__all__ = ["read_exchange"]
+__all__ = ["read_exchange", "read_csv"]
