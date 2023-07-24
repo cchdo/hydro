@@ -1,4 +1,4 @@
-v1.0.2.3 (unreleased)
+v1.0.2.3 (2023-07-24)
 =====================
 * Add `read_csv` method
 * (bug) Remove the `C_format` and `C_format_source` attributes for non floating point variables. Integer and string values are exact so do not need any sort of format hint. Including a format string for non floating point values is undefined behavior in the netCDF-C Library and can result in crashing.
@@ -13,7 +13,7 @@ v1.0.2.3 (unreleased)
   variables with this name actually contain any data (i.e. are not just entirely fill value).
 * Add a `--version` option to the cli interface
 * (changed) Export `read_exchange` from the top level `cchdo.hydro` namespace.
-* (changed) Bump min `cchdo.params` version to 0.1.20
+* (changed) Bump min `cchdo.params` version to 0.1.21
 * (changed) Dropped netCDF4 as requried for installation, if netCDF4 isn't installed already you can install with the `cchdo.hydro[netcdf4]` optional.
 
   * While this might seem like an odd choice for a library that started as one to convert WHP Exchange files to netCDf, netCDF 
