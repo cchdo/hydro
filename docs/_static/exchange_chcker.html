@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+  </head>
+  <body>
+    <p>
+    <label>Add an exchange file (csv or zip) <input type="file" id="ex_file" name="ex_file"></label>
+    <div>Note that processing a CTD file can take a long time and I don't yet know how to show progress in the browser.</div>
+    <button id="process_exchange" py-click="_process_exchange()">Process Exchange</button>
+    <p>
+    <div id='output'>
+        <span id="status"></span>
+        <br />
+    </div>
+    <py-script>
+        from js import document, console, window, Uint8Array, Blob
+        from pyodide.ffi import create_proxy
+        import asyncio
+        import io
+        import traceback
+
+        from cchdo.hydro import read_exchange
+        from cchdo.hydro import accessors
+
+        import logging
+        import sys
+
+        root = logging.getLogger()
+        root.setLevel(logging.DEBUG)
+
+        handler = logging.StreamHandler(sys.stderr)
+        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        root.addHandler(handler)
+
+        def to_xarray_callback(arg):
+            bytes = bytearray(Uint8Array.new(arg))
+            ex_bytes = io.BytesIO(bytes)
+            status = Element("status")
+            try:
+                ex = read_exchange(ex_bytes)
+            except ValueError as er:
+                traceback.print_exception(er)
+                status.element.innerText = f"Failure see traceback..."
+                return
+            status.element.innerText = f"Success, generating files"
+            try:
+                ex.to_netcdf("out.nc", engine="h5netcdf")
+                with open("out.nc", "rb") as f:
+                    nc = f.read()
+                nc_blob = Blob.new([Uint8Array.new(nc)], {type : 'application/netcdf'})
+                nc_url = window.URL.createObjectURL(nc_blob) 
+                nc_download_link = document.createElement("a")
+                nc_download_link.href = nc_url
+                nc_fname = ex.cchdo.gen_fname()
+                nc_download_link.download = nc_fname
+                nc_download_link.innerText = f"Download CF/netCDF: {nc_fname}"
+                output = Element("output")
+                output.element.appendChild(nc_download_link)
+                output.element.appendChild(document.createElement("br"))
+                 
+            except Exception as er:
+                status.element.innerText = f"Could not generate WOCE"
+            try:
+                woce = ex.cchdo.to_woce()
+                woce_blob = Blob.new([Uint8Array.new(woce)], {type : 'application/octet-stream'})
+                woce_url = window.URL.createObjectURL(woce_blob) 
+                woce_download_link = document.createElement("a")
+                woce_download_link.href = woce_url
+                woce_download_link.download = "woce_output.txt"
+                woce_download_link.innerText = "Download Woce (might be txt or zip)"
+                output = Element("output")
+                output.element.appendChild(woce_download_link)
+                output.element.appendChild(document.createElement("br"))
+            except:
+                status.element.innerText = f"Could not generate WOCE"
+
+        def _process_exchange():
+            status = Element("status")
+            status.element.innerText = "Processing..."
+            file_list = Element("ex_file").element.files
+            first_item = file_list.item(0)
+
+            first_item.arrayBuffer().then(to_xarray_callback)
+
+    </py-script>
+    <py-terminal true></py-terminal>
+  </body>
+  <py-config type="toml">
+    packages = ["xarray", "cchdo.hydro", "h5netcdf"]
+  </py-config>
+</html>
