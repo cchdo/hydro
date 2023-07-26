@@ -54,6 +54,7 @@
             except ValueError as er:
                 traceback.print_exception(er)
                 status.element.innerText = f"Failure see traceback..."
+                Element("process_exchange").element.disabled = False
                 return
             status.element.innerText = f"Success, generating files"
             try:
@@ -87,13 +88,20 @@
             except:
                 status.element.innerText = f"Could not generate WOCE"
 
-        def _process_exchange():
-            status = Element("status")
-            status.element.innerText = "Processing..."
-            file_list = Element("ex_file").element.files
-            first_item = file_list.item(0)
+            Element("process_exchange").element.disabled = False
 
-            first_item.arrayBuffer().then(to_xarray_callback)
+        def _process_exchange():
+            Element("process_exchange").element.disabled = True
+            try:
+                status = Element("status")
+                status.element.innerText = "Processing..."
+                file_list = Element("ex_file").element.files
+                first_item = file_list.item(0)
+
+                first_item.arrayBuffer().then(to_xarray_callback)
+            except:
+                status.element.innerText = "Error, was a file picked?"
+                Element("process_exchange").element.disabled = False
 
     </py-script>
     <py-terminal true></py-terminal>
