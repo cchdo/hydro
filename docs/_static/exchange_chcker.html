@@ -5,6 +5,10 @@
   </head>
   <body>
     <p>
+        cchdo.hydro version: <span id="hydro_version"></span><br />
+        cchdo.params version: <span id="params_version"></span>
+    </p>
+    <p>
     <label>Add an exchange file (csv or zip) <input type="file" id="ex_file" name="ex_file"></label>
     <div>Note that processing a CTD file can take a long time and I don't yet know how to show progress in the browser.</div>
     <button id="process_exchange" py-click="_process_exchange()">Process Exchange</button>
@@ -22,6 +26,12 @@
 
         from cchdo.hydro import read_exchange
         from cchdo.hydro import accessors
+        
+        from cchdo.hydro import __version__ as hydro_version
+        from cchdo.params._version import version as params_version
+
+        Element("hydro_version").element.innerText = hydro_version
+        Element("params_version").element.innerText = params_version
 
         import logging
         import sys
