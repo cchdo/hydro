@@ -1,3 +1,8 @@
+v??? (unreleased)
+=================
+(note) the version is ??? above while we decide if this library should switch to CalVer
+* (improved) the read_csv method now handles ctd data better, specifically you do not need to include a SAMPNO column if the FileType is CTD.
+
 v1.0.2.3 (2023-07-24)
 =====================
 * Add `read_csv` method

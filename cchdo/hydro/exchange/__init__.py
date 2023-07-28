@@ -814,6 +814,7 @@ class _ExchangeInfo:
     data_slice: slice
     post_data_slice: slice
     _raw_lines: Tuple[str, ...] = dataclasses.field(repr=False)
+    _ctd_override: bool = False
 
     @property
     def stamp(self):
@@ -903,7 +904,7 @@ class _ExchangeInfo:
 
         params_idx = _bottle_get_params(zip(self.params, self.units))
 
-        if any(self.ctd_headers):
+        if any(self.ctd_headers) or self._ctd_override:
             params_idx[SAMPNO] = params_idx[CTDPRS]
 
         return params_idx
@@ -1420,6 +1421,7 @@ def read_csv(
         data_slice=slice(2, None),
         post_data_slice=NONE_SLICE,
         _raw_lines=new_data,
+        _ctd_override=ftype == FileType.CTD,
     ).finalize()
     return _from_exchange_data([exchange_data], ftype=ftype, checks=_checks)
 
