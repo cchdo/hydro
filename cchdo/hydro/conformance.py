@@ -1,7 +1,6 @@
 import logging
 from dataclasses import dataclass
 from operator import methodcaller
-from typing import Optional
 
 import xarray as xr
 
@@ -19,8 +18,8 @@ log = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class CheckResult:
-    error: Optional[str] = None
-    warning: Optional[str] = None
+    error: str | None = None
+    warning: str | None = None
 
     @property
     def ok(self) -> bool:

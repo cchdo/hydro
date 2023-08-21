@@ -79,7 +79,7 @@ END_DATA
     "data,error",
     [
         (io.BytesIO("À".encode("latin-1")), ExchangeEncodingError),
-        (io.BytesIO("\ufeffBOTTLE".encode("utf8")), ExchangeBOMError),
+        (io.BytesIO("\ufeffBOTTLE".encode()), ExchangeBOMError),
     ],
 )
 def test_reject_bad_examples(data, error):

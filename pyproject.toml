@@ -6,7 +6,9 @@ build-backend = "setuptools.build_meta"
 write_to = "cchdo/hydro/_version.py"
 write_to_template = 'version = "{version}"'
 
-[mypy]
+[tool.mypy]
+namespace_packages = true
+explicit_package_bases = true
 
 [[tool.mypy.overrides]]
 module = [

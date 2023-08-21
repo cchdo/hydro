@@ -134,7 +134,7 @@ def _pad_station_cast(x: str) -> str:
 def get_filename(expocode, station, cast, file_ext):
     station = _pad_station_cast(station)
     cast = _pad_station_cast(cast)
-    return "%s.%s" % (
+    return "{}.{}".format(
         "_".join((expocode, station, cast)),
         file_ext,
     )
@@ -151,11 +151,11 @@ def convert_fortran_format_to_c(ffmt: str):
     if not ffmt:
         return ffmt
     if ffmt.startswith("F"):
-        return "%{0}f".format(ffmt[1:])
+        return f"%{ffmt[1:]}f"
     elif ffmt.startswith("I"):
-        return "%{0}d".format(ffmt[1:])
+        return f"%{ffmt[1:]}d"
     elif ffmt.startswith("A"):
-        return "%{0}s".format(ffmt[1:])
+        return f"%{ffmt[1:]}s"
     elif "," in ffmt:
         # WOCE specifies things like 1X,A7, so only convert the last bit.
         ffmt = ffmt.split(",")[1]
@@ -233,7 +233,7 @@ def columns_and_base_format(dfile, is_ctd=False):
     col_format = "{{{0}:>8}}"
     base_format = "".join([col_format.format(iii) for iii in range(len(columns))])
     qualt_colsize = max((len("QUALT#"), num_qualt))
-    qualt_format = "{{0}}:>{0}".format(qualt_colsize)
+    qualt_format = f"{{}}:>{qualt_colsize}"
     base_format += " {" + qualt_format.format(len(columns)) + "}\n"
     return columns, base_format
 

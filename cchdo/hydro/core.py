@@ -1,6 +1,6 @@
 """Core operations on a CCHDO CF/netCDF file
 """
-from typing import Dict, Hashable, Tuple
+from collections.abc import Hashable
 
 import numpy as np
 import numpy.typing as npt
@@ -153,7 +153,7 @@ def add_profile(
     ) = np.broadcast_arrays(
         np.atleast_1d(expocode), station, cast, time, latitude, longitude, profile_type
     )
-    new_profs: Dict[Hashable, npt.NDArray] = {
+    new_profs: dict[Hashable, npt.NDArray] = {
         "expocode": expocode,
         "station": station,
         "cast": cast,
@@ -163,7 +163,7 @@ def add_profile(
         "profile_type": profile_type,
     }
 
-    dataarrays: Dict[Hashable, Tuple[Tuple[Hashable, ...], npt.ArrayLike]] = {}
+    dataarrays: dict[Hashable, tuple[tuple[Hashable, ...], npt.ArrayLike]] = {}
     for name, variable in ds.variables.items():
         if name in new_profs:
             data = new_profs[name].astype(variable.dtype.kind)

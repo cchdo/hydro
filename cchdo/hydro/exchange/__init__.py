@@ -1,13 +1,18 @@
 import dataclasses
 import io
 import logging
+from collections.abc import Iterable
 from datetime import datetime, timedelta
 from enum import Enum, auto
 from functools import cached_property
 from itertools import chain
 from operator import attrgetter
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, TypedDict, Union
+from typing import (
+    Any,
+    TypedDict,
+    TypeGuard,
+)
 from warnings import warn
 from zipfile import ZipFile, is_zipfile
 
@@ -15,7 +20,6 @@ import numpy as np
 import numpy.typing as npt
 import requests
 import xarray as xr
-from typing_extensions import TypeGuard  # move to stdlib when min ver is 3.10
 
 from cchdo.params import WHPName, WHPNames
 from cchdo.params._version import version as params_version
@@ -94,10 +98,10 @@ class FileType(Enum):
 
 
 # WHPNameIndex represents a Name to Column index in an exchange file
-WHPNameIndex = Dict[WHPName, int]
+WHPNameIndex = dict[WHPName, int]
 # WHPParamUnit represents the paired up contents of the Parameter and Unit lines
 # in an exchange file
-WHPParamUnit = Tuple[str, Optional[str]]
+WHPParamUnit = tuple[str, str | None]
 
 
 def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
@@ -242,7 +246,7 @@ def _ctd_get_header(line, dtype=str):
     return header, dtype(value)
 
 
-def _is_all_dataarray(val: List[Any]) -> TypeGuard[List[xr.DataArray]]:
+def _is_all_dataarray(val: list[Any]) -> TypeGuard[list[xr.DataArray]]:
     return all(isinstance(obj, xr.DataArray) for obj in val)
 
 
@@ -606,13 +610,13 @@ class _ExchangeData:
     """Dataclass containing exchange data which has been parsed into ndarrays"""
 
     single_profile: bool
-    param_cols: Dict[WHPName, np.ndarray]
-    flag_cols: Dict[WHPName, np.ndarray]
-    error_cols: Dict[WHPName, np.ndarray]
+    param_cols: dict[WHPName, np.ndarray]
+    flag_cols: dict[WHPName, np.ndarray]
+    error_cols: dict[WHPName, np.ndarray]
 
     # OG Print Precition Tracking
-    param_precisions: Dict[WHPName, npt.NDArray[np.int_]]
-    error_precisions: Dict[WHPName, npt.NDArray[np.int_]]
+    param_precisions: dict[WHPName, npt.NDArray[np.int_]]
+    error_precisions: dict[WHPName, npt.NDArray[np.int_]]
 
     comments: str
 
@@ -688,7 +692,7 @@ class _ExchangeData:
             raise ExchangeOrphanErrorError()
 
     def set_expected(
-        self, params: Set[WHPName], flags: Set[WHPName], errors: Set[WHPName]
+        self, params: set[WHPName], flags: set[WHPName], errors: set[WHPName]
     ):
         """Puts fill columns for expected params which are missing
 
@@ -778,7 +782,7 @@ class _ExchangeData:
         ]
 
     @cached_property
-    def str_lens(self) -> Dict[WHPName, int]:
+    def str_lens(self) -> dict[WHPName, int]:
         """Figure out the length of all the string params
 
         The char size can vary by platform.
@@ -792,7 +796,7 @@ class _ExchangeData:
         return lens
 
 
-def _get_fill_locs(arr, fill_values: Tuple[str, ...] = ("-999",)):
+def _get_fill_locs(arr, fill_values: tuple[str, ...] = ("-999",)):
     fill = np.char.startswith(arr, fill_values[0])
     if len(fill_values) > 1:
         for fill_value in fill_values[1:]:
@@ -811,7 +815,7 @@ class _ExchangeInfo:
     units_idx: int
     data_slice: slice
     post_data_slice: slice
-    _raw_lines: Tuple[str, ...] = dataclasses.field(repr=False)
+    _raw_lines: tuple[str, ...] = dataclasses.field(repr=False)
     _ctd_override: bool = False
 
     @property
@@ -997,7 +1001,7 @@ class _ExchangeInfo:
         )
 
     @classmethod
-    def from_lines(cls, lines: Tuple[str, ...], ftype: FileType):
+    def from_lines(cls, lines: tuple[str, ...], ftype: FileType):
         """Figure out the line numbers/indicies of the parts of the exchange file"""
         stamp = 0  # file stamp is always the first line of a valid exchange
         comments_start = 1
@@ -1089,7 +1093,7 @@ class _ExchangeInfo:
 
 
 def extract_numeric_precisions(
-    data: Union[List[str], npt.NDArray[np.str_]]
+    data: list[str] | npt.NDArray[np.str_],
 ) -> npt.NDArray[np.int_]:
     """Get the numeric precision of a printed decimal number"""
     # magic number explain: np.char.partition expands each element into a 3-tuple
@@ -1111,12 +1115,12 @@ def _is_valid_exchange_numeric(data: npt.NDArray[np.str_]) -> np.bool_:
     return np.all(np.isin(aligned.view("|S1"), allowed_exchange_numeric_data_chars))
 
 
-ExchangeIO = Union[str, Path, io.BufferedIOBase]
+ExchangeIO = str | Path | io.BufferedIOBase
 
 
 def _combine_dt_ndarray(
     date_arr: npt.NDArray[np.str_],
-    time_arr: Optional[npt.NDArray[np.str_]] = None,
+    time_arr: npt.NDArray[np.str_] | None = None,
     time_pad=False,
 ) -> np.ndarray:
     # TODO: When min pyver is 3.10, maybe consider pattern matching here
@@ -1199,7 +1203,7 @@ def check_sorted(dataset: xr.Dataset) -> bool:
     )
 
 
-WHPNameAttr = Union[str, List[str]]
+WHPNameAttr = str | list[str]
 
 
 def combine_dt(
@@ -1219,7 +1223,7 @@ def combine_dt(
     # date and time want specific attrs whos values have been
     # selected by significant debate
     date = dataset[date_name.nc_name]
-    time: Optional[xr.DataArray] = dataset.get(
+    time: xr.DataArray | None = dataset.get(
         time_name.nc_name
     )  # not be present, this is allowed
 
@@ -1298,14 +1302,14 @@ def set_coordinate_encoding_fill(dataset: xr.Dataset) -> xr.Dataset:
 def _load_raw_exchange(
     filename_or_obj: ExchangeIO,
     *,
-    file_seperator: Optional[str] = None,
+    file_seperator: str | None = None,
     keep_seperator=True,
-) -> List[str]:
+) -> list[str]:
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
         log.info("Loading object over http")
         data_raw = io.BytesIO(requests.get(filename_or_obj).content)
 
-    elif isinstance(filename_or_obj, (str, Path)) and Path(filename_or_obj).exists():
+    elif isinstance(filename_or_obj, str | Path) and Path(filename_or_obj).exists():
         log.info("Loading object from local file path")
         with open(filename_or_obj, "rb") as local_file:
             data_raw = io.BytesIO(local_file.read())
@@ -1316,11 +1320,11 @@ def _load_raw_exchange(
         # https://github.com/python/mypy/issues/1424
         data_raw = io.BytesIO(filename_or_obj.read())  # type: ignore
 
-    elif isinstance(filename_or_obj, (bytes, bytearray)):
+    elif isinstance(filename_or_obj, bytes | bytearray):
         log.info("Loading raw data bytes")
         data_raw = io.BytesIO(filename_or_obj)
 
-    data: List[str] = []
+    data: list[str] = []
 
     if file_seperator is not None:
         data = data_raw.read().decode("utf8").strip().split(file_seperator)
@@ -1367,7 +1371,7 @@ def read_csv(
     filename_or_obj: ExchangeIO,
     *,
     ftype: FileType = FileType.BOTTLE,
-    checks: Optional[CheckOptions] = None,
+    checks: CheckOptions | None = None,
 ) -> xr.Dataset:
     @dataclasses.dataclass
     class DummyParam:
@@ -1428,7 +1432,7 @@ def read_exchange(
     filename_or_obj: ExchangeIO,
     *,
     fill_values=("-999",),
-    checks: Optional[CheckOptions] = None,
+    checks: CheckOptions | None = None,
     precision_source="file",
     file_seperator=None,
     keep_seperator=True,
@@ -1447,15 +1451,15 @@ def read_exchange(
     )
 
     log.info("Checking for BOM")
-    if any((df.startswith("\ufeff") for df in data)):
+    if any(df.startswith("\ufeff") for df in data):
         raise ExchangeBOMError
 
     log.info("Detecting file type")
-    if all((df.startswith("BOTTLE") for df in data)):
+    if all(df.startswith("BOTTLE") for df in data):
         ftype = FileType.BOTTLE
-    elif all((df.startswith("CTD") for df in data)):
+    elif all(df.startswith("CTD") for df in data):
         ftype = FileType.CTD
-    elif all((df.startswith(("CTD", "BOTTLE")) for df in data)):
+    elif all(df.startswith(("CTD", "BOTTLE")) for df in data):
         # Mixed CTD and BOTTLE files (probably in a zip)
         raise ExchangeInconsistentMergeType
     else:
@@ -1478,17 +1482,17 @@ def _from_exchange_data(
     exchange_data: list[_ExchangeData],
     *,
     ftype=FileType.BOTTLE,
-    checks: Optional[CheckOptions] = None,
+    checks: CheckOptions | None = None,
 ) -> xr.Dataset:
     _checks: CheckOptions = {"flags": True}
     if checks is not None:
         _checks.update(checks)
 
-    if not all((fp.single_profile for fp in exchange_data)):
+    if not all(fp.single_profile for fp in exchange_data):
         exchange_data = list(chain(*[exd.split_profiles() for exd in exchange_data]))
 
     N_PROF = len(exchange_data)
-    N_LEVELS = max((fp.shape[0] for fp in exchange_data))
+    N_LEVELS = max(fp.shape[0] for fp in exchange_data)
 
     log.debug((N_PROF, N_LEVELS))
 

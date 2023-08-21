@@ -1,11 +1,10 @@
 import io
-from typing import Dict, Optional
 
 from cchdo.params import WHPNames
 
 
 def simple_bottle_exchange(
-    params=None, units=None, data=None, comments: Optional[str] = None
+    params=None, units=None, data=None, comments: str | None = None
 ):
     stamp = "BOTTLE,test"
     min_params = [
@@ -51,7 +50,7 @@ def simple_bottle_exchange(
 
 def gen_complete_bottle(
     ctd_params_only=False,
-    param_counts: Optional[Dict[str, int]] = None,
+    param_counts: dict[str, int] | None = None,
     min_count=5,
     filter_erddap=False,
 ):

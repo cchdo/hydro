@@ -6,7 +6,6 @@ from html import escape
 from multiprocessing import Pool
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List
 
 import click
 import numpy as np
@@ -101,8 +100,8 @@ def cached_file_loader(file):
 from . import __main_helpers as mh
 
 
-def vars_with_value(ds: xr.Dataset) -> List[str]:
-    vars_with_data: List[str] = []
+def vars_with_value(ds: xr.Dataset) -> list[str]:
+    vars_with_data: list[str] = []
     for name, var in ds.variables.items():
         if var.dtype.kind == "f":
             if np.any(np.isfinite(var)).item():

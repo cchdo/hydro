@@ -4,7 +4,7 @@ import string
 from collections import defaultdict
 from datetime import datetime, timezone
 from io import BufferedWriter, BytesIO
-from typing import Dict, List, Literal, NamedTuple, Optional, Union
+from typing import Literal, NamedTuple
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import numpy as np
@@ -24,12 +24,12 @@ from .exchange import check_flags as _check_flags
 FLAG_NAME = "cchdo.hydro._qc"
 ERROR_NAME = "cchdo.hydro._error"
 
-PathType = Union[str, bytes, os.PathLike]
+PathType = str | bytes | os.PathLike
 
 
 def write_or_return(
-    data: bytes, path_or_fobj: Optional[Union[PathType, BufferedWriter]] = None
-) -> Optional[bytes]:
+    data: bytes, path_or_fobj: PathType | BufferedWriter | None = None
+) -> bytes | None:
     # assume path_or_fobj is an open filelike
     if path_or_fobj is None:
         return data
@@ -75,24 +75,22 @@ class WHPIndxer:
             for _, prof in obj.groupby("N_PROF")
         ]
 
-    def __getitem__(self, key: Union[FQProfileKey, FQPointKey]):
+    def __getitem__(self, key: FQProfileKey | FQPointKey):
         prof_idx = self.n_prof.get_loc((key.expocode, key.station, key.cast))
         if isinstance(key, FQPointKey):
-            level_idx = self.n_level[prof_idx].get_loc((key.sample))
+            level_idx = self.n_level[prof_idx].get_loc(key.sample)
         else:
             level_idx = slice(None)
 
         return prof_idx, level_idx
 
 
-NormalizedFQ = Dict[Union[FQProfileKey, FQPointKey], Dict[str, Union[str, float]]]
+NormalizedFQ = dict[FQProfileKey | FQPointKey, dict[str, str | float]]
 
 
-def normalize_fq(
-    fq: List[Dict[str, Union[str, float]]], *, check_dupes=True
-) -> NormalizedFQ:
+def normalize_fq(fq: list[dict[str, str | float]], *, check_dupes=True) -> NormalizedFQ:
     normalized: NormalizedFQ = defaultdict(dict)
-    key: Union[FQProfileKey, FQPointKey]
+    key: FQProfileKey | FQPointKey
     for line in fq:
         expocode = str(line.pop("EXPOCODE"))
         station = str(line.pop("STNNBR"))
@@ -114,8 +112,8 @@ def normalize_fq(
     return normalized
 
 
-def fq_get_precisions(fq: NormalizedFQ) -> Dict[str, int]:
-    collect: Dict[str, List[str]] = defaultdict(list)
+def fq_get_precisions(fq: NormalizedFQ) -> dict[str, int]:
+    collect: dict[str, list[str]] = defaultdict(list)
     for value in fq.values():
         for param, data in value.items():
             if isinstance(data, str):
@@ -463,7 +461,7 @@ class CCHDOAccessor:
             raise NotImplementedError("Unknown profile type encountered")
 
     @staticmethod
-    def cchdo_c_format_precision(c_format: str) -> Optional[int]:
+    def cchdo_c_format_precision(c_format: str) -> int | None:
         if not c_format.endswith("f"):
             return None
 
@@ -474,7 +472,7 @@ class CCHDOAccessor:
 
     def _make_params_units_line(
         self,
-        params: Dict[WHPName, xr.DataArray],
+        params: dict[WHPName, xr.DataArray],
     ):
         plist = []
         ulist = []
@@ -501,7 +499,7 @@ class CCHDOAccessor:
         return ",".join(plist), ",".join(ulist)
 
     @staticmethod
-    def _whpname_from_attrs(attrs) -> List[WHPName]:
+    def _whpname_from_attrs(attrs) -> list[WHPName]:
         params = []
         param = attrs["whp_name"]
         unit = attrs.get("whp_unit")
@@ -514,7 +512,7 @@ class CCHDOAccessor:
             params.append(WHPNames[(param, unit)])
         return params
 
-    def _make_ctd_headers(self, params) -> List[str]:
+    def _make_ctd_headers(self, params) -> list[str]:
         headers = {}
         for param, da in params.items():
             if param.scope != "profile":
@@ -547,7 +545,7 @@ class CCHDOAccessor:
             *[f"{key} = {value}" for key, value in headers.items()],
         ]
 
-    def _make_data_block(self, params) -> List[str]:
+    def _make_data_block(self, params) -> list[str]:
         # TODO N_PROF is guaranteed
         valid_levels = params[WHPNames["SAMPNO"]] != ""
         data_block = []
@@ -637,7 +635,7 @@ class CCHDOAccessor:
             ds = ds.isel(ex=(ds.sample != ""))
 
         exchange_vars = ds.filter_by_attrs(whp_name=lambda name: name is not None)
-        params: Dict[WHPName, xr.DataArray] = {}
+        params: dict[WHPName, xr.DataArray] = {}
         for var in exchange_vars.values():
             whp_params = self._whpname_from_attrs(var.attrs)
             for param in whp_params:
@@ -738,7 +736,7 @@ class CCHDOAccessor:
     # This will rely on the N_PROF and N_LEVELS (with extra at some point)
     # * N_PROF will be indexed with (expocode, station, cast)
     # * N_LEVELS will be subindexd with (sample)
-    def merge_fq(self, fq: List[Dict[str, Union[str, float]]], *, check_flags=True):
+    def merge_fq(self, fq: list[dict[str, str | float]], *, check_flags=True):
         # TODOs...
         # * (default True) restrict to open "slots" of non flag 9s
         # * Vectorize updates

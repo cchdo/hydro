@@ -43,8 +43,7 @@ class CCHDOBottleData(Mapping):
         return len(self.files)
 
     def __iter__(self):
-        for key in self.files:
-            yield key
+        yield from self.files
 
     def __getitem__(self, key):
         if key not in self.files:
