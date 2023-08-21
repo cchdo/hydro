@@ -1,19 +1,18 @@
-import logging
-from pathlib import Path
-from multiprocessing import Pool
-from tempfile import TemporaryDirectory
-import shutil
-from html import escape
 import json
+import logging
+import shutil
 from collections import Counter
+from html import escape
+from multiprocessing import Pool
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import List
 
 import click
+import numpy as np
+import xarray as xr
 from rich.logging import RichHandler
 from rich.progress import track
-
-import xarray as xr
-import numpy as np
 
 log = logging.getLogger(__name__)
 
@@ -77,7 +76,9 @@ def cchdo_loader(dtype):
 
 def cached_file_loader(file):
     from requests import codes
+
     from cchdo.auth.session import session as s
+
     from . import _hydro_appdirs
 
     cache_dir = Path(_hydro_appdirs.user_cache_dir) / "convert"

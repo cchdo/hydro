@@ -1,4 +1,4 @@
-from importlib.metadata import version, PackageNotFoundError
+from importlib.metadata import PackageNotFoundError, version
 
 __version__ = "not installed"
 
@@ -12,7 +12,6 @@ from appdirs import AppDirs
 
 _hydro_appdirs = AppDirs("edu.ucsd.cchdo.hydro")
 
-from .exchange import read_exchange, read_csv
-
+from .exchange import read_csv, read_exchange
 
 __all__ = ["read_exchange", "read_csv"]

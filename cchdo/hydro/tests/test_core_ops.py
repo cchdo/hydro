@@ -1,7 +1,7 @@
-import xarray as xr
 import numpy as np
+import xarray as xr
 
-from ..core import create_new, add_profile
+from ..core import add_profile, create_new
 
 
 def test_create_new():

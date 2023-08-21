@@ -6,16 +6,17 @@ import numpy as np
 import numpy.typing as npt
 import xarray as xr
 
-from cchdo.params import WHPNames, WHPName
-from .exchange.flags import ExchangeBottleFlag, ExchangeCTDFlag, ExchangeSampleFlag
+from cchdo.params import WHPName, WHPNames
+
 from .exchange import (
+    FileType,
+    add_geometry_var,
+    add_profile_type,
     combine_dt,
     set_axis_attrs,
-    add_profile_type,
-    add_geometry_var,
-    FileType,
     set_coordinate_encoding_fill,
 )
+from .exchange.flags import ExchangeBottleFlag, ExchangeCTDFlag, ExchangeSampleFlag
 
 DIMS = ("N_PROF", "N_LEVELS")
 FILLS_MAP = {"string": "", "integer": np.nan, "decimal": np.nan}

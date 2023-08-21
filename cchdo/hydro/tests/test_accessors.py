@@ -1,13 +1,11 @@
-from importlib.resources import read_text
 import json
+from importlib.resources import read_text
 
 import pytest
-
 from xarray.testing import assert_identical
 
 from ..accessors import CCHDOAccessor
-from ..exchange import FileType
-from ..exchange import read_exchange
+from ..exchange import FileType, read_exchange
 
 exp_stn_cast = json.loads(read_text("cchdo.hydro.tests.data", "stns_test_data.json"))
 

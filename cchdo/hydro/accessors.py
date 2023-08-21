@@ -1,20 +1,25 @@
-from io import BytesIO, BufferedWriter
-import string
-import re
 import os
-from datetime import datetime, timezone
-from typing import List, Dict, Optional, Union, NamedTuple, Literal
-from zipfile import ZIP_DEFLATED, ZipFile
+import re
+import string
 from collections import defaultdict
+from datetime import datetime, timezone
+from io import BufferedWriter, BytesIO
+from typing import Dict, List, Literal, NamedTuple, Optional, Union
+from zipfile import ZIP_DEFLATED, ZipFile
 
-import xarray as xr
-import pandas as pd
 import numpy as np
+import pandas as pd
+import xarray as xr
 
-from cchdo.params import WHPNames, WHPName
+from cchdo.params import WHPName, WHPNames
 
-from .exchange import FileType, all_same, check_flags as _check_flags
-from .exchange import flatten_cdom_coordinate, extract_numeric_precisions
+from .exchange import (
+    FileType,
+    all_same,
+    extract_numeric_precisions,
+    flatten_cdom_coordinate,
+)
+from .exchange import check_flags as _check_flags
 
 FLAG_NAME = "cchdo.hydro._qc"
 ERROR_NAME = "cchdo.hydro._error"

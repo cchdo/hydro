@@ -1,10 +1,10 @@
 from csv import reader as csv_reader
-from io import BytesIO
-from zipfile import ZipFile, ZIP_DEFLATED
 
 # TODO: switch to files().joinpath().open when python 3.8 is dropped
 # 2023-04-16
 from importlib.resources import open_text
+from io import BytesIO
+from zipfile import ZIP_DEFLATED, ZipFile
 
 import numpy as np
 import xarray as xr

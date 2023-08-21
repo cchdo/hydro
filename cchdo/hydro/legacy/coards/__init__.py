@@ -9,23 +9,23 @@ The entrypoint function is :func:`to_coards`
 """
 import datetime
 from csv import DictReader
-from logging import getLogger
-from io import BytesIO
-from zipfile import ZipFile, ZIP_DEFLATED
 
 # TODO: switch to files().joinpath().open when python 3.8 is dropped
 # 2023-04-16
 from importlib.resources import open_text
+from io import BytesIO
+from logging import getLogger
+from zipfile import ZIP_DEFLATED, ZipFile
 
 import numpy as np
 import xarray as xr
+from cftime import date2num
 
 # TODO put behind a guard
 from netCDF4 import Dataset
-from cftime import date2num
 
-from .. import woce
 from ... import accessors as acc
+from .. import woce
 
 log = getLogger(__name__)
 """logger object for message logging"""

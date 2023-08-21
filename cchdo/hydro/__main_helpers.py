@@ -1,10 +1,11 @@
 import os
 import warnings
 
-from .exchange import read_exchange
 from cchdo.params import WHPNames
-from .exchange.exceptions import ExchangeDataFlagPairError, ExchangeParameterUndefError
+
 from . import accessors  # noqa
+from .exchange import read_exchange
+from .exchange.exceptions import ExchangeDataFlagPairError, ExchangeParameterUndefError
 
 
 def p_file(file_m):

@@ -1,8 +1,9 @@
-import os
 import io
-import requests
-from zipfile import ZipFile
+import os
 from collections.abc import Mapping
+from zipfile import ZipFile
+
+import requests
 
 from . import _hydro_appdirs
 

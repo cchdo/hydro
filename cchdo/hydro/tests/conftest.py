@@ -2,8 +2,8 @@ import io
 
 import pytest
 
-from ..exchange.helpers import simple_bottle_exchange
 from ..exchange import read_exchange
+from ..exchange.helpers import simple_bottle_exchange
 
 
 @pytest.fixture

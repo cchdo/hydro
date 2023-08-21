@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
-from typing import Optional
 from operator import methodcaller
+from typing import Optional
 
 import xarray as xr
 

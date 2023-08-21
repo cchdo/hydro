@@ -1,19 +1,16 @@
 import io
 from importlib.resources import open_binary
 
+import numpy as np
 import pytest
 
-import numpy as np
-
 from ..exchange import read_exchange
-
 from ..exchange.exceptions import (
     ExchangeBOMError,
-    ExchangeEncodingError,
     ExchangeDuplicateParameterError,
+    ExchangeEncodingError,
     ExchangeParameterUndefError,
 )
-
 from ..exchange.helpers import simple_bottle_exchange
 
 
