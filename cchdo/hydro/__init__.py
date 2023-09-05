@@ -1,11 +1,10 @@
 from importlib.metadata import PackageNotFoundError, version
 
-__version__ = "not installed"
+__version__: str = "999"
 
 try:
     __version__ = version(__name__)
 except PackageNotFoundError:
-    # package is not installed
     pass
 
 from appdirs import AppDirs

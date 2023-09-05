@@ -22,7 +22,7 @@ import requests
 import xarray as xr
 
 from cchdo.params import WHPName, WHPNames
-from cchdo.params._version import version as params_version
+from cchdo.params import __version__ as params_version
 
 from .exceptions import (
     ExchangeBOMError,

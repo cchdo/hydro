@@ -1,8 +1,8 @@
-v??? (unreleased)
-=================
-(note) the version is ??? above while we decide if this library should switch to CalVer
+v1.0.2.4 (2023-09-05)
+=====================
 * (improved) the read_csv method now handles ctd data better, specifically you do not need to include a SAMPNO column if the FileType is CTD.
 * Switched linting in pre-commit and CI to use ruff
+* (changed) Bump min `cchdo.params` version to 2023.9
 
 v1.0.2.3 (2023-07-24)
 =====================
