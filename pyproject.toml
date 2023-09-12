@@ -16,6 +16,7 @@ module = [
     "scipy.*",
     "netCDF4.*",
     "cftime.*",
+    "cchdo.auth.*",
 ]
 ignore_missing_imports = true
 
