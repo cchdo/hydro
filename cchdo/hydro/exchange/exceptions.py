@@ -82,8 +82,8 @@ class ExchangeDataColumnAlignmentError(ExchangeDataError):
 class ExchangeDataFlagPairError(ExchangeDataError):
     """There is a mismatch between what the flag value expects, and the fill/data value.
 
-    Examples:
-
+    Examples
+    --------
     * something with a flag of ``9`` has a non fill value
     * something with a flag of ``2`` as a fill value instead of data
     """
@@ -135,8 +135,8 @@ class ExchangeDataInconsistentCoordinateError(ExchangeDataError):
 
 
 class ExchangeInconsistentMergeType(ExchangeError):
-    """Error raised when the merge_ex method is called on mixed ctd and bottle exchange types"""
+    """Error raised when the merge_ex method is called on mixed ctd and bottle exchange types."""
 
 
 class ExchangeRecursiveZip(ExchangeError):
-    """Error raised if there are zip files inside the zip file that read exchange is trying to read"""
+    """Error raised if there are zip files inside the zip file that read exchange is trying to read."""

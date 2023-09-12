@@ -1,5 +1,4 @@
-"""Core operations on a CCHDO CF/netCDF file
-"""
+"""Core operations on a CCHDO CF/netCDF file."""
 from collections.abc import Hashable
 
 import numpy as np
@@ -186,7 +185,7 @@ def add_profile(
 
 
 def create_new() -> xr.Dataset:
-    """Create an empty CF Dataset with the minimum required contents"""
+    """Create an empty CF Dataset with the minimum required contents."""
     dataarrays = {}
     for param in COORDS:
         dataarrays[param.nc_name] = _dataarray_factory(param)

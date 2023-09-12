@@ -500,6 +500,7 @@ def check_is_subset_shape(
     """Ensure that the shape of the data in a2 is a subset (or strict subset) of the data shape of a1
 
     For a given set of param, flag, and error arrays you would want to ensure that:
+
     * errors are a subset of params (strict is allowed)
     * params are a subset of flags (strict is allowed)
 
@@ -518,8 +519,7 @@ def check_is_subset_shape(
 
 
 def check_flags(dataset: xr.Dataset, raises=True):
-    """Check WOCE flag values agaisnt their param and ensure that the param either has a value or is "nan"
-    depedning on the flag definition.
+    """Check WOCE flag values agaisnt their param and ensure that the param either has a value or is "nan" depedning on the flag definition.
 
     Return a boolean array of invalid locations?
     """
@@ -1160,6 +1160,7 @@ def sort_ds(dataset: xr.Dataset) -> xr.Dataset:
     """Sorts the data values in the dataset
 
     Ensures that profiles are in the following order:
+
     * Earlier before later (time will increase)
     * Southerly before northerly (latitude will increase)
     * Westerly before easterly (longitude will increase)
@@ -1167,7 +1168,9 @@ def sort_ds(dataset: xr.Dataset) -> xr.Dataset:
     The two xy sorts are esentially tie breakers for when we are missing "time"
 
     Inside profiles:
+
     * Shallower before Deeper (pressure will increase)
+
     """
     # first make sure everything is sorted by pressure
     # this is being done "manually" here becuase xarray only supports 1D sorting
@@ -1364,6 +1367,8 @@ def all_same(ndarr: np.ndarray) -> np.bool_:
 
 
 class CheckOptions(TypedDict, total=False):
+    """Flags and config that controll how strict the file checks are"""
+
     flags: bool
 
 

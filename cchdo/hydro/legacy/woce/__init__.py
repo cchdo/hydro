@@ -202,7 +202,6 @@ _EXWOCE_PARAMS = get_exwoce_params()
 
 def writeable_columns(ds: xr.Dataset, is_ctd=False):
     """Return the columns that belong in a WOCE data file."""
-
     CTD_IGNORE = ["STNNBR", "CASTNO", "SAMPNO"]
 
     # Filter with whitelist and rewrite format strings to WOCE standard.
@@ -356,7 +355,6 @@ def write_data(ds, columns, base_format):
 
 def write_bottle(ds: xr.Dataset):
     """How to write a Bottle WOCE file."""
-
     # Look through datetime for begin and end dates
     begin_date = np.min(ds.time).dt.strftime("%Y%m%d").values
     end_date = np.max(ds.time).dt.strftime("%Y%m%d").values

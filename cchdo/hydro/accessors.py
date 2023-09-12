@@ -133,7 +133,7 @@ class CCHDOAccessor:
         self._obj = xarray_obj
 
     def to_mat(self, fname):
-        """Experimental Matlab .mat data file generator
+        """Experimental Matlab .mat data file generator.
 
         The support for netCDF files in Matlab is really bad.
         Matlab also has no built in support for the standards
@@ -194,7 +194,7 @@ class CCHDOAccessor:
         return write_or_return(to_woce(self._obj), path)
 
     def to_sum(self, path=None):
-        """netCDF to WOCE sumfile maker
+        """NetCDF to WOCE sumfile maker.
 
         This is missing some information that is not included anymore (wire out, height above bottom).
         It is especially lacking in including woce parameter IDs
@@ -358,7 +358,7 @@ class CCHDOAccessor:
 
     @property
     def __geo_interface__(self):
-        """The station positions as a MultiPoint geo interface
+        """The station positions as a MultiPoint geo interface.
 
         See https://gist.github.com/sgillies/2217756
         """
@@ -369,9 +369,7 @@ class CCHDOAccessor:
 
     @property
     def track(self):
-        """A dict which can be dumped to json which conforms to the expected
-        structure for the CCHDO website
-        """
+        """A dict which can be dumped to json which conforms to the expected structure for the CCHDO website."""
         geo = self.__geo_interface__
         if len(geo["coordinates"]) == 1:
             # Website only supports LineString which must contain at least 2 points
@@ -414,8 +412,7 @@ class CCHDOAccessor:
         return fname
 
     def gen_fname(self, ftype: FTypeOptions = "cf") -> str:
-        """Generate a human friendly netCDF filename for this object"""
-
+        """Generate a human friendly netCDF filename for this object."""
         expocode = np.atleast_1d(self._obj["expocode"])[0]
         station = np.atleast_1d(self._obj["station"])[0]
         cast = np.atleast_1d(self._obj["cast"])[0]
@@ -612,7 +609,7 @@ class CCHDOAccessor:
                 output.append(f"#{comment_line}")
         return output
 
-    def to_whp_columns(self, compact=False):
+    def to_whp_columns(self, compact=False) -> dict[WHPName, xr.DataArray]:
         # collect all the Exchange variables
         # TODO, all things that appear in an exchange file, must have WHP name
         ds = flatten_cdom_coordinate(self._obj)
@@ -680,7 +677,7 @@ class CCHDOAccessor:
         return params
 
     def to_exchange(self, path=None):
-        """Convert a CCHDO CF netCDF dataset to exchange"""
+        """Convert a CCHDO CF netCDF dataset to exchange."""
         # all of the todo comments are for documenting/writing validators
         output_files = {}
         if self.file_type == FileType.CTD:
@@ -722,7 +719,7 @@ class CCHDOAccessor:
             output_files[fname] = "\n".join(output).encode("utf8")
 
         if len(output_files) == 1:
-            return write_or_return(list(output_files.values())[0], path)
+            return write_or_return(next(iter(output_files.values())), path)
         output_zip = BytesIO()
         with ZipFile(output_zip, "w", compression=ZIP_DEFLATED) as zipfile:
             for fname, data in output_files.items():

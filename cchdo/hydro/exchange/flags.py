@@ -1,9 +1,9 @@
-"""A Collection of Flag Schemes"""
+"""A Collection of Flag Schemes."""
 from enum import IntEnum
 
 
 class ExchangeBottleFlag(IntEnum):
-    """Enum representing a WHP Bottle flag
+    """Enum representing a WHP Bottle flag.
 
     This flag represents information about the sampling device itself
     (i.e. the niskin bottle). It should only be used for "BTLNBR_FLAG_W"
@@ -26,8 +26,7 @@ class ExchangeBottleFlag(IntEnum):
 
     @property
     def definition(self):
-        """Prints the human readable flag definition"""
-
+        """Prints the human readable flag definition."""
         defs = {
             0: "No Flag assigned",
             1: "Bottle information unavailable.",
@@ -48,7 +47,7 @@ class ExchangeBottleFlag(IntEnum):
 
     @property
     def has_value(self):
-        """Should the data this is a flag for contain a value"""
+        """Should the data this is a flag for contain a value."""
         if self.flag in (1, 5, 9):
             return False
         return True

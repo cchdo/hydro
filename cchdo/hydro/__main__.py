@@ -118,7 +118,7 @@ def vars_with_value(ds: xr.Dataset) -> list[str]:
 @click.option("-v", "--verbose", count=True)
 @click.option("--dump-data-counts", is_flag=True)
 def status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_counts):
-    """Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset"""
+    """Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset."""
     from cchdo.hydro._version import version as hydro_version  # type: ignore
     from cchdo.params import _version as params_version  # type: ignore
 

@@ -1,4 +1,4 @@
-"""Legacy COARDS netcdf make from libcchdo ported to take a CCHDO CF/netCDF xarray.Dataset object as input
+"""Legacy COARDS netcdf make from libcchdo ported to take a CCHDO CF/netCDF xarray.Dataset object as input.
 
 The goal is, as much as possible, to use the old code with minimal changes such that the following outputs are identical:
 
@@ -96,7 +96,7 @@ STRLEN = 40
 # new behavior will always have the input be a datetime.datetime (Or np.datetime64)
 # this function needs modification
 def strftime_woce_date_time(dt: xr.DataArray):
-    """Take an xr.DataArray with time values in it and convert to strings"""
+    """Take an xr.DataArray with time values in it and convert to strings."""
     if dt is None:
         return (None, None)
     if dt.attrs.get("resolution", 0) >= 1:
@@ -109,7 +109,7 @@ def strftime_woce_date_time(dt: xr.DataArray):
 
 # name change ascii -> _ascii to avoid builtin conflict
 def _ascii(x: str) -> str:
-    """Force all codepoints into valid ascii range
+    """Force all codepoints into valid ascii range.
 
     Works by encoding the str into ascii bytes with the replace err param, then decoding the bytes to str again
 
@@ -145,7 +145,7 @@ def _pad_station_cast(x: str) -> str:
 
 
 def get_filename(expocode, station, cast, extension):
-    """Generate the filename for COARDS netCDF files
+    """Generate the filename for COARDS netCDF files.
 
     Was ported directly from libcchdo and should have the same formatting behavior
     """
@@ -159,7 +159,7 @@ def get_filename(expocode, station, cast, extension):
 
 
 def minutes_since_epoch(dt: xr.DataArray, epoch, error=-9):
-    """Make the time value for netCDF files
+    """Make the time value for netCDF files.
 
     The custom implimentation in libcchdo was discarded in favor of the date2num function from cftime.
     Not sure if cftime exsited in the netCDF4 python library at the time.
@@ -203,7 +203,7 @@ def define_attributes(
     castno,
     bottom_depth,
 ):
-    """Sets the global attributes of the input nc_file as a side effect"""
+    """Sets the global attributes of the input nc_file as a side effect."""
     nc_file.EXPOCODE = expocode
     nc_file.Conventions = "COARDS/WOCE"
     nc_file.WOCE_VERSION = "3.0"
@@ -219,7 +219,7 @@ def define_attributes(
 
 
 def set_original_header(nc_file: Dataset, ds: xr.Dataset):  # dfile, datatype):
-    """Sets the ORIGINAL_HEADER global attribute to whatever is in ds.attrs["comments"]"""
+    """Sets the ORIGINAL_HEADER global attribute to whatever is in ds.attrs["comments"]."""
     # emulates the libcchdo behavior with having # and an extra end line
     comments = ds.attrs.get("comments", "").splitlines()
     nc_file.ORIGINAL_HEADER = "\n".join(
@@ -389,7 +389,7 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
 
 
 def _create_common_variables(nc_file: Dataset, ds: xr.Dataset):
-    """Extracts the latitude, longitude, station, and cast from ds and passes them to create_common_variables
+    """Extracts the latitude, longitude, station, and cast from ds and passes them to create_common_variables.
 
     This logic could eventually just move to create_common_variables as it was previously rather complicated
     """
@@ -491,7 +491,7 @@ def write_bottle(ds: xr.Dataset) -> bytes:
 
 
 def to_coards(ds: xr.Dataset) -> bytes:
-    """Convert an xr.Dataset to a zipfile with COARDS netCDF files inside
+    """Convert an xr.Dataset to a zipfile with COARDS netCDF files inside.
 
     This function does support mixed CTD and Bottle datasets and will convert using profile_type var on a per profile basis.
 

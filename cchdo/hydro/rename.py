@@ -23,7 +23,6 @@ def rename_with_bookkeeping(
     :param typing.List[str] attrs: Names of variable attributes to search through.
     :rtype: xarray.Dataset
     """
-
     # lets just noop this case
     if name_dict is None:
         return xarray_obj

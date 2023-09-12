@@ -1,5 +1,4 @@
-"""Functions that hopefully can migrate from a past version of data to a future version
-"""
+"""Functions that hopefully can migrate from a past version of data to a future version."""
 from abc import ABC, abstractmethod
 
 import xarray as xr
