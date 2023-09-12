@@ -43,7 +43,7 @@ from .exceptions import (
     ExchangeParameterUndefError,
     ExchangeParameterUnitAlignmentError,
 )
-from .flags import ExchangeBottleFlag, ExchangeCTDFlag, ExchangeSampleFlag
+from .flags import ExchangeBottleFlag, ExchangeCTDFlag, ExchangeFlag, ExchangeSampleFlag
 
 try:
     from .. import __version__ as hydro_version
@@ -81,7 +81,7 @@ COORDS = [
     CTDPRS,
 ]
 
-FLAG_SCHEME = {
+FLAG_SCHEME: dict[str, type[ExchangeFlag]] = {
     "woce_bottle": ExchangeBottleFlag,
     "woce_discrete": ExchangeSampleFlag,
     "woce_ctd": ExchangeCTDFlag,
@@ -137,13 +137,13 @@ def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
         if param.endswith("_FLAG_W"):
             continue
         try:
-            # TODO: remove ignore type error when upstream is fixed
-            whpname = WHPNames[(param, unit)]  # type: ignore
+            whpname = WHPNames[(param, unit)]
         except KeyError:
             unknown_errors.append((param, unit))
+            continue
         if whpname in params:
             duplicate_errors.append(whpname)
-        params[whpname] = index  # type: ignore
+        params[whpname] = index
 
     if any(unknown_errors):
         raise ExchangeParameterUndefError(unknown_errors)
@@ -1536,13 +1536,13 @@ def _from_exchange_data(
         if ctype == "error":
             attrs = param.get_nc_attrs(error=True)
 
-        if ctype == "flag":
-            flag_defs = FLAG_SCHEME[param.flag_w]  # type: ignore
+        if ctype == "flag" and param.flag_w in FLAG_SCHEME:
+            flag_defs = FLAG_SCHEME[param.flag_w]
             flag_values = []
             flag_meanings = []
             for flag in flag_defs:
                 flag_values.append(int(flag))
-                flag_meanings.append(flag.cf_def)  # type: ignore
+                flag_meanings.append(flag.cf_def)
 
             odv_conventions_map = {
                 "woce_bottle": "WOCESAMPLE - WOCE Quality Codes for the sampling device itself",
@@ -1554,7 +1554,7 @@ def _from_exchange_data(
                 "standard_name": "status_flag",
                 "flag_values": np.array(flag_values, dtype="int8"),
                 "flag_meanings": " ".join(flag_meanings),
-                "conventions": odv_conventions_map[param.flag_w],  # type: ignore
+                "conventions": odv_conventions_map[param.flag_w],
             }
 
         var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], attrs=attrs)

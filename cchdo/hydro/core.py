@@ -15,7 +15,12 @@ from .exchange import (
     set_axis_attrs,
     set_coordinate_encoding_fill,
 )
-from .exchange.flags import ExchangeBottleFlag, ExchangeCTDFlag, ExchangeSampleFlag
+from .exchange.flags import (
+    ExchangeBottleFlag,
+    ExchangeCTDFlag,
+    ExchangeFlag,
+    ExchangeSampleFlag,
+)
 
 DIMS = ("N_PROF", "N_LEVELS")
 FILLS_MAP = {"string": "", "integer": np.nan, "decimal": np.nan}
@@ -44,7 +49,7 @@ COORDS = [
     CTDPRS,
 ]
 
-FLAG_SCHEME = {
+FLAG_SCHEME: dict[str, type[ExchangeFlag]] = {
     "woce_bottle": ExchangeBottleFlag,
     "woce_discrete": ExchangeSampleFlag,
     "woce_ctd": ExchangeCTDFlag,
@@ -73,13 +78,13 @@ def _dataarray_factory(
     if ctype == "error":
         attrs = param.get_nc_attrs(error=True)
 
-    if ctype == "flag":
-        flag_defs = FLAG_SCHEME[param.flag_w]  # type: ignore
+    if ctype == "flag" and param.flag_w in FLAG_SCHEME:
+        flag_defs = FLAG_SCHEME[param.flag_w]
         flag_values = []
         flag_meanings = []
         for flag in flag_defs:
             flag_values.append(int(flag))
-            flag_meanings.append(flag.cf_def)  # type: ignore
+            flag_meanings.append(flag.cf_def)
 
         odv_conventions_map = {
             "woce_bottle": "WOCESAMPLE - WOCE Quality Codes for the sampling device itself",
@@ -91,7 +96,7 @@ def _dataarray_factory(
             "standard_name": "status_flag",
             "flag_values": np.array(flag_values, dtype="int8"),
             "flag_meanings": " ".join(flag_meanings),
-            "conventions": odv_conventions_map[param.flag_w],  # type: ignore
+            "conventions": odv_conventions_map[param.flag_w],
         }
 
     var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], attrs=attrs)

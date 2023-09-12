@@ -56,7 +56,7 @@ def status():
 
 
 def cchdo_loader(dtype):
-    from cchdo.auth.session import session as s  # type: ignore
+    from cchdo.auth.session import session as s
 
     log.info("Loading Cruise Metadata")
     cruises = s.get("https://cchdo.ucsd.edu/api/v1/cruise/all").json()
@@ -119,8 +119,8 @@ def vars_with_value(ds: xr.Dataset) -> list[str]:
 @click.option("--dump-data-counts", is_flag=True)
 def status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_counts):
     """Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset."""
-    from cchdo.hydro._version import version as hydro_version  # type: ignore
-    from cchdo.params import _version as params_version  # type: ignore
+    from cchdo.hydro import __version__ as hydro_version
+    from cchdo.params import __version__ as params_version
 
     if verbose == 0:
         setup_logging("CRITICAL")

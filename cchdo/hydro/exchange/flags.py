@@ -2,7 +2,26 @@
 from enum import IntEnum
 
 
-class ExchangeBottleFlag(IntEnum):
+class ExchangeFlag(IntEnum):
+    def __init__(self, flag) -> None:
+        self.flag = flag
+
+    @property
+    def definition(self):
+        return self._flag_definitions[self.flag]
+
+    @property
+    def cf_def(self):
+        return "_".join(self.definition.lower().replace(".", "").split())
+
+    @property
+    def has_value(self):
+        if self.flag in self._no_data_flags:
+            return False
+        return True
+
+
+class ExchangeBottleFlag(ExchangeFlag):
     """Enum representing a WHP Bottle flag.
 
     This flag represents information about the sampling device itself
@@ -21,13 +40,13 @@ class ExchangeBottleFlag(IntEnum):
     PAIR = 8
     NOT_SAMPLED = 9
 
-    def __init__(self, flag):
-        self.flag = flag
+    @property
+    def _no_data_flags(self):
+        return (1, 5, 9)
 
     @property
-    def definition(self):
-        """Prints the human readable flag definition."""
-        defs = {
+    def _flag_definitions(self):
+        return {
             0: "No Flag assigned",
             1: "Bottle information unavailable.",
             2: "No problems noted.",
@@ -39,21 +58,9 @@ class ExchangeBottleFlag(IntEnum):
             8: "Pair did not trip correctly. Note that the Niskin bottle can trip at an unplanned depth while the Gerard trips correctly and vice versa.",  # noqa: E501
             9: "Samples not drawn from this bottle.",
         }
-        return defs[self.flag]
-
-    @property
-    def cf_def(self):
-        return "_".join(self.definition.lower().replace(".", "").split())
-
-    @property
-    def has_value(self):
-        """Should the data this is a flag for contain a value."""
-        if self.flag in (1, 5, 9):
-            return False
-        return True
 
 
-class ExchangeSampleFlag(IntEnum):
+class ExchangeSampleFlag(ExchangeFlag):
     NOFLAG = 0  # no idea if this will cause issue
     MISSING = 1
     GOOD = 2
@@ -65,12 +72,13 @@ class ExchangeSampleFlag(IntEnum):
     CHROMA_IRREGULAR = 8
     NOT_SAMPLED = 9
 
-    def __init__(self, flag):
-        self.flag = flag
+    @property
+    def _no_data_flags(self):
+        return (1, 5, 9)
 
     @property
-    def definition(self):
-        defs = {
+    def _flag_definitions(self):
+        return {
             0: "No Flag assigned",
             1: "Sample for this measurement was drawn from water bottle but analysis not received.",  # noqa: E501
             2: "Acceptable measurement.",
@@ -82,20 +90,9 @@ class ExchangeSampleFlag(IntEnum):
             8: "Irregular digital chromatographic peak integration.",
             9: "Sample not drawn for this measurement from this bottle.",
         }
-        return defs[self.flag]
-
-    @property
-    def cf_def(self):
-        return "_".join(self.definition.lower().replace(".", "").split())
-
-    @property
-    def has_value(self):
-        if self.flag in (1, 5, 9):
-            return False
-        return True
 
 
-class ExchangeCTDFlag(IntEnum):
+class ExchangeCTDFlag(ExchangeFlag):
     NOFLAG = 0  # no idea if this will cause issue
     UNCALIBRATED = 1
     GOOD = 2
@@ -106,12 +103,13 @@ class ExchangeCTDFlag(IntEnum):
     DESPIKED = 7
     NOT_SAMPLED = 9
 
-    def __init__(self, flag):
-        self.flag = flag
+    @property
+    def _no_data_flags(self):
+        return (5, 9)
 
     @property
-    def definition(self):
-        defs = {
+    def _flag_definitions(self):
+        return {
             0: "No Flag assigned",
             1: "Not calibrated.",
             2: "Acceptable measurement.",
@@ -122,14 +120,3 @@ class ExchangeCTDFlag(IntEnum):
             7: "Despiked.",
             9: "Not sampled.",
         }
-        return defs[self.flag]
-
-    @property
-    def cf_def(self):
-        return "_".join(self.definition.lower().replace(".", "").split())
-
-    @property
-    def has_value(self):
-        if self.flag in (5, 9):
-            return False
-        return True

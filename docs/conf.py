@@ -1,5 +1,3 @@
-# type: ignore
-#
 # Configuration file for the Sphinx documentation builder.
 #
 # This file does only contain a selection of the most common options. For a
@@ -117,20 +115,20 @@ htmlhelp_basename = "hydrodoc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
-latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
-    # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
-}
+# latex_elements = {
+# The paper size ('letterpaper' or 'a4paper').
+#
+# 'papersize': 'letterpaper',
+# The font size ('10pt', '11pt' or '12pt').
+#
+# 'pointsize': '10pt',
+# Additional stuff for the LaTeX preamble.
+#
+# 'preamble': '',
+# Latex figure (float) alignment
+#
+# 'figure_align': 'htbp',
+# }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
