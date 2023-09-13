@@ -14,6 +14,7 @@ Welcome to hydro's documentation!
    attributes
    erddap
    ODF_CCHDO_netCDF_ops
+   exchange_checker
    changelog
 
 
