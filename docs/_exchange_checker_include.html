@@ -77,7 +77,23 @@
             output.element.appendChild(document.createElement("br"))
              
         except Exception as er:
-            status.element.innerText = f"Could not generate WOCE"
+            status.element.innerText = f"Could not generate CF/netCDF"
+
+        try:
+            coards = ex.cchdo.to_coards()
+            coards_blob = Blob.new([Uint8Array.new(coards)], {type : 'application/octet-stream'})
+            coards_url = window.URL.createObjectURL(coards_blob) 
+            coards_download_link = document.createElement("a")
+            coards_download_link.href = coards_url
+            coards_download_link.download = "coards_nc.zip"
+            coards_download_link.innerText = "Download COARDS netcdf zip"
+            output = Element("output")
+            output.element.appendChild(coards_download_link)
+            output.element.appendChild(document.createElement("br"))
+        except Exception as ex:
+            print(ex)
+            status.element.innerText = f"Could not generate COARDS netCDF"
+
         try:
             woce = ex.cchdo.to_woce()
             woce_blob = Blob.new([Uint8Array.new(woce)], {type : 'application/octet-stream'})
@@ -88,6 +104,20 @@
             woce_download_link.innerText = "Download Woce (might be txt or zip)"
             output = Element("output")
             output.element.appendChild(woce_download_link)
+            output.element.appendChild(document.createElement("br"))
+        except:
+            status.element.innerText = f"Could not generate WOCE"
+
+        try:
+            summary = ex.cchdo.to_sum()
+            summary_blob = Blob.new([Uint8Array.new(summary)], {type : 'application/octet-stream'})
+            summary_url = window.URL.createObjectURL(summary_blob) 
+            summary_download_link = document.createElement("a")
+            summary_download_link.href = summary_url
+            summary_download_link.download = "woce_sum.txt"
+            summary_download_link.innerText = "Download Woce Sumfile"
+            output = Element("output")
+            output.element.appendChild(summary_download_link)
             output.element.appendChild(document.createElement("br"))
         except:
             status.element.innerText = f"Could not generate WOCE"
