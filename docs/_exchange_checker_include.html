@@ -45,7 +45,21 @@
     handler.setFormatter(formatter)
     root.addHandler(handler)
 
-    def to_xarray_callback(arg):
+    async def load_ex_bytes(ex_bytes, checks):
+        return read_exchange(ex_bytes, checks=checks)
+
+    async def to_netcdf(ex):
+        ex.to_netcdf("out.nc")
+        with open("out.nc", "rb") as f:
+            return f.read()
+
+    async def to_coards(ex):
+        return ex.cchdo.to_coards()
+
+    async def to_woce(ex):
+        return ex.cchdo.to_woce()
+
+    async def to_xarray_callback(arg):
         bytes = bytearray(Uint8Array.new(arg))
         ex_bytes = io.BytesIO(bytes)
         status = Element("status")
@@ -54,17 +68,16 @@
           "flags": check_flags
         }
         try:
-            ex = read_exchange(ex_bytes, checks=checks)
+            ex = await load_ex_bytes(ex_bytes, checks=checks)
         except ValueError as er:
             traceback.print_exception(er)
             status.element.innerText = f"Failure see traceback..."
             Element("process_exchange").element.disabled = False
             return
         status.element.innerText = f"Success, generating files"
+        await asyncio.sleep(0.1)
         try:
-            ex.to_netcdf("out.nc")
-            with open("out.nc", "rb") as f:
-                nc = f.read()
+            nc = await to_netcdf(ex)
             nc_blob = Blob.new([Uint8Array.new(nc)], {type : 'application/netcdf'})
             nc_url = window.URL.createObjectURL(nc_blob) 
             nc_download_link = document.createElement("a")
@@ -79,8 +92,11 @@
         except Exception as er:
             status.element.innerText = f"Could not generate CF/netCDF"
 
+        await asyncio.sleep(0.1)
+        status.element.innerText = f"Generating COARDS netCDF (very slow)"
+        await asyncio.sleep(0.1)
         try:
-            coards = ex.cchdo.to_coards()
+            coards = await to_coards(ex)
             coards_blob = Blob.new([Uint8Array.new(coards)], {type : 'application/octet-stream'})
             coards_url = window.URL.createObjectURL(coards_blob) 
             coards_download_link = document.createElement("a")
@@ -94,8 +110,11 @@
             print(ex)
             status.element.innerText = f"Could not generate COARDS netCDF"
 
+        await asyncio.sleep(0.1)
+        status.element.innerText = f"Generating WOCE Files"
+        await asyncio.sleep(0.1)
         try:
-            woce = ex.cchdo.to_woce()
+            woce = await to_woce(ex)
             woce_blob = Blob.new([Uint8Array.new(woce)], {type : 'application/octet-stream'})
             woce_url = window.URL.createObjectURL(woce_blob) 
             woce_download_link = document.createElement("a")
@@ -108,6 +127,7 @@
         except:
             status.element.innerText = f"Could not generate WOCE"
 
+        await asyncio.sleep(0.1)
         try:
             summary = ex.cchdo.to_sum()
             summary_blob = Blob.new([Uint8Array.new(summary)], {type : 'application/octet-stream'})
@@ -123,6 +143,7 @@
             status.element.innerText = f"Could not generate WOCE"
 
         Element("process_exchange").element.disabled = False
+        status.element.innerText = "File Generation Complete"
 
     def _process_exchange():
         Element("process_exchange").element.disabled = True
