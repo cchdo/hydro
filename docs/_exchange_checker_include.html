@@ -93,22 +93,22 @@
             status.element.innerText = f"Could not generate CF/netCDF"
 
         await asyncio.sleep(0.1)
-        status.element.innerText = f"Generating COARDS netCDF (very slow)"
-        await asyncio.sleep(0.1)
-        try:
-            coards = await to_coards(ex)
-            coards_blob = Blob.new([Uint8Array.new(coards)], {type : 'application/octet-stream'})
-            coards_url = window.URL.createObjectURL(coards_blob) 
-            coards_download_link = document.createElement("a")
-            coards_download_link.href = coards_url
-            coards_download_link.download = "coards_nc.zip"
-            coards_download_link.innerText = "Download COARDS netcdf zip"
-            output = Element("output")
-            output.element.appendChild(coards_download_link)
-            output.element.appendChild(document.createElement("br"))
-        except Exception as ex:
-            print(ex)
-            status.element.innerText = f"Could not generate COARDS netCDF"
+        #status.element.innerText = f"Generating COARDS netCDF (very slow)"
+        #await asyncio.sleep(0.1)
+        #try:
+        #    coards = await to_coards(ex)
+        #    coards_blob = Blob.new([Uint8Array.new(coards)], {type : 'application/octet-stream'})
+        #    coards_url = window.URL.createObjectURL(coards_blob) 
+        #    coards_download_link = document.createElement("a")
+        #    coards_download_link.href = coards_url
+        #    coards_download_link.download = "coards_nc.zip"
+        #    coards_download_link.innerText = "Download COARDS netcdf zip"
+        #    output = Element("output")
+        #    output.element.appendChild(coards_download_link)
+        #    output.element.appendChild(document.createElement("br"))
+        #except Exception as ex:
+        #    print(ex)
+        #    status.element.innerText = f"Could not generate COARDS netCDF"
 
         await asyncio.sleep(0.1)
         status.element.innerText = f"Generating WOCE Files"
