@@ -490,6 +490,33 @@ def write_bottle(ds: xr.Dataset) -> bytes:
     return bytes(nc_file.close())
 
 
+def write_bottle2(ds: xr.Dataset) -> bytes:
+    _comments = ds.attrs.get("comments", "").splitlines()
+    og_header = "\n".join([_comments[0], *[f"#{line}" for line in _comments[1:]], ""])
+    try:
+        bottle_column = ds["bottle_number"]
+    except KeyError:
+        bottle_column = ds.sample
+    attrs = {
+        "EXPOCODE": ds.expocode,
+        "Conventions": "COARDS/WOCE",
+        "WOCE_VERSION": "3.0",
+        "WOCE_ID": ds.get("section_id", UNKNOWN).item(),
+        "DATA_TYPE": "WOCE Bottle",
+        "STATION_NUMBER": ds.station.item(),
+        "CAST_NUMBER": ds["cast"].astype(str).item(),
+        "BOTTOM_DEPTH_METERS": int(ds.get("btm_depth", FILL_VALUE)),
+        "Creation_Time": datetime.datetime.now(tz=datetime.timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%S.%fZ"
+        ),
+        "ORIGINAL_HEADER": og_header,
+        "BOTTLE_NUMBERS": " ".join(map(simplest_str, bottle_column.values[0])),
+    }
+
+    nc_file = xr.Dataset(attrs=attrs)
+    return nc_file.to_netcdf(format="NETCDF3_CLASSIC")
+
+
 def to_coards(ds: xr.Dataset) -> bytes:
     """Convert an xr.Dataset to a zipfile with COARDS netCDF files inside.
 
@@ -508,6 +535,44 @@ def to_coards(ds: xr.Dataset) -> bytes:
         elif profile.profile_type.item() == "B":
             extension = "hy1"
             data = write_bottle(compact)
+        else:
+            raise NotImplementedError()
+
+        filename = get_filename(
+            profile.expocode.item(),
+            profile.station.item(),
+            profile.cast.item(),
+            extension=extension,
+        )
+        output_files[filename] = data
+
+    output_zip = BytesIO()
+    with ZipFile(output_zip, "w", compression=ZIP_DEFLATED) as zipfile:
+        for fname, data in output_files.items():
+            zipfile.writestr(fname, data)
+
+    output_zip.seek(0)
+    return output_zip.read()
+
+
+def to_coards2(ds: xr.Dataset) -> bytes:
+    """Convert an xr.Dataset to a zipfile with COARDS netCDF files inside.
+
+    This function does support mixed CTD and Bottle datasets and will convert using profile_type var on a per profile basis.
+
+
+    :param ds: A dataset conforming to CCHDO CF/netCDF
+    :returns: a zipfile with one or more COARDS netCDF files as members.
+    """
+    output_files = {}
+    for _, profile in ds.groupby("N_PROF", squeeze=False):
+        compact = profile.cchdo.compact_profile()
+        if profile.profile_type.item() == "C":
+            data = write_ctd2(compact)
+            extension = "ctd"
+        elif profile.profile_type.item() == "B":
+            extension = "hy1"
+            data = write_bottle2(compact)
         else:
             raise NotImplementedError()
 
