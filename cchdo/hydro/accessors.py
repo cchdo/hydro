@@ -188,11 +188,6 @@ class CCHDOAccessor:
 
         return write_or_return(to_coards(self._obj), path)
 
-    def to_coards2(self, path=None):
-        from .legacy.coards import to_coards2
-
-        return write_or_return(to_coards2(self._obj), path)
-
     def to_woce(self, path=None):
         from .legacy.woce import to_woce
 

@@ -15,14 +15,12 @@ from csv import DictReader
 from importlib.resources import open_text
 from io import BytesIO
 from logging import getLogger
+from typing import Literal
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import numpy as np
 import xarray as xr
 from cftime import date2num
-
-# TODO put behind a guard
-from netCDF4 import Dataset
 
 from ... import accessors as acc
 from .. import woce
@@ -174,128 +172,65 @@ def minutes_since_epoch(dt: xr.DataArray, epoch, error=-9):
 # end utility
 
 
-def define_dimensions(nc_file: Dataset, length: int):
-    """Create NetCDF file dimensions.
+def get_coards_global_attributes(ds: xr.Dataset, *, profile_type: Literal["B", "C"]):
+    """Makes the global attributes of a WHP COARDS netCDF File.
 
-    This creates all the COARDS dimensions in the input nc_file as a side effect (does not return)
-    Dimensions created are:
+    The order of the attributes is important/fixed, same with case"""
 
-    * time
-    * pressure
-    * latitude
-    * longitude
-    * string_dimension
-    """
-    makeDim = nc_file.createDimension
-    makeDim("time", 1)
-    makeDim("pressure", length)
-    makeDim("latitude", 1)
-    makeDim("longitude", 1)
-    makeDim("string_dimension", STRLEN)
+    data_types = {
+        "B": "WOCE Bottle",
+        "C": "WOCE CTD",
+    }
 
+    attrs = {
+        "EXPOCODE": ds.expocode.item(),
+        "Conventions": "COARDS/WOCE",
+        "WOCE_VERSION": "3.0",
+    }
 
-def define_attributes(
-    nc_file: Dataset,
-    expocode,
-    sect_id,
-    data_type,
-    stnnbr,
-    castno,
-    bottom_depth,
-):
-    """Sets the global attributes of the input nc_file as a side effect."""
-    nc_file.EXPOCODE = expocode
-    nc_file.Conventions = "COARDS/WOCE"
-    nc_file.WOCE_VERSION = "3.0"
-    nc_file.WOCE_ID = sect_id
-    nc_file.DATA_TYPE = data_type
-    nc_file.STATION_NUMBER = stnnbr
-    nc_file.CAST_NUMBER = castno
-    nc_file.BOTTOM_DEPTH_METERS = bottom_depth
-    # nc_file.Creation_Time = fns.strftime_iso(datetime.datetime.utcnow())
-    nc_file.Creation_Time = datetime.datetime.now(tz=datetime.timezone.utc).strftime(
+    if woce_id := ds.get("section_id"):
+        attrs["WOCE_ID"] = woce_id.item()
+
+    attrs["DATA_TYPE"] = data_types[profile_type]
+    attrs["STATION_NUMBER"] = ds.station.item()
+    attrs["CAST_NUMBER"] = ds["cast"].astype(str).item()
+
+    if bottom_depth := ds.get("btm_depth"):
+        attrs["BOTTOM_DEPTH_METERS"] = int(bottom_depth.item())
+    else:
+        attrs["BOTTOM_DEPTH_METERS"] = FILL_VALUE
+
+    attrs["Creation_Time"] = datetime.datetime.now(tz=datetime.timezone.utc).strftime(
         "%Y-%m-%dT%H:%M:%S.%fZ"
     )
 
+    _comments = ds.attrs.get("comments", "").splitlines()
+    og_header = "\n".join([_comments[0], *[f"#{line}" for line in _comments[1:]], ""])
+    attrs["ORIGINAL_HEADER"] = og_header
 
-def set_original_header(nc_file: Dataset, ds: xr.Dataset):  # dfile, datatype):
-    """Sets the ORIGINAL_HEADER global attribute to whatever is in ds.attrs["comments"]."""
-    # emulates the libcchdo behavior with having # and an extra end line
-    comments = ds.attrs.get("comments", "").splitlines()
-    nc_file.ORIGINAL_HEADER = "\n".join(
-        [comments[0], *[f"#{line}" for line in comments[1:]], ""]
-    )
+    if profile_type == "B":
+        bottle_column = ds.get("bottle_number", ds["sample"])
+        attrs["BOTTLE_NUMBERS"] = " ".join(map(simplest_str, bottle_column.values[0]))
 
+        if (btl_quality_codes := ds.get("bottle_number_qc")) is not None:
+            attrs["BOTTLE_QUALITY_CODES"] = btl_quality_codes.to_numpy().astype(
+                np.int16
+            )[0]
 
-def create_common_variables(
-    nc_file: Dataset, latitude: float, longitude: float, woce_datetime, stnnbr, castno
-):
-    """Add variables to the netcdf file object such as date, time etc."""
-    # Coordinate variables
+        attrs["WOCE_BOTTLE_FLAG_DESCRIPTION"] = woce.BOTTLE_FLAG_DESCRIPTION
+        attrs["WOCE_WATER_SAMPLE_FLAG_DESCRIPTION"] = woce.WATER_SAMPLE_FLAG_DESCRIPTION
 
-    var_time = nc_file.createVariable("time", "i", ("time",))
-    var_time.long_name = "time"
-    # Java OceanAtlas 5.0.2 requires ISO 8601 with space separator.
-    var_time.units = f"minutes since {EPOCH.isoformat(' ')}"
-    var_time.data_min = int(minutes_since_epoch(woce_datetime, var_time.units))
-    var_time.data_max = var_time.data_min
-    var_time.C_format = "%10d"
-    var_time[:] = var_time.data_min
+    if profile_type == "C":
+        attrs["WOCE_CTD_FLAG_DESCRIPTION"] = woce.CTD_FLAG_DESCRIPTION
 
-    var_latitude = nc_file.createVariable("latitude", "f", ("latitude",))
-    var_latitude.long_name = "latitude"
-    var_latitude.units = "degrees_N"
-    var_latitude.data_min = float(latitude)
-    var_latitude.data_max = var_latitude.data_min
-    var_latitude.C_format = "%9.4f"
-    var_latitude[:] = var_latitude.data_min
-
-    var_longitude = nc_file.createVariable("longitude", "f", ("longitude",))
-    var_longitude.long_name = "longitude"
-    var_longitude.units = "degrees_E"
-    var_longitude.data_min = float(longitude)
-    var_longitude.data_max = var_longitude.data_min
-    var_longitude.C_format = "%9.4f"
-    var_longitude[:] = var_longitude.data_min
-
-    strs_woce_datetime = strftime_woce_date_time(woce_datetime)
-
-    var_woce_date = nc_file.createVariable("woce_date", "i", ("time",))
-    var_woce_date.long_name = "WOCE date"
-    var_woce_date.units = "yyyymmdd UTC"
-    var_woce_date.data_min = int(strs_woce_datetime[0] or -9)
-    var_woce_date.data_max = var_woce_date.data_min
-    var_woce_date.C_format = "%8d"
-    var_woce_date[:] = var_woce_date.data_min
-
-    if strs_woce_datetime[1]:
-        var_woce_time = nc_file.createVariable("woce_time", "i2", ("time",))
-        var_woce_time.long_name = "WOCE time"
-        var_woce_time.units = "hhmm UTC"
-        var_woce_time.data_min = int(strs_woce_datetime[1] or -9)
-        var_woce_time.data_max = var_woce_time.data_min
-        var_woce_time.C_format = "%4d"
-        var_woce_time[:] = var_woce_time.data_min
-
-    # Hydrographic specific
-
-    var_station = nc_file.createVariable("station", "c", ("string_dimension",))
-    var_station.long_name = "STATION"
-    var_station.units = UNSPECIFIED_UNITS
-    var_station.C_format = "%s"
-    var_station[:] = simplest_str(stnnbr.item()).ljust(len(var_station))
-
-    var_cast = nc_file.createVariable("cast", "c", ("string_dimension",))
-    var_cast.long_name = "CAST"
-    var_cast.units = UNSPECIFIED_UNITS
-    var_cast.C_format = "%s"
-    var_cast[:] = simplest_str(castno.item()).ljust(len(var_cast))
+    return attrs
 
 
-# This one will be hard, needs emulation of the legacy params interface
-def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
-    """Add variables to the netcdf file object that correspond to data."""
+def get_dataarrays(ds: xr.Dataset):
+    dataarrays = {}
     for whpname, variable in ds.cchdo.to_whp_columns().items():
+        attrs = {}
+
         parameter_name = whpname.whp_name
 
         parameter_unit = whpname.whp_unit or ""
@@ -311,8 +246,8 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
         if parameter_name in NON_FLOAT_PARAMETERS:
             continue
 
+        # porting note: this logic is to match the libcchdo COARDS netcdf varnames
         parameter = PARAMS.get(parameter_key, {})
-
         _pname = parameter.get("name_netcdf")
         if not _pname:
             log.debug(
@@ -325,195 +260,201 @@ def create_and_fill_data_variables(nc_file, ds: xr.Dataset):
             raise AttributeError(f"No name found for {parameter_name}")
         pname = _ascii(_pname)
 
+        # porting note: this was taken from the orig libcchdo
         # XXX HACK
         if pname == "oxygen1":
             pname = "oxygen"
 
-        var = nc_file.createVariable(pname, "f8", ("pressure",))
-        var.long_name = pname
-
-        if var.long_name == "pressure":
-            var.positive = "down"
+        attrs["long_name"] = pname
+        if pname == "pressure":
+            attrs["positive"] = "down"
 
         units = UNSPECIFIED_UNITS
         if parameter.get("units_name"):
             units = parameter["units_name"]
         elif parameter_unit != "":
             units = parameter_unit
-        var.units = _ascii(units)
+        attrs["units"] = _ascii(units)
 
         if parameter_name == "BTL_DATE":
-            data = variable.dt.strftime("%Y%m%d").astype(float)
+            data = variable.dt.strftime("%Y%m%d").astype(float).to_numpy()
         elif parameter_name == "BTL_TIME":
-            data = variable.dt.strftime("%H%M").astype(float)
+            data = variable.dt.strftime("%H%M").astype(float).to_numpy()
         else:
             data = variable.to_numpy()
 
-        # hack for new string params that would crash the old converter anyway
+        # porting note: hack for new string params that would crash the old converter anyway
         if data.dtype.kind in "OSU":
             data = np.full_like(data, np.nan, dtype=float)
 
         if data.dtype.kind in "iuf":
             if np.all(np.isnan(data)):
-                var.data_min = float("-inf")
-                var.data_max = float("inf")
+                attrs["data_min"] = float("-inf")  # type: ignore
+                attrs["data_max"] = float("inf")  # type: ignore
             else:
-                var.data_min = np.nanmin(data)
-                var.data_max = np.nanmax(data)
+                attrs["data_min"] = np.nanmin(data)
+                attrs["data_max"] = np.nanmax(data)
 
         if parameter.get("format"):
-            var.C_format = _ascii(parameter["format"])
+            attrs["C_format"] = _ascii(parameter["format"])
         else:
             # TODO TEST this
             log.debug("Parameter %s has no format. defaulting to '%%f'", parameter_name)
-            var.C_format = "%f"
-        if var.C_format.endswith("s"):
+            attrs["C_format"] = "%f"
+        if attrs["C_format"].endswith("s"):
             log.debug(
                 "Parameter %s does not have a format string acceptable for "
                 "numeric data. Defaulting to '%%f' to prevent ncdump "
                 "segfault.",
                 parameter_name,
             )
-            var.C_format = "%f"
-        var.WHPO_Variable_Name = parameter_name
-        var[:] = data
+            attrs["C_format"] = "%f"
+
+        attrs["WHPO_Variable_Name"] = parameter_name
+
+        dataarrays[pname] = xr.DataArray(
+            data, dims=["pressure"], name=pname, attrs=attrs
+        )
+        dataarrays[pname].encoding["_FillValue"] = None
 
         if (qc_variable := variable.attrs.get(acc.FLAG_NAME)) is not None:
             qc_name = pname + QC_SUFFIX
-            var.OBS_QC_VARIABLE = qc_name
-            vfw = nc_file.createVariable(qc_name, "i2", ("pressure",))
-            vfw.long_name = qc_name + "_flag"
-            vfw.units = "woce_flags"
-            vfw.C_format = "%1d"
-            vfw[:] = np.nan_to_num(qc_variable.to_numpy(), nan=9)
+            dataarrays[pname].attrs["OBS_QC_VARIABLE"] = qc_name
+
+            qc_attrs = {
+                "long_name": qc_name + "_flag",
+                "units": "woce_flags",
+                "C_format": "%1d",
+            }
+            qc_data = np.nan_to_num(qc_variable.to_numpy(), nan=9).astype("int16")
+            qc_dataarray = xr.DataArray(
+                qc_data, dims=["pressure"], name=qc_name, attrs=qc_attrs
+            )
+            dataarrays[qc_name] = qc_dataarray
+
+    return dataarrays
 
 
-def _create_common_variables(nc_file: Dataset, ds: xr.Dataset):
-    """Extracts the latitude, longitude, station, and cast from ds and passes them to create_common_variables.
-
-    This logic could eventually just move to create_common_variables as it was previously rather complicated
-    """
-    # Lon and lat are now guaranteed
-    latitude = float(ds.latitude)
-    longitude = float(ds.longitude)
-    stnnbr = ds.get("station", UNKNOWN)
-    castno = ds.get("cast", UNKNOWN)
-
-    create_common_variables(nc_file, latitude, longitude, ds.time, stnnbr, castno)
-
-
-def write_ctd(ds: xr.Dataset) -> bytes:
-    """How to write a CTD NetCDF file."""
-    # When libcchdo was first written, netCDF for python didn't support in memory data
-    nc_file = Dataset("inmemory.nc", "w", format="NETCDF3_CLASSIC", memory=0)
-
-    define_dimensions(nc_file, ds.dims["N_LEVELS"])
-
-    # Define dataset attributes
-    define_attributes(
-        nc_file,
-        ds.expocode,  # self.globals.get('EXPOCODE', UNKNOWN),
-        ds.get("section_id", UNKNOWN),  # self.globals.get('SECT_ID', UNKNOWN),
-        "WOCE CTD",
-        ds.station,  # self.globals.get('STNNBR', UNKNOWN),
-        ds["cast"].astype(str),  # self.globals.get('CASTNO', UNKNOWN),
-        int(
-            ds.get("btm_depth", FILL_VALUE)
-        ),  # int(self.globals.get('DEPTH', FILL_VALUE)),
+def get_common_variables(ds: xr.Dataset):
+    # In the origional it creates these all manually (not in a loop)
+    common_variables = {}
+    time_units = f"minutes since {EPOCH.isoformat(' ')}"
+    time_data = int(minutes_since_epoch(ds.time, time_units))
+    common_variables["time"] = xr.DataArray(
+        [time_data],
+        dims=("time"),
+        attrs={
+            "long_name": "time",
+            "units": time_units,
+            "data_min": time_data,
+            "data_max": time_data,
+            "C_format": "%10d",
+        },
     )
 
-    set_original_header(nc_file, ds)
-    nc_file.WOCE_CTD_FLAG_DESCRIPTION = woce.CTD_FLAG_DESCRIPTION
+    latitude = float(ds.latitude)
+    common_variables["latitude"] = xr.DataArray(
+        np.array([latitude], dtype="float32"),
+        dims=["latitude"],
+        attrs={
+            "long_name": "latitude",
+            "units": "degrees_N",
+            "data_min": latitude,
+            "data_max": latitude,
+            "C_format": "%9.4f",
+        },
+    )
+    common_variables["latitude"].encoding["_FillValue"] = None
 
-    create_and_fill_data_variables(nc_file, ds)
+    longitude = float(ds.longitude)
+    common_variables["longitude"] = xr.DataArray(
+        np.array([longitude], dtype="float32"),
+        dims=["longitude"],
+        attrs={
+            "long_name": "longitude",
+            "units": "degrees_E",
+            "data_min": longitude,
+            "data_max": longitude,
+            "C_format": "%9.4f",
+        },
+    )
+    common_variables["longitude"].encoding["_FillValue"] = None
 
-    try:
-        nobs_data = ds["ctd_number_of_observations"].to_numpy()
-        var_number = nc_file.createVariable("number_observations", "i4", ("pressure",))
-        var_number.long_name = "number_observations"
-        var_number.units = "integer"
-        var_number.data_min = np.min(nobs_data)
-        var_number.data_max = np.max(nobs_data)
-        var_number.C_format = "%1d"
-        var_number[:] = nobs_data
-    except KeyError:
-        pass
+    strs_woce_datetime = strftime_woce_date_time(ds.time)
 
-    _create_common_variables(nc_file, ds)
+    date = int(strs_woce_datetime[0] or -9)
+    common_variables["woce_date"] = xr.DataArray(
+        [date],
+        dims=["time"],
+        attrs={
+            "long_name": "WOCE date",
+            "units": "yyyymmdd UTC",
+            "data_min": date,
+            "data_max": date,
+            "C_format": "%8d",
+        },
+    )
 
-    return bytes(nc_file.close())
+    if strs_woce_datetime[1]:
+        time = int(strs_woce_datetime[1] or -9)
+        common_variables["woce_time"] = xr.DataArray(
+            np.array([time], dtype="int16"),
+            dims=["time"],
+            attrs={
+                "long_name": "WOCE time",
+                "units": "hhmm UTC",
+                "data_min": time,
+                "data_max": time,
+                "C_format": "%4d",
+            },
+        )
+
+    station = simplest_str(ds.station.item()).ljust(STRLEN)[:STRLEN]
+    common_variables["station"] = xr.DataArray(
+        station,
+        attrs={"long_name": "STATION", "units": UNSPECIFIED_UNITS, "C_format": "%s"},
+    )
+    common_variables["station"].encoding["char_dim_name"] = "string_dimension"
+
+    station = simplest_str(ds.cast.item()).ljust(STRLEN)[:STRLEN]
+    common_variables["cast"] = xr.DataArray(
+        station,
+        attrs={"long_name": "CAST", "units": UNSPECIFIED_UNITS, "C_format": "%s"},
+    )
+    common_variables["cast"].encoding["char_dim_name"] = "string_dimension"
+
+    return common_variables
 
 
 def write_bottle(ds: xr.Dataset) -> bytes:
-    """How to write a Bottle NetCDF file.
+    attrs = get_coards_global_attributes(ds, profile_type="B")
+    data_vars = get_dataarrays(ds)
+    common_vars = get_common_variables(ds)
 
-    :param ds: CCHDO CF/netCDF xarray dataset containing only a single bottle profile
-    :returns: the bytes of a netCDF3 COARDS file
-    """
-    nc_file = Dataset("inmemory.nc", "w", format="NETCDF3_CLASSIC", memory=0)
-
-    define_dimensions(nc_file, ds.dims["N_LEVELS"])
-
-    # Define dataset attributes
-    define_attributes(
-        nc_file,
-        ds.expocode,  # self.globals.get('EXPOCODE', UNKNOWN),
-        ds.get("section_id", UNKNOWN),  # self.globals.get('SECT_ID', UNKNOWN),
-        "WOCE Bottle",
-        ds.station,  # self.globals.get('STNNBR', UNKNOWN),
-        ds["cast"].astype(str),  # self.globals.get('CASTNO', UNKNOWN),
-        int(
-            ds.get("btm_depth", FILL_VALUE)
-        ),  # int(self.globals.get('DEPTH', FILL_VALUE)),
-    )
-
-    set_original_header(nc_file, ds)
-
-    try:
-        bottle_column = ds["bottle_number"]
-    except KeyError:
-        bottle_column = ds.sample
-
-    nc_file.BOTTLE_NUMBERS = " ".join(map(simplest_str, bottle_column.values[0]))
-    if "bottle_number_qc" in ds:
-        # Java OceanAtlas 5.0.2 and possibly before requires bottle quality
-        # codes to be shorts.
-        btl_quality_codes = ds.bottle_number_qc.to_numpy().astype(np.int16)[0]
-        nc_file.BOTTLE_QUALITY_CODES = btl_quality_codes
-
-    nc_file.WOCE_BOTTLE_FLAG_DESCRIPTION = woce.BOTTLE_FLAG_DESCRIPTION
-    nc_file.WOCE_WATER_SAMPLE_FLAG_DESCRIPTION = woce.WATER_SAMPLE_FLAG_DESCRIPTION
-
-    create_and_fill_data_variables(nc_file, ds)
-    _create_common_variables(nc_file, ds)
-
-    return bytes(nc_file.close())
+    nc_file = xr.Dataset(data_vars={**data_vars, **common_vars}, attrs=attrs)
+    return nc_file.to_netcdf(format="NETCDF3_CLASSIC")
 
 
-def write_bottle2(ds: xr.Dataset) -> bytes:
-    _comments = ds.attrs.get("comments", "").splitlines()
-    og_header = "\n".join([_comments[0], *[f"#{line}" for line in _comments[1:]], ""])
-    try:
-        bottle_column = ds["bottle_number"]
-    except KeyError:
-        bottle_column = ds.sample
-    attrs = {
-        "EXPOCODE": ds.expocode,
-        "Conventions": "COARDS/WOCE",
-        "WOCE_VERSION": "3.0",
-        "WOCE_ID": ds.get("section_id", UNKNOWN).item(),
-        "DATA_TYPE": "WOCE Bottle",
-        "STATION_NUMBER": ds.station.item(),
-        "CAST_NUMBER": ds["cast"].astype(str).item(),
-        "BOTTOM_DEPTH_METERS": int(ds.get("btm_depth", FILL_VALUE)),
-        "Creation_Time": datetime.datetime.now(tz=datetime.timezone.utc).strftime(
-            "%Y-%m-%dT%H:%M:%S.%fZ"
-        ),
-        "ORIGINAL_HEADER": og_header,
-        "BOTTLE_NUMBERS": " ".join(map(simplest_str, bottle_column.values[0])),
-    }
+def write_ctd(ds: xr.Dataset) -> bytes:
+    attrs = get_coards_global_attributes(ds, profile_type="C")
+    data_vars = get_dataarrays(ds)
 
-    nc_file = xr.Dataset(attrs=attrs)
+    if (ctd_nobs := ds.get("ctd_number_of_observations")) is not None:
+        nobs_data = ctd_nobs.to_numpy()
+        data_vars["number_observations"] = xr.DataArray(
+            nobs_data,
+            dims=["pressure"],
+            attrs={
+                "long_name": "number_observations",
+                "units": "integer",
+                "data_min": np.min(nobs_data),
+                "data_max": np.max(nobs_data),
+                "C_format": "%1d",
+            },
+        )
+    common_vars = get_common_variables(ds)
+
+    nc_file = xr.Dataset(data_vars={**data_vars, **common_vars}, attrs=attrs)
     return nc_file.to_netcdf(format="NETCDF3_CLASSIC")
 
 
@@ -535,44 +476,6 @@ def to_coards(ds: xr.Dataset) -> bytes:
         elif profile.profile_type.item() == "B":
             extension = "hy1"
             data = write_bottle(compact)
-        else:
-            raise NotImplementedError()
-
-        filename = get_filename(
-            profile.expocode.item(),
-            profile.station.item(),
-            profile.cast.item(),
-            extension=extension,
-        )
-        output_files[filename] = data
-
-    output_zip = BytesIO()
-    with ZipFile(output_zip, "w", compression=ZIP_DEFLATED) as zipfile:
-        for fname, data in output_files.items():
-            zipfile.writestr(fname, data)
-
-    output_zip.seek(0)
-    return output_zip.read()
-
-
-def to_coards2(ds: xr.Dataset) -> bytes:
-    """Convert an xr.Dataset to a zipfile with COARDS netCDF files inside.
-
-    This function does support mixed CTD and Bottle datasets and will convert using profile_type var on a per profile basis.
-
-
-    :param ds: A dataset conforming to CCHDO CF/netCDF
-    :returns: a zipfile with one or more COARDS netCDF files as members.
-    """
-    output_files = {}
-    for _, profile in ds.groupby("N_PROF", squeeze=False):
-        compact = profile.cchdo.compact_profile()
-        if profile.profile_type.item() == "C":
-            data = write_ctd2(compact)
-            extension = "ctd"
-        elif profile.profile_type.item() == "B":
-            extension = "hy1"
-            data = write_bottle2(compact)
         else:
             raise NotImplementedError()
 
