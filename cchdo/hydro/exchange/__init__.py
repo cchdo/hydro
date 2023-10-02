@@ -10,6 +10,7 @@ from operator import attrgetter
 from pathlib import Path
 from typing import (
     Any,
+    Literal,
     TypedDict,
     TypeGuard,
 )
@@ -90,6 +91,9 @@ FLAG_SCHEME: dict[str, type[ExchangeFlag]] = {
 GEOMETRY_VARS = ("expocode", "station", "cast", "section_id", "time")
 
 FILLS_MAP = {"string": "", "integer": np.nan, "decimal": np.nan}
+
+
+FileTypes = Literal["C", "B"]
 
 
 class FileType(Enum):
@@ -1375,13 +1379,17 @@ class CheckOptions(TypedDict, total=False):
 def read_csv(
     filename_or_obj: ExchangeIO,
     *,
-    ftype: FileType = FileType.BOTTLE,
+    fill_values=("-999",),
+    ftype: FileType | FileTypes = FileType.BOTTLE,
     checks: CheckOptions | None = None,
+    precision_source="file",
 ) -> xr.Dataset:
     @dataclasses.dataclass
     class DummyParam:
         whp_name: str
         whp_unit: str
+
+    ftype = FileType(ftype)
 
     _checks: CheckOptions = {"flags": True}
     if checks is not None:
@@ -1429,7 +1437,7 @@ def read_csv(
         post_data_slice=NONE_SLICE,
         _raw_lines=new_data,
         _ctd_override=ftype == FileType.CTD,
-    ).finalize()
+    ).finalize(precision_source=precision_source, fill_values=fill_values)
     return _from_exchange_data([exchange_data], ftype=ftype, checks=_checks)
 
 
