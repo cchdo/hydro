@@ -32,12 +32,28 @@ def convert():
     ...
 
 
+def _comment_loader(str_or_path: str) -> str:
+    if str_or_path.startswith("@"):
+        with open(str_or_path.removeprefix("@")) as f:
+            return f.read()
+    return str_or_path
+
+
+PrecisionSouceType = click.Choice(["file", "database"], case_sensitive=False)
+
+
 @convert.command()
 @click.argument("exchange_path")
 @click.argument("out_path")
-@click.argument("precision_source", default="file")
+@click.option("--precision_source", default="file", type=PrecisionSouceType)
 @click.option("--check-flag/--no-check-flag", default=True)
-def convert_exchange(exchange_path, out_path, check_flag, precision_source):
+@click.option(
+    "--comments",
+    default=None,
+    type=str,
+    help="either a comment string or file path prefixed with @ (e.g. @README.txt)",
+)
+def convert_exchange(exchange_path, out_path, check_flag, precision_source, comments):
     setup_logging("DEBUG")
     log.info("Loading read_exchange")
     from .exchange import read_exchange
@@ -46,6 +62,46 @@ def convert_exchange(exchange_path, out_path, check_flag, precision_source):
 
     ex = read_exchange(exchange_path, checks=checks, precision_source=precision_source)
     log.info("Saving to netCDF")
+    if comments is not None:
+        comments_contents = _comment_loader(comments)
+        ex.attrs["comments"] = comments_contents
+    ex.to_netcdf(out_path)
+    log.info("Done :)")
+
+
+@convert.command()
+@click.argument("csv_path")
+@click.argument("out_path")
+@click.option(
+    "--ftype",
+    default="B",
+    type=click.Choice(["B", "C"], case_sensitive=False),
+    help="B for Bottle, C for CTD",
+)
+@click.option("--precision_source", default="file", type=PrecisionSouceType)
+@click.option("--check-flag/--no-check-flag", default=True)
+@click.option(
+    "--comments",
+    default=None,
+    type=str,
+    help="either a comment string or file path prefixed with @ (e.g. @README.txt)",
+)
+def convert_csv(csv_path, out_path, ftype, check_flag, precision_source, comments):
+    setup_logging("DEBUG")
+    log.info("Loading read_exchange")
+    from .exchange import read_csv
+
+    print(comments)
+
+    checks = {"flags": check_flag}
+
+    ex = read_csv(
+        csv_path, ftype=ftype, checks=checks, precision_source=precision_source
+    )
+    log.info("Saving to netCDF")
+    if comments is not None:
+        comments_contents = _comment_loader(comments)
+        ex.attrs["comments"] = comments_contents
     ex.to_netcdf(out_path)
     log.info("Done :)")
 

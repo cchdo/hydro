@@ -4,6 +4,10 @@ V1.0.2.5 (2023-10-x)
   In some quick testing, this results in about a 3x speed up, this depends more on variable count vs data length, so most of the performance increase is actually in the bottle output
 * Add `fill_values` and `precision_source` arguments to `read_csv`
 * Add string literal types for the `ftype` parameter of `read_csv`
+* CLI improvemets:
+ * made "precision_source" and option rather than positional argument
+ * added a `--comments` option to allow the override of comments from either a string or file path prefixed with @.
+ * Add a convert_csv subcommand which takes an additional ftype option to specify (C)TD or (B)ottle
 
 v1.0.2.4 (2023-09-05)
 =====================
