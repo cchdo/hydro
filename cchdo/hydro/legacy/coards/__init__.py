@@ -196,7 +196,7 @@ def get_coards_global_attributes(ds: xr.Dataset, *, profile_type: Literal["B", "
     attrs["CAST_NUMBER"] = ds["cast"].astype(str).item()
 
     if bottom_depth := ds.get("btm_depth"):
-        attrs["BOTTOM_DEPTH_METERS"] = int(bottom_depth.item())
+        attrs["BOTTOM_DEPTH_METERS"] = int(bottom_depth.fillna(FILL_VALUE).item())
     else:
         attrs["BOTTOM_DEPTH_METERS"] = FILL_VALUE
 
