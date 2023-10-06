@@ -40,8 +40,6 @@ Repository = "https://github.com/cchdo/hydro.git"
 [project.optional-dependencies]
 netcdf = [
     "netCDF4>=1.5.7",
-]
-matlab = [
     "scipy",
 ]
 selftest = [
@@ -71,7 +69,7 @@ cli = [
     "rich",
 ]
 complete = [
-    "cchdo.hydro[cli,docs,dev,matlab]"
+    "cchdo.hydro[cli,docs,dev]"
 ]
 
 [tool.mypy]

@@ -1,13 +1,16 @@
-V1.0.2.5 (2023-10-x)
+V1.0.2.5 (2023-10-05)
 =====================
 * Rewrite the COARDS netCDF output to create xarray objects rather than netCDF datasets directly.
   In some quick testing, this results in about a 3x speed up, this depends more on variable count vs data length, so most of the performance increase is actually in the bottle output
+  * Fixed a bug in COARDS where the fill value was not being set in the bottom depth variable
 * Add `fill_values` and `precision_source` arguments to `read_csv`
 * Add string literal types for the `ftype` parameter of `read_csv`
 * CLI improvemets:
  * made "precision_source" and option rather than positional argument
  * added a `--comments` option to allow the override of comments from either a string or file path prefixed with @.
  * Add a convert_csv subcommand which takes an additional ftype option to specify (C)TD or (B)ottle
+* Removed the `matlab` optional install extra, this previously had a single dependency of "scipy" in it.
+  Scipy is used by xarray for netCDF3 output so this dependency has been moved to the `netcdf` optional install extra.
 
 v1.0.2.4 (2023-09-05)
 =====================
