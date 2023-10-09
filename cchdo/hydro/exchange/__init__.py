@@ -285,7 +285,7 @@ def flatten_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
         if cdom_qc is not None:
             ds[whp_name.nc_name_flag] = cdom_qc
 
-    return ds.drop(keys)
+    return ds.drop_vars(keys)
 
 
 def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
@@ -320,11 +320,14 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
         raise NotImplementedError("partial QC for CDOM is not handled yet")
 
     radiation_wavelengths = []
+    c_formats = []
     for dataarray in cdom_data:
         whp_name = dataarray.attrs["whp_name"]
         whp_unit = dataarray.attrs["whp_unit"]
         whpname = WHPNames[(whp_name, whp_unit)]
         radiation_wavelengths.append(whpname.radiation_wavelength)
+        if "C_format" in dataarray.attrs:
+            c_formats.append(dataarray.attrs["C_format"])
 
     cdom_wavelengths = xr.DataArray(
         np.array(radiation_wavelengths, dtype=np.int32),
@@ -361,7 +364,11 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
 
     cdom_arrays = np.stack(cdom_data, axis=-1)
 
-    new_cdom_attrs = {**first.attrs, "whp_name": "CDOM{CDOM_WAVELENGTHS}"}
+    new_cdom_attrs = {
+        **first.attrs,
+        "whp_name": "CDOM{CDOM_WAVELENGTHS}",
+        "C_format": max(c_formats),
+    }
 
     new_qc_name = f"{whpname.nc_group}_qc"
 

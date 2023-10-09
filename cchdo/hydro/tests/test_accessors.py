@@ -39,6 +39,22 @@ END_DATA
     assert_identical(ds, rt)
 
 
+def test_exchange_bottle_round_trip_cdom():
+    # note that the differet bottle and sampno are intentional
+    # note that we do want the print precision of the two CDOMs to differ
+    test_data = b"""BOTTLE,test
+# some comment
+EXPOCODE,STNNBR,CASTNO,SAMPNO,BTLNBR,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS,CDOM-300,CDOM-300_FLAG_W,CDOM-325,CDOM-325_FLAG_W
+,,,,,,,,,DBAR,/METER,,/METER,
+TEST          ,1       ,  1,1          ,2          ,20200101,0000,        0,        0,        0,      0.052,2,     0.0091,2
+END_DATA
+"""
+    ds = read_exchange(test_data)
+    # the magic slice removes the stamp and the newline with #
+    rt = read_exchange(ds.cchdo.to_exchange()[25:])
+    assert_identical(ds, rt)
+
+
 def test_exchange_ctd_round_trip():
     test_data = b"""CTD,test
 # some comment

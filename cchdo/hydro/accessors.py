@@ -614,7 +614,7 @@ class CCHDOAccessor:
         # TODO, all things that appear in an exchange file, must have WHP name
         ds = flatten_cdom_coordinate(self._obj)
 
-        ds = self._obj.reset_coords(
+        ds = ds.reset_coords(
             [
                 "expocode",
                 "station",
