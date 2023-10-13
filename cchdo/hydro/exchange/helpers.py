@@ -48,13 +48,15 @@ def simple_bottle_exchange(
     return simple.encode("utf8")
 
 
-def gen_complete_bottle(
-    ctd_params_only=False,
+def gen_template(
+    ftype="B",
     param_counts: dict[str, int] | None = None,
     min_count=5,
     filter_erddap=False,
 ):
-    from . import read_csv
+    from . import FileType, read_csv
+
+    ftype = FileType(ftype)
 
     exclude = set(
         [
@@ -92,7 +94,7 @@ def gen_complete_bottle(
         if param_counts is not None:
             if param_counts.get(name.nc_name, 0) < min_count:
                 continue
-        if ctd_params_only is True and name.flag_w in {
+        if ftype == FileType.CTD and name.flag_w in {
             "woce_discrete",
             "woce_bottle",
             "no_flags",
@@ -102,6 +104,7 @@ def gen_complete_bottle(
             param_name = f"{name.whp_name} [{name.whp_unit}]"
         else:
             param_name = name.whp_name
+        params.append(param_name)
 
         data.append("-999")
         if name.flag_w is not None and name.flag_w != "no_flags":
@@ -120,5 +123,6 @@ def gen_complete_bottle(
     data.extend(["20220421", "0944"])
 
     file = f"{','.join(params)}\n{','.join(data)}"
+    data_file = io.BytesIO(file.encode("utf8"))
 
-    return read_csv(io.BytesIO(file.encode("utf8")))
+    return read_csv(data_file, ftype=ftype)
