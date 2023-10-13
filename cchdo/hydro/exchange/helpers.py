@@ -54,7 +54,7 @@ def gen_complete_bottle(
     min_count=5,
     filter_erddap=False,
 ):
-    from . import read_exchange
+    from . import read_csv
 
     exclude = set(
         [
@@ -72,9 +72,18 @@ def gen_complete_bottle(
         ]
     )
 
-    params = []
-    units = []
-    data = []
+    params = [
+        "EXPOCODE",
+        "STNNBR",
+        "CASTNO",
+        "SAMPNO",
+        "LATITUDE",
+        "LONGITUDE",
+        "DATE",
+        "TIME",
+        "CTDPRS [DBAR]",
+    ]
+    data = ["TEST", "1", "1", "1", "0", "0", "20200101", "0000", "0"]
     for name in set(WHPNames.values()):
         if filter_erddap and not name.in_erddap:
             continue
@@ -89,23 +98,27 @@ def gen_complete_bottle(
             "no_flags",
         }:
             continue
-        params.append(name.whp_name)
-        units.append(name.whp_unit if name.whp_unit is not None else "")
+        if name.whp_unit is not None:
+            param_name = f"{name.whp_name} [{name.whp_unit}]"
+        else:
+            param_name = name.whp_name
+
         data.append("-999")
         if name.flag_w is not None and name.flag_w != "no_flags":
-            params.append(f"{name.whp_name}_FLAG_W")
-            units.append("")
+            params.append(f"{param_name}_FLAG_W")
             data.append("9")
 
         if name.error_name is not None:
-            params.append(name.error_name)
-            units.append(name.whp_unit if name.whp_unit is not None else "")
+            if name.whp_unit is not None:
+                params.append(f"{name.error_name} [{name.whp_unit}]")
+            else:
+                params.append(name.error_name)
             data.append("-999")
 
     # special case
     params.extend(["BTL_DATE", "BTL_TIME"])
-    units.extend(["", ""])
     data.extend(["20220421", "0944"])
 
-    ex = simple_bottle_exchange(params=params, units=units, data=data)
-    return read_exchange(io.BytesIO(ex))
+    file = f"{','.join(params)}\n{','.join(data)}"
+
+    return read_csv(io.BytesIO(file.encode("utf8")))
