@@ -14,7 +14,7 @@ def test_read_csv():
 def test_all_flags_kept():
     test_data = BytesIO(
         b"""EXPOCODE,STNNBR,CASTNO,SAMPNO,LATITUDE,LONGITUDE,DATE,TIME,CTDPRS [DBAR],CTDOXY [UMOL/KG],CTDOXY [UMOL/KG]_FLAG_W,CTDOXY [UMOL/L],CTDOXY [UMOL/L]_FLAG_W
-TEST,1,1,1,0,0,20220101,0000,0,0,2,0,2"""
+TEST,1,1,1,0,0,20220101,0000,0,0,2,0,3"""
     )
     ds = read_csv(test_data)
 
@@ -23,6 +23,8 @@ TEST,1,1,1,0,0,20220101,0000,0,0,2,0,2"""
     assert "ctd_oxygen_qc" in ds
     assert "ctd_oxygen_umol_l" in ds
     assert "ctd_oxygen_umol_l_qc" in ds
+    assert ds.ctd_oxygen_qc.to_numpy() == [[2]]
+    assert ds.ctd_oxygen_umol_l_qc.to_numpy() == [[3]]
 
 
 def test_all_error_params():
