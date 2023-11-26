@@ -748,45 +748,34 @@ class CCHDOAccessor:
         for key, values in normalized_fq.items():
             prof, level = idxer[key]
             for param, value in values.items():
-                if param in WHPNames.error_cols:
-                    whpname = WHPNames.error_cols[param]
+                whpname = WHPNames[param]
+                if whpname.error_col:
                     col_ref = new_obj[whpname.nc_name_error]
-                    col_ref[prof, level] = value
-                    col_ref.attrs["date_modified"] = now.isoformat(timespec="seconds")
-                    if param in input_precisions and whpname.dtype == "decimal":
-                        new_c_format = f"%.{input_precisions[param]}f"
-                        new_c_format_source = "input_file"
-                        if (
-                            col_ref.attrs.get("C_format") != new_c_format
-                            or col_ref.attrs.get("C_format_source")
-                            != new_c_format_source
-                        ):
-                            col_ref.attrs["C_format"] = new_c_format
-                            col_ref.attrs["C_format_source"] = new_c_format_source
-                            col_ref.attrs["date_metadata_modified"] = now.isoformat(
-                                timespec="seconds"
-                            )
-                elif (whpname := param.removesuffix("_FLAG_W")) != param:
-                    whpname = WHPNames[whpname]
-                    new_obj[whpname.nc_name_flag][prof, level] = value
+                elif whpname.flag_col:
+                    col_ref = new_obj[whpname.nc_name_flag]
                 else:
-                    whpname = WHPNames[param]
                     col_ref = new_obj[whpname.nc_name]
-                    col_ref[prof, level] = value
-                    col_ref.attrs["date_modified"] = now.isoformat(timespec="seconds")
-                    if param in input_precisions and whpname.dtype == "decimal":
-                        new_c_format = f"%.{input_precisions[param]}f"
-                        new_c_format_source = "input_file"
-                        if (
-                            col_ref.attrs.get("C_format") != new_c_format
-                            or col_ref.attrs.get("C_format_source")
-                            != new_c_format_source
-                        ):
-                            col_ref.attrs["C_format"] = new_c_format
-                            col_ref.attrs["C_format_source"] = new_c_format_source
-                            col_ref.attrs["date_metadata_modified"] = now.isoformat(
-                                timespec="seconds"
-                            )
+
+                # actually update the data
+                col_ref[prof, level] = value
+                col_ref.attrs["date_modified"] = now.isoformat(timespec="seconds")
+
+                if (
+                    param in input_precisions
+                    and whpname.dtype == "decimal"
+                    and not whpname.flag_col
+                ):
+                    new_c_format = f"%.{input_precisions[param]}f"
+                    new_c_format_source = "input_file"
+                    if (
+                        col_ref.attrs.get("C_format") != new_c_format
+                        or col_ref.attrs.get("C_format_source") != new_c_format_source
+                    ):
+                        col_ref.attrs["C_format"] = new_c_format
+                        col_ref.attrs["C_format_source"] = new_c_format_source
+                        col_ref.attrs["date_metadata_modified"] = now.isoformat(
+                            timespec="seconds"
+                        )
         if check_flags:
             _check_flags(new_obj)
         return new_obj

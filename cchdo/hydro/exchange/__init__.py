@@ -36,7 +36,6 @@ from .exceptions import (
     ExchangeEncodingError,
     ExchangeError,
     ExchangeFlaglessParameterError,
-    ExchangeFlagUnitError,
     ExchangeInconsistentMergeType,
     ExchangeMagicNumberError,
     ExchangeOrphanErrorError,
@@ -108,46 +107,77 @@ WHPNameIndex = dict[WHPName, int]
 WHPParamUnit = tuple[str, str | None]
 
 
-def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
-    """Given an ordered iterable of param, unit pairs, return the index of the column in the datafile for known WHP params.
+def _has_no_nones(val: list[str | None]) -> TypeGuard[list[str]]:
+    return None not in val
 
-    Exchange files have comma separated parameter names on one line, and the corresponding units on the next.
-    This function will search for this name+unit pair in the builtin database of known WHP parameter names and return a mapping of :py:class:`~hydro.data.WHPName` to column indicies.
 
-    It is currently an error for the parameter in a file to not be in the built in database.
+def _transform_whp_to_csv(params: list[str], units: list[str]) -> list[str]:
+    slots: list[str | None] = [None for _ in range(len(params))]
 
-    This function will ignore uncertainty (error) columns and flag columns, those are parsed by other functions.
+    pairs = list(zip(params, units))
+    mutable_units = list(units)
 
-    .. warning::
+    if len(set(pairs)) != len(pairs):
+        # we will assume that this is due to flags, actual duplciate params will come later
+        for index, (param, unit) in enumerate(pairs):
+            next_idx = index + 1
+            try:
+                next_param, next_unit = pairs[next_idx]
+            except IndexError:
+                continue
 
-        Convert semantically empty units (e.g. empty string, all whitespace) to None before passing into this function
+            potential_flag = f"{param}_FLAG_W"
+            if next_param == potential_flag:
+                mutable_units[next_idx] = unit
 
-    .. note::
+    flags = {}
+    # param pass
+    for index, (param, unit) in enumerate(zip(params, mutable_units)):
+        if param.endswith("_FLAG_W"):
+            flags[param] = index
+        slots[index] = f"{param} [{unit}]"
 
-        The parameter name database will convert unambiguous aliases to their canonical exchange parameter and unit pair.
-
-    :param params_units: Paired (e.g. zip) parameter names and units
-    :type params_units: tuple in the form (str, str) or (str, None)
-    :returns: Mapping of :py:class:`~hydro.data.WHPName` to column indicies
-    :rtype: dict with keys of :py:class:`~hydro.data.WHPName` and values of int
-    :raises ExchangeParameterUndefError: if the parameter unit pair cannot be found in the built in database
-    """
-    params = {}
-    unknown_errors = []
-    duplicate_errors = []
-    for index, (param, unit) in enumerate(params_units):
-        if (param, unit) in WHPNames.error_cols:
-            continue
+    # flag pass
+    for index, (param, unit) in enumerate(zip(params, mutable_units)):
         if param.endswith("_FLAG_W"):
             continue
+        if (flag := f"{param}_FLAG_W") in flags:
+            slots[flags[flag]] = f"{param} [{unit}]_FLAG_W"
+
+    if _has_no_nones(slots):
+        return slots
+
+    raise ValueError("something has gone wrong with parameters transform")
+
+
+def _get_params(
+    params_units: Iterable[str],
+) -> tuple[WHPNameIndex, WHPNameIndex, WHPNameIndex]:
+    params: WHPNameIndex = {}
+    flags: WHPNameIndex = {}
+    errors: WHPNameIndex = {}
+
+    duplicate_errors = []
+    unknown_errors = []
+
+    for index, param in enumerate(params_units):
         try:
-            whpname = WHPNames[(param, unit)]
+            whpname = WHPNames[param]
         except KeyError:
-            unknown_errors.append((param, unit))
+            unknown_errors.append(param)
             continue
-        if whpname in params:
-            duplicate_errors.append(whpname)
-        params[whpname] = index
+
+        if whpname.error_col:
+            errors[whpname] = index
+
+        elif whpname.flag_col:
+            flags[whpname] = index
+
+        else:
+            if whpname in params:
+                duplicate_errors.append(param)
+
+            params[whpname] = index
 
     if any(unknown_errors):
         raise ExchangeParameterUndefError(unknown_errors)
@@ -156,91 +186,17 @@ def _bottle_get_params(params_units: Iterable[WHPParamUnit]) -> WHPNameIndex:
         raise ExchangeDuplicateParameterError(
             f"The following params are duplicate: {duplicate_errors}"
         )
-    return params
 
+    if not (params.keys() >= flags.keys()):
+        raise ValueError("Some flags not in params")
+    if not (params.keys() >= errors.keys()):
+        raise ValueError("Some errors not in params")
 
-def _bottle_get_flags(
-    params_units: Iterable[WHPParamUnit], whp_params: WHPNameIndex
-) -> WHPNameIndex:
-    """Given an ordered iterable of param unit pairs and WHPNames known to be in the file, return the index of the column indicies of the flags for the WHPNames.
+    for flag in flags:
+        if flag.flag_w == "no_flags":
+            raise ExchangeFlaglessParameterError(flag)
 
-    Exchange files can have status flags for some of the parameters.
-    Flag columns must have no units.
-    Some parameters must not have status flags, these include the spatiotemporal parameters (e.g. lat, lon, but also pressure) and the sample identifying parameters (expocode, station, cast, sample, but *not* bottle id).
-
-    :param params_units: Paired (e.g. zip) parameter names and units
-    :type params_units: tuple in the form (str, str) or (str, None)
-    :param whp_params: Mapping of parameters known to be in the file, this is the output of :py:func:`._bottle_get_params`
-    :type whp_params: Mapping of :py:class:`~hydro.data.WHPName` to int
-    :returns: Mapping of :py:class:`~hydro.data.WHPName` to column indicies for the status flag column
-    :rtype: dict with keys of :py:class:`~hydro.data.WHPName` and values of int
-    :raises ExchangeFlagUnitError: if the flag column has units other than None
-    :raises ExchangeFlaglessParameterError: if the flag column is for a parameter not allowed to have status flags
-    :raises ExchangeOrphanFlagError: if the flag column is for a parameter not in the passed in mapping of whp_params
-    """
-    param_flags = {}
-    whp_params_names = whp_params.keys()
-
-    for index, (param, unit) in enumerate(params_units):
-        if not param.endswith("_FLAG_W"):
-            continue
-
-        if unit is not None:
-            raise ExchangeFlagUnitError
-
-        data_col = param.replace("_FLAG_W", "")
-        try:
-            whpname = WHPNames[data_col]
-
-            if whpname not in whp_params_names:
-                raise KeyError
-
-            if whpname.flag_w is None:
-                raise ExchangeFlaglessParameterError(f"{data_col}")
-            param_flags[whpname] = index
-        except KeyError as error:
-            # we might have an alias...
-            for name in whp_params:
-                potential = [k[0] for k, v in WHPNames.items() if v == name]
-                if data_col in potential:
-                    param_flags[name] = index
-                    break
-            else:
-                raise ExchangeOrphanFlagError(f"{data_col}") from error
-
-    return param_flags
-
-
-def _bottle_get_errors(
-    params_units: Iterable[WHPParamUnit], whp_params: WHPNameIndex
-) -> WHPNameIndex:
-    """Given an ordered iterable of param unit pairs and WHPNames known to be in the file, return the index of the column indicies of the errors/uncertanties for the WHPNames.
-
-    Some parameters may have uncertanties associated with them, this function finds those columns and pairs them with the correct parameter.
-
-    .. note::
-
-        There is no programable way to find the error columns for a given unit (e.g. no common suffix like the flags).
-        This must be done via lookup in the built in database of params.
-
-    :param params_units: Paired (e.g. :py:func:`zip`) parameter names and units
-    :type params_units: tuple in the form (str, str) or (str, None)
-    :param whp_params: Mapping of parameters known to be in the file, this is the output of :py:func:`._bottle_get_params`
-    :type whp_params: Mapping of :py:class:`~hydro.data.WHPName` to int
-    :returns: Mapping of :py:class:`~hydro.data.WHPName` to column indicies for the error column
-    :rtype: dict with keys of :py:class:`~hydro.data.WHPName` and values of int
-    """
-    param_errs = {}
-
-    for index, (param, unit) in enumerate(params_units):
-        if (param, unit) not in WHPNames.error_cols:
-            continue
-
-        for name in whp_params.keys():
-            if name.error_name == param and name.whp_unit == unit:
-                param_errs[name] = index
-
-    return param_errs
+    return params, flags, errors
 
 
 def _ctd_get_header(line, dtype=str):
@@ -863,6 +819,9 @@ class _ExchangeInfo:
 
         Will have the same shape as params
         """
+        if self.params_idx == self.units_idx:
+            return self.params
+
         # we can have a bunch of empty strings as units, we want these to be
         # None to match what would be in a WHPName object
         ctd_units = [None for _ in self.ctd_headers]
@@ -888,7 +847,7 @@ class _ExchangeInfo:
         return self._raw_lines[self.post_data_slice]
 
     @cached_property
-    def whp_params(self):
+    def _whp_param_info(self):
         """Parses the params and units for base parameters
 
         Returns a dict with a WHPName to column index mapping
@@ -915,28 +874,36 @@ class _ExchangeInfo:
             if len(self.units) != column_count:
                 raise ExchangeParameterUnitAlignmentError
 
-        params_idx = _bottle_get_params(zip(self.params, self.units))
+        if self.params_idx == self.units_idx:
+            params_units = self.params
+        else:
+            params_units = _transform_whp_to_csv(self.params, self.units)
+        params_idx, flags, errors = _get_params(params_units)
 
         if any(self.ctd_headers) or self._ctd_override:
             params_idx[SAMPNO] = params_idx[CTDPRS]
 
-        return params_idx
+        return params_idx, flags, errors
 
-    @cached_property
+    @property
+    def whp_params(self):
+        return self._whp_param_info[0]
+
+    @property
     def whp_flags(self):
         """Parses the params and units for flag values
 
         returns a dict with a WHPName to column index of flags mapping
         """
-        return _bottle_get_flags(zip(self.params, self.units), self.whp_params)
+        return self._whp_param_info[1]
 
-    @cached_property
+    @property
     def whp_errors(self):
         """Parses the params and units for uncertanty values
 
         returns a dict with a WHPName to column index of errors mapping
         """
-        return _bottle_get_errors(zip(self.params, self.units), self.whp_params)
+        return self._whp_param_info[2]
 
     @property
     def _np_data_block(self):
@@ -1391,11 +1358,6 @@ def read_csv(
     checks: CheckOptions | None = None,
     precision_source="file",
 ) -> xr.Dataset:
-    @dataclasses.dataclass
-    class DummyParam:
-        whp_name: str
-        whp_unit: str
-
     ftype = FileType(ftype)
 
     _checks: CheckOptions = {"flags": True}
@@ -1414,33 +1376,24 @@ def read_csv(
     splitdata = data[0].splitlines()
 
     params_units = splitdata[0]
-    whp_params: list[WHPName | DummyParam] = []
+    whp_params: list[WHPName] = []
     for name in params_units.split(","):
-        try:
-            whp_params.append(WHPNames[name])
-        except KeyError:
-            try:
-                WHPNames.error_cols[name]
-            except KeyError:
-                whp_params.append(DummyParam(name, ""))
+        whp_params.append(WHPNames[name])
 
-    params = [name.whp_name for name in whp_params]
-    units = [
-        name.whp_unit if (name.whp_unit is not None) else "" for name in whp_params
-    ]
+    params_units_list = [name.odv_key for name in whp_params]
 
     NONE_SLICE = slice(
         0,
         0,
     )
-    new_data = tuple((",".join(params), ",".join(units), *splitdata[1:]))
+    new_data = tuple((",".join(params_units_list), *splitdata[1:]))
     exchange_data = _ExchangeInfo(
         stamp_slice=NONE_SLICE,
         comments_slice=NONE_SLICE,
         ctd_headers_slice=NONE_SLICE,
         params_idx=0,
-        units_idx=1,
-        data_slice=slice(2, None),
+        units_idx=0,
+        data_slice=slice(1, None),
         post_data_slice=NONE_SLICE,
         _raw_lines=new_data,
         _ctd_override=ftype == FileType.CTD,
@@ -1606,18 +1559,20 @@ def _from_exchange_data(
 
     log.debug("Init DataArrays")
     for param in sorted(params):
-        dataarrays[param.nc_name] = _dataarray_factory(param)
+        dataarrays[param.full_nc_name] = _dataarray_factory(param)
 
-        dataarrays[param.nc_name].attrs["ancillary_variables"] = []
+        dataarrays[param.full_nc_name].attrs["ancillary_variables"] = []
         if param in flags:
-            qc_name = f"{param.nc_name}_qc"
+            qc_name = param.nc_name_flag
             dataarrays[qc_name] = _dataarray_factory(param, ctype="flag")
-            dataarrays[param.nc_name].attrs["ancillary_variables"].append(qc_name)
+            dataarrays[param.full_nc_name].attrs["ancillary_variables"].append(qc_name)
 
         if param in errors:
-            error_name = f"{param.nc_name}_error"
+            error_name = param.nc_name_error
             dataarrays[error_name] = _dataarray_factory(param, ctype="error")
-            dataarrays[param.nc_name].attrs["ancillary_variables"].append(error_name)
+            dataarrays[param.full_nc_name].attrs["ancillary_variables"].append(
+                error_name
+            )
 
         # Check for ancillary temperature data and connect to the parent
         if param.analytical_temperature_name is not None:
@@ -1625,8 +1580,8 @@ def _from_exchange_data(
                 (param.analytical_temperature_name, param.analytical_temperature_units)
             ]
             if ancilary_temp_param in params:
-                dataarrays[param.nc_name].attrs["ancillary_variables"].append(
-                    ancilary_temp_param.nc_name
+                dataarrays[param.full_nc_name].attrs["ancillary_variables"].append(
+                    ancilary_temp_param.full_nc_name
                 )
 
     log.debug("Put data in arrays")
@@ -1637,40 +1592,36 @@ def _from_exchange_data(
 
         for param in params:
             if param in exd.param_precisions and param.dtype == "decimal":
-                dataarrays[param.nc_name].attrs[
+                dataarrays[param.full_nc_name].attrs[
                     "C_format"
                 ] = f"%.{exd.param_precisions[param]}f"
-                dataarrays[param.nc_name].attrs["C_format_source"] = "input_file"
+                dataarrays[param.full_nc_name].attrs["C_format_source"] = "input_file"
             if param in exd.error_precisions and param.dtype == "decimal":
-                dataarrays[f"{param.nc_name}_error"].attrs[
+                dataarrays[param.nc_name_error].attrs[
                     "C_format"
                 ] = f"%.{exd.error_precisions[param]}f"
-                dataarrays[f"{param.nc_name}_error"].attrs[
-                    "C_format_source"
-                ] = "input_file"
+                dataarrays[param.nc_name_error].attrs["C_format_source"] = "input_file"
 
             if param.scope == "profile":
                 if not all_same(exd.param_cols[param]):
                     raise ExchangeDataInconsistentCoordinateError(param)
-                dataarrays[param.nc_name][n_prof] = exd.param_cols[param][0]
+                dataarrays[param.full_nc_name][n_prof] = exd.param_cols[param][0]
 
                 if param in flags:
-                    dataarrays[f"{param.nc_name}_qc"][n_prof] = exd.flag_cols[param][0]
+                    dataarrays[param.nc_name_flag][n_prof] = exd.flag_cols[param][0]
                 if param in errors:
-                    dataarrays[f"{param.nc_name}_error"][n_prof] = exd.error_cols[
-                        param
-                    ][0]
+                    dataarrays[param.nc_name_error][n_prof] = exd.error_cols[param][0]
 
             if param.scope == "sample":
                 data = exd.param_cols[param]
-                dataarrays[param.nc_name][n_prof, : len(data)] = data
+                dataarrays[param.full_nc_name][n_prof, : len(data)] = data
 
                 if param in flags:
                     data = exd.flag_cols[param]
-                    dataarrays[f"{param.nc_name}_qc"][n_prof, : len(data)] = data
+                    dataarrays[param.nc_name_flag][n_prof, : len(data)] = data
                 if param in errors:
                     data = exd.error_cols[param]
-                    dataarrays[f"{param.nc_name}_error"][n_prof, : len(data)] = data
+                    dataarrays[param.nc_name_error][n_prof, : len(data)] = data
 
     ex_dataset = xr.Dataset(
         dataarrays,
@@ -1689,7 +1640,7 @@ def _from_exchange_data(
 
     # these are the only two we know of for now
     ex_dataset = ex_dataset.set_coords(
-        [coord.nc_name for coord in COORDS if coord.nc_name in ex_dataset]
+        [coord.full_nc_name for coord in COORDS if coord.full_nc_name in ex_dataset]
     )
     ex_dataset = sort_ds(ex_dataset)
     ex_dataset = set_axis_attrs(ex_dataset)

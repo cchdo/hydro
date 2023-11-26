@@ -122,6 +122,19 @@ def test_duplicate_name_different_units():
     assert "ctd_temperature_68" in ex_xr.variables
 
 
+def test_duplicate_name_different_units_keep_flags():
+    raw = simple_bottle_exchange(
+        params=("CTDTMP", "CTDTMP_FLAG_W", "CTDTMP", "CTDTMP_FLAG_W"),
+        units=("ITS-90", "", "IPTS-68", ""),
+        data=("-999", "9", "-999", "9"),
+    )
+    ex_xr = read_exchange(io.BytesIO(raw))
+    assert "ctd_temperature" in ex_xr.variables
+    assert "ctd_temperature_68" in ex_xr.variables
+    assert "ctd_temperature_qc" in ex_xr.variables
+    assert "ctd_temperature_68_qc" in ex_xr.variables
+
+
 def test_duplicate_name_same_units():
     raw = simple_bottle_exchange(
         params=("CTDTMP", "CTDTMP"), units=("ITS-90", "ITS-90"), data=("-999", "-999")
@@ -138,7 +151,31 @@ def test_multiple_unknown_params():
         read_exchange(io.BytesIO(raw))
 
     assert hasattr(execinfo.value, "error_data")
-    assert execinfo.value.error_data == [("TEST1", "TEST3"), ("TEST2", "TEST4")]
+    assert execinfo.value.error_data == ["TEST1 [TEST3]", "TEST2 [TEST4]"]
+
+
+def test_alternate_params():
+    raw = simple_bottle_exchange(
+        params=("CTDTMP", "CTDTMP_ALT_1"),
+        units=("ITS-90", "ITS-90"),
+        data=("-999", "-999"),
+    )
+    ex_xr = read_exchange(io.BytesIO(raw))
+    assert "ctd_temperature" in ex_xr.variables
+    assert "ctd_temperature_alt_1" in ex_xr.variables
+
+
+def test_alternate_params_flags():
+    raw = simple_bottle_exchange(
+        params=("CTDTMP", "CTDTMP_ALT_1", "CTDTMP_ALT_1_FLAG_W"),
+        units=("ITS-90", "ITS-90", ""),
+        data=("-999", "-999", "9"),
+    )
+    ex_xr = read_exchange(io.BytesIO(raw))
+    assert "ctd_temperature" in ex_xr.variables
+    assert "ctd_temperature_alt_1" in ex_xr.variables
+    assert "ctd_temperature_alt_1_qc" in ex_xr.variables
+    assert "ctd_temperature_qc" not in ex_xr.variables
 
 
 def test_fix_bottle_time_span():

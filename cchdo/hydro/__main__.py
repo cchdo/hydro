@@ -91,8 +91,6 @@ def convert_csv(csv_path, out_path, ftype, check_flag, precision_source, comment
     log.info("Loading read_exchange")
     from .exchange import read_csv
 
-    print(comments)
-
     checks = {"flags": check_flag}
 
     ex = read_csv(
@@ -226,7 +224,7 @@ def status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_coun
             <table class="table"><thead>
             <h2>Versions</h2>
             cchdo.hydro: {hydro_version}</br>
-            cchdo.params: {params_version.version}</br>
+            cchdo.params: {params_version}</br>
             stats: {success_str}
             <h2>Files</h2>
             <tr>

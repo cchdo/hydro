@@ -42,7 +42,7 @@ class ExchangeParameterError(ExchangeError):
 class ExchangeParameterUndefError(ExchangeParameterError):
     """Error raised when the library does not have a definition for a parameter/unit pair in the exchange file."""
 
-    def __init__(self, error_data: list[tuple[str, str | None]]):
+    def __init__(self, error_data: list[str]):
         super().__init__(error_data)
         self.error_data = error_data
 
