@@ -28,12 +28,13 @@ jobs:
         pip install .[complete]
     - name: Lint with ruff
       uses: chartboost/ruff-action@v1
+    - name: Test code style with ruff
+      uses: chartboost/ruff-action@v1
+      with:
+        args: format --check
     - name: Test with pytest
       run: |
         pytest --cov-report xml --cov=cchdo
-    - name: Test code style with black
-      run: |
-        black --check .
     - name: Test typing
       run: |
         mypy --namespace-packages --explicit-package-bases cchdo
