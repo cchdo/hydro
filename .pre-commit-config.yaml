@@ -3,16 +3,16 @@
 # https://github.com/python/black#version-control-integration
 repos:
   - repo: https://github.com/python/black
-    rev: 23.9.1
+    rev: 24.2.0
     hooks:
       - id: black
         language_version: python3.10
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.291
+    rev: v0.2.2
     hooks:
       - id: ruff
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.5.1
+    rev: v1.8.0
     hooks:
       - id: mypy
         additional_dependencies: [types-requests]
