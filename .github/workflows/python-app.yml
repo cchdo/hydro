@@ -27,11 +27,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install .[complete]
     - name: Lint with ruff
-      uses: chartboost/ruff-action@v1
+      run: |
+        ruff check
     - name: Test code style with ruff
-      uses: chartboost/ruff-action@v1
-      with:
-        args: format --check
+      run: |
+        ruff format --check
     - name: Test with pytest
       run: |
         pytest --cov-report xml --cov=cchdo
