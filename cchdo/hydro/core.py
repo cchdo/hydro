@@ -1,4 +1,5 @@
 """Core operations on a CCHDO CF/netCDF file."""
+
 from collections.abc import Hashable
 
 import numpy as np

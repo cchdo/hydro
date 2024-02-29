@@ -332,9 +332,9 @@ class CCHDOAccessor:
             row[13] = ""  # "WIRE" out
             row[14] = f"{max(prof.pressure.values):.0f}"
             row[15] = no_of_bottles
-            row[
-                16
-            ] = ""  # "PARAMS" we have this info... needs to be calculated on a per profile basis though...
+            row[16] = (
+                ""  # "PARAMS" we have this info... needs to be calculated on a per profile basis though...
+            )
             row[17] = ""  # "COMMENTS"
             sum_rows.append(row)
             col_widths = [max(x, len(s)) for x, s in zip(col_widths, row)]

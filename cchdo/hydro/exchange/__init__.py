@@ -533,9 +533,9 @@ def check_flags(dataset: xr.Dataset, raises=True):
         allowed_values = np.array(list(flag_has_value[conventions]))
         illegal_flags = ~flag_da.fillna(9).isin(allowed_values)
         if np.any(illegal_flags):
-            illegal_flags.attrs[
-                "comments"
-            ] = f"This is a boolean array in the same shape as '{flag_da.name}' which is truthy where invalid values exist"
+            illegal_flags.attrs["comments"] = (
+                f"This is a boolean array in the same shape as '{flag_da.name}' which is truthy where invalid values exist"
+            )
             flag_errors[f"{flag_da.name}_value_errors"] = illegal_flags
             continue
 
@@ -560,9 +560,9 @@ def check_flags(dataset: xr.Dataset, raises=True):
             if np.issubdtype(data.values.dtype, np.number):
                 fill_value_mismatch: xr.DataArray = ~(np.isfinite(data) ^ has_fill)  # type: ignore # numpy doesn't support __array_ufunc__ types yet
                 if np.any(fill_value_mismatch):
-                    fill_value_mismatch.attrs[
-                        "comments"
-                    ] = f"This is a boolean array in the same shape as '{data.name}' which is truthy where invalid values exist"
+                    fill_value_mismatch.attrs["comments"] = (
+                        f"This is a boolean array in the same shape as '{data.name}' which is truthy where invalid values exist"
+                    )
                     flag_errors[f"{data.name}_value_errors"] = fill_value_mismatch
 
     flag_errors_ds = xr.Dataset(flag_errors)

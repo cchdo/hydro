@@ -1,4 +1,5 @@
 """A Collection of Flag Schemes."""
+
 from enum import IntEnum
 
 

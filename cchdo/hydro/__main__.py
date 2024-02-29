@@ -28,8 +28,7 @@ def setup_logging(level):
 
 
 @click.group()
-def convert():
-    ...
+def convert(): ...
 
 
 def _comment_loader(str_or_path: str) -> str:
@@ -105,8 +104,7 @@ def convert_csv(csv_path, out_path, ftype, check_flag, precision_source, comment
 
 
 @click.group()
-def status():
-    ...
+def status(): ...
 
 
 def cchdo_loader(dtype):
