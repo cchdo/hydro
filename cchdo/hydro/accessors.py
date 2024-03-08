@@ -125,7 +125,7 @@ def fq_get_precisions(fq: NormalizedFQ) -> dict[str, int]:
     }
 
 
-FTypeOptions = Literal["cf", "exchange"]
+FTypeOptions = Literal["cf", "exchange", "coards", "woce"]
 
 
 class CCHDOAccessor:
@@ -399,9 +399,21 @@ class CCHDOAccessor:
             ctd_many = "ct1.zip"
             bottle = "hy1.csv"
 
+        if ftype == "coards":
+            # internal zip filenames are done by the legacy writer
+            ctd_one = "nc_ctd.zip"
+            ctd_many = "nc_ctd.zip"
+            bottle = "nc_hyd.zip"
+
+        if ftype == "woce":
+            # internal zip filenames are done by the legacy writer
+            ctd_one = "ct.txt"
+            ctd_many = "ct.zip"
+            bottle = "hy.txt"
+
         if profile_type == FileType.BOTTLE:
             fname = f"{expocode}_{bottle}"
-        elif profile_type == FileType.CTD and profile_count > 1:
+        elif profile_count > 1 or ftype in ("woce", "coards"):
             fname = f"{expocode}_{ctd_many}"
         else:
             fname = f"{expocode}_{station}_{cast:.0f}_{ctd_one}"
@@ -412,7 +424,7 @@ class CCHDOAccessor:
         return fname
 
     def gen_fname(self, ftype: FTypeOptions = "cf") -> str:
-        """Generate a human friendly netCDF filename for this object."""
+        """Generate a human friendly netCDF (or other output type) filename for this object."""
         expocode = np.atleast_1d(self._obj["expocode"])[0]
         station = np.atleast_1d(self._obj["station"])[0]
         cast = np.atleast_1d(self._obj["cast"])[0]

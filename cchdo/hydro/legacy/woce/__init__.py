@@ -413,7 +413,7 @@ def write_ctd(ds: xr.Dataset):
     return "\n".join([headers, data]).encode("ascii", "replace")
 
 
-def to_woce(ds: xr.Dataset):
+def to_woce(ds: xr.Dataset) -> bytes:
     output_files = {}
     profile_type_nd = np.unique(ds.profile_type)
 
@@ -436,10 +436,6 @@ def to_woce(ds: xr.Dataset):
                 file_ext=CTD_FILE_EXTENSION,
             )
             output_files[filename] = data
-
-        if len(output_files) == 1:
-            for file in output_files.values():
-                return file
 
         output_zip = BytesIO()
         with ZipFile(output_zip, "w", compression=ZIP_DEFLATED) as zipfile:

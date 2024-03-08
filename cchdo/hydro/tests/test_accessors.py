@@ -15,7 +15,7 @@ exp_stn_cast = json.loads(read_text("cchdo.hydro.tests.data", "stns_test_data.js
 @pytest.mark.parametrize("cast", [0, 1, 10, 100, 999, 9999])
 @pytest.mark.parametrize("profile_type", [FileType.BOTTLE, FileType.CTD])
 @pytest.mark.parametrize("profile_count", [1, 2])
-@pytest.mark.parametrize("ftype", ["cf", "exchange"])
+@pytest.mark.parametrize("ftype", ["cf", "exchange", "coards", "woce"])
 def test_gen_fname_machinery(
     expocode, station, cast, profile_type, profile_count, ftype
 ):
