@@ -72,7 +72,7 @@ DBAR
 END_DATA
 """
     ex = read_exchange(test_data + test_data, file_seperator="END_DATA")
-    assert ex.dims["N_PROF"] == 2
+    assert ex.sizes["N_PROF"] == 2
 
 
 @pytest.mark.parametrize(

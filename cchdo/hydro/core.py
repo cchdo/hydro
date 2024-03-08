@@ -179,7 +179,7 @@ def add_profile(
         elif len(variable.dims) == 2:
             dataarrays[name] = (
                 variable.dims,
-                np.empty((1, ds.dims["N_LEVELS"]), dtype=variable.dtype),
+                np.empty((1, ds.sizes["N_LEVELS"]), dtype=variable.dtype),
             )
     ds = xr.concat([ds, xr.Dataset(dataarrays)], dim="N_PROF")
 

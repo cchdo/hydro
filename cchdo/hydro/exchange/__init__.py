@@ -388,7 +388,7 @@ def add_profile_type(dataset: xr.Dataset, ftype: FileType) -> xr.Dataset:
       Currently mixed profile types are not supported
     """
     profile_type = xr.DataArray(
-        np.full(dataset.dims["N_PROF"], fill_value=ftype.value, dtype="U1"),
+        np.full(dataset.sizes["N_PROF"], fill_value=ftype.value, dtype="U1"),
         name="profile_type",
         dims=DIMS[0],
     )
