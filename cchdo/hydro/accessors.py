@@ -71,8 +71,10 @@ class WHPIndxer:
             names=["expocode", "station", "cast"],
         )
         self.n_level = [
-            pd.MultiIndex.from_arrays([prof.sample.data], names=["sample"])
-            for _, prof in obj.groupby("N_PROF")
+            pd.MultiIndex.from_arrays(
+                [prof.squeeze("N_PROF").sample.data], names=["sample"]
+            )
+            for _, prof in obj.groupby("N_PROF", squeeze=False)
         ]
 
     def __getitem__(self, key: FQProfileKey | FQPointKey):

@@ -221,7 +221,8 @@ def flatten_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
 
     ds = dataset.copy()
     cdom_var = ds[keys]
-    for cdom_wavelength, arr in cdom_var.groupby("CDOM_WAVELENGTHS"):
+    for cdom_wavelength, arr in cdom_var.groupby("CDOM_WAVELENGTHS", squeeze=False):
+        arr = arr.squeeze("CDOM_WAVELENGTHS")
         cdom = arr["cdom"].copy()
 
         cdom_qc = arr.get("cdom_qc")
