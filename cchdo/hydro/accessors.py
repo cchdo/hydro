@@ -492,7 +492,7 @@ class CCHDOAccessor:
                 param.scope != "sample" or param.nc_name == "sample"
             ):
                 continue
-            plist.append(param.whp_name)
+            plist.append(param.full_whp_name)
             unit = param.whp_unit
             if unit is None:
                 unit = ""
@@ -672,9 +672,9 @@ class CCHDOAccessor:
                     ancillary.attrs.get("whp_unit"),
                 ) in WHPNames.error_cols:
                     for param in whp_params:
-                        if param.error_name is None:
+                        if param.full_error_name is None:
                             raise ValueError(f"No error name for {param}")
-                        ancillary.attrs["whp_name"] = param.error_name
+                        ancillary.attrs["whp_name"] = param.full_error_name
                         params[param].attrs[ERROR_NAME] = ancillary
 
                 # currently there are three types of ancillary: flags, errors, and analytical temps (e.g. for pH)
@@ -685,7 +685,7 @@ class CCHDOAccessor:
 
                 elif standard_name == "status_flag":
                     for param in whp_params:
-                        ancillary.attrs["whp_name"] = f"{param.whp_name}_FLAG_W"
+                        ancillary.attrs["whp_name"] = f"{param.full_whp_name}_FLAG_W"
                         params[param].attrs[FLAG_NAME] = ancillary
 
         return params
