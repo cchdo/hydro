@@ -370,7 +370,7 @@ def write_bottle(ds: xr.Dataset):
     empty_line = base_format.format(*vals)
     record_len = len(empty_line) - 2
 
-    record_1 = f"EXPOCODE {expocodes:s} WHP-ID {sect_id:s} CRUISE DATES {begin_date} TO {end_date} STAMP"
+    record_1 = f"EXPOCODE {expocodes:s} WHP-ID {sect_id:s} CRUISE DATES {begin_date} TO {end_date}"
 
     record_1 += " " * (record_len - len(record_1))
     record_1 += "*"
