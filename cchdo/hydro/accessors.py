@@ -518,8 +518,12 @@ class CCHDOAccessor:
             for combined in param:
                 params.append(WHPNames[(combined, unit)])
         else:
-            if (param, unit) in WHPNames.error_cols:
-                return []
+            try:
+                error = WHPNames[(param, unit)]
+                if error.error_col:
+                    return []
+            except KeyError:
+                pass
             params.append(WHPNames[(param, unit)])
         return params
 
@@ -666,19 +670,8 @@ class CCHDOAccessor:
                     # TODO maybe raise...
                     continue
 
-                # TODO find a way to test this
-                if (
-                    ancillary.attrs.get("whp_name"),
-                    ancillary.attrs.get("whp_unit"),
-                ) in WHPNames.error_cols:
-                    for param in whp_params:
-                        if param.full_error_name is None:
-                            raise ValueError(f"No error name for {param}")
-                        ancillary.attrs["whp_name"] = param.full_error_name
-                        params[param].attrs[ERROR_NAME] = ancillary
-
                 # currently there are three types of ancillary: flags, errors, and analytical temps (e.g. for pH)
-                elif standard_name == "temperature_of_analysis_of_sea_water":
+                if standard_name == "temperature_of_analysis_of_sea_water":
                     # this needs to get treated like a param
                     for param in self._whpname_from_attrs(ancillary.attrs):
                         params[param] = ancillary
@@ -687,6 +680,20 @@ class CCHDOAccessor:
                     for param in whp_params:
                         ancillary.attrs["whp_name"] = f"{param.full_whp_name}_FLAG_W"
                         params[param].attrs[FLAG_NAME] = ancillary
+
+                # TODO find a way to test this
+                try:
+                    error_param = WHPNames[
+                        (
+                            ancillary.attrs.get("whp_name"),
+                            ancillary.attrs.get("whp_unit"),
+                        )
+                    ]
+                    if error_param.error_col:
+                        ancillary.attrs["whp_name"] = error_param.full_error_name
+                        params[param].attrs[ERROR_NAME] = ancillary
+                except KeyError:
+                    pass
 
         return params
 
