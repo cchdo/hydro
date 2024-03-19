@@ -1,4 +1,4 @@
-v1.0.2.6 (2023-??-??)
+v1.0.2.6 (2024-03-18)
 =====================
 * Support for duplicate parameters
 * (Bug) fix to_exchange accessor failing with a Dataset containing CDOM variables
@@ -7,6 +7,7 @@ v1.0.2.6 (2023-??-??)
 * Added "coards" and "woce" file name generation support to `gen_fname()` accessor
 * `to_woce()` now always returns zipfile bytes for ctd data
 * Omit the "STAMP" text from generated WOCE files
+* (changed) Bump min `cchdo.params` version to 2024.3
 
 v1.0.2.5 (2023-10-05)
 =====================
