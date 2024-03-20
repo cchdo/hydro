@@ -299,7 +299,8 @@ def status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_coun
 @status.command()
 @click.argument("out_dir")
 @click.option("-v", "--verbose", count=True)
-def status_cf_derived(out_dir, verbose):
+@click.option("--only-fail", is_flag=True)
+def status_cf_derived(out_dir, verbose, only_fail):
     from cchdo.hydro import __version__ as hydro_version
     from cchdo.params import __version__ as params_version
 
@@ -359,6 +360,8 @@ def status_cf_derived(out_dir, verbose):
             )
             for result in sorted(results, key=lambda x: x[0]["id"]):
                 metadata, excahnge_ok, coards_ok, woce_ok, sum_ok = result
+                if only_fail and all([excahnge_ok, coards_ok, woce_ok, sum_ok]):
+                    continue
                 try:
                     expos = [cruises[c]["expocode"] for c in metadata["cruises"]]
                     crs = ", ".join(
