@@ -107,7 +107,7 @@ def convert_csv(csv_path, out_path, ftype, check_flag, precision_source, comment
 def status(): ...
 
 
-def cchdo_loader(dtype):
+def cchdo_loader(dtype, dformat="exchange"):
     from cchdo.auth.session import session as s
 
     log.info("Loading Cruise Metadata")
@@ -119,7 +119,7 @@ def cchdo_loader(dtype):
         return (
             file["data_type"] == dtype
             and file["role"] == "dataset"
-            and file["data_format"] == "exchange"
+            and file["data_format"] == dformat
         )
 
     return {c["id"]: c for c in cruises}, list(filter(file_filter, files))
@@ -294,6 +294,98 @@ def status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_coun
     if dump_data_counts:
         with open(out_path / f"params_with_data_{dtype}.json", "w") as f:
             json.dump(Counter(variables_with_data), f)
+
+
+@status.command()
+@click.argument("out_dir")
+@click.option("-v", "--verbose", count=True)
+def status_cf_derived(out_dir, verbose):
+    from cchdo.hydro import __version__ as hydro_version
+    from cchdo.params import __version__ as params_version
+
+    if verbose == 0:
+        setup_logging("CRITICAL")
+    if verbose == 1:
+        setup_logging("INFO")
+    if verbose >= 2:
+        setup_logging("DEBUG")
+
+    out_path = Path(out_dir)
+    cruises, bottle_files = cchdo_loader("bottle", "cf_netcdf")
+    _, ctd_files = cchdo_loader("ctd", "cf_netcdf")
+    all_files = [*bottle_files, *ctd_files]
+    file_paths = []
+    for file in track(all_files, description="Loading data files"):
+        file_paths.append((cached_file_loader(file), file))
+
+    results = []
+    with TemporaryDirectory() as temp_dir:
+        with Pool() as pool:
+            for result in track(
+                pool.imap_unordered(
+                    mh.p_file_cf, [(temp_dir, f[0], f[1]) for f in file_paths]
+                ),
+                total=len(file_paths),
+                description="Converting CF to Others",
+            ):
+                metadata, excahnge_ok, coards_ok, woce_ok, sum_ok = result
+                log.info(
+                    f"Processed: {metadata['file_name']}, {excahnge_ok}, {coards_ok}, {woce_ok}, {sum_ok}"
+                )
+                results.append(result)
+
+        with (out_path / "index_cf.html").open("w") as f:
+            f.write(
+                f"""<html>
+            <head>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+            </head>
+            <body>
+            <div class="container-fluid">
+            <table class="table"><thead>
+            <h2>Versions</h2>
+            cchdo.hydro: {hydro_version}</br>
+            cchdo.params: {params_version}</br>
+            <h2>Files</h2>
+            <tr>
+            <th>Cruise(s)</th>
+            <th>File ID</th>
+            <th>File Download</th>
+            <th>Exchange</th>
+            <th>COARDS NC</th>
+            <th>WOCE</th>
+            <th>SUM</th>
+            </tr></thead><tbody>"""
+            )
+            for result in sorted(results, key=lambda x: x[0]["id"]):
+                metadata, excahnge_ok, coards_ok, woce_ok, sum_ok = result
+                try:
+                    expos = [cruises[c]["expocode"] for c in metadata["cruises"]]
+                    crs = ", ".join(
+                        [
+                            f"<a href='https://cchdo.ucsd.edu/cruise/{ex}'>{ex}</a>"
+                            for ex in expos
+                        ]
+                    )
+                except KeyError:
+                    continue
+                except IndexError:
+                    log.critical(metadata["cruises"])
+                    raise
+                fn = metadata["file_name"]
+                file_id = metadata["id"]
+                f.write(
+                    f"""<tr>
+                        <td>{crs}</td>
+                        <td>{file_id}</td>
+                        <td><a href="https://cchdo.ucsd.edu/data/{file_id}/{fn}">{fn}</a></td>
+                        <td>{'✅' if excahnge_ok else '❌'}</td>
+                        <td>{'✅' if coards_ok else '❌'}</td>
+                        <td>{'✅' if woce_ok else '❌'}</td>
+                        <td>{'✅' if sum_ok else '❌'}</td>
+                        </tr>"""
+                )
+            f.write("</tbody></table></div></body></html>")
 
 
 cli = click.version_option(__version__)(
