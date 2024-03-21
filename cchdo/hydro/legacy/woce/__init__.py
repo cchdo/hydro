@@ -384,7 +384,7 @@ def write_ctd(ds: xr.Dataset):
     """How to write a CTD WOCE file."""
     # We can only write the CTD file if there is a unique
     # EXPOCODE, STNNBR, and CASTNO in the file.
-    if ds.dims["N_PROF"] != 1:
+    if ds.sizes["N_PROF"] != 1:
         raise NotImplementedError("can only write single profile")
 
     expocode = "/".join(np.unique(ds.expocode))
@@ -400,7 +400,7 @@ def write_ctd(ds: xr.Dataset):
 
     record1 = f"EXPOCODE {expocode} WHP-ID {section} DATE {date}"
     # 2 at end of line denotes record 2
-    record2 = f"STNNBR {station: >8s} CASTNO {cast: >3d} NO. RECORDS={ds.dims['N_LEVELS']: >5d}"
+    record2 = f"STNNBR {station: >8s} CASTNO {cast: >3d} NO. RECORDS={ds.sizes['N_LEVELS']: >5d}"
     # 3 denotes record 3
     instrument_no = ds.get("instrument_id", ["-9"])[0]
     sampling_rate = ds.get("ctd_sampling_rate", [-9])[0]

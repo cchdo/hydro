@@ -283,7 +283,7 @@ def get_dataarrays(ds: xr.Dataset):
             data = variable.dt.strftime("%H%M").astype(float).to_numpy()
         elif parameter_name == "CTDETIME":
             nat_mask = np.isnat(variable)
-            data = variable.astype("timedelta64[s]").astype("float64").to_numpy()
+            data = variable.values.astype("timedelta64[s]").astype("float64")
             data[nat_mask] = np.nan
         else:
             data = variable.to_numpy()

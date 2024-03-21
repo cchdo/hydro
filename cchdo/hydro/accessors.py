@@ -445,7 +445,7 @@ class CCHDOAccessor:
         there is often "wasted space" at the end of any profile that is not the longest one.
         This accessor drops that wasted space for xr.Dataset objects containing a single profile
         """
-        if self._obj.dims["N_PROF"] != 1:
+        if self._obj.sizes["N_PROF"] != 1:
             raise NotImplementedError(
                 "Cannot compact Dataset with more than one profile"
             )
@@ -586,9 +586,11 @@ class CCHDOAccessor:
             else:
                 if da.dtype.char == "m":
                     nat_mask = np.isnat(da)
-                    da = da.astype("timedelta64[s]").astype("float64")
-                    da[nat_mask] = np.nan
-                data = np.nditer(da[valid_levels], flags=["refs_ok"])
+                    data_t = da.values.astype("timedelta64[s]").astype("float64")
+                    data_t[nat_mask] = np.nan
+                    data = np.nditer(data_t)
+                else:
+                    data = np.nditer(da[valid_levels], flags=["refs_ok"])
                 numeric_precision_override = self.cchdo_c_format_precision(
                     da.attrs.get("C_format", "")
                 )
