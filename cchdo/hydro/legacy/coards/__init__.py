@@ -210,13 +210,15 @@ def get_coards_global_attributes(ds: xr.Dataset, *, profile_type: Literal["B", "
     attrs["ORIGINAL_HEADER"] = og_header
 
     if profile_type == "B":
+        ds = ds.stack(ex=("N_PROF", "N_LEVELS"))
+        ds = ds.isel(ex=(ds.sample != ""))
         bottle_column = ds.get("bottle_number", ds["sample"])
-        attrs["BOTTLE_NUMBERS"] = " ".join(map(simplest_str, bottle_column.values[0]))
+        attrs["BOTTLE_NUMBERS"] = " ".join(map(simplest_str, bottle_column.values))
 
         if (btl_quality_codes := ds.get("bottle_number_qc")) is not None:
             attrs["BOTTLE_QUALITY_CODES"] = btl_quality_codes.to_numpy().astype(
                 np.int16
-            )[0]
+            )
 
         attrs["WOCE_BOTTLE_FLAG_DESCRIPTION"] = woce.BOTTLE_FLAG_DESCRIPTION
         attrs["WOCE_WATER_SAMPLE_FLAG_DESCRIPTION"] = woce.WATER_SAMPLE_FLAG_DESCRIPTION
@@ -229,7 +231,7 @@ def get_coards_global_attributes(ds: xr.Dataset, *, profile_type: Literal["B", "
 
 def get_dataarrays(ds: xr.Dataset):
     dataarrays = {}
-    for whpname, variable in ds.cchdo.to_whp_columns().items():
+    for whpname, variable in ds.cchdo.to_whp_columns(compact=True).items():
         attrs = {}
 
         parameter_name = whpname.whp_name
@@ -445,7 +447,9 @@ def write_ctd(ds: xr.Dataset) -> bytes:
     data_vars = get_dataarrays(ds)
 
     if (ctd_nobs := ds.get("ctd_number_of_observations")) is not None:
-        nobs_data = ctd_nobs.to_numpy()
+        ctd_nobs = ctd_nobs.stack(ex=("N_PROF", "N_LEVELS"))
+        ctd_nobs = ctd_nobs.isel(ex=(ctd_nobs.sample != ""))
+        nobs_data = ctd_nobs.to_numpy().astype("int64")
         data_vars["number_observations"] = xr.DataArray(
             nobs_data,
             dims=["pressure"],
@@ -474,13 +478,12 @@ def to_coards(ds: xr.Dataset) -> bytes:
     """
     output_files = {}
     for _, profile in ds.groupby("N_PROF", squeeze=False):
-        compact = profile.cchdo.compact_profile()
         if profile.profile_type.item() == "C":
-            data = write_ctd(compact)
+            data = write_ctd(profile)
             extension = "ctd"
         elif profile.profile_type.item() == "B":
             extension = "hy1"
-            data = write_bottle(compact)
+            data = write_bottle(profile)
         else:
             raise NotImplementedError()
 
