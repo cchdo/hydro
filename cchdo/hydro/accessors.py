@@ -569,7 +569,7 @@ class CCHDOAccessor:
                 param.scope != "sample" or param.nc_name == "sample"
             ):
                 continue
-            date_or_time = None
+            date_or_time: Literal["date", "time"] | None = None
             # TODO, deal with missing time in BTL_DATE
             if param in self.date_names:
                 date_or_time = "date"
