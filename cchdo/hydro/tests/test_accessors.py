@@ -2,6 +2,7 @@ import json
 from importlib.resources import read_text
 
 import pytest
+import xarray as xr
 from xarray.testing import assert_identical
 
 from ..accessors import CCHDOAccessor
@@ -90,3 +91,59 @@ END_DATA
     # the magic slice removes the stamp and the newline with #
     rt = read_exchange(ds.cchdo.to_exchange()[22:])
     assert_identical(ds, rt)
+
+
+def test_nc_serialize_all_ctd(tmp_path):
+    """A crash was discovered when the ctd elapsed time param was present, and was seralized to disk then read back in"""
+    test_data = b"""CTD,test
+# some comment
+NUMBER_HEADERS = 8
+EXPOCODE = TEST
+STNNBR = 1
+CASTNO = 1
+DATE = 20200101
+TIME = 0000
+LATITUDE = 0
+LONGITUDE = 0
+CTDPRS
+DBAR
+0
+END_DATA
+"""
+    ds = read_exchange(test_data)
+    nc = tmp_path / "test.nc"
+    ds.to_netcdf(nc)
+    ds = xr.load_dataset(nc)
+    # the magic slice removes the stamp and the newline with #
+    ds.cchdo.to_exchange()
+    ds.cchdo.to_coards()
+    ds.cchdo.to_woce()
+    ds.cchdo.to_sum()
+
+
+def test_nc_serialize_all_ctdetime(tmp_path):
+    """A crash was discovered when the ctd elapsed time param was present, and was seralized to disk then read back in"""
+    test_data = b"""CTD,test
+# some comment
+NUMBER_HEADERS = 8
+EXPOCODE = TEST
+STNNBR = 1
+CASTNO = 1
+DATE = 20200101
+TIME = 0000
+LATITUDE = 0
+LONGITUDE = 0
+CTDPRS,CTDETIME
+DBAR,SECONDS
+0,-999
+END_DATA
+"""
+    ds = read_exchange(test_data)
+    nc = tmp_path / "test.nc"
+    ds.to_netcdf(nc)
+    ds = xr.load_dataset(nc)
+    # the magic slice removes the stamp and the newline with #
+    ds.cchdo.to_exchange()
+    ds.cchdo.to_coards()
+    ds.cchdo.to_woce()
+    ds.cchdo.to_sum()

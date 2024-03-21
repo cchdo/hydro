@@ -560,7 +560,7 @@ class CCHDOAccessor:
             *[f"{key} = {value}" for key, value in headers.items()],
         ]
 
-    def _make_data_block(self, params) -> list[str]:
+    def _make_data_block(self, params: dict[WHPName, xr.DataArray]) -> list[str]:
         # TODO N_PROF is guaranteed
         valid_levels = params[WHPNames["SAMPNO"]] != ""
         data_block = []
@@ -584,6 +584,10 @@ class CCHDOAccessor:
                     .tolist()
                 )
             else:
+                if da.dtype.char == "m":
+                    nat_mask = np.isnat(da)
+                    da = da.astype("timedelta64[s]").astype("float64")
+                    da[nat_mask] = np.nan
                 data = np.nditer(da[valid_levels], flags=["refs_ok"])
                 numeric_precision_override = self.cchdo_c_format_precision(
                     da.attrs.get("C_format", "")

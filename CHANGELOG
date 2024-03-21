@@ -1,3 +1,9 @@
+v1.0.2.7 (2024-??-??)
+=====================
+* (Bug) fix to_exchange accessor failing for variables with seconds and the unit
+* (Bug) fix to_coards accessor failing for variables with seconds and the unit
+* Add status-cf-derived command that tests all all public CF files at CCHDO going from netCDF to every other supported format
+
 v1.0.2.6 (2024-03-18)
 =====================
 * Support for duplicate parameters
