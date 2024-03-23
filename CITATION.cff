@@ -8,3 +8,4 @@ title: "cchdo.hydro a software package for creating and working with GO-SHIP CF/
 abstract: "A toolkit for working with GO-SHIP CF/netCDF datafiles including support for creating historic data formats"
 license: "BSD-3-Clause"
 repository-code: "https://github.com/cchdo/hydro"
+doi: "10.5281/zenodo.10858970"
