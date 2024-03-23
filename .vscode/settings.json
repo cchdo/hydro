@@ -1,6 +1,4 @@
 {
-    "python.linting.mypyEnabled": true,
     "python.testing.pytestEnabled": true,
-    "python.formatting.provider": "black",
     "python.analysis.extraPaths": ["~/.local"]
 }
