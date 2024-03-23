@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Barna"
+  given-names: "Andrew"
+  orcid: "https://orcid.org/0000-0002-5203-8954"
+title: "cchdo.hydro a software package for creating and working with GO-SHIP CF/netCDF files"
+abstract: "A toolkit for working with GO-SHIP CF/netCDF datafiles including support for creating historic data formats"
+license: "BSD-3-Clause"
+repository-code: "https://github.com/cchdo/hydro"

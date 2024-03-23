@@ -1,4 +1,4 @@
-v1.0.2.7 (2024-??-??)
+v1.0.2.7 (2024-03-22)
 =====================
 * (Bug) fix to_exchange accessor failing for variables with seconds and the unit
 * (Bug) fix to_coards accessor failing for variables with seconds and the unit
