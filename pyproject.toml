@@ -43,6 +43,7 @@ netcdf = [
     "scipy",
 ]
 selftest = [
+    "cchdo.hydro[netcdf]",
     "pytest",
     "requests-mock",
 ]
