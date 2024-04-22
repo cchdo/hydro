@@ -206,6 +206,8 @@ def get_coards_global_attributes(ds: xr.Dataset, *, profile_type: Literal["B", "
     )
 
     _comments = ds.attrs.get("comments", "").splitlines()
+    if len(_comments) == 0:
+        _comments = [""]
     og_header = "\n".join([_comments[0], *[f"#{line}" for line in _comments[1:]], ""])
     attrs["ORIGINAL_HEADER"] = og_header
 

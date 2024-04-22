@@ -25,6 +25,20 @@ def test_gen_fname_machinery(
     )
 
 
+def test_coards_no_comments():
+    # note that the differet bottle and sampno are intentional
+    test_data = b"""BOTTLE,test
+# some comment
+EXPOCODE,STNNBR,CASTNO,SAMPNO,BTLNBR,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS
+,,,,,,,,,DBAR
+TEST          ,1       ,  1,1          ,2          ,20200101,0000,        0,        0,        0
+END_DATA
+"""
+    ds = read_exchange(test_data)
+    ds.attrs["comments"] = ""
+    ds.cchdo.to_coards()
+
+
 def test_exchange_bottle_round_trip():
     # note that the differet bottle and sampno are intentional
     test_data = b"""BOTTLE,test
