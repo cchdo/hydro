@@ -66,6 +66,7 @@ docs = [
 ]
 cli = [
     "cchdo.hydro[netcdf]",
+    "cchdo.auth",
     "click",
     "rich",
 ]

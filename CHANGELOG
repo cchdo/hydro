@@ -1,6 +1,7 @@
 v1.0.2.9 (2024-04-??)
 =====================
 * (Bug) Fix crash in the COARDS writer when the comments are just an empty string
+* Add cchdo.auth to cli optional requiremnets
 
 v1.0.2.8 (2024-03-22)
 =====================
