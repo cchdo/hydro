@@ -5,7 +5,7 @@ from collections import Counter
 from html import escape
 from multiprocessing import Pool
 from pathlib import Path
-from tempfile import TemporaryDirectory
+from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 import click
 import numpy as np
@@ -101,6 +101,61 @@ def convert_csv(csv_path, out_path, ftype, check_flag, precision_source, comment
         ex.attrs["comments"] = comments_contents
     ex.to_netcdf(out_path)
     log.info("Done :)")
+
+
+@click.group()
+def edit(): ...
+
+
+@edit.command()
+@click.argument("expocode")
+@click.argument("dtype")
+def edit_comments(expocode, dtype):
+    from cchdo.auth.session import session as s
+
+    log.info("Loading Cruise Metadata")
+    cruises = {
+        c["expocode"]: c
+        for c in s.get("https://cchdo.ucsd.edu/api/v1/cruise/all").json()
+    }
+    try:
+        cruise = cruises[expocode]
+    except KeyError:
+        log.error(f"{expocode} not found")
+        raise
+
+    cruise_file_ids = set(cruise["files"])
+
+    log.info("Loading Cruise Files")
+    files = {f["id"]: f for f in s.get("https://cchdo.ucsd.edu/api/v1/file/all").json()}
+    extant_ids = cruise_file_ids & files.keys()
+    edit_files = []
+    for file in (files[id] for id in extant_ids):
+        if (
+            file["role"] == "dataset"
+            and file["data_format"] == "cf_netcdf"
+            and file["data_type"] == dtype
+        ):
+            edit_files.append(file)
+
+    if len(edit_files) == 0:
+        log.error("No files to edit")
+        exit(1)
+    if len(edit_files) > 1:
+        log.error("Too many files to edit")
+        exit(2)
+    file = edit_files[0]
+    with NamedTemporaryFile(suffix=".nc") as tf:
+        tf.write(s.get(f"https://cchdo.ucsd.edu/{file['file_path']}").content)
+        tf.flush()  # when 3.12, switch to delete_on_close=False
+        ds = xr.load_dataset(tf.name)
+
+    comments = click.edit(text=ds.attrs.get("comments", ""), extension=".txt")
+    if comments is None:
+        raise click.Abort
+
+    ds.attrs["comments"] = comments
+    ds.to_netcdf("out.nc")
 
 
 @click.group()
@@ -392,7 +447,7 @@ def status_cf_derived(out_dir, verbose, only_fail):
 
 
 cli = click.version_option(__version__)(
-    click.CommandCollection(sources=[convert, status])
+    click.CommandCollection(sources=[convert, status, edit])
 )
 
 
