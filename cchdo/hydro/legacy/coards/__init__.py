@@ -449,9 +449,9 @@ def write_ctd(ds: xr.Dataset) -> bytes:
     data_vars = get_dataarrays(ds)
 
     if (ctd_nobs := ds.get("ctd_number_of_observations")) is not None:
-        ctd_nobs = ctd_nobs.stack(ex=("N_PROF", "N_LEVELS"))
-        ctd_nobs = ctd_nobs.isel(ex=(ctd_nobs.sample != ""))
-        nobs_data = ctd_nobs.to_numpy().astype("int64")
+        stacked_ctd_nobs = ctd_nobs.stack(ex=("N_PROF", "N_LEVELS"))
+        valid_ctd_nobs = stacked_ctd_nobs.isel(ex=(stacked_ctd_nobs.sample != ""))
+        nobs_data = valid_ctd_nobs.to_numpy().astype("int64")
         data_vars["number_observations"] = xr.DataArray(
             nobs_data,
             dims=["pressure"],
