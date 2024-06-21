@@ -123,7 +123,13 @@ def _dataarray_factory(
     return var_da
 
 
-def add_param(ds: xr.Dataset, param: WHPName, with_flag=False) -> xr.Dataset:
+def add_param(
+    ds: xr.Dataset,
+    param: WHPName,
+    with_flag=False,
+    with_error=False,
+    with_ancillary=None,
+) -> xr.Dataset:
     return ds
 
 
