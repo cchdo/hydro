@@ -211,22 +211,27 @@ def test_add_remove_param():
     # TODO: parameterize this to test the parameter space
     params = ("DELC14", "DELC14_FLAG_W", "C14ERR")
     units = ("/MILLE", "", "/MILLE")
-    data = ("-999", "1", "-999")
-    ds = read_exchange(io.BytesIO(simple_bottle_exchange()))
+    data = ("-999", "9", "-999")
+    ds = read_exchange(
+        io.BytesIO(simple_bottle_exchange()), precision_source="database"
+    )
     ds_param = read_exchange(
         io.BytesIO(
             simple_bottle_exchange(params=params[:1], units=units[:1], data=data[:1])
-        )
+        ),
+        precision_source="database",
     )
     ds_param_flag = read_exchange(
         io.BytesIO(
             simple_bottle_exchange(params=params[:2], units=units[:2], data=data[:2])
-        )
+        ),
+        precision_source="database",
     )
     ds_param_flag_error = read_exchange(
         io.BytesIO(
             simple_bottle_exchange(params=params[:3], units=units[:3], data=data[:3])
-        )
+        ),
+        precision_source="database",
     )
 
     testing_ds_param = core.add_param(ds, WHPNames["DELC14 [/MILLE]"])
