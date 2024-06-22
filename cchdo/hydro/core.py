@@ -6,6 +6,7 @@ import numpy as np
 import numpy.typing as npt
 import xarray as xr
 
+from cchdo.hydro.checks import check_ancillary_variables
 from cchdo.params import WHPName, WHPNames
 
 from .exchange import (
@@ -154,7 +155,7 @@ def add_param(
         ancillary = var.attrs.get("ancillary_variables", "").split()
         if flag_var.name not in ancillary:
             ancillary.append(flag_var.name)
-        var.attrs["ancillary_variables"] = " ".join(ancillary)
+        var.attrs["ancillary_variables"] = " ".join(sorted(ancillary))
         vars_to_add.append(flag_var)
 
     if with_error and param.full_error_name is None:
@@ -170,11 +171,13 @@ def add_param(
         ancillary = var.attrs.get("ancillary_variables", "").split()
         if error_var.name not in ancillary:
             ancillary.append(error_var.name)
-        var.attrs["ancillary_variables"] = " ".join(ancillary)
+        var.attrs["ancillary_variables"] = " ".join(sorted(ancillary))
         vars_to_add.append(error_var)
 
     for var in vars_to_add:
         _ds[var.name] = var
+
+    check_ancillary_variables(_ds)
 
     return _ds
 
