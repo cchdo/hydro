@@ -22,8 +22,8 @@ def check_ancillary_variables(ds: xr.Dataset):
         for ancillary in variable.attrs["ancillary_variables"].split():
             ancillary_variables_attrs[ancillary].append(name)
 
-    if ancillary_variables_attrs.keys() >= ds.variables.keys():
-        raise ValueError(ancillary_variables_attrs.keys() - ds.variables.keys())
+    if errors := ancillary_variables_attrs.keys() - ds.variables.keys():
+        raise ValueError(errors)
 
-    if looks_ancillary > ancillary_variables_attrs.keys():
-        raise ValueError(looks_ancillary - ancillary_variables_attrs.keys())
+    if errors := looks_ancillary - ancillary_variables_attrs.keys():
+        raise ValueError(errors)
