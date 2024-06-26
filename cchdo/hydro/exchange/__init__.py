@@ -414,7 +414,7 @@ def finalize_ancillary_variables(dataset: xr.Dataset):
             pass
         elif isinstance(ancillary_variables, list):
             dataset[var].attrs["ancillary_variables"] = " ".join(
-                set(ancillary_variables)
+                sorted(set(ancillary_variables))
             )
         else:
             raise ValueError("ancillary variables are crazy")

@@ -1,11 +1,13 @@
 """Core operations on a CCHDO CF/netCDF file."""
 
 from collections.abc import Hashable
+from typing import Literal
 
 import numpy as np
 import numpy.typing as npt
 import xarray as xr
 
+from cchdo.hydro.checks import check_ancillary_variables
 from cchdo.params import WHPName, WHPNames
 
 from .exchange import (
@@ -62,10 +64,12 @@ def _dataarray_factory(
 ) -> xr.DataArray:
     dtype = dtype_map[param.dtype]
     fill = FILLS_MAP[param.dtype]
+    name = param.full_nc_name
 
     if ctype == "flag":
         dtype = dtype_map["integer"]
         fill = FILLS_MAP["integer"]
+        name = param.nc_name_flag
 
     if param.scope == "profile":
         arr = np.full((N_PROF), fill_value=fill, dtype=dtype)
@@ -78,6 +82,7 @@ def _dataarray_factory(
 
     if ctype == "error":
         attrs = param.get_nc_attrs(error=True)
+        name = param.nc_name_error
 
     if ctype == "flag" and param.flag_w in FLAG_SCHEME:
         flag_defs = FLAG_SCHEME[param.flag_w]
@@ -100,7 +105,7 @@ def _dataarray_factory(
             "conventions": odv_conventions_map[param.flag_w],
         }
 
-    var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], attrs=attrs)
+    var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], attrs=attrs, name=name)
 
     if param.dtype == "string":
         var_da.encoding["dtype"] = "S1"
@@ -123,8 +128,86 @@ def _dataarray_factory(
     return var_da
 
 
-def add_param(ds: xr.Dataset, param: WHPName, with_flag=False) -> xr.Dataset:
+RemoveOpts = Literal["cascade", "restrict", "exclusive"]
+
+
+def remove_param(
+    ds: xr.Dataset,
+    param: WHPName | str,
+    *,
+    param_opts: RemoveOpts = "restrict",
+    flag: RemoveOpts = "restrict",
+    error: RemoveOpts = "restrict",
+    ancillary: RemoveOpts = "restrict",
+) -> xr.Dataset:
+    """Remove a parameter and/or its ancillary variables from a dataset
+
+    Verbs:
+    * restrict: if the ancillary variable contains non fill values (nan, 9, -999, etc..) prevent deleteion
+    * cascade: delete the variable even if it has values
+    * exclusive: only delete this (and other variables with exclusive) variable or ancillary variable
+    """
+    ds = ds.copy()
     return ds
+
+
+def add_param(
+    ds: xr.Dataset,
+    param: WHPName | str,
+    *,
+    with_flag=False,
+    with_error=False,
+    with_ancillary=None,
+) -> xr.Dataset:
+    if isinstance(param, str):
+        param = WHPNames[param]
+
+    _ds = ds.copy()
+    vars_to_add = []
+
+    if param.full_nc_name in _ds:
+        var = _ds[param.full_nc_name]
+    else:
+        var = _dataarray_factory(
+            param, N_PROF=ds.sizes["N_PROF"], N_LEVELS=ds.sizes["N_LEVELS"]
+        )
+        vars_to_add.append(var)
+
+    if with_flag and param.nc_name_flag not in _ds:
+        flag_var = _dataarray_factory(
+            param,
+            N_PROF=ds.sizes["N_PROF"],
+            N_LEVELS=ds.sizes["N_LEVELS"],
+            ctype="flag",
+        )
+        ancillary = var.attrs.get("ancillary_variables", "").split()
+        if flag_var.name not in ancillary:
+            ancillary.append(flag_var.name)
+        var.attrs["ancillary_variables"] = " ".join(sorted(ancillary))
+        vars_to_add.append(flag_var)
+
+    if with_error and param.full_error_name is None:
+        raise ValueError(f"{param} does not have a defined error/uncertainty name")
+
+    if with_error and param.nc_name_error not in _ds:
+        error_var = _dataarray_factory(
+            param,
+            N_PROF=ds.sizes["N_PROF"],
+            N_LEVELS=ds.sizes["N_LEVELS"],
+            ctype="error",
+        )
+        ancillary = var.attrs.get("ancillary_variables", "").split()
+        if error_var.name not in ancillary:
+            ancillary.append(error_var.name)
+        var.attrs["ancillary_variables"] = " ".join(sorted(ancillary))
+        vars_to_add.append(error_var)
+
+    for var in vars_to_add:
+        _ds[var.name] = var
+
+    check_ancillary_variables(_ds)
+
+    return _ds
 
 
 def add_profile_level(ds: xr.Dataset, idx, levels) -> xr.Dataset:
