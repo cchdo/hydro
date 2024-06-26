@@ -13,6 +13,9 @@ def check_ancillary_variables(ds: xr.Dataset):
     looks_ancillary = set()
 
     for name, variable in ds.variables.items():
+        if not isinstance(name, str):
+            raise ValueError(f"variable names must be strings not {name}")
+
         if any(name.endswith(suffix) for suffix in looks_ancillary_suffixes):
             looks_ancillary.add(name)
 
