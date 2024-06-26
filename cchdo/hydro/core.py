@@ -1,6 +1,7 @@
 """Core operations on a CCHDO CF/netCDF file."""
 
 from collections.abc import Hashable
+from typing import Literal
 
 import numpy as np
 import numpy.typing as npt
@@ -127,13 +128,40 @@ def _dataarray_factory(
     return var_da
 
 
+RemoveOpts = Literal["cascade", "restrict", "exclusive"]
+
+
+def remove_param(
+    ds: xr.Dataset,
+    param: WHPName | str,
+    *,
+    param_opts: RemoveOpts = "restrict",
+    flag: RemoveOpts = "restrict",
+    error: RemoveOpts = "restrict",
+    ancillary: RemoveOpts = "restrict",
+) -> xr.Dataset:
+    """Remove a parameter and/or its ancillary variables from a dataset
+
+    Verbs:
+    * restrict: if the ancillary variable contains non fill values (nan, 9, -999, etc..) prevent deleteion
+    * cascade: delete the variable even if it has values
+    * exclusive: only delete this (and other variables with exclusive) variable or ancillary variable
+    """
+    ds = ds.copy()
+    return ds
+
+
 def add_param(
     ds: xr.Dataset,
-    param: WHPName,
+    param: WHPName | str,
+    *,
     with_flag=False,
     with_error=False,
     with_ancillary=None,
 ) -> xr.Dataset:
+    if isinstance(param, str):
+        param = WHPNames[param]
+
     _ds = ds.copy()
     vars_to_add = []
 
