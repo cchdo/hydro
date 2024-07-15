@@ -147,7 +147,41 @@ def remove_param(
     * cascade: delete the variable even if it has values
     * exclusive: only delete this (and other variables with exclusive) variable or ancillary variable
     """
+    if isinstance(param, str):
+        param = WHPNames[param]
     ds = ds.copy()
+    # TODO: this relies on the param name, should rely on attrs somehow
+    base_param = ds[param.full_nc_name]
+    ancillary_vars = {
+        name: ds[name]
+        for name in base_param.attrs.get("ancillary_variables", "").split()
+    }
+
+    if error == "exclusive" and param.nc_name_error in ancillary_vars:
+        del ds[param.nc_name_error]
+        del ancillary_vars[param.nc_name_error]
+    if flag == "exclusive" and param.nc_name_flag in ancillary_vars:
+        del ds[param.nc_name_flag]
+        del ancillary_vars[param.nc_name_flag]
+
+    new_ancillary_variables = " ".join(sorted(ancillary_vars))
+    if new_ancillary_variables == "":
+        try:
+            del ds[param.full_nc_name].attrs["ancillary_variables"]
+        except KeyError:
+            pass
+    else:
+        ds[param.full_nc_name].attrs["ancillary_variables"] = new_ancillary_variables
+
+    if error != "exclusive" and flag != "exclusive":
+        del ds[param.full_nc_name]
+        for var in ancillary_vars:
+            try:
+                del ds[var]
+            except KeyError:
+                pass
+
+    check_ancillary_variables(ds)
     return ds
 
 
