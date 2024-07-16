@@ -1,7 +1,6 @@
 """Core operations on a CCHDO CF/netCDF file."""
 
 from collections.abc import Hashable
-from typing import Literal
 
 import numpy as np
 import numpy.typing as npt
@@ -128,27 +127,48 @@ def _dataarray_factory(
     return var_da
 
 
-RemoveOpts = Literal["cascade", "restrict", "exclusive"]
-
-
 def remove_param(
     ds: xr.Dataset,
     param: WHPName | str,
     *,
-    param_opts: RemoveOpts = "restrict",
-    flag: RemoveOpts = "restrict",
-    error: RemoveOpts = "restrict",
-    ancillary: RemoveOpts = "restrict",
+    delete_param=False,
+    delete_flag=False,
+    delete_error=False,
+    delete_ancillary=False,
+    require_empty=True,
 ) -> xr.Dataset:
-    """Remove a parameter and/or its ancillary variables from a dataset
-
-    Verbs:
-    * restrict: if the ancillary variable contains non fill values (nan, 9, -999, etc..) prevent deleteion
-    * cascade: delete the variable even if it has values
-    * exclusive: only delete this (and other variables with exclusive) variable or ancillary variable
-    """
+    """Remove a parameter and/or its ancillary variables from a dataset"""
     if isinstance(param, str):
         param = WHPNames[param]
+
+    # deleting the primary var requries the delete cascade
+    if delete_param is True:
+        delete_flag = True
+        delete_error = True
+        # TODO ancillary
+        # delete_ancillary = True
+
+    nc_name = param.full_nc_name
+    nc_flag = param.nc_name_flag
+    nc_error = param.nc_name_error
+
+    to_delete = []
+    if delete_param:
+        to_delete.append(nc_name)
+    if delete_flag:
+        to_delete.append(nc_flag)
+    if delete_error:
+        to_delete.append(nc_error)
+
+    if require_empty:
+        for _name in to_delete:
+            if _name not in ds:
+                continue
+            data = ds[_name]
+            # TODO: handle string arrays
+            if not np.isnan(data).all():
+                raise ValueError(f"{_name} is not empty")
+
     ds = ds.copy()
     # TODO: this relies on the param name, should rely on attrs somehow
     base_param = ds[param.full_nc_name]
@@ -157,27 +177,23 @@ def remove_param(
         for name in base_param.attrs.get("ancillary_variables", "").split()
     }
 
-    if error == "exclusive" and param.nc_name_error in ancillary_vars:
-        del ds[param.nc_name_error]
-        del ancillary_vars[param.nc_name_error]
-    if flag == "exclusive" and param.nc_name_flag in ancillary_vars:
-        del ds[param.nc_name_flag]
-        del ancillary_vars[param.nc_name_flag]
-
-    new_ancillary_variables = " ".join(sorted(ancillary_vars))
-    if new_ancillary_variables == "":
+    for _name in to_delete:
         try:
-            del ds[param.full_nc_name].attrs["ancillary_variables"]
+            del ds[_name]
         except KeyError:
             pass
-    else:
-        ds[param.full_nc_name].attrs["ancillary_variables"] = new_ancillary_variables
+        try:
+            del ancillary_vars[_name]
+        except KeyError:
+            pass
 
-    if error != "exclusive" and flag != "exclusive":
-        del ds[param.full_nc_name]
-        for var in ancillary_vars:
+    if nc_name in ds:
+        new_ancillary_variables = " ".join(sorted(ancillary_vars))
+        if new_ancillary_variables != "":
+            ds[nc_name].attrs["ancillary_variables"] = new_ancillary_variables
+        else:
             try:
-                del ds[var]
+                del ds[nc_name].attrs["ancillary_variables"]
             except KeyError:
                 pass
 

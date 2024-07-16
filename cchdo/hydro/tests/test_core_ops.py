@@ -274,14 +274,23 @@ def test_remove_param():
     )
 
     testing_ds_param_flag = core.remove_param(
-        ds_param_flag_error, "DELC14 [/MILLE]", error="exclusive"
+        ds_param_flag_error,
+        "DELC14 [/MILLE]",
+        delete_error=True,
     )
     xr.testing.assert_identical(ds_param_flag, testing_ds_param_flag)
 
     testing_ds_param = core.remove_param(
-        ds_param_flag, "DELC14 [/MILLE]", flag="exclusive"
+        ds_param_flag,
+        "DELC14 [/MILLE]",
+        delete_flag=True,
     )
     xr.testing.assert_identical(ds_param, testing_ds_param)
 
-    testing_ds = core.remove_param(ds_param_flag, "DELC14 [/MILLE]")
+    testing_ds = core.remove_param(ds_param_flag, "DELC14 [/MILLE]", delete_param=True)
+    xr.testing.assert_identical(ds, testing_ds)
+
+    testing_ds = core.remove_param(
+        ds_param_flag_error, "DELC14 [/MILLE]", delete_param=True
+    )
     xr.testing.assert_identical(ds, testing_ds)
