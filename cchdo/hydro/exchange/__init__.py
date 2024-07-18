@@ -1075,13 +1075,10 @@ def extract_numeric_precisions(
     data: list[str] | npt.NDArray[np.str_],
 ) -> npt.NDArray[np.int_]:
     """Get the numeric precision of a printed decimal number"""
-    # magic number explain: np.char.partition expands each element into a 3-tuple
-    # of (pre, sep, post) of some sep, in our case a "." char.
-    # We only want the post bits [idx 2] (the number of chars after a decimal seperator)
-    # of the last axis.
-    numeric_parts = np.char.partition(data, ".")[..., 2]
-    str_lens = np.char.str_len(numeric_parts)
-    return np.max(str_lens, axis=0)
+    lens = np.strings.str_len(data)
+    idx = np.strings.rfind(data, ".")
+    precs = lens - idx - 1
+    return np.max(precs, where=(precs != lens), axis=0, initial=0)
 
 
 def _is_valid_exchange_numeric(data: npt.NDArray[np.str_]) -> np.bool_:
