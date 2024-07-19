@@ -205,10 +205,21 @@ def add_param(
     ds: xr.Dataset,
     param: WHPName | str,
     *,
-    with_flag=False,
-    with_error=False,
+    with_flag: bool = False,
+    with_error: bool = False,
     with_ancillary=None,
 ) -> xr.Dataset:
+    """Add a new parameter, and optionally some ancillary associated variables to a dataset.
+
+    This function is idempotent and will not overwrite any existing data or parameters.
+    To add a flag or error parameter to an existing parameter is done by setting the `with_flag` or `with_error` arguments to `True`.
+
+    :param ds: Dataset to add a param to
+    :param param: A string or `WHPName` instanct of a parameter, strings are in the form `"param [unit]`" or `"param"` if unitless, e.g. `"OXYGEN [UMOL/KG]"` or `"EXPOCODE"`
+    :param with_flag: If True, also add a quality flag variable, defaults to False
+    :param with_error: If True, also add an error variable if one is defined for this parent parameter, defaults to False
+    :param with_ancillary: Currently a noop, hopefully will be used to add ancillary variable for things like analytical temperature
+    :return: A new dataset with the requested variables added, will return a new dataset even if the results of calling this function are noop"""
     if isinstance(param, str):
         param = WHPNames[param]
 
