@@ -539,7 +539,7 @@ class CCHDOAccessor:
                 value = da.dt.strftime("%Y%m%d").to_numpy()[0]
             elif param in self.time_names:
                 date_or_time = "time"
-                value = da.dt.round("T").dt.strftime("%H%M").to_numpy()[0]
+                value = da.dt.round("min").dt.strftime("%H%M").to_numpy()[0]
             else:
                 try:
                     data = da.values[0].item()
@@ -578,7 +578,7 @@ class CCHDOAccessor:
                 date_or_time = "time"
                 values = (
                     da[valid_levels]
-                    .dt.round("T")
+                    .dt.round("min")
                     .dt.strftime("%H%M")
                     .to_numpy()
                     .tolist()
