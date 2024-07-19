@@ -131,13 +131,26 @@ def remove_param(
     ds: xr.Dataset,
     param: WHPName | str,
     *,
-    delete_param=False,
-    delete_flag=False,
-    delete_error=False,
+    delete_param: bool = False,
+    delete_flag: bool = False,
+    delete_error: bool = False,
     delete_ancillary=False,
-    require_empty=True,
+    require_empty: bool = True,
 ) -> xr.Dataset:
-    """Remove a parameter and/or its ancillary variables from a dataset"""
+    """Remove a parameter and/or its ancillary variables from a dataset.
+
+    Since this function is rather destructive, by default, it is basically a no-op, you must make a choice when calling to delete the parameter or ancillary variable.
+
+    :param ds: The dataset to remove a param from.
+    :param param: A string or ``WHPName`` instance of a parameter, strings are in the form ``"param [unit]"`` or ``"param"`` if unitless, e.g. ``"OXYGEN [UMOL/KG]"`` or ``"EXPOCODE"``
+    :param delete_param: If True, delete this parameter and all associated ancillary variables. Defaults to False.
+    :param delete_flag: If True, delete this parameters flag, Defaults to False.
+    :param delete_error: If True, delete this parameters error variable. Defaults to False.
+    :param delete_ancillary: Currently a no-op.
+    :param require_empty: If True, require that all the variables that will be deleted contain exclusively fill values, defualts to True
+
+    :returns: A new dataset with the requested variables removed, will return a new dataset even if the results of calling this function are no-op
+    """
     if isinstance(param, str):
         param = WHPNames[param]
 
@@ -215,11 +228,11 @@ def add_param(
     To add a flag or error parameter to an existing parameter is done by setting the `with_flag` or `with_error` arguments to `True`.
 
     :param ds: Dataset to add a param to
-    :param param: A string or `WHPName` instanct of a parameter, strings are in the form `"param [unit]`" or `"param"` if unitless, e.g. `"OXYGEN [UMOL/KG]"` or `"EXPOCODE"`
+    :param param: A string or ``WHPName`` instance of a parameter, strings are in the form ``"param [unit]"`` or ``"param"`` if unitless, e.g. ``"OXYGEN [UMOL/KG]"`` or ``"EXPOCODE"``
     :param with_flag: If True, also add a quality flag variable, defaults to False
     :param with_error: If True, also add an error variable if one is defined for this parent parameter, defaults to False
-    :param with_ancillary: Currently a noop, hopefully will be used to add ancillary variable for things like analytical temperature
-    :return: A new dataset with the requested variables added, will return a new dataset even if the results of calling this function are noop"""
+    :param with_ancillary: Currently a no-op, hopefully will be used to add ancillary variable for things like analytical temperature
+    :return: A new dataset with the requested variables added, will return a new dataset even if the results of calling this function are no-op"""
     if isinstance(param, str):
         param = WHPNames[param]
 
