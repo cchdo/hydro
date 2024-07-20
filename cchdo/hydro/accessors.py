@@ -130,6 +130,7 @@ def fq_get_precisions(fq: NormalizedFQ) -> dict[str, int]:
 FTypeOptions = Literal["cf", "exchange", "coards", "woce"]
 
 
+@xr.register_dataset_accessor("cchdo")
 class CCHDOAccessor:
     def __init__(self, xarray_obj: xr.Dataset):
         self._obj = xarray_obj
@@ -294,7 +295,8 @@ class CCHDOAccessor:
         col_widths = [max(x, len(s)) for x, s in zip(col_widths, SUM_COLUMN_HEADERS_2)]
 
         sum_rows = []
-        for _, prof in self._obj.groupby("N_PROF"):
+        for _, prof in self._obj.groupby("N_PROF", squeeze=False):
+            prof = prof.squeeze("N_PROF")
             dt = pd.to_datetime(prof.time.values)
 
             sect_id = ""
@@ -806,6 +808,3 @@ class CCHDOAccessor:
         if check_flags:
             _check_flags(new_obj)
         return new_obj
-
-
-xr.register_dataset_accessor("cchdo")(CCHDOAccessor)
