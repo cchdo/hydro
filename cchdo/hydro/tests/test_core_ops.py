@@ -1,7 +1,14 @@
+import io
+
 import numpy as np
+import pytest
 import xarray as xr
 
-from ..core import add_profile, create_new
+from cchdo.params import WHPNames
+
+from .. import core
+from ..exchange import read_exchange
+from ..exchange.helpers import simple_bottle_exchange
 
 
 def test_create_new():
@@ -95,7 +102,7 @@ def test_create_new():
         },
     )
 
-    result = create_new()
+    result = core.create_new()
 
     xr.testing.assert_identical(result, expected)
 
@@ -191,8 +198,109 @@ def test_add_profile():
         },
     )
 
-    base = create_new()
+    base = core.create_new()
 
-    result = add_profile(base, "318M", "test", 1, "2020-01-01T00:00:00", 0, 0, "B")
+    result = core.add_profile(base, "318M", "test", 1, "2020-01-01T00:00:00", 0, 0, "B")
 
     xr.testing.assert_identical(result, expected)
+
+
+def test_add_param():
+    # The easiest way I could think of to test this was to make some exchange inputs
+    # one with and without some parameter and try use the functions to test the addition
+    # and removal of a param
+    # TODO: parameterize this to test the parameter space
+    params = ("DELC14", "DELC14_FLAG_W", "C14ERR")
+    units = ("/MILLE", "", "/MILLE")
+    data = ("-999", "9", "-999")
+    ds = read_exchange(
+        io.BytesIO(simple_bottle_exchange()), precision_source="database"
+    )
+    ds_param = read_exchange(
+        io.BytesIO(
+            simple_bottle_exchange(params=params[:1], units=units[:1], data=data[:1])
+        ),
+        precision_source="database",
+    )
+    ds_param_flag = read_exchange(
+        io.BytesIO(
+            simple_bottle_exchange(params=params[:2], units=units[:2], data=data[:2])
+        ),
+        precision_source="database",
+    )
+    ds_param_flag_error = read_exchange(
+        io.BytesIO(
+            simple_bottle_exchange(params=params[:3], units=units[:3], data=data[:3])
+        ),
+        precision_source="database",
+    )
+
+    testing_ds_param = core.add_param(ds, WHPNames["DELC14 [/MILLE]"])
+    xr.testing.assert_identical(ds_param, testing_ds_param)
+    testing_ds_param_flag = core.add_param(
+        ds, WHPNames["DELC14 [/MILLE]"], with_flag=True
+    )
+    xr.testing.assert_identical(ds_param_flag, testing_ds_param_flag)
+    testing_ds_param_flag_error = core.add_param(
+        ds, WHPNames["DELC14 [/MILLE]"], with_flag=True, with_error=True
+    )
+    xr.testing.assert_identical(ds_param_flag_error, testing_ds_param_flag_error)
+
+
+@pytest.mark.parametrize("require_empty", [True, False])
+@pytest.mark.parametrize("empty", [True, False])
+@pytest.mark.parametrize("error", [True, False])
+@pytest.mark.parametrize("flag", [True, False])
+@pytest.mark.parametrize("param", [True, False])
+def test_remove_param(param, flag, error, empty, require_empty):
+    # TODO see above todo
+
+    if param is True:
+        flag, error = True, True
+
+    bools = (param, flag, error)
+    params = ("DELC14", "DELC14_FLAG_W", "C14ERR")
+    units = ("/MILLE", "", "/MILLE")
+    if empty:
+        data = ("-999", "9", "-999")
+    else:
+        data = ("0.1", "2", "0.1")
+
+    if not all(bools):
+        _, _params, _units, _data = zip(
+            *filter(lambda x: not x[0], zip(bools, params, units, data))
+        )
+    else:
+        _params = tuple()
+        _units = tuple()
+        _data = tuple()
+
+    expected_ds = read_exchange(
+        io.BytesIO(simple_bottle_exchange(params=_params, units=_units, data=_data)),
+        precision_source="database",
+    )
+    input_ds = read_exchange(
+        io.BytesIO(simple_bottle_exchange(params=params, units=units, data=data)),
+        precision_source="database",
+    )
+
+    if empty is False and require_empty is True and any(bools):
+        with pytest.raises(ValueError):
+            testing_ds = core.remove_param(
+                input_ds,
+                "DELC14 [/MILLE]",
+                delete_param=param,
+                delete_flag=flag,
+                delete_error=error,
+                require_empty=require_empty,
+            )
+    else:
+        testing_ds = core.remove_param(
+            input_ds,
+            "DELC14 [/MILLE]",
+            delete_param=param,
+            delete_flag=flag,
+            delete_error=error,
+            require_empty=require_empty,
+        )
+        xr.testing.assert_identical(expected_ds, testing_ds)

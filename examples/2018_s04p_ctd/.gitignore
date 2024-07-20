@@ -1,0 +1,5 @@
+# ignore the files downloaded and created by the demo notebook
+2018_S04P.zip
+320620180309_ctd.nc
+s04p_merged_ct1.zip
+s04p_merged_ctd.nc
