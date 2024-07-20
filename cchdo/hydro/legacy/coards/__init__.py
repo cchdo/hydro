@@ -99,8 +99,8 @@ def strftime_woce_date_time(dt: xr.DataArray):
     if dt is None:
         return (None, None)
     if dt.attrs.get("resolution", 0) >= 1:
-        return (dt.dt.strftime("%Y%m%d"), None)
-    return (dt.dt.strftime("%Y%m%d"), dt.dt.strftime("%H%M"))
+        return (dt.dt.strftime("%Y%m%d").item(), None)
+    return (dt.dt.strftime("%Y%m%d").item(), dt.dt.strftime("%H%M").item())
 
 
 # utility functions from libcchdo.formats.netcdf
@@ -348,7 +348,7 @@ def get_common_variables(ds: xr.Dataset):
     # In the origional it creates these all manually (not in a loop)
     common_variables = {}
     time_units = f"minutes since {EPOCH.isoformat(' ')}"
-    time_data = int(minutes_since_epoch(ds.time, time_units))
+    time_data = int(minutes_since_epoch(ds.time, time_units).item())
     common_variables["time"] = xr.DataArray(
         [time_data],
         dims=("time"),
@@ -361,7 +361,7 @@ def get_common_variables(ds: xr.Dataset):
         },
     )
 
-    latitude = float(ds.latitude)
+    latitude = float(ds.latitude.item())
     common_variables["latitude"] = xr.DataArray(
         np.array([latitude], dtype="float32"),
         dims=["latitude"],
@@ -375,7 +375,7 @@ def get_common_variables(ds: xr.Dataset):
     )
     common_variables["latitude"].encoding["_FillValue"] = None
 
-    longitude = float(ds.longitude)
+    longitude = float(ds.longitude.item())
     common_variables["longitude"] = xr.DataArray(
         np.array([longitude], dtype="float32"),
         dims=["longitude"],
