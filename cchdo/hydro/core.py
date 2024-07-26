@@ -58,10 +58,16 @@ FLAG_SCHEME: dict[str, type[ExchangeFlag]] = {
 }
 
 
-def _dataarray_factory(
-    param: WHPName, ctype="data", N_PROF=0, N_LEVELS=0
+def dataarray_factory(
+    param: WHPName,
+    ctype="data",
+    N_PROF=0,
+    N_LEVELS=0,
+    strlen=0,
 ) -> xr.DataArray:
     dtype = dtype_map[param.dtype]
+    if param.dtype == "string":
+        dtype = f"U{strlen}"
     fill = FILLS_MAP[param.dtype]
     name = param.full_nc_name
 
@@ -105,6 +111,16 @@ def _dataarray_factory(
         }
 
     var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], attrs=attrs, name=name)
+
+    if param.dtype != "decimal":
+        try:
+            del var_da.attrs["C_format"]
+        except KeyError:
+            pass
+        try:
+            del var_da.attrs["C_format_source"]
+        except KeyError:
+            pass
 
     if param.dtype == "string":
         var_da.encoding["dtype"] = "S1"
@@ -242,13 +258,13 @@ def add_param(
     if param.full_nc_name in _ds:
         var = _ds[param.full_nc_name]
     else:
-        var = _dataarray_factory(
+        var = dataarray_factory(
             param, N_PROF=ds.sizes["N_PROF"], N_LEVELS=ds.sizes["N_LEVELS"]
         )
         vars_to_add.append(var)
 
     if with_flag and param.nc_name_flag not in _ds:
-        flag_var = _dataarray_factory(
+        flag_var = dataarray_factory(
             param,
             N_PROF=ds.sizes["N_PROF"],
             N_LEVELS=ds.sizes["N_LEVELS"],
@@ -264,7 +280,7 @@ def add_param(
         raise ValueError(f"{param} does not have a defined error/uncertainty name")
 
     if with_error and param.nc_name_error not in _ds:
-        error_var = _dataarray_factory(
+        error_var = dataarray_factory(
             param,
             N_PROF=ds.sizes["N_PROF"],
             N_LEVELS=ds.sizes["N_LEVELS"],
@@ -351,7 +367,7 @@ def create_new() -> xr.Dataset:
     """Create an empty CF Dataset with the minimum required contents."""
     dataarrays = {}
     for param in COORDS:
-        dataarrays[param.nc_name] = _dataarray_factory(param)
+        dataarrays[param.nc_name] = dataarray_factory(param)
     ds = xr.Dataset(dataarrays)
 
     ds = set_coordinate_encoding_fill(ds)
