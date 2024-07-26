@@ -1134,7 +1134,6 @@ def _combine_dt_ndarray(
         time_arr[time_arr != ""] = np.char.zfill(time_arr[time_arr != ""], 4)
 
     arr = np.char.add(np.char.add(date_arr, "T"), time_arr)
-    print(arr)
     return parse_datetime(arr).astype("datetime64[m]")
 
 
