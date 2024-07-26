@@ -70,12 +70,10 @@ class WHPIndxer:
             ],
             names=["expocode", "station", "cast"],
         )
-        self.n_level = [
-            pd.MultiIndex.from_arrays(
-                [prof.squeeze("N_PROF").sample.data], names=["sample"]
-            )
-            for _, prof in obj.groupby("N_PROF", squeeze=False)
-        ]
+        self.n_level = []
+        for _, prof in obj.groupby("N_PROF", squeeze=False):
+            data = prof.sample.squeeze("N_PROF").data
+            self.n_level.append(pd.Index(data[data != ""]))
 
     def __getitem__(self, key: FQProfileKey | FQPointKey):
         prof_idx = self.n_prof.get_loc((key.expocode, key.station, key.cast))
@@ -94,6 +92,7 @@ def normalize_fq(fq: list[dict[str, str | float]], *, check_dupes=True) -> Norma
     normalized: NormalizedFQ = defaultdict(dict)
     key: FQProfileKey | FQPointKey
     for line in fq:
+        line = line.copy()
         expocode = str(line.pop("EXPOCODE"))
         station = str(line.pop("STNNBR"))
         cast = int(line.pop("CASTNO"))
@@ -765,7 +764,6 @@ class CCHDOAccessor:
     def merge_fq(self, fq: list[dict[str, str | float]], *, check_flags=True):
         # TODOs...
         # * (default True) restrict to open "slots" of non flag 9s
-        # * Vectorize updates
         # * Update history attribute...
         now = datetime.now(timezone.utc)
         new_obj = self._obj.copy(deep=True)
@@ -773,38 +771,45 @@ class CCHDOAccessor:
 
         normalized_fq = normalize_fq(fq)
         input_precisions = fq_get_precisions(normalized_fq)
-
+        idxes = {key: idxer[key] for key in normalized_fq}
+        # invert keys and indexes?
+        inverted = defaultdict(lambda: defaultdict(list))
         for key, values in normalized_fq.items():
-            prof, level = idxer[key]
             for param, value in values.items():
-                whpname = WHPNames[param]
-                if whpname.error_col:
-                    col_ref = new_obj[whpname.nc_name_error]
-                elif whpname.flag_col:
-                    col_ref = new_obj[whpname.nc_name_flag]
-                else:
-                    col_ref = new_obj[whpname.nc_name]
+                idx = idxes[key]
+                inverted[param]["profs"].append(idx[0])
+                inverted[param]["levels"].append(idx[1])
+                inverted[param]["values"].append(value)
 
-                # actually update the data
-                col_ref[prof, level] = value
-                col_ref.attrs["date_modified"] = now.isoformat(timespec="seconds")
+        for param, values in inverted.items():
+            whpname = WHPNames[param]
+            if whpname.error_col:
+                col_ref = new_obj[whpname.nc_name_error]
+            elif whpname.flag_col:
+                col_ref = new_obj[whpname.nc_name_flag]
+            else:
+                col_ref = new_obj[whpname.nc_name]
 
+            col_ref.values[values["profs"], values["levels"]] = values["values"]
+
+            col_ref.attrs["date_modified"] = now.isoformat(timespec="seconds")
+
+            if (
+                param in input_precisions
+                and whpname.dtype == "decimal"
+                and not whpname.flag_col
+            ):
+                new_c_format = f"%.{input_precisions[param]}f"
+                new_c_format_source = "input_file"
                 if (
-                    param in input_precisions
-                    and whpname.dtype == "decimal"
-                    and not whpname.flag_col
+                    col_ref.attrs.get("C_format") != new_c_format
+                    or col_ref.attrs.get("C_format_source") != new_c_format_source
                 ):
-                    new_c_format = f"%.{input_precisions[param]}f"
-                    new_c_format_source = "input_file"
-                    if (
-                        col_ref.attrs.get("C_format") != new_c_format
-                        or col_ref.attrs.get("C_format_source") != new_c_format_source
-                    ):
-                        col_ref.attrs["C_format"] = new_c_format
-                        col_ref.attrs["C_format_source"] = new_c_format_source
-                        col_ref.attrs["date_metadata_modified"] = now.isoformat(
-                            timespec="seconds"
-                        )
+                    col_ref.attrs["C_format"] = new_c_format
+                    col_ref.attrs["C_format_source"] = new_c_format_source
+                    col_ref.attrs["date_metadata_modified"] = now.isoformat(
+                        timespec="seconds"
+                    )
         if check_flags:
             _check_flags(new_obj)
         return new_obj
