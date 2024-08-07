@@ -4,6 +4,7 @@ v1.0.2.9 (2024-08-??)
 * Add cchdo.auth to cli optional requiremnets
 * Vectorize the merge_fq accessor for greater speed
 * use absolute imports throughout the library
+* Speedups in string processing (precision extraction) from numpy 2
 
 v1.0.2.8 (2024-03-22)
 =====================
