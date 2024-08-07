@@ -40,5 +40,6 @@ jobs:
         mypy --namespace-packages --explicit-package-bases cchdo
     - name: Upload coverage to Coveralls
       uses: coverallsapp/github-action@v2.3.0
+      continue-on-error: true
       with:
         file: ./coverage.xml
