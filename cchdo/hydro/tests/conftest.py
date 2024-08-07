@@ -3,8 +3,8 @@ from importlib.resources import open_binary
 
 import pytest
 
-from ..exchange import read_csv, read_exchange
-from ..exchange.helpers import simple_bottle_exchange
+from cchdo.hydro.exchange import read_csv, read_exchange
+from cchdo.hydro.exchange.helpers import simple_bottle_exchange
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ def nc_placeholder():
     )
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def nc_placeholders():
     # Multiple empty slots for this one
     with open_binary("cchdo.hydro.tests.data", "merge_placeholders.csv") as f:

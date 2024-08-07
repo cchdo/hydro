@@ -1,7 +1,9 @@
-v1.0.2.9 (2024-04-??)
+v1.0.2.9 (2024-08-??)
 =====================
 * (Bug) Fix crash in the COARDS writer when the comments are just an empty string
 * Add cchdo.auth to cli optional requiremnets
+* Vectorize the merge_fq accessor for greater speed
+* use absolute imports throughout the library
 
 v1.0.2.8 (2024-03-22)
 =====================

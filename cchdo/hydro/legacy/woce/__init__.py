@@ -9,7 +9,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 import numpy as np
 import xarray as xr
 
-from ... import accessors as acc
+from cchdo.hydro import accessors as acc
 
 #
 CTD_ZIP_FILE_EXTENSION = "ct.zip"

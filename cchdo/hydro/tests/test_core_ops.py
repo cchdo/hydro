@@ -4,11 +4,10 @@ import numpy as np
 import pytest
 import xarray as xr
 
+from cchdo.hydro import core
+from cchdo.hydro.exchange import read_exchange
+from cchdo.hydro.exchange.helpers import simple_bottle_exchange
 from cchdo.params import WHPNames
-
-from .. import core
-from ..exchange import read_exchange
-from ..exchange.helpers import simple_bottle_exchange
 
 
 def test_create_new():

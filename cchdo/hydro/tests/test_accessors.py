@@ -5,8 +5,8 @@ import pytest
 import xarray as xr
 from xarray.testing import assert_identical
 
-from ..accessors import CCHDOAccessor
-from ..exchange import FileType, read_exchange
+from cchdo.hydro.accessors import CCHDOAccessor
+from cchdo.hydro.exchange import FileType, read_exchange
 
 exp_stn_cast = json.loads(read_text("cchdo.hydro.tests.data", "stns_test_data.json"))
 

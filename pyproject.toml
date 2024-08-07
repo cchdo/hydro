@@ -113,6 +113,8 @@ select = [
     "I",
     # Pyupgrade
     "UP",
+    # Tidy imports
+    "TID",
 ]
 
 [tool.ruff.lint.isort]

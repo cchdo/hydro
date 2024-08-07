@@ -1,7 +1,7 @@
 from importlib.resources import open_binary
 from io import BytesIO
 
-from ..exchange import read_csv
+from cchdo.hydro.exchange import read_csv
 
 
 def test_read_csv():

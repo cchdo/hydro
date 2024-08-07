@@ -4,14 +4,14 @@ from importlib.resources import open_binary
 import numpy as np
 import pytest
 
-from ..exchange import read_exchange
-from ..exchange.exceptions import (
+from cchdo.hydro.exchange import read_exchange
+from cchdo.hydro.exchange.exceptions import (
     ExchangeBOMError,
     ExchangeDuplicateParameterError,
     ExchangeEncodingError,
     ExchangeParameterUndefError,
 )
-from ..exchange.helpers import simple_bottle_exchange
+from cchdo.hydro.exchange.helpers import simple_bottle_exchange
 
 
 def test_btl_date_time():

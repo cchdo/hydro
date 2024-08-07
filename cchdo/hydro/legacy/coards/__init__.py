@@ -23,8 +23,8 @@ import numpy as np
 import xarray as xr
 from cftime import date2num
 
-from ... import accessors as acc
-from .. import woce
+from cchdo.hydro import accessors as acc
+from cchdo.hydro.legacy import woce
 
 log = getLogger(__name__)
 """logger object for message logging"""

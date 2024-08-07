@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_equal
 
-from .. import accessors  # noqa
-from ..exchange.exceptions import ExchangeDataFlagPairError
+from cchdo.hydro import accessors  # noqa
+from cchdo.hydro.exchange.exceptions import ExchangeDataFlagPairError
 
 
 def test_fq_merge(nc_placeholder):
@@ -87,7 +87,7 @@ def test_fq_merge_flag_only(nc_placeholders):
             "STNNBR": "1",
             "CASTNO": 1,
             "SAMPNO": "35",
-            "OXYGEN [UMOL/KG]_FLAG_W": "9",
+            "OXYGEN [UMOL/KG]_FLAG_W": None,
         }
     ]
     merged = nc_placeholders.cchdo.merge_fq(fq)

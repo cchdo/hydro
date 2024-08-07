@@ -22,10 +22,7 @@ import numpy.typing as npt
 import requests
 import xarray as xr
 
-from cchdo.params import WHPName, WHPNames
-from cchdo.params import __version__ as params_version
-
-from .exceptions import (
+from cchdo.hydro.exchange.exceptions import (
     ExchangeBOMError,
     ExchangeDataFlagPairError,
     ExchangeDataInconsistentCoordinateError,
@@ -43,10 +40,17 @@ from .exceptions import (
     ExchangeParameterUndefError,
     ExchangeParameterUnitAlignmentError,
 )
-from .flags import ExchangeBottleFlag, ExchangeCTDFlag, ExchangeFlag, ExchangeSampleFlag
+from cchdo.hydro.exchange.flags import (
+    ExchangeBottleFlag,
+    ExchangeCTDFlag,
+    ExchangeFlag,
+    ExchangeSampleFlag,
+)
+from cchdo.params import WHPName, WHPNames
+from cchdo.params import __version__ as params_version
 
 try:
-    from .. import __version__ as hydro_version
+    from cchdo.hydro import __version__ as hydro_version
 
     CCHDO_VERSION = ".".join(hydro_version.split(".")[:2])
     if "dev" in hydro_version:
@@ -759,7 +763,7 @@ class _ExchangeData:
         lens = {}
         for param, data in self.param_cols.items():
             if param.dtype == "string":
-                lens[param] = np.max(np.strings.str_len(data))
+                lens[param] = int(np.max(np.strings.str_len(data)))
 
         return lens
 

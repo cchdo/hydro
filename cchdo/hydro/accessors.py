@@ -773,9 +773,9 @@ class CCHDOAccessor:
         input_precisions = fq_get_precisions(normalized_fq)
         idxes = {key: idxer[key] for key in normalized_fq}
         # invert keys and indexes?
-        inverted = defaultdict(lambda: defaultdict(list))
-        for key, values in normalized_fq.items():
-            for param, value in values.items():
+        inverted: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(list))
+        for key, fq_values in normalized_fq.items():
+            for param, value in fq_values.items():
                 idx = idxes[key]
                 inverted[param]["profs"].append(idx[0])
                 inverted[param]["levels"].append(idx[1])
