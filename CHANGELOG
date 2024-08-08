@@ -1,5 +1,6 @@
 v1.0.2.9 (2024-08-??)
 =====================
+* (New) Added :py:func:`hydro.core.add_param` and :py:func:`hydro.core.remove_param` functions
 * (Bug) Fix crash in the COARDS writer when the comments are just an empty string
 * Add cchdo.auth to cli optional requiremnets
 * Vectorize the merge_fq accessor for greater speed
