@@ -36,9 +36,11 @@ v1.0.2.5 (2023-10-05)
 * Add `fill_values` and `precision_source` arguments to `read_csv`
 * Add string literal types for the `ftype` parameter of `read_csv`
 * CLI improvements:
- * made "precision_source" and option rather than positional argument
- * added a `--comments` option to allow the override of comments from either a string or file path prefixed with @.
- * Add a convert_csv subcommand which takes an additional ftype option to specify (C)TD or (B)ottle
+
+  * made "precision_source" and option rather than positional argument
+  * added a `--comments` option to allow the override of comments from either a string or file path prefixed with @.
+  * Add a convert_csv subcommand which takes an additional ftype option to specify (C)TD or (B)ottle
+
 * Removed the `matlab` optional install extra, this previously had a single dependency of "scipy" in it.
   Scipy is used by xarray for netCDF3 output so this dependency has been moved to the `netcdf` optional install extra.
 
