@@ -8,5 +8,8 @@ This converter is only available in the html/browser versions of the documentati
 .. note::
     Processing a CTD file can take a long time and I don't yet know how to show progress in the browser.
 
+.. warning::
+    This has been pinned to an older version of cchdo.hydro while numpy 2 support is worked on in pyodide.
+
 .. raw:: html
     :file: _exchange_checker_include.html 
