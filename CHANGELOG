@@ -1,4 +1,4 @@
-v1.0.2.10 (2024-09-??)
+v1.0.2.10 (2024-08-30)
 =====================
 * (Major Bug) Fix not calculating the correct string length for string fields that have an inconsistent length (e.g. station)
 * (Bug) Fix the legacy woce writer not writing the data block if no quality flags are in the file
