@@ -4,6 +4,7 @@ from csv import reader as csv_reader
 # 2023-04-16
 from importlib.resources import open_text
 from io import BytesIO
+from itertools import zip_longest
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import numpy as np
@@ -347,7 +348,8 @@ def write_data(ds, columns, base_format):
                 )
             )
 
-    for row_d, row_f in zip(zip(*data), zip(*flags)):
+    for row_d, row_f in zip_longest(zip(*data), zip(*flags), fillvalue=""):
+        print(row_d, row_f)
         data_lines.append(base_format.format(*row_d, "".join(row_f)))
 
     return "".join([record2, record3, record4, *data_lines])

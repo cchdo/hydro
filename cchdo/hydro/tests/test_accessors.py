@@ -1,12 +1,14 @@
 import json
 from importlib.resources import read_text
+from io import BytesIO
+from zipfile import ZipFile
 
 import pytest
 import xarray as xr
 from xarray.testing import assert_identical
 
 from cchdo.hydro.accessors import CCHDOAccessor
-from cchdo.hydro.exchange import FileType, read_exchange
+from cchdo.hydro.exchange import FileType, read_csv, read_exchange
 
 exp_stn_cast = json.loads(read_text("cchdo.hydro.tests.data", "stns_test_data.json"))
 
@@ -161,3 +163,18 @@ END_DATA
     ds.cchdo.to_coards()
     ds.cchdo.to_woce()
     ds.cchdo.to_sum()
+
+
+def test_woce_ctd_no_flags(tmp_path):
+    """make sure data is written to the woce files when there are no qc flags"""
+    test_data = b"""EXPOCODE,SECT_ID,STNNBR,CASTNO,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR],CTDTMP [DEG C],CTDSAL [PSS-78],CTDOXY [UMOL/KG],CTDFLUOR [MG/M^3],CTDBEAMCP [/METER]
+64PE20110724,AR07E,9,1,20110729,1919,59.57017,-38.77183,3006.0,1.2096,34.8913,304.0,0.0,0.161
+"""
+    ds = read_csv(test_data, ftype="C")
+    zip_data = BytesIO(ds.cchdo.to_woce())
+    with ZipFile(zip_data) as zf:
+        fname = zf.namelist()[0]
+        with zf.open(fname) as ctd:
+            # this asserts that the above data block exists somewhere in the resulting file
+            # the previous bug would just have a blank data block section
+            assert b"3006.0  1.2096 34.8913   304.0" in ctd.read()
