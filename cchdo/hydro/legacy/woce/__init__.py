@@ -349,7 +349,6 @@ def write_data(ds, columns, base_format):
             )
 
     for row_d, row_f in zip_longest(zip(*data), zip(*flags), fillvalue=""):
-        print(row_d, row_f)
         data_lines.append(base_format.format(*row_d, "".join(row_f)))
 
     return "".join([record2, record3, record4, *data_lines])

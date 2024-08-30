@@ -52,5 +52,4 @@ def test_station_ids():
 """
     )
     ds = read_csv(test_data, ftype="C")
-    print(ds.station)
     np.testing.assert_equal(ds.station.values, ["9", "10"])

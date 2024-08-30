@@ -1,3 +1,7 @@
+v1.0.2.11 (2024-08-30)
+=====================
+* Removed 2 rouge debug print statemnets from digging into that WOCE bug
+
 v1.0.2.10 (2024-08-30)
 =====================
 * (Major Bug) Fix not calculating the correct string length for string fields that have an inconsistent length (e.g. station)
