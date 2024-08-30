@@ -1,3 +1,7 @@
+v1.0.2.10 (2024-09-??)
+=====================
+* (Major Bug) Fix not calculating the correct string length for string fields that have an inconsistent length (e.g. station)
+
 v1.0.2.9 (2024-08-08)
 =====================
 * (New) Added :py:func:`hydro.core.add_param` and :py:func:`hydro.core.remove_param` functions

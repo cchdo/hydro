@@ -1485,11 +1485,20 @@ def _from_exchange_data(
     for exd in exchange_data:
         exd.set_expected(params, flags, errors)
 
+    # to init the empty data arrays, we need to know the max size of all the string type parameters
+    # otherwise the values will be silently truncated
+    str_lens: dict[WHPName, int] = {}
+    for exd in exchange_data:
+        for param, length in exd.str_lens.items():
+            if str_lens.get(param, 0) < length:
+                str_lens[param] = length
+    log.debug(f"Total string lengths: {str_lens}")
+
     log.debug("Init DataArrays")
     dataarrays = {}
     for param in sorted(params):
         dataarrays[param.full_nc_name] = dataarray_factory(
-            param, N_PROF=N_PROF, N_LEVELS=N_LEVELS, strlen=exd.str_lens.get(param)
+            param, N_PROF=N_PROF, N_LEVELS=N_LEVELS, strlen=str_lens.get(param)
         )
 
         dataarrays[param.full_nc_name].attrs["ancillary_variables"] = []

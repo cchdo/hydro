@@ -1,6 +1,8 @@
 from importlib.resources import open_binary
 from io import BytesIO
 
+import numpy as np
+
 from cchdo.hydro.exchange import read_csv
 
 
@@ -39,3 +41,16 @@ TEST,1,1,1,0,0,20220101,0000,0,0,2,0,20220101,0000"""
     ds = read_csv(test_data)
 
     assert "pressure" in ds
+
+
+def test_station_ids():
+    """Tests for a bug where station IDs were being truncated"""
+    test_data = BytesIO(
+        b"""EXPOCODE,SECT_ID,STNNBR,CASTNO,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR],CTDTMP [DEG C],CTDSAL [PSS-78],CTDOXY [UMOL/KG],CTDFLUOR [MG/M^3],CTDBEAMCP [/METER]
+64PE20110724,AR07E,9,1,20110729,1919,59.57017,-38.77183,3006.0,1.2096,34.8913,304.0,0.0,0.161
+64PE20110724,AR07E,10,1,20110730,105,59.46533,-37.77933,3.0,8.5907,34.6394,295.4,0.928,0.48
+"""
+    )
+    ds = read_csv(test_data, ftype="C")
+    print(ds.station)
+    np.testing.assert_equal(ds.station.values, ["9", "10"])
