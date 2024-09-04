@@ -15,6 +15,7 @@ Welcome to hydro's documentation!
    erddap
    ODF_CCHDO_netCDF_ops
    exchange_checker
+   notebooks
    changelog
 
 

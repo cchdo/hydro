@@ -63,6 +63,7 @@ docs = [
     "furo",
     "sphinx-design",
     "sphinx-autoapi",
+    "nbsphinx",
 ]
 cli = [
     "cchdo.hydro[netcdf]",

@@ -43,6 +43,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_design",
     "autoapi.extension",
+    "nbsphinx",
 ]
 
 autoapi_dirs = ["../cchdo", "../cchdo/hydro"]
