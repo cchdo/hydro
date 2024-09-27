@@ -1,4 +1,5 @@
 import json
+import warnings
 from importlib.resources import read_text
 from io import BytesIO
 from zipfile import ZipFile
@@ -178,3 +179,20 @@ def test_woce_ctd_no_flags(tmp_path):
             # this asserts that the above data block exists somewhere in the resulting file
             # the previous bug would just have a blank data block section
             assert b"3006.0  1.2096 34.8913   304.0" in ctd.read()
+
+
+def test_coards_ctdnobs_with_missing():
+    """Test a condition where exception might be thrown when a float array with nans is cast to int
+
+    This is very platform dependent and depends on undefined behavior in C. Lucky for us we can see if
+    numpy is issuing a runtime warning (they are considering makeing this throw in the future anyway)
+    """
+    test_data = b"""EXPOCODE,SECT_ID,STNNBR,CASTNO,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR],CTDTMP [DEG C],CTDSAL [PSS-78],CTDNOBS
+64PE20110724,AR07E,9,1,20110729,1919,59.57017,-38.77183,3006.0,1.2096,34.8913,-999
+"""
+    ds = read_csv(test_data, ftype="C")
+    with warnings.catch_warnings(record=True) as w:
+        ds.cchdo.to_coards()
+        # simply assert that no warnings were issued durring the test
+        # numpy would issue a RuntimeWarning if an unsafe cast occured
+        assert len(w) == 0

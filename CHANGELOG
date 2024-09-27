@@ -1,3 +1,7 @@
+v1.0.2.12 (2024-10-??)
+======================
+* (Bug) Fix a crash in the COARDS writer on some architectures (x64) when CTDNOBS has fill values
+
 v1.0.2.11 (2024-08-30)
 ======================
 * Removed 2 rouge debug print statemnets from digging into that WOCE bug
