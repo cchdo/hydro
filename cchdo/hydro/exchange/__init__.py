@@ -1490,7 +1490,7 @@ def _from_exchange_data(
     str_lens: dict[WHPName, int] = {}
     for exd in exchange_data:
         for param, length in exd.str_lens.items():
-            if str_lens.get(param, 0) < length:
+            if str_lens.get(param, 0) <= length:
                 str_lens[param] = length
     log.debug(f"Total string lengths: {str_lens}")
 

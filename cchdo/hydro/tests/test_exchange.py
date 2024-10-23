@@ -228,3 +228,12 @@ def test_fix_bottle_time_span():
     ex = read_exchange(test_data)
 
     np.testing.assert_array_equal(ex.bottle_time.values, expected)
+
+
+def test_empty_string_data():
+    """A bug was found in new numpy where an all fill value string param would not convert succesfully"""
+    raw = simple_bottle_exchange(params=("HPLC",), units=("",), data=("-999",))
+    ex_xr = read_exchange(io.BytesIO(raw))
+
+    assert "hplc_placeholder" in ex_xr.variables
+    assert ex_xr.hplc_placeholder.values == [[""]]
