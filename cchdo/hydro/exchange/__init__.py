@@ -256,7 +256,7 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
         name for name in filter(lambda x: x.nc_group == "cdom", WHPNames.values())
     ]
 
-    cdom_names = sorted(cdom_names, key=lambda x: x.radiation_wavelength)
+    cdom_names = sorted(cdom_names, key=lambda x: x.radiation_wavelength or 0)
 
     # NM this needs to be sorted by wavelength...
     cdom_data = [
