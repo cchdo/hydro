@@ -11,9 +11,11 @@ from cchdo.params import WHPName, WHPNames
 
 from .exchange import (
     FileType,
+    add_cdom_coordinate,
     add_geometry_var,
     add_profile_type,
     combine_dt,
+    flatten_cdom_coordinate,
     set_axis_attrs,
     set_coordinate_encoding_fill,
 )
@@ -199,6 +201,7 @@ def remove_param(
                 raise ValueError(f"{_name} is not empty")
 
     ds = ds.copy()
+    ds = flatten_cdom_coordinate(ds)
     # TODO: this relies on the param name, should rely on attrs somehow
     base_param = ds[param.full_nc_name]
     ancillary_vars = {
@@ -226,6 +229,7 @@ def remove_param(
             except KeyError:
                 pass
 
+    ds = add_cdom_coordinate(ds)
     check_ancillary_variables(ds)
     return ds
 
@@ -253,6 +257,7 @@ def add_param(
         param = WHPNames[param]
 
     _ds = ds.copy()
+    _ds = flatten_cdom_coordinate(_ds)
     vars_to_add = []
 
     if param.full_nc_name in _ds:
@@ -295,6 +300,7 @@ def add_param(
     for var in vars_to_add:
         _ds[var.name] = var
 
+    _ds = add_cdom_coordinate(_ds)
     check_ancillary_variables(_ds)
 
     return _ds

@@ -303,3 +303,49 @@ def test_remove_param(param, flag, error, empty, require_empty):
             require_empty=require_empty,
         )
         xr.testing.assert_identical(expected_ds, testing_ds)
+
+
+def test_add_param_cdom():
+    params = (
+        "CDOM300",
+        "CDOM325",
+    )
+    units = (
+        "/METER",
+        "/METER",
+    )
+    data = (
+        "-999",
+        "-999",
+    )
+    ds = read_exchange(
+        io.BytesIO(simple_bottle_exchange()), precision_source="database"
+    )
+    ds_param_300 = read_exchange(
+        io.BytesIO(
+            simple_bottle_exchange(params=params[:1], units=units[:1], data=data[:1])
+        ),
+        precision_source="database",
+    )
+    ds_param_325 = read_exchange(
+        io.BytesIO(
+            simple_bottle_exchange(params=params[1:], units=units[1:], data=data[1:])
+        ),
+        precision_source="database",
+    )
+    ds_param_cdom = read_exchange(
+        io.BytesIO(simple_bottle_exchange(params=params, units=units, data=data)),
+        precision_source="database",
+    )
+
+    testing_ds_param = core.add_param(ds, WHPNames["CDOM300 [/METER]"])
+    xr.testing.assert_identical(ds_param_300, testing_ds_param)
+
+    testing_ds_param = core.add_param(ds_param_300, WHPNames["CDOM325 [/METER]"])
+    xr.testing.assert_identical(ds_param_cdom, testing_ds_param)
+
+    testing_ds_param = core.add_param(ds, WHPNames["CDOM325 [/METER]"])
+    xr.testing.assert_identical(ds_param_325, testing_ds_param)
+
+    testing_ds_param = core.add_param(ds_param_325, WHPNames["CDOM300 [/METER]"])
+    xr.testing.assert_identical(ds_param_cdom, testing_ds_param)

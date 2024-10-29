@@ -1,5 +1,6 @@
 v1.0.2.12 (2024-10-??)
 ======================
+* Add support for adding CDOM params/wavelengths
 * Add support for merging CDOM in merge_fq
 * (Bug) Fix merge_fq putting alternate paramter data in the wrong place
 * (Bug) Fix a crash in the COARDS writer on some architectures (x64) when CTDNOBS has fill values

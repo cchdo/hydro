@@ -219,7 +219,7 @@ def flatten_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
     if "cdom" not in dataset:
         return dataset
 
-    keys = ["cdom"]
+    keys = ["cdom", "CDOM_WAVELENGTHS"]
     if "cdom_qc" in dataset:
         keys.append("cdom_qc")
 
@@ -252,15 +252,17 @@ def flatten_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
 def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
     """Find all the paraters in the cdom group and add their wavelength in a new coordinate"""
 
-    # this needs to be a set to deal with the potential for aliasesd names
-    cdom_names = {
-        name.nc_name
-        for name in filter(lambda x: x.nc_group == "cdom", WHPNames.values())
-    }
+    cdom_names = [
+        name for name in filter(lambda x: x.nc_group == "cdom", WHPNames.values())
+    ]
 
-    # done in a way the preserves the order of the params and QC flags in the dataset
+    cdom_names = sorted(cdom_names, key=lambda x: x.radiation_wavelength)
+
+    # NM this needs to be sorted by wavelength...
     cdom_data = [
-        dataarray for dataarray in dataset.values() if dataarray.name in cdom_names
+        dataset[name.full_nc_name]
+        for name in cdom_names
+        if name.full_nc_name in dataset
     ]
 
     # nothing to do
