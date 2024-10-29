@@ -788,7 +788,7 @@ class CCHDOAccessor:
             elif whpname.flag_col:
                 col_ref = new_obj[whpname.nc_name_flag]
             else:
-                col_ref = new_obj[whpname.nc_name]
+                col_ref = new_obj[whpname.full_nc_name]
 
             col_ref.values[values["profs"], values["levels"]] = values["values"]
 

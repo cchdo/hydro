@@ -118,3 +118,64 @@ def test_fq_merge_flag_only(nc_placeholders):
     ]
     merged = nc_placeholders.cchdo.merge_fq(fq)
     assert_array_equal(merged.oxygen_qc.data, [[np.nan, 1, 5, np.nan, 1, 3]])
+
+
+def test_fq_merge_with_alt_params(nc_placeholders):
+    fq = [
+        {
+            "EXPOCODE": "TEST",
+            "STNNBR": "1",
+            "CASTNO": 1,
+            "SAMPNO": "36",
+            "SILCAT [UMOL/KG]": "100.1",
+            "SILCAT [UMOL/KG]_FLAG_W": "2",
+        }
+    ]
+    merged = nc_placeholders.cchdo.merge_fq(fq)
+
+    assert_array_equal(
+        merged.silicate.data, [[100.1, np.nan, np.nan, np.nan, np.nan, np.nan]]
+    )
+    assert_array_equal(
+        merged.silicate_qc.data, [[2, np.nan, np.nan, np.nan, np.nan, np.nan]]
+    )
+    assert_array_equal(
+        merged.silicate_alt_1.data, [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
+    )
+    assert_array_equal(
+        merged.silicate_alt_1_qc.data,
+        [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]],
+    )
+
+    fq = [
+        {
+            "EXPOCODE": "TEST",
+            "STNNBR": "1",
+            "CASTNO": 1,
+            "SAMPNO": "36",
+            "SILCAT_ALT_1 [UMOL/KG]": "100.1",
+            "SILCAT_ALT_1 [UMOL/KG]_FLAG_W": "2",
+            "SILUNC_ALT_1 [UMOL/KG]": "1.0",
+        }
+    ]
+    merged = nc_placeholders.cchdo.merge_fq(fq)
+
+    assert_array_equal(
+        merged.silicate_alt_1.data, [[100.1, np.nan, np.nan, np.nan, np.nan, np.nan]]
+    )
+    assert_array_equal(
+        merged.silicate_alt_1_qc.data, [[2, np.nan, np.nan, np.nan, np.nan, np.nan]]
+    )
+    assert_array_equal(
+        merged.silicate_alt_1_error.data,
+        [[1.0, np.nan, np.nan, np.nan, np.nan, np.nan]],
+    )
+    assert_array_equal(
+        merged.silicate.data, [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
+    )
+    assert_array_equal(
+        merged.silicate_qc.data, [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
+    )
+    assert_array_equal(
+        merged.silicate_error.data, [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
+    )
