@@ -15,6 +15,7 @@ from cchdo.params import WHPName, WHPNames
 
 from .exchange import (
     FileType,
+    add_cdom_coordinate,
     all_same,
     extract_numeric_precisions,
     flatten_cdom_coordinate,
@@ -767,6 +768,7 @@ class CCHDOAccessor:
         # * Update history attribute...
         now = datetime.now(timezone.utc)
         new_obj = self._obj.copy(deep=True)
+        new_obj = flatten_cdom_coordinate(new_obj)
         idxer = WHPIndxer(new_obj)
 
         normalized_fq = normalize_fq(fq)
@@ -810,6 +812,7 @@ class CCHDOAccessor:
                     col_ref.attrs["date_metadata_modified"] = now.isoformat(
                         timespec="seconds"
                     )
+        new_obj = add_cdom_coordinate(new_obj)
         if check_flags:
             _check_flags(new_obj)
         return new_obj

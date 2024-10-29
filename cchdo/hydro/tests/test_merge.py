@@ -120,6 +120,36 @@ def test_fq_merge_flag_only(nc_placeholders):
     assert_array_equal(merged.oxygen_qc.data, [[np.nan, 1, 5, np.nan, 1, 3]])
 
 
+def test_fq_merge_cdom(nc_placeholders):
+    fq = [
+        {
+            "EXPOCODE": "TEST",
+            "STNNBR": "1",
+            "CASTNO": 1,
+            "SAMPNO": "36",
+            "CDOM300 [/METER]": "100.2",
+        }
+    ]
+    merged = nc_placeholders.cchdo.merge_fq(fq)
+    arr = np.full((6, 2), fill_value=np.nan)
+    arr[0][0] = 100.2
+    assert_array_equal(merged.cdom, [arr])
+
+    fq = [
+        {
+            "EXPOCODE": "TEST",
+            "STNNBR": "1",
+            "CASTNO": 1,
+            "SAMPNO": "36",
+            "CDOM325 [/METER]": "100.2",
+        }
+    ]
+    merged = nc_placeholders.cchdo.merge_fq(fq)
+    arr = np.full((6, 2), fill_value=np.nan)
+    arr[0][1] = 100.2
+    assert_array_equal(merged.cdom, [arr])
+
+
 def test_fq_merge_with_alt_params(nc_placeholders):
     fq = [
         {
