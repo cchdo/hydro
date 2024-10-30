@@ -201,7 +201,7 @@ def get_coards_global_attributes(ds: xr.Dataset, *, profile_type: Literal["B", "
     else:
         attrs["BOTTOM_DEPTH_METERS"] = FILL_VALUE
 
-    attrs["Creation_Time"] = datetime.datetime.now(tz=datetime.timezone.utc).strftime(
+    attrs["Creation_Time"] = datetime.datetime.now(tz=datetime.UTC).strftime(
         "%Y-%m-%dT%H:%M:%S.%fZ"
     )
 

@@ -2,7 +2,7 @@ import os
 import re
 import string
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from io import BufferedWriter, BytesIO
 from typing import Literal, NamedTuple
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -714,7 +714,7 @@ class CCHDOAccessor:
                 fname = ds1.cchdo.gen_fname(ftype="exchange")
 
                 output = []
-                output.append(f"CTD,{datetime.now(timezone.utc):%Y%m%d}CCHHYDRO")
+                output.append(f"CTD,{datetime.now(UTC):%Y%m%d}CCHHYDRO")
                 output.extend(self._get_comments())
 
                 params = ds1.cchdo.to_whp_columns()
@@ -732,7 +732,7 @@ class CCHDOAccessor:
             fname = self._obj.cchdo.gen_fname(ftype="exchange")
 
             output = []
-            output.append(f"BOTTLE,{datetime.now(timezone.utc):%Y%m%d}CCHHYDRO")
+            output.append(f"BOTTLE,{datetime.now(UTC):%Y%m%d}CCHHYDRO")
             output.extend(self._get_comments())
             params = self._obj.cchdo.to_whp_columns()
 
@@ -766,7 +766,7 @@ class CCHDOAccessor:
         # TODOs...
         # * (default True) restrict to open "slots" of non flag 9s
         # * Update history attribute...
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         new_obj = self._obj.copy(deep=True)
         new_obj = flatten_cdom_coordinate(new_obj)
         idxer = WHPIndxer(new_obj)
