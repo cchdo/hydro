@@ -1,4 +1,4 @@
-v1.0.2.12 (2024-10-??)
+v1.0.2.12 (2024-10-29)
 ======================
 * Add support for adding CDOM params/wavelengths
 * Add support for merging CDOM in merge_fq
