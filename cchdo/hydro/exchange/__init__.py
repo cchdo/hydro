@@ -1294,6 +1294,7 @@ def _load_raw_exchange(
     *,
     file_seperator: str | None = None,
     keep_seperator=True,
+    encoding="utf8",
 ) -> list[str]:
     if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
         log.info("Loading object over http")
@@ -1317,7 +1318,7 @@ def _load_raw_exchange(
     data: list[str] = []
 
     if file_seperator is not None:
-        data = data_raw.read().decode("utf8").strip().split(file_seperator)
+        data = data_raw.read().decode(encoding).strip().split(file_seperator)
         data = list(filter(lambda x: x != "", data))
 
         if keep_seperator:
@@ -1331,13 +1332,13 @@ def _load_raw_exchange(
             for zipinfo in zipfile.infolist():
                 log.debug("Reading %s", zipinfo)
                 try:
-                    data.append(zipfile.read(zipinfo).decode("utf8"))
+                    data.append(zipfile.read(zipinfo).decode(encoding))
                 except UnicodeDecodeError as error:
                     raise ExchangeEncodingError from error
     else:
         data_raw.seek(0)  # is_zipfile moves the "tell" position
         try:
-            data.append(data_raw.read().decode("utf8"))
+            data.append(data_raw.read().decode(encoding))
         except UnicodeDecodeError as error:
             raise ExchangeEncodingError from error
 
@@ -1366,6 +1367,7 @@ def read_csv(
     ftype: FileType | FileTypes = FileType.BOTTLE,
     checks: CheckOptions | None = None,
     precision_source="file",
+    encoding="utf8",
 ) -> xr.Dataset:
     ftype = FileType(ftype)
 
@@ -1377,6 +1379,7 @@ def read_csv(
         filename_or_obj,
         file_seperator="something_very_unliekly~~~",
         keep_seperator=False,
+        encoding=encoding,
     )
 
     if len(data) != 1:
@@ -1418,6 +1421,7 @@ def read_exchange(
     precision_source="file",
     file_seperator=None,
     keep_seperator=True,
+    encoding="utf8",
 ) -> xr.Dataset:
     """Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
     CF/netCDF structure"""
@@ -1429,7 +1433,10 @@ def read_exchange(
     log.debug(f"Check options: {_checks}")
 
     data = _load_raw_exchange(
-        filename_or_obj, file_seperator=file_seperator, keep_seperator=keep_seperator
+        filename_or_obj,
+        file_seperator=file_seperator,
+        keep_seperator=keep_seperator,
+        encoding=encoding,
     )
 
     log.info("Checking for BOM")

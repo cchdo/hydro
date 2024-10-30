@@ -237,3 +237,17 @@ def test_empty_string_data():
 
     assert "hplc_placeholder" in ex_xr.variables
     assert ex_xr.hplc_placeholder.values == [[""]]
+
+
+def test_alternate_encoding():
+    test_str = "Héllø Wörld"
+    raw = simple_bottle_exchange(comments=test_str).decode("utf8").encode("latin1")
+    with pytest.raises(ExchangeEncodingError):
+        ex_xr = read_exchange(io.BytesIO(raw))
+
+    with pytest.raises(ExchangeEncodingError):
+        ex_xr = read_exchange(io.BytesIO(raw), encoding="shift-jis")
+
+    ex_xr = read_exchange(io.BytesIO(raw), encoding="latin1")
+
+    assert ex_xr.comments == f"BOTTLE,test\n{test_str}"
