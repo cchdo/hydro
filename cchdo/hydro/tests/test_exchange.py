@@ -4,6 +4,7 @@ from importlib.resources import open_binary
 import numpy as np
 import pytest
 
+from cchdo.hydro import accessors  # noqa
 from cchdo.hydro.exchange import read_exchange
 from cchdo.hydro.exchange.exceptions import (
     ExchangeBOMError,
@@ -23,6 +24,24 @@ def test_btl_date_time():
     assert "bottle_time" in ex_xr.variables
     assert "bottle_date" not in ex_xr.variables
     assert ex_xr["bottle_time"].values == [[np.datetime64("2020-01-01T12:34")]]
+
+
+def test_btl_date_time_fill_round_trip():
+    raw = simple_bottle_exchange(
+        params=("BTL_DATE", "BTL_TIME"), units=("", ""), data=("-999", "-999")
+    )
+    ex_xr = read_exchange(io.BytesIO(raw))
+
+    assert "bottle_time" in ex_xr.variables
+    np.testing.assert_array_equal(ex_xr["bottle_time"].values, [[np.datetime64("nat")]])
+
+    # test the round trip
+    ex = ex_xr.cchdo.to_exchange()
+    assert b"nan" not in ex
+    ex_xr_rt = read_exchange(io.BytesIO(ex))
+    np.testing.assert_array_equal(
+        ex_xr_rt["bottle_time"].values, [[np.datetime64("nat")]]
+    )
 
 
 def test_btl_date_time_missing_warn():

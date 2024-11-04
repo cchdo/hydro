@@ -1137,7 +1137,8 @@ def _combine_dt_ndarray(
     if time_pad:
         if np.any(np.char.str_len(time_arr[time_arr != ""]) < 4):
             warn("Time values are being padded with zeros")
-        time_arr[time_arr != ""] = np.char.zfill(time_arr[time_arr != ""], 4)
+        if not np.all(time_arr == ""):
+            time_arr[time_arr != ""] = np.char.zfill(time_arr[time_arr != ""], 4)
 
     arr = np.char.add(np.char.add(date_arr, "T"), time_arr)
     return parse_datetime(arr).astype("datetime64[m]")

@@ -1,3 +1,8 @@
+v1.0.2.13 (2024-11-??)
+======================
+* Support specifying the text encoding of the input exchange file
+* (Bug) Fix fill values in bottle date/time being printed as nan in generated exchange files
+
 v1.0.2.12 (2024-10-29)
 ======================
 * Add support for adding CDOM params/wavelengths

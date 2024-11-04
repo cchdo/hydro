@@ -575,16 +575,16 @@ class CCHDOAccessor:
             # TODO, deal with missing time in BTL_DATE
             if param in self.date_names:
                 date_or_time = "date"
-                values = da[valid_levels].dt.strftime("%Y%m%d").to_numpy().tolist()
+                mask = da[valid_levels].isnull()
+                values = da[valid_levels].dt.strftime("%Y%m%d").to_numpy()
+                values[mask] = "-999"
+                values = values.tolist()
             elif param in self.time_names:
                 date_or_time = "time"
-                values = (
-                    da[valid_levels]
-                    .dt.round("min")
-                    .dt.strftime("%H%M")
-                    .to_numpy()
-                    .tolist()
-                )
+                mask = da[valid_levels].isnull()
+                values = da[valid_levels].dt.round("min").dt.strftime("%H%M").to_numpy()
+                values[mask] = "-999"
+                values = values.tolist()
             else:
                 if da.dtype.char == "m":
                     nat_mask = np.isnat(da)
