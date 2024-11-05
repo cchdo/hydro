@@ -192,9 +192,9 @@ def _get_params(
         )
 
     if not (params.keys() >= flags.keys()):
-        raise ValueError("Some flags not in params")
+        raise ValueError(f"Some flags not in params: {flags.keys() - params.keys()}")
     if not (params.keys() >= errors.keys()):
-        raise ValueError("Some errors not in params")
+        raise ValueError(f"Some errors not in params: {errors.keys() - params.keys()}")
 
     for flag in flags:
         if flag.flag_w == "no_flags":
