@@ -4,7 +4,7 @@ import string
 from collections import defaultdict
 from datetime import UTC, datetime
 from io import BufferedWriter, BytesIO
-from typing import Literal, NamedTuple
+from typing import Any, Literal, NamedTuple
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import numpy as np
@@ -134,6 +134,98 @@ FTypeOptions = Literal["cf", "exchange", "coards", "woce"]
 class CCHDOAccessor:
     def __init__(self, xarray_obj: xr.Dataset):
         self._obj = xarray_obj
+
+    def jsonld(self) -> dict:
+        # we are going to mess with it a little
+        obj = self._obj.copy()
+
+        import gsw
+
+        DEPTH = WHPNames["CTDDEPTH [METERS]"]
+
+        base_schema: dict[str, Any] = {
+            "@context": {"@vocab": "https://schema.org/"},
+            "@id": f"{obj.expocode[0].item()}_bottle",  # what would this actually be?
+            "@type": "Dataset",
+        }
+        variableMeasured = []
+        NS_TO_S = 1000000000
+
+        # Inject calcualted depth if not already present
+        if DEPTH.full_nc_name not in obj.variables:
+            obj[DEPTH.full_nc_name] = xr.DataArray(
+                -gsw.z_from_p(obj.pressure, obj.latitude),
+                attrs={"standard_name": "depth", "units": "meters"},
+                dims=("N_PROF", "N_LEVELS"),
+            )
+        minx, maxx, miny, maxy, maxz = None, None, None, None, None
+        for var, da in obj.variables.items():
+            if "standard_name" not in da.attrs:
+                continue
+            standard_name = da.attrs["standard_name"]
+
+            if standard_name == "status_flag":
+                continue
+            variableMeasuredDict = {
+                "@type": "PropertyValue",
+                "name": var,
+                "propertyID": f"http://vocab.nerc.ac.uk/standard_name/{standard_name}",
+            }
+            if "units" in da.attrs:
+                variableMeasuredDict["unitText"] = da.attrs["units"]
+
+            # min/max calculations
+            min_v = np.nanmin(da.values).item()
+            max_v = np.nanmax(da.values).item()
+
+            # special case time to make it a unix UNIX timestamp... units are ???
+            if standard_name == "time":
+                min_v = min_v // NS_TO_S
+                max_v = max_v // NS_TO_S
+
+            # special case longitude so that "min" and "max" are always westernmost and easternmost
+            if standard_name == "longitude" and max_v - min_v > 180:
+                max_v = np.nanmax(da.values, where=da.values < 0, initial=-180)
+                min_v = np.nanmin(da.values, where=da.values > 0, initial=180)
+            if not np.isnan(min_v):
+                variableMeasuredDict["minValue"] = min_v
+            if not np.isnan(max_v):
+                variableMeasuredDict["maxValue"] = max_v
+            # if include_description and (sname := CFStandardNames.get(standard_name)) is not None:
+            #    variableMeasuredDict["description"] = sname.description
+
+            if standard_name == "longitude":
+                minx = min_v
+                maxx = max_v
+            if standard_name == "latitude":
+                miny = min_v
+                maxy = max_v
+            if standard_name == "depth":
+                maxz = max_v
+
+            variableMeasured.append(variableMeasuredDict)
+        if (
+            minx is not None
+            and maxx is not None
+            and miny is not None
+            and maxy is not None
+            and maxz is not None
+        ):
+            base_schema["spatial_coverage"] = {
+                "@type": "Place",
+                "geo": {
+                    "@type": "GeoShape",
+                    "box": f"{miny} {minx} {maxy} {maxx}",
+                    "elevation": -int(maxz),
+                },
+            }
+
+        dtstart = np.min(obj.time).dt.strftime("%Y-%m-%d").item()
+        dtend = np.max(obj.time).dt.strftime("%Y-%m-%d").item()
+        base_schema["temporalCoverage"] = f"{dtstart}/{dtend}"
+
+        base_schema["variableMeasured"] = variableMeasured
+        return base_schema  # TODO pydantic models?
 
     def to_mat(self, fname):
         """Experimental Matlab .mat data file generator.

@@ -42,6 +42,9 @@ netcdf = [
     "netCDF4>=1.5.7",
     "scipy",
 ]
+schema = [
+    "gsw",
+]
 selftest = [
     "cchdo.hydro[netcdf]",
     "pytest",
@@ -72,7 +75,7 @@ cli = [
     "rich",
 ]
 complete = [
-    "cchdo.hydro[cli,docs,dev]"
+    "cchdo.hydro[cli,docs,dev,schema]"
 ]
 
 [tool.mypy]
