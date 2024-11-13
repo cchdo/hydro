@@ -10,7 +10,8 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  lint:
+    name: Lint and Style
 
     runs-on: ubuntu-latest
 
@@ -32,14 +33,50 @@ jobs:
     - name: Test code style with ruff
       run: |
         ruff format --check
+
+  pytest:
+    name: Pytest
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+        cache-dependency-path: setup.py
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[complete]
     - name: Test with pytest
       run: |
         pytest --cov-report xml --cov=cchdo
-    - name: Test typing
-      run: |
-        mypy --namespace-packages --explicit-package-bases cchdo
     - name: Upload coverage to Coveralls
       uses: coverallsapp/github-action@v2.3.0
       continue-on-error: true
       with:
         file: ./coverage.xml
+
+  typing:
+    name: Typing with mypy
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+        cache-dependency-path: setup.py
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[complete]
+    - name: Test typing
+      run: |
+        mypy --namespace-packages --explicit-package-bases cchdo
