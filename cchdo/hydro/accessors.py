@@ -211,7 +211,7 @@ class CCHDOAccessor:
             and maxy is not None
             and maxz is not None
         ):
-            base_schema["spatial_coverage"] = {
+            base_schema["spatialCoverage"] = {
                 "@type": "Place",
                 "geo": {
                     "@type": "GeoShape",
