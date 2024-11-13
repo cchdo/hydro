@@ -90,6 +90,7 @@ module = [
     "netCDF4.*",
     "cftime.*",
     "cchdo.auth.*",
+    "gsw.*",
 ]
 ignore_missing_imports = true
 
