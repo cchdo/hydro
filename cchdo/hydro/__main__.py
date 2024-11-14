@@ -243,7 +243,7 @@ def status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_coun
                         ]
                     )
                 except KeyError:
-                    continue
+                    crs = "<span>Not Attached</span>"
                 except IndexError:
                     log.critical(metadata["cruises"])
                     raise
