@@ -155,7 +155,7 @@ class CCHDOAccessor:
         if DEPTH.full_nc_name not in obj.variables:
             obj[DEPTH.full_nc_name] = xr.DataArray(
                 -gsw.z_from_p(obj.pressure, obj.latitude),
-                attrs={"standard_name": "depth", "units": "meters"},
+                attrs={"standard_name": "depth", "units": "m"},
                 dims=("N_PROF", "N_LEVELS"),
             )
         minx, maxx, miny, maxy, maxz = None, None, None, None, None
