@@ -1,5 +1,6 @@
 import os
 import warnings
+from base64 import b64encode
 
 import xarray as xr
 
@@ -10,6 +11,15 @@ from cchdo.hydro.exchange.exceptions import (
     ExchangeParameterUndefError,
 )
 from cchdo.params import WHPNames
+
+
+def make_netcdf_file_json(path):
+    with open(path, "rb") as f:
+        return {
+            "name": "netcdf.nc",  # not important isn't used
+            "type": "application/x-netcdf",
+            "body": b64encode(f.read()).decode("utf8"),
+        }
 
 
 def p_file(file_m):
