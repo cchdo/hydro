@@ -2,6 +2,7 @@ import json
 import logging
 import shutil
 from collections import Counter
+from hashlib import sha256
 from html import escape
 from multiprocessing import Pool
 from pathlib import Path
@@ -12,6 +13,8 @@ import numpy as np
 import xarray as xr
 from rich.logging import RichHandler
 from rich.progress import track
+
+from . import __main_helpers as mh
 
 log = logging.getLogger(__name__)
 
@@ -107,7 +110,7 @@ def convert_csv(csv_path, out_path, ftype, check_flag, precision_source, comment
 def edit(): ...
 
 
-@edit.command()
+@edit.command(hidden=True)
 @click.argument("expocode")
 @click.argument("dtype")
 def edit_comments(expocode, dtype):
@@ -154,8 +157,35 @@ def edit_comments(expocode, dtype):
     if comments is None:
         raise click.Abort
 
+    old_file_id = file["id"]
+    old_cruises = file["cruises"]
+    new_file = file
+    new_file["file_path"] = ""
+    new_file["events"] = []
+    new_file["submissions"] = []
+    del new_file["cruises"]
+    del new_file["id"]
+
     ds.attrs["comments"] = comments
-    ds.to_netcdf("out.nc")
+    with TemporaryDirectory() as td:
+        temp_nc = td + "/out.nc"
+        ds.to_netcdf(temp_nc)
+        new_file["file"] = mh.make_netcdf_file_json(temp_nc)
+        new_file["file"]["name"] = new_file["file_name"]
+        with open(temp_nc, "rb") as f:
+            new_file["file_hash"] = sha256(f.read()).hexdigest()
+            new_file["file_size"] = f.tell()
+
+    patch = [{"op": "replace", "path": "/role", "value": "merged"}]
+
+    replacement = s.post("https://cchdo.ucsd.edu/api/v1/file", json=new_file)
+    print(replacement.json())
+
+    id_ = replacement.json()["message"].split("/")[-1]
+    for cruise in old_cruises:
+        print(s.post(f"https://cchdo.ucsd.edu/api/v1/cruise/{cruise}/files/{id_}"))
+
+    s.patch(f"https://cchdo.ucsd.edu/api/v1/file/{old_file_id}", json=patch)
 
 
 @click.group()
@@ -202,9 +232,6 @@ def cached_file_loader(file):
         log.debug(f"Written to {file_dest}")
 
     return file_dest
-
-
-from . import __main_helpers as mh
 
 
 def vars_with_value(ds: xr.Dataset) -> list[str]:
