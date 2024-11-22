@@ -77,9 +77,7 @@ WATER_SAMPLE_FLAGS = {
 
 def flag_description(flag_map):
     return ":".join(
-        [":"]
-        + ["%d = %s" % (i + 1, flag_map[i + 1]) for i in range(len(flag_map))]
-        + ["\n"]
+        [":"] + [f"{flag} = {value}" for flag, value in flag_map.items()] + ["\n"]
     )
 
 
@@ -87,14 +85,7 @@ BOTTLE_FLAG_DESCRIPTION = flag_description(BOTTLE_FLAGS)
 
 CTD_FLAG_DESCRIPTION = flag_description(CTD_FLAGS)
 
-WATER_SAMPLE_FLAG_DESCRIPTION = ":".join(
-    [":"]
-    + [
-        "%d = %s" % (i + 1, WATER_SAMPLE_FLAGS[i + 1])
-        for i in range(len(WATER_SAMPLE_FLAGS))
-    ]
-    + ["\n"]
-)
+WATER_SAMPLE_FLAG_DESCRIPTION = flag_description(WATER_SAMPLE_FLAGS)
 
 _UNWRITTEN_COLUMNS = [
     "EXPOCODE",
@@ -286,38 +277,6 @@ def write_data(ds, columns, base_format):
     record4 = base_format.format(*truncate_row(all_asters))
 
     data_lines = []
-    # for i in range(ds.dims["N_LEVELS"]):
-    #    values = []
-    #    flags = []
-    #    for column in columns:
-    #        format_str = column.attrs.get("cchdo.hydro._format", "%8.f")
-    #        try:
-    #            formatted_value = format_str % column[i].item()
-    #            formatted_value = format_str % FILL_VALUE
-    #        except TypeError:
-    #            formatted_value = column[i]
-    #            #log.warn(u'Invalid WOCE format for {0} to {1!r}. '
-    #            #    'Treating as string.'.format(
-    #            #    column.parameter, formatted_value))
-
-    #        if len(formatted_value) > COLUMN_WIDTH:
-    #            extra = len(formatted_value) - COLUMN_WIDTH
-    #            leading_extra = formatted_value[:extra]
-    #            if len(leading_extra.strip()) == 0:
-    #                formatted_value = formatted_value[extra:]
-    #            else:
-    #                old_value = formatted_value
-    #                formatted_value = formatted_value[:-extra]
-    #            #    log.warn(u'Truncated {0!r} to {1} for {2} '
-    #            #             'row {3}'.format(old_value, formatted_value,
-    #            #                              column.parameter.name, i))
-
-    #        values.append(formatted_value)
-    #        #if acc.FLAG_NAME in column.attrs:
-    #        #    flags.append(str(column.attrs[acc.FLAG_NAME][i]))
-
-    #    values.append("".join(flags))
-    #    data_lines.append(base_format.format(*values))
 
     data = []
     flags = []
@@ -342,8 +301,8 @@ def write_data(ds, columns, base_format):
             flags.append(
                 list(
                     map(
-                        lambda x: "%1i" % x,
-                        column.attrs[acc.FLAG_NAME].fillna(9).to_numpy(),
+                        lambda x: f"{x:1d}",
+                        column.attrs[acc.FLAG_NAME].fillna(9).to_numpy().astype(int),
                     )
                 )
             )
