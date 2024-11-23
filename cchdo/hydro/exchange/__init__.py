@@ -85,6 +85,11 @@ COORDS = [
     CTDPRS,
 ]
 
+SENTINEL_PREFIX = "__SENTINEL"
+SENTINEL_PARAM = WHPName(
+    SENTINEL_PREFIX, SENTINEL_PREFIX, SENTINEL_PREFIX, -1, "string", False, 0
+)
+
 FLAG_SCHEME: dict[str, type[ExchangeFlag]] = {
     "woce_bottle": ExchangeBottleFlag,
     "woce_discrete": ExchangeSampleFlag,
@@ -155,7 +160,7 @@ def _transform_whp_to_csv(params: list[str], units: list[str]) -> list[str]:
 
 
 def _get_params(
-    params_units: Iterable[str],
+    params_units: Iterable[str], ignore_params: Iterable[str] | None = None
 ) -> tuple[WHPNameIndex, WHPNameIndex, WHPNameIndex]:
     params: WHPNameIndex = {}
     flags: WHPNameIndex = {}
@@ -164,7 +169,13 @@ def _get_params(
     duplicate_errors = []
     unknown_errors = []
 
+    if ignore_params is None:
+        ignore_params = ()
+
     for index, param in enumerate(params_units):
+        if param.startswith("__SENTINEL") or param in ignore_params:
+            continue
+
         try:
             whpname = WHPNames[param]
         except KeyError:
@@ -791,6 +802,7 @@ class _ExchangeInfo:
     post_data_slice: slice
     _raw_lines: tuple[str, ...] = dataclasses.field(repr=False)
     _ctd_override: bool = False
+    _ignore_columns: Iterable[str] = ()
 
     @property
     def stamp(self):
@@ -885,7 +897,7 @@ class _ExchangeInfo:
             params_units = self.params
         else:
             params_units = _transform_whp_to_csv(self.params, self.units)
-        params_idx, flags, errors = _get_params(params_units)
+        params_idx, flags, errors = _get_params(params_units, self._ignore_columns)
 
         if any(self.ctd_headers) or self._ctd_override:
             params_idx[SAMPNO] = params_idx[CTDPRS]
@@ -986,7 +998,7 @@ class _ExchangeInfo:
         )
 
     @classmethod
-    def from_lines(cls, lines: tuple[str, ...], ftype: FileType):
+    def from_lines(cls, lines: tuple[str, ...], ftype: FileType, ignore_columns):
         """Figure out the line numbers/indicies of the parts of the exchange file"""
         stamp = 0  # file stamp is always the first line of a valid exchange
         comments_start = 1
@@ -1074,6 +1086,7 @@ class _ExchangeInfo:
             data_slice=slice(data_start, data_end),
             post_data_slice=slice(post_data_start, post_data_end),
             _raw_lines=lines,
+            _ignore_columns=ignore_columns,
         )
 
 
@@ -1369,12 +1382,16 @@ def read_csv(
     checks: CheckOptions | None = None,
     precision_source="file",
     encoding="utf8",
+    ignore_columns: Iterable[str] | None = None,
 ) -> xr.Dataset:
     ftype = FileType(ftype)
 
     _checks: CheckOptions = {"flags": True}
     if checks is not None:
         _checks.update(checks)
+
+    if ignore_columns is None:
+        ignore_columns = ()
 
     data = _load_raw_exchange(
         filename_or_obj,
@@ -1390,8 +1407,14 @@ def read_csv(
 
     params_units = splitdata[0]
     whp_params: list[WHPName] = []
+
+    sentinel_count = 0
     for name in params_units.split(","):
-        whp_params.append(WHPNames[name])
+        if name in ignore_columns:
+            whp_params.append(SENTINEL_PARAM.as_depth(sentinel_count))
+            sentinel_count += 1
+        else:
+            whp_params.append(WHPNames[name])
 
     params_units_list = [name.odv_key for name in whp_params]
 
@@ -1423,6 +1446,7 @@ def read_exchange(
     file_seperator=None,
     keep_seperator=True,
     encoding="utf8",
+    ignore_columns: Iterable[str] | None = None,
 ) -> xr.Dataset:
     """Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
     CF/netCDF structure"""
@@ -1458,7 +1482,9 @@ def read_exchange(
     log.info("Found filetype: %s", ftype.name)
 
     exchange_data = [
-        _ExchangeInfo.from_lines(tuple(df.splitlines()), ftype=ftype).finalize(
+        _ExchangeInfo.from_lines(
+            tuple(df.splitlines()), ftype=ftype, ignore_columns=ignore_columns
+        ).finalize(
             fill_values=fill_values,
             precision_source=precision_source,
         )
