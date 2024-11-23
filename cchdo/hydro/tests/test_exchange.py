@@ -173,6 +173,13 @@ def test_multiple_unknown_params():
     assert execinfo.value.error_data == ["TEST1 [TEST3]", "TEST2 [TEST4]"]
 
 
+def test_multiple_unknown_params_ignore():
+    raw = simple_bottle_exchange(
+        params=("TEST1", "TEST2"), units=("TEST3", "TEST4"), data=("-999", "-999")
+    )
+    read_exchange(io.BytesIO(raw), ignore_columns=("TEST1 [TEST3]", "TEST2 [TEST4]"))
+
+
 def test_alternate_params():
     raw = simple_bottle_exchange(
         params=("CTDTMP", "CTDTMP_ALT_1"),
