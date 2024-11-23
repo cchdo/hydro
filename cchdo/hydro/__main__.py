@@ -251,7 +251,10 @@ def vars_with_value(ds: xr.Dataset) -> list[str]:
 @click.option("--dump-unknown-params", is_flag=True)
 @click.option("-v", "--verbose", count=True)
 @click.option("--dump-data-counts", is_flag=True)
-def status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_counts):
+@click.option("--roundtrip", is_flag=True)
+def status_exchange(
+    dtype, out_dir, dump_unknown_params, verbose, dump_data_counts, roundtrip
+):
     """Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset."""
     from cchdo.hydro import __version__ as hydro_version
     from cchdo.params import __version__ as params_version
@@ -276,7 +279,7 @@ def status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_coun
         with Pool() as pool:
             for result in track(
                 pool.imap_unordered(
-                    mh.p_file, [(temp_dir, f[0], f[1]) for f in file_paths]
+                    mh.p_file, [(temp_dir, f[0], f[1], roundtrip) for f in file_paths]
                 ),
                 total=len(file_paths),
                 description="Converting ex to netCDF",

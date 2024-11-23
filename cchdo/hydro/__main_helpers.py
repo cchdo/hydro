@@ -23,7 +23,7 @@ def make_netcdf_file_json(path):
 
 
 def p_file(file_m):
-    t_dir, file, file_metadata = file_m
+    t_dir, file, file_metadata, roundtrip = file_m
     checks = {"flags": False}
     unknown_params = []
 
@@ -56,6 +56,27 @@ def p_file(file_m):
 
     to_path = os.path.join(t_dir, f"{file_metadata['id']}_{ex_xr.cchdo.gen_fname()}")
     ex_xr.to_netcdf(to_path)
+    if roundtrip:
+        ds = xr.load_dataset(to_path)
+        try:
+            ex = ds.cchdo.to_exchange()
+        except ValueError as err:
+            return (
+                500,
+                f"Roundtrip back to exchange: {err!r}",
+                file_metadata,
+                unknown_params,
+            )
+        try:
+            ex_xr = read_exchange(ex, checks=checks)
+        except ValueError as err:
+            return (
+                500,
+                f"Roundtrip back to and from exchange: {err!r}",
+                file_metadata,
+                unknown_params,
+            )
+
     return (200, to_path, file_metadata, unknown_params)
 
 
