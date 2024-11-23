@@ -180,6 +180,15 @@ def test_multiple_unknown_params_ignore():
     read_exchange(io.BytesIO(raw), ignore_columns=("TEST1 [TEST3]", "TEST2 [TEST4]"))
 
 
+def test_multiple_unknown_params_flag():
+    raw = simple_bottle_exchange(
+        params=("OXYGEN", "OXYGEN_FLAG_W"), units=("UMOL/KG", ""), data=("-999", "2")
+    )
+    # The flag input above is intentionally invalid, this should ignore that
+    ex = read_exchange(io.BytesIO(raw), ignore_columns=("OXYGEN [UMOL/KG]_FLAG_W",))
+    assert "oxygen_qc" not in ex
+
+
 def test_alternate_params():
     raw = simple_bottle_exchange(
         params=("CTDTMP", "CTDTMP_ALT_1"),
