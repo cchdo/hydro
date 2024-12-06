@@ -67,6 +67,7 @@ docs = [
     "sphinx-design",
     "sphinx-autoapi",
     "nbsphinx",
+    "myst-parser",
 ]
 cli = [
     "cchdo.hydro[netcdf]",

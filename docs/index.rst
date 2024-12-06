@@ -10,6 +10,7 @@ Welcome to hydro's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   getting_started
    format_spec
    attributes
    erddap
