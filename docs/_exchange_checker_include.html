@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-<script defer src="https://pyscript.net/latest/pyscript.js"></script>
+<link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css">
+<script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
 
 <p>
     cchdo.hydro version: <span id="hydro_version"></span><br />
@@ -10,16 +10,18 @@
 <h4>Options</h4>
 <label><input id="checks_flags" type="checkbox" checked> Check Flags</label>
 <p>
-<button class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" id="process_exchange" py-click="_process_exchange()">Process Exchange</button>
+<button class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" id="process_exchange" py-click="_process_exchange">Process Exchange</button>
 </p>
 <p>
 <div id='output'>
     <span id="status"></span>
     <br />
 </div>
-<py-script>
+<script>
+    addEventListener('py:ready', () => console.log("done"));
+</script>
+<script type="py">
     from js import document, console, window, Uint8Array, Blob
-    from pyodide.ffi import create_proxy
     import asyncio
     import io
     import traceback
@@ -30,8 +32,8 @@
     from cchdo.hydro import __version__ as hydro_version
     from cchdo.params import __version__ as params_version
 
-    Element("hydro_version").element.innerText = hydro_version
-    Element("params_version").element.innerText = params_version
+    document.querySelector("#hydro_version").innerText = hydro_version
+    document.querySelector("#params_version").innerText = params_version
 
     import logging
     import sys
@@ -62,8 +64,8 @@
     async def to_xarray_callback(arg):
         bytes = bytearray(Uint8Array.new(arg))
         ex_bytes = io.BytesIO(bytes)
-        status = Element("status")
-        check_flags = Element("checks_flags").element.checked
+        status = document.querySelector("#status")
+        check_flags = document.querySelector("#checks_flags").checked
         checks = {
           "flags": check_flags
         }
@@ -71,10 +73,10 @@
             ex = await load_ex_bytes(ex_bytes, checks=checks)
         except ValueError as er:
             traceback.print_exception(er)
-            status.element.innerText = f"Failure see traceback..."
-            Element("process_exchange").element.disabled = False
+            status.innerText = f"Failure see traceback..."
+            document.querySelector("#process_exchange").disabled = False
             return
-        status.element.innerText = f"Success, generating files"
+        status.innerText = f"Success, generating files"
         await asyncio.sleep(0.1)
         try:
             nc = await to_netcdf(ex)
@@ -85,12 +87,12 @@
             nc_fname = ex.cchdo.gen_fname()
             nc_download_link.download = nc_fname
             nc_download_link.innerText = f"Download CF/netCDF: {nc_fname}"
-            output = Element("output")
-            output.element.appendChild(nc_download_link)
-            output.element.appendChild(document.createElement("br"))
+            output = document.querySelector("#output")
+            output.appendChild(nc_download_link)
+            output.appendChild(document.createElement("br"))
              
         except Exception as er:
-            status.element.innerText = f"Could not generate CF/netCDF"
+            status.innerText = f"Could not generate CF/netCDF"
 
         await asyncio.sleep(0.1)
         #status.element.innerText = f"Generating COARDS netCDF (very slow)"
@@ -111,7 +113,7 @@
         #    status.element.innerText = f"Could not generate COARDS netCDF"
 
         await asyncio.sleep(0.1)
-        status.element.innerText = f"Generating WOCE Files"
+        status.innerText = f"Generating WOCE Files"
         await asyncio.sleep(0.1)
         try:
             woce = await to_woce(ex)
@@ -121,11 +123,11 @@
             woce_download_link.href = woce_url
             woce_download_link.download = "woce_output.txt"
             woce_download_link.innerText = "Download Woce (might be txt or zip)"
-            output = Element("output")
-            output.element.appendChild(woce_download_link)
-            output.element.appendChild(document.createElement("br"))
+            output = document.querySelector("#output")
+            output.appendChild(woce_download_link)
+            output.appendChild(document.createElement("br"))
         except:
-            status.element.innerText = f"Could not generate WOCE"
+            status.innerText = f"Could not generate WOCE"
 
         await asyncio.sleep(0.1)
         try:
@@ -136,36 +138,31 @@
             summary_download_link.href = summary_url
             summary_download_link.download = "woce_sum.txt"
             summary_download_link.innerText = "Download Woce Sumfile"
-            output = Element("output")
-            output.element.appendChild(summary_download_link)
-            output.element.appendChild(document.createElement("br"))
+            output = document.querySelector("#output")
+            output.appendChild(summary_download_link)
+            output.appendChild(document.createElement("br"))
         except:
-            status.element.innerText = f"Could not generate WOCE"
+            status.innerText = f"Could not generate WOCE"
 
-        Element("process_exchange").element.disabled = False
-        status.element.innerText = "File Generation Complete"
+        document.querySelector("#process_exchange").disabled = False
+        status.innerText = "File Generation Complete"
 
-    def _process_exchange():
-        Element("process_exchange").element.disabled = True
+    def _process_exchange(*args):
+        document.querySelector("#process_exchange").disabled = True
         try:
-            status = Element("status")
-            status.element.innerText = "Processing..."
-            file_list = Element("ex_file").element.files
+            status = document.querySelector("#status")
+            status.innerText = "Processing..."
+            file_list = document.querySelector("#ex_file").files
             first_item = file_list.item(0)
 
             first_item.arrayBuffer().then(to_xarray_callback)
         except:
-            status.element.innerText = "Error, was a file picked?"
-            Element("process_exchange").element.disabled = False
+            status.innerText = "Error, was a file picked?"
+            document.querySelector("#process_exchange").disabled = False
 
-</py-script>
+</script>
 <h4>Python Log Console</h4>
 <py-terminal true></py-terminal>
 <py-config type="toml">
 packages = ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4"]
-
-[[interpreters]]
-src = "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"
-name = "pyodide-0.26.2"
-lang = "python"
 </py-config>
