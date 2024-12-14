@@ -18,7 +18,7 @@
 <h4>Options</h4>
 <label><input id="checks_flags" type="checkbox" checked> Check Flags</label>
 <p>
-<button class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" id="process_exchange" py-click="_process_exchange" enabled="False">Process Exchange</button>
+<button class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-primary reference internal" id="process_exchange">Process Exchange</button>
 </p>
 <p>
 <div id='output'>
@@ -32,12 +32,12 @@
 </code>
 </div>
 </div>
-<script type="py" src="./_static/convert_exchange.py" service-worker="./_static/sw.js" worker name="my-worker" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4"]}'></script>
-<script type="py" src="./_static/derrived_makers.py" service-worker="./_static/sw.js" worker name="derived1" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4" ]}'></script>
-<script type="py" src="./_static/derrived_makers.py" service-worker="./_static/sw.js" worker name="derived2" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4" ]}'></script>
-<script type="py" src="./_static/derrived_makers.py" service-worker="./_static/sw.js" worker name="derived3" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4" ]}'></script>
+<script type="py" src="./_static/convert_exchange.py" service-worker="./sw.js" worker name="my-worker" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4"]}'></script>
+<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived1" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4" ]}'></script>
+<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived2" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4" ]}'></script>
+<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived3" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4" ]}'></script>
 <script type="py">
-    from pyscript import workers, display
+    from pyscript import workers, display, when
     from js import document, console, window, Uint8Array, Blob
     import json
 
@@ -98,6 +98,7 @@
         status.innerText = f"Failure see traceback..."
         document.querySelector("#process_exchange").disabled = False
 
+    @when("click", "#process_exchange")
     def _process_exchange(*args):
         document.querySelector("#process_exchange").disabled = True
         try:
