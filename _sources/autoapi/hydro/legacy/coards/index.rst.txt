@@ -41,6 +41,7 @@ Functions
 
 .. autoapisummary::
 
+   hydro.legacy.coards.bytes_via_temp
    hydro.legacy.coards.strftime_woce_date_time
    hydro.legacy.coards._ascii
    hydro.legacy.coards.simplest_str
@@ -146,6 +147,8 @@ Package Contents
 
    length of char array variables, hardcoded to 40
 
+
+.. py:function:: bytes_via_temp(xr)
 
 .. py:function:: strftime_woce_date_time(dt)
 

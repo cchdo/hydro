@@ -358,40 +358,43 @@
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.strftime_woce_date_time" title="hydro.legacy.coards.strftime_woce_date_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strftime_woce_date_time</span></code></a>(dt)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.bytes_via_temp" title="hydro.legacy.coards.bytes_via_temp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes_via_temp</span></code></a>(xr)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.strftime_woce_date_time" title="hydro.legacy.coards.strftime_woce_date_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strftime_woce_date_time</span></code></a>(dt)</p></td>
 <td><p>Take an xr.DataArray with time values in it and convert to strings.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards._ascii" title="hydro.legacy.coards._ascii"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ascii</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards._ascii" title="hydro.legacy.coards._ascii"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ascii</span></code></a>(x)</p></td>
 <td><p>Force all codepoints into valid ascii range.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.simplest_str" title="hydro.legacy.coards.simplest_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simplest_str</span></code></a>(s)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.simplest_str" title="hydro.legacy.coards.simplest_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simplest_str</span></code></a>(s)</p></td>
 <td><p>Give the simplest string representation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards._pad_station_cast" title="hydro.legacy.coards._pad_station_cast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pad_station_cast</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards._pad_station_cast" title="hydro.legacy.coards._pad_station_cast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pad_station_cast</span></code></a>(x)</p></td>
 <td><p>Pad a station or cast identifier out to 5 characters.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_filename" title="hydro.legacy.coards.get_filename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_filename</span></code></a>(expocode, station, cast, extension)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_filename" title="hydro.legacy.coards.get_filename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_filename</span></code></a>(expocode, station, cast, extension)</p></td>
 <td><p>Generate the filename for COARDS netCDF files.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.minutes_since_epoch" title="hydro.legacy.coards.minutes_since_epoch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">minutes_since_epoch</span></code></a>(dt, epoch[, error])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.minutes_since_epoch" title="hydro.legacy.coards.minutes_since_epoch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">minutes_since_epoch</span></code></a>(dt, epoch[, error])</p></td>
 <td><p>Make the time value for netCDF files.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_coards_global_attributes" title="hydro.legacy.coards.get_coards_global_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coards_global_attributes</span></code></a>(ds, *, profile_type)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_coards_global_attributes" title="hydro.legacy.coards.get_coards_global_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coards_global_attributes</span></code></a>(ds, *, profile_type)</p></td>
 <td><p>Makes the global attributes of a WHP COARDS netCDF File.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_dataarrays" title="hydro.legacy.coards.get_dataarrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataarrays</span></code></a>(ds)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_dataarrays" title="hydro.legacy.coards.get_dataarrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataarrays</span></code></a>(ds)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_common_variables" title="hydro.legacy.coards.get_common_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_common_variables</span></code></a>(ds)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_common_variables" title="hydro.legacy.coards.get_common_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_common_variables</span></code></a>(ds)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.write_bottle" title="hydro.legacy.coards.write_bottle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_bottle</span></code></a>(ds)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.write_bottle" title="hydro.legacy.coards.write_bottle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_bottle</span></code></a>(ds)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.write_ctd" title="hydro.legacy.coards.write_ctd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_ctd</span></code></a>(ds)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.write_ctd" title="hydro.legacy.coards.write_ctd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_ctd</span></code></a>(ds)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.to_coards" title="hydro.legacy.coards.to_coards"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_coards</span></code></a>(ds)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.to_coards" title="hydro.legacy.coards.to_coards"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_coards</span></code></a>(ds)</p></td>
 <td><p>Convert an xr.Dataset to a zipfile with COARDS netCDF files inside.</p></td>
 </tr>
 </tbody>
@@ -478,6 +481,19 @@
 <dt class="sig sig-object py" id="hydro.legacy.coards.STRLEN">
 <span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">STRLEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">40</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#STRLEN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.STRLEN" title="Link to this definition">¶</a></dt>
 <dd><p>length of char array variables, hardcoded to 40</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.bytes_via_temp">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">bytes_via_temp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#bytes_via_temp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.bytes_via_temp" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>xr</strong> (<em>bytes_via_temp.xr</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.13)">bytes</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -710,6 +726,7 @@ Not sure if cftime exsited in the netCDF4 python library at the time.</p>
 <li><a class="reference internal" href="#hydro.legacy.coards.UNKNOWN"><code class="docutils literal notranslate"><span class="pre">UNKNOWN</span></code></a></li>
 <li><a class="reference internal" href="#hydro.legacy.coards.UNSPECIFIED_UNITS"><code class="docutils literal notranslate"><span class="pre">UNSPECIFIED_UNITS</span></code></a></li>
 <li><a class="reference internal" href="#hydro.legacy.coards.STRLEN"><code class="docutils literal notranslate"><span class="pre">STRLEN</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.bytes_via_temp"><code class="docutils literal notranslate"><span class="pre">bytes_via_temp()</span></code></a></li>
 <li><a class="reference internal" href="#hydro.legacy.coards.strftime_woce_date_time"><code class="docutils literal notranslate"><span class="pre">strftime_woce_date_time()</span></code></a></li>
 <li><a class="reference internal" href="#hydro.legacy.coards._ascii"><code class="docutils literal notranslate"><span class="pre">_ascii()</span></code></a></li>
 <li><a class="reference internal" href="#hydro.legacy.coards.simplest_str"><code class="docutils literal notranslate"><span class="pre">simplest_str()</span></code></a></li>
