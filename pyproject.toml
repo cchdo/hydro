@@ -66,8 +66,8 @@ docs = [
     "furo",
     "sphinx-design",
     "sphinx-autoapi",
-    "nbsphinx",
     "myst-parser",
+    "myst-nb",
 ]
 cli = [
     "cchdo.hydro[netcdf]",

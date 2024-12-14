@@ -37,17 +37,17 @@ release = ""
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "myst_parser",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx_design",
     "autoapi.extension",
-    "nbsphinx",
+    "myst_nb",
 ]
 
 myst_enable_extensions = ["colon_fence"]
+jupyter_execute_notebooks = "off"
 
 autoapi_dirs = ["../cchdo", "../cchdo/hydro"]
 autoapi_python_use_implicit_namespaces = True
