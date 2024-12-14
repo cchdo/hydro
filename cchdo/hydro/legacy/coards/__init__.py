@@ -16,6 +16,7 @@ from csv import DictReader
 from importlib.resources import open_text
 from io import BytesIO
 from logging import getLogger
+from tempfile import TemporaryDirectory
 from typing import Literal
 from zipfile import ZIP_DEFLATED, ZipFile
 
@@ -90,6 +91,14 @@ UNSPECIFIED_UNITS = "unspecified"
 
 STRLEN = 40
 """length of char array variables, hardcoded to 40"""
+
+
+def bytes_via_temp(xr: xr.Dataset) -> bytes:
+    with TemporaryDirectory() as td:
+        path = td + "/tmp.nc"
+        xr.to_netcdf(path, format="NETCDF3_CLASSIC")
+        with open(path, "rb") as f:
+            return f.read()
 
 
 # new behavior will always have the input be a datetime.datetime (Or np.datetime64)
@@ -441,7 +450,7 @@ def write_bottle(ds: xr.Dataset) -> bytes:
     common_vars = get_common_variables(ds)
 
     nc_file = xr.Dataset(data_vars={**data_vars, **common_vars}, attrs=attrs)
-    return nc_file.to_netcdf(format="NETCDF3_CLASSIC")
+    return bytes_via_temp(nc_file)
 
 
 def write_ctd(ds: xr.Dataset) -> bytes:
@@ -467,7 +476,7 @@ def write_ctd(ds: xr.Dataset) -> bytes:
     common_vars = get_common_variables(ds)
 
     nc_file = xr.Dataset(data_vars={**data_vars, **common_vars}, attrs=attrs)
-    return nc_file.to_netcdf(format="NETCDF3_CLASSIC")
+    return bytes_via_temp(nc_file)
 
 
 def to_coards(ds: xr.Dataset) -> bytes:
