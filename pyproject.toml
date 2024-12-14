@@ -40,7 +40,6 @@ Repository = "https://github.com/cchdo/hydro.git"
 [project.optional-dependencies]
 netcdf = [
     "netCDF4>=1.5.7",
-    "scipy",
 ]
 schema = [
     "gsw",
