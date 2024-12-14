@@ -512,7 +512,9 @@
 <span class="sd">    :returns: A new dataset with the requested variables removed, will return a new dataset even if the results of calling this function are no-op</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">param</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+        <span class="n">_param</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_param</span> <span class="o">=</span> <span class="n">param</span>
 
     <span class="c1"># deleting the primary var requries the delete cascade</span>
     <span class="k">if</span> <span class="n">delete_param</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -521,9 +523,9 @@
         <span class="c1"># TODO ancillary</span>
         <span class="c1"># delete_ancillary = True</span>
 
-    <span class="n">nc_name</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">full_nc_name</span>
-    <span class="n">nc_flag</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">nc_name_flag</span>
-    <span class="n">nc_error</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">nc_name_error</span>
+    <span class="n">nc_name</span> <span class="o">=</span> <span class="n">_param</span><span class="o">.</span><span class="n">full_nc_name</span>
+    <span class="n">nc_flag</span> <span class="o">=</span> <span class="n">_param</span><span class="o">.</span><span class="n">nc_name_flag</span>
+    <span class="n">nc_error</span> <span class="o">=</span> <span class="n">_param</span><span class="o">.</span><span class="n">nc_name_error</span>
 
     <span class="n">to_delete</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">delete_param</span><span class="p">:</span>
@@ -545,7 +547,7 @@
     <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">ds</span> <span class="o">=</span> <span class="n">flatten_cdom_coordinate</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
     <span class="c1"># TODO: this relies on the param name, should rely on attrs somehow</span>
-    <span class="n">base_param</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span>
+    <span class="n">base_param</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">_param</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span>
     <span class="n">ancillary_vars</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">ds</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">base_param</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ancillary_variables&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -599,23 +601,25 @@
 <span class="sd">    :param with_ancillary: Currently a no-op, hopefully will be used to add ancillary variable for things like analytical temperature</span>
 <span class="sd">    :return: A new dataset with the requested variables added, will return a new dataset even if the results of calling this function are no-op&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">param</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+        <span class="n">_param</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_param</span> <span class="o">=</span> <span class="n">param</span>
 
     <span class="n">_ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">_ds</span> <span class="o">=</span> <span class="n">flatten_cdom_coordinate</span><span class="p">(</span><span class="n">_ds</span><span class="p">)</span>
     <span class="n">vars_to_add</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">full_nc_name</span> <span class="ow">in</span> <span class="n">_ds</span><span class="p">:</span>
-        <span class="n">var</span> <span class="o">=</span> <span class="n">_ds</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">_param</span><span class="o">.</span><span class="n">full_nc_name</span> <span class="ow">in</span> <span class="n">_ds</span><span class="p">:</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">_ds</span><span class="p">[</span><span class="n">_param</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">var</span> <span class="o">=</span> <span class="n">dataarray_factory</span><span class="p">(</span>
-            <span class="n">param</span><span class="p">,</span> <span class="n">N_PROF</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">],</span> <span class="n">N_LEVELS</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_LEVELS&quot;</span><span class="p">]</span>
+            <span class="n">_param</span><span class="p">,</span> <span class="n">N_PROF</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">],</span> <span class="n">N_LEVELS</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_LEVELS&quot;</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="n">vars_to_add</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">with_flag</span> <span class="ow">and</span> <span class="n">param</span><span class="o">.</span><span class="n">nc_name_flag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_ds</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">with_flag</span> <span class="ow">and</span> <span class="n">_param</span><span class="o">.</span><span class="n">nc_name_flag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_ds</span><span class="p">:</span>
         <span class="n">flag_var</span> <span class="o">=</span> <span class="n">dataarray_factory</span><span class="p">(</span>
-            <span class="n">param</span><span class="p">,</span>
+            <span class="n">_param</span><span class="p">,</span>
             <span class="n">N_PROF</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">],</span>
             <span class="n">N_LEVELS</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_LEVELS&quot;</span><span class="p">],</span>
             <span class="n">ctype</span><span class="o">=</span><span class="s2">&quot;flag&quot;</span><span class="p">,</span>
@@ -626,12 +630,12 @@
         <span class="n">var</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;ancillary_variables&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ancillary</span><span class="p">))</span>
         <span class="n">vars_to_add</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag_var</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">with_error</span> <span class="ow">and</span> <span class="n">param</span><span class="o">.</span><span class="n">full_error_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> does not have a defined error/uncertainty name&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">with_error</span> <span class="ow">and</span> <span class="n">_param</span><span class="o">.</span><span class="n">full_error_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_param</span><span class="si">}</span><span class="s2"> does not have a defined error/uncertainty name&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">with_error</span> <span class="ow">and</span> <span class="n">param</span><span class="o">.</span><span class="n">nc_name_error</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_ds</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">with_error</span> <span class="ow">and</span> <span class="n">_param</span><span class="o">.</span><span class="n">nc_name_error</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_ds</span><span class="p">:</span>
         <span class="n">error_var</span> <span class="o">=</span> <span class="n">dataarray_factory</span><span class="p">(</span>
-            <span class="n">param</span><span class="p">,</span>
+            <span class="n">_param</span><span class="p">,</span>
             <span class="n">N_PROF</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">],</span>
             <span class="n">N_LEVELS</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_LEVELS&quot;</span><span class="p">],</span>
             <span class="n">ctype</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
