@@ -1,0 +1,230 @@
+hydro.accessors
+===============
+
+.. py:module:: hydro.accessors
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.accessors.FLAG_NAME
+   hydro.accessors.ERROR_NAME
+   hydro.accessors.PathType
+   hydro.accessors.NormalizedFQ
+   hydro.accessors.FTypeOptions
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hydro.accessors.FQPointKey
+   hydro.accessors.FQProfileKey
+   hydro.accessors.WHPIndxer
+   hydro.accessors.CCHDOAccessor
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.accessors.write_or_return
+   hydro.accessors.normalize_fq
+   hydro.accessors.fq_get_precisions
+
+
+Module Contents
+---------------
+
+.. py:data:: FLAG_NAME
+   :value: 'cchdo.hydro._qc'
+
+
+.. py:data:: ERROR_NAME
+   :value: 'cchdo.hydro._error'
+
+
+.. py:data:: PathType
+
+.. py:function:: write_or_return(data, path_or_fobj = None)
+
+.. py:class:: FQPointKey
+
+   Bases: :py:obj:`NamedTuple`
+
+
+   .. py:attribute:: expocode
+      :type:  str
+
+
+   .. py:attribute:: station
+      :type:  str
+
+
+   .. py:attribute:: cast
+      :type:  int
+
+
+   .. py:attribute:: sample
+      :type:  str
+
+
+.. py:class:: FQProfileKey
+
+   Bases: :py:obj:`NamedTuple`
+
+
+   .. py:attribute:: expocode
+      :type:  str
+
+
+   .. py:attribute:: station
+      :type:  str
+
+
+   .. py:attribute:: cast
+      :type:  int
+
+
+.. py:class:: WHPIndxer(obj)
+
+   .. py:attribute:: n_prof
+
+
+   .. py:attribute:: n_level
+      :value: []
+
+
+
+   .. py:method:: __getitem__(key)
+
+
+.. py:data:: NormalizedFQ
+
+.. py:function:: normalize_fq(fq, *, check_dupes=True)
+
+.. py:function:: fq_get_precisions(fq)
+
+.. py:data:: FTypeOptions
+
+.. py:class:: CCHDOAccessor(xarray_obj)
+
+   .. py:attribute:: _obj
+
+
+   .. py:method:: jsonld()
+
+
+   .. py:method:: to_mat(fname)
+
+      Experimental Matlab .mat data file generator.
+
+      The support for netCDF files in Matlab is really bad.
+      Matlab also has no built in support for the standards
+      we are trying to follow (CF, ACDD), the most egregious
+      lack of support is how to deal with times in netCDF files.
+      This was an attempt to make a mat file which takes
+      care of some of the things matlab won't do for you.
+      It requires scipy to function.
+
+      The file it produces is in no way stable.
+
+
+
+   .. py:method:: to_coards(path=None)
+
+
+   .. py:method:: to_woce(path=None)
+
+
+   .. py:method:: to_sum(path=None)
+
+      NetCDF to WOCE sumfile maker.
+
+      This is missing some information that is not included anymore (wire out, height above bottom).
+      It is especially lacking in including woce parameter IDs
+
+
+
+   .. py:property:: __geo_interface__
+
+      The station positions as a MultiPoint geo interface.
+
+      See https://gist.github.com/sgillies/2217756
+
+
+
+   .. py:property:: track
+
+      A dict which can be dumped to json which conforms to the expected structure for the CCHDO website.
+
+
+
+   .. py:method:: _gen_fname(expocode, station, cast, profile_type, profile_count = 1, ftype = 'cf')
+      :staticmethod:
+
+
+
+   .. py:method:: gen_fname(ftype = 'cf')
+
+      Generate a human friendly netCDF (or other output type) filename for this object.
+
+
+
+   .. py:method:: compact_profile()
+
+      Drop the trailing empty data from a profile.
+
+      Because we use the incomplete multidimensional array representation of profiles
+      there is often "wasted space" at the end of any profile that is not the longest one.
+      This accessor drops that wasted space for xr.Dataset objects containing a single profile
+
+
+
+   .. py:attribute:: date_names
+
+
+   .. py:attribute:: time_names
+
+
+   .. py:property:: file_type
+
+
+   .. py:method:: cchdo_c_format_precision(c_format)
+      :staticmethod:
+
+
+
+   .. py:method:: _make_params_units_line(params)
+
+
+   .. py:method:: _whpname_from_attrs(attrs)
+      :staticmethod:
+
+
+
+   .. py:method:: _make_ctd_headers(params)
+
+
+   .. py:method:: _make_data_block(params)
+
+
+   .. py:method:: _get_comments()
+
+
+   .. py:method:: to_whp_columns(compact=False)
+
+
+   .. py:method:: to_exchange(path=None)
+
+      Convert a CCHDO CF netCDF dataset to exchange.
+
+
+
+   .. py:method:: merge_fq(fq, *, check_flags=True)
+
+

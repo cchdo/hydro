@@ -1,0 +1,864 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>hydro.__main__ - hydro documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">hydro  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">hydro  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../format_spec.html">GO-SHIP CF/netCDF Data Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../attributes.html">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../erddap.html">Variables in ERDDAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ODF_CCHDO_netCDF_ops.html">Basic CF/netCDF operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exchange_checker.html">Exchange Checker/Converter</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../notebooks.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/2018_s04p_ctd/add_remove_param_s04p_merge.html">add/remove param S04P merge example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/round_trip.html">Round Trip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/simple.html">Simple</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/hydro/index.html">hydro</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of hydro</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/__main__/index.html">hydro.__main__</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/__main_helpers/index.html">hydro.__main_helpers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/accessors/index.html">hydro.accessors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/checks/index.html">hydro.checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/conformance/index.html">hydro.conformance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/convert/index.html">hydro.convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/core/index.html">hydro.core</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/hydro/exchange/index.html">hydro.exchange</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of hydro.exchange</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/exchange/exceptions/index.html">hydro.exchange.exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/exchange/flags/index.html">hydro.exchange.flags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/exchange/helpers/index.html">hydro.exchange.helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/hydro/legacy/index.html">hydro.legacy</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of hydro.legacy</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/legacy/coards/index.html">hydro.legacy.coards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/legacy/woce/index.html">hydro.legacy.woce</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/migration/index.html">hydro.migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/rename/index.html">hydro.rename</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/hydro/tests/index.html">hydro.tests</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of hydro.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/conftest/index.html">hydro.tests.conftest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/data/index.html">hydro.tests.data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_accessors/index.html">hydro.tests.test_accessors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_checks/index.html">hydro.tests.test_checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_core_ops/index.html">hydro.tests.test_core_ops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_csv/index.html">hydro.tests.test_csv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_exchange/index.html">hydro.tests.test_exchange</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_legacy/index.html">hydro.tests.test_legacy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_merge/index.html">hydro.tests.test_merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_rename/index.html">hydro.tests.test_rename</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/tutorial/index.html">hydro.tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for hydro.__main__</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha256</span>
+<span class="kn">from</span> <span class="nn">html</span> <span class="kn">import</span> <span class="n">escape</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span><span class="p">,</span> <span class="n">TemporaryDirectory</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">from</span> <span class="nn">rich.logging</span> <span class="kn">import</span> <span class="n">RichHandler</span>
+<span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">__main_helpers</span> <span class="k">as</span> <span class="n">mh</span>
+
+<div class="viewcode-block" id="log">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.log">[docs]</a>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">__version__</span>
+
+
+<div class="viewcode-block" id="setup_logging">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.setup_logging">[docs]</a>
+<span class="k">def</span> <span class="nf">setup_logging</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
+    <span class="n">FORMAT</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%(funcName)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
+    <span class="n">log_handler</span> <span class="o">=</span> <span class="n">RichHandler</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+        <span class="n">level</span><span class="o">=</span><span class="s2">&quot;NOTSET&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">FORMAT</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%X</span><span class="s2">]&quot;</span><span class="p">,</span> <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">log_handler</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">captureWarnings</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<div class="viewcode-block" id="convert">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.convert">[docs]</a>
+<span class="k">def</span> <span class="nf">convert</span><span class="p">():</span> <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="_comment_loader">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__._comment_loader">[docs]</a>
+<span class="k">def</span> <span class="nf">_comment_loader</span><span class="p">(</span><span class="n">str_or_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">str_or_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">str_or_path</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">str_or_path</span></div>
+
+
+
+<div class="viewcode-block" id="PrecisionSouceType">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.PrecisionSouceType">[docs]</a>
+<span class="n">PrecisionSouceType</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;database&quot;</span><span class="p">],</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@convert</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;exchange_path&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;out_path&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--precision_source&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">PrecisionSouceType</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--check-flag/--no-check-flag&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--comments&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;either a comment string or file path prefixed with @ (e.g. @README.txt)&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="convert_exchange">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.convert_exchange">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_exchange</span><span class="p">(</span><span class="n">exchange_path</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">check_flag</span><span class="p">,</span> <span class="n">precision_source</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
+    <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading read_exchange&quot;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.exchange</span> <span class="kn">import</span> <span class="n">read_exchange</span>
+
+    <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;flags&quot;</span><span class="p">:</span> <span class="n">check_flag</span><span class="p">}</span>
+
+    <span class="n">ex</span> <span class="o">=</span> <span class="n">read_exchange</span><span class="p">(</span><span class="n">exchange_path</span><span class="p">,</span> <span class="n">checks</span><span class="o">=</span><span class="n">checks</span><span class="p">,</span> <span class="n">precision_source</span><span class="o">=</span><span class="n">precision_source</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Saving to netCDF&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">comments</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">comments_contents</span> <span class="o">=</span> <span class="n">_comment_loader</span><span class="p">(</span><span class="n">comments</span><span class="p">)</span>
+        <span class="n">ex</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;comments&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comments_contents</span>
+    <span class="n">ex</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">out_path</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done :)&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@convert</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;csv_path&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;out_path&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--ftype&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">],</span> <span class="n">case_sensitive</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;B for Bottle, C for CTD&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--precision_source&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">PrecisionSouceType</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--check-flag/--no-check-flag&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--comments&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;either a comment string or file path prefixed with @ (e.g. @README.txt)&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="convert_csv">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.convert_csv">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">ftype</span><span class="p">,</span> <span class="n">check_flag</span><span class="p">,</span> <span class="n">precision_source</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
+    <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading read_exchange&quot;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">.exchange</span> <span class="kn">import</span> <span class="n">read_csv</span>
+
+    <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;flags&quot;</span><span class="p">:</span> <span class="n">check_flag</span><span class="p">}</span>
+
+    <span class="n">ex</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span>
+        <span class="n">csv_path</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="n">ftype</span><span class="p">,</span> <span class="n">checks</span><span class="o">=</span><span class="n">checks</span><span class="p">,</span> <span class="n">precision_source</span><span class="o">=</span><span class="n">precision_source</span>
+    <span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Saving to netCDF&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">comments</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">comments_contents</span> <span class="o">=</span> <span class="n">_comment_loader</span><span class="p">(</span><span class="n">comments</span><span class="p">)</span>
+        <span class="n">ex</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;comments&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comments_contents</span>
+    <span class="n">ex</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">out_path</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done :)&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<div class="viewcode-block" id="edit">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.edit">[docs]</a>
+<span class="k">def</span> <span class="nf">edit</span><span class="p">():</span> <span class="o">...</span></div>
+
+
+
+<span class="nd">@edit</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;expocode&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="edit_comments">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.edit_comments">[docs]</a>
+<span class="k">def</span> <span class="nf">edit_comments</span><span class="p">(</span><span class="n">expocode</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">cchdo.auth.session</span> <span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">s</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading Cruise Metadata&quot;</span><span class="p">)</span>
+    <span class="n">cruises</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">c</span><span class="p">[</span><span class="s2">&quot;expocode&quot;</span><span class="p">]:</span> <span class="n">c</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://cchdo.ucsd.edu/api/v1/cruise/all&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cruise</span> <span class="o">=</span> <span class="n">cruises</span><span class="p">[</span><span class="n">expocode</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expocode</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+        <span class="k">raise</span>
+
+    <span class="n">cruise_file_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cruise</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">])</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading Cruise Files&quot;</span><span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]:</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://cchdo.ucsd.edu/api/v1/file/all&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()}</span>
+    <span class="n">extant_ids</span> <span class="o">=</span> <span class="n">cruise_file_ids</span> <span class="o">&amp;</span> <span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="n">edit_files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">extant_ids</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">file</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;dataset&quot;</span>
+            <span class="ow">and</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;data_format&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;cf_netcdf&quot;</span>
+            <span class="ow">and</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;data_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dtype</span>
+        <span class="p">):</span>
+            <span class="n">edit_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edit_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No files to edit&quot;</span><span class="p">)</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edit_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Too many files to edit&quot;</span><span class="p">)</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">edit_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">with</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.nc&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tf</span><span class="p">:</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://cchdo.ucsd.edu/</span><span class="si">{</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;file_path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>  <span class="c1"># when 3.12, switch to delete_on_close=False</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">comments</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">edit</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comments&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">extension</span><span class="o">=</span><span class="s2">&quot;.txt&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">comments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">click</span><span class="o">.</span><span class="n">Abort</span>
+
+    <span class="n">old_file_id</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="n">old_cruises</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;cruises&quot;</span><span class="p">]</span>
+    <span class="n">new_file</span> <span class="o">=</span> <span class="n">file</span>
+    <span class="n">new_file</span><span class="p">[</span><span class="s2">&quot;file_path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">new_file</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">new_file</span><span class="p">[</span><span class="s2">&quot;submissions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">del</span> <span class="n">new_file</span><span class="p">[</span><span class="s2">&quot;cruises&quot;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">new_file</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+    <span class="n">ds</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;comments&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comments</span>
+    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">td</span><span class="p">:</span>
+        <span class="n">temp_nc</span> <span class="o">=</span> <span class="n">td</span> <span class="o">+</span> <span class="s2">&quot;/out.nc&quot;</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">temp_nc</span><span class="p">)</span>
+        <span class="n">new_file</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mh</span><span class="o">.</span><span class="n">make_netcdf_file_json</span><span class="p">(</span><span class="n">temp_nc</span><span class="p">)</span>
+        <span class="n">new_file</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_file</span><span class="p">[</span><span class="s2">&quot;file_name&quot;</span><span class="p">]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_nc</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">new_file</span><span class="p">[</span><span class="s2">&quot;file_hash&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sha256</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+            <span class="n">new_file</span><span class="p">[</span><span class="s2">&quot;file_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+
+    <span class="n">patch</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;op&quot;</span><span class="p">:</span> <span class="s2">&quot;replace&quot;</span><span class="p">,</span> <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;/role&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;merged&quot;</span><span class="p">}]</span>
+
+    <span class="n">replacement</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://cchdo.ucsd.edu/api/v1/file&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">new_file</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">replacement</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+
+    <span class="n">id_</span> <span class="o">=</span> <span class="n">replacement</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;message&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">cruise</span> <span class="ow">in</span> <span class="n">old_cruises</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://cchdo.ucsd.edu/api/v1/cruise/</span><span class="si">{</span><span class="n">cruise</span><span class="si">}</span><span class="s2">/files/</span><span class="si">{</span><span class="n">id_</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+
+    <span class="n">s</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://cchdo.ucsd.edu/api/v1/file/</span><span class="si">{</span><span class="n">old_file_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">patch</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<div class="viewcode-block" id="status">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.status">[docs]</a>
+<span class="k">def</span> <span class="nf">status</span><span class="p">():</span> <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="cchdo_loader">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.cchdo_loader">[docs]</a>
+<span class="k">def</span> <span class="nf">cchdo_loader</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dformat</span><span class="o">=</span><span class="s2">&quot;exchange&quot;</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">cchdo.auth.session</span> <span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">s</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading Cruise Metadata&quot;</span><span class="p">)</span>
+    <span class="n">cruises</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://cchdo.ucsd.edu/api/v1/cruise/all&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading Cruise File&quot;</span><span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://cchdo.ucsd.edu/api/v1/file/all&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">file_filter</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">file</span><span class="p">[</span><span class="s2">&quot;data_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dtype</span>
+            <span class="ow">and</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;dataset&quot;</span>
+            <span class="ow">and</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;data_format&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dformat</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]:</span> <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cruises</span><span class="p">},</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">file_filter</span><span class="p">,</span> <span class="n">files</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="cached_file_loader">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.cached_file_loader">[docs]</a>
+<span class="k">def</span> <span class="nf">cached_file_loader</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">codes</span>
+
+    <span class="kn">from</span> <span class="nn">cchdo.auth.session</span> <span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">s</span>
+
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_hydro_appdirs</span>
+
+    <span class="n">cache_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">_hydro_appdirs</span><span class="o">.</span><span class="n">user_cache_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;convert&quot;</span>
+    <span class="n">cache_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">file_dest</span> <span class="o">=</span> <span class="n">cache_dir</span> <span class="o">/</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;file_hash&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">file_dest</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">file_dest</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span> <span class="o">==</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;file_size&quot;</span><span class="p">]:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using cached file </span><span class="si">{</span><span class="n">file_dest</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">file_dest</span>
+
+    <span class="n">f_body</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://cchdo.ucsd.edu</span><span class="si">{</span><span class="n">file</span><span class="p">[</span><span class="s1">&#39;file_path&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f_body</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+        <span class="n">file_dest</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">f_body</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Written to </span><span class="si">{</span><span class="n">file_dest</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">file_dest</span></div>
+
+
+
+<div class="viewcode-block" id="vars_with_value">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.vars_with_value">[docs]</a>
+<span class="k">def</span> <span class="nf">vars_with_value</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="n">vars_with_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">var</span><span class="p">))</span><span class="o">.</span><span class="n">item</span><span class="p">():</span>
+                <span class="n">vars_with_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vars_with_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">vars_with_data</span></div>
+
+
+
+<span class="nd">@status</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;out_dir&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--dump-unknown-params&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--dump-data-counts&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--roundtrip&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="status_exchange">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.status_exchange">[docs]</a>
+<span class="k">def</span> <span class="nf">status_exchange</span><span class="p">(</span>
+    <span class="n">dtype</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">dump_unknown_params</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">dump_data_counts</span><span class="p">,</span> <span class="n">roundtrip</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset.&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">cchdo.hydro</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">hydro_version</span>
+    <span class="kn">from</span> <span class="nn">cchdo.params</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">params_version</span>
+
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;CRITICAL&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+
+    <span class="n">out_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+    <span class="n">cruises</span><span class="p">,</span> <span class="n">files</span> <span class="o">=</span> <span class="n">cchdo_loader</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">file_paths</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Loading data files&quot;</span><span class="p">):</span>
+        <span class="n">file_paths</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cached_file_loader</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">file</span><span class="p">))</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">all_unknown_params</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">variables_with_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
+                <span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span>
+                    <span class="n">mh</span><span class="o">.</span><span class="n">p_file</span><span class="p">,</span> <span class="p">[(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">roundtrip</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">file_paths</span><span class="p">]</span>
+                <span class="p">),</span>
+                <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">file_paths</span><span class="p">),</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Converting ex to netCDF&quot;</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="n">status</span><span class="p">,</span> <span class="n">path_or_err</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">unknown_params</span> <span class="o">=</span> <span class="n">result</span>
+                <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed: </span><span class="si">{</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed: </span><span class="si">{</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">path_or_err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">out_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">nc_path</span> <span class="o">=</span> <span class="n">out_path</span> <span class="o">/</span> <span class="s2">&quot;nc&quot;</span>
+        <span class="n">nc_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">success_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">,</span> <span class="n">results</span><span class="p">)))</span>
+        <span class="n">success_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Converted </span><span class="si">{</span><span class="n">success_len</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">success_len</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">}</span><span class="s2">%)&quot;</span>
+        <span class="k">with</span> <span class="p">(</span><span class="n">out_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;index_</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;html&gt;</span>
+<span class="s2">            &lt;head&gt;</span>
+<span class="s2">            &lt;link href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot; integrity=&quot;sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC&quot; crossorigin=&quot;anonymous&quot;&gt;</span>
+<span class="s2">            &lt;/head&gt;</span>
+<span class="s2">            &lt;body&gt;</span>
+<span class="s2">            &lt;div class=&quot;container-fluid&quot;&gt;</span>
+<span class="s2">            &lt;table class=&quot;table&quot;&gt;&lt;thead&gt;</span>
+<span class="s2">            &lt;h2&gt;Versions&lt;/h2&gt;</span>
+<span class="s2">            cchdo.hydro: </span><span class="si">{</span><span class="n">hydro_version</span><span class="si">}</span><span class="s2">&lt;/br&gt;</span>
+<span class="s2">            cchdo.params: </span><span class="si">{</span><span class="n">params_version</span><span class="si">}</span><span class="s2">&lt;/br&gt;</span>
+<span class="s2">            stats: </span><span class="si">{</span><span class="n">success_str</span><span class="si">}</span>
+<span class="s2">            &lt;h2&gt;Files&lt;/h2&gt;</span>
+<span class="s2">            &lt;tr&gt;</span>
+<span class="s2">            &lt;th&gt;Cruise(s)&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;File ID&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;File Download&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;NetCDF File&lt;/th&gt;</span>
+<span class="s2">            &lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&quot;&quot;&quot;</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]):</span>
+                <span class="n">status</span><span class="p">,</span> <span class="n">path_or_err</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">unknown_params</span> <span class="o">=</span> <span class="n">result</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">expos</span> <span class="o">=</span> <span class="p">[</span><span class="n">cruises</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="s2">&quot;expocode&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;cruises&quot;</span><span class="p">]]</span>
+                    <span class="n">crs</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="sa">f</span><span class="s2">&quot;&lt;a href=&#39;https://cchdo.ucsd.edu/cruise/</span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&#39;&gt;</span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&lt;/a&gt;&quot;</span>
+                            <span class="k">for</span> <span class="n">ex</span> <span class="ow">in</span> <span class="n">expos</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">crs</span> <span class="o">=</span> <span class="s2">&quot;&lt;span&gt;Not Attached&lt;/span&gt;&quot;</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;cruises&quot;</span><span class="p">])</span>
+                    <span class="k">raise</span>
+                <span class="n">fn</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;file_name&quot;</span><span class="p">]</span>
+                <span class="n">file_id</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                    <span class="n">tmp_nc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path_or_err</span><span class="p">)</span>
+                    <span class="n">res_nc</span> <span class="o">=</span> <span class="n">nc_path</span> <span class="o">/</span> <span class="n">tmp_nc</span><span class="o">.</span><span class="n">name</span>
+
+                    <span class="k">if</span> <span class="n">dump_data_counts</span><span class="p">:</span>
+                        <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">tmp_nc</span><span class="p">)</span>
+                        <span class="n">variables_with_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vars_with_value</span><span class="p">(</span><span class="n">ds</span><span class="p">))</span>
+
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">tmp_nc</span><span class="p">,</span> <span class="n">res_nc</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;tr class=&#39;table-success&#39;&gt;</span>
+<span class="s2">                            &lt;td&gt;</span><span class="si">{</span><span class="n">crs</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                            &lt;td&gt;</span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                            &lt;td&gt;&lt;a href=&quot;https://cchdo.ucsd.edu/data/</span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fn</span><span class="si">}</span><span class="s2">&quot;&gt;</span><span class="si">{</span><span class="n">fn</span><span class="si">}</span><span class="s2">&lt;/a&gt;&lt;/td&gt;</span>
+<span class="s2">                            &lt;td&gt;&lt;a href=&quot;nc/</span><span class="si">{</span><span class="n">res_nc</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;&gt;</span><span class="si">{</span><span class="n">res_nc</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&lt;/a&gt;&lt;/td&gt;</span>
+<span class="s2">                            &lt;/tr&gt;&quot;&quot;&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unknown_params</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">all_unknown_params</span><span class="p">[</span><span class="n">expos</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">unknown_params</span>
+                    <span class="n">error</span> <span class="o">=</span> <span class="n">escape</span><span class="p">(</span><span class="n">path_or_err</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;tr class=&#39;table-warning&#39;&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="n">crs</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;&lt;a href=&quot;https://cchdo.ucsd.edu/data/</span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fn</span><span class="si">}</span><span class="s2">&quot;&gt;</span><span class="si">{</span><span class="n">fn</span><span class="si">}</span><span class="s2">&lt;/a&gt;&lt;/td&gt;&quot;&quot;&quot;</span>
+                    <span class="p">)</span>
+
+                    <span class="k">if</span> <span class="s2">&quot;ExchangeDataFlagPairError&quot;</span> <span class="ow">in</span> <span class="n">path_or_err</span><span class="p">:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;td&gt;&lt;pre style=&quot;width: fit-content&quot;&gt;&lt;code&gt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&quot;&quot;&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;td&gt;</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&lt;/td&gt;&quot;&quot;&quot;</span><span class="p">)</span>
+
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;&lt;/tr&gt;&quot;&quot;&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;&quot;</span><span class="p">)</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">success_str</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dump_unknown_params</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;unknown_params_</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">all_unknown_params</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dump_data_counts</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;params_with_data_</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">variables_with_data</span><span class="p">),</span> <span class="n">f</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@status</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;out_dir&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--only-fail&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="viewcode-block" id="status_cf_derived">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.status_cf_derived">[docs]</a>
+<span class="k">def</span> <span class="nf">status_cf_derived</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">only_fail</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">cchdo.hydro</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">hydro_version</span>
+    <span class="kn">from</span> <span class="nn">cchdo.params</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">params_version</span>
+
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;CRITICAL&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+
+    <span class="n">out_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+    <span class="n">cruises</span><span class="p">,</span> <span class="n">bottle_files</span> <span class="o">=</span> <span class="n">cchdo_loader</span><span class="p">(</span><span class="s2">&quot;bottle&quot;</span><span class="p">,</span> <span class="s2">&quot;cf_netcdf&quot;</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">ctd_files</span> <span class="o">=</span> <span class="n">cchdo_loader</span><span class="p">(</span><span class="s2">&quot;ctd&quot;</span><span class="p">,</span> <span class="s2">&quot;cf_netcdf&quot;</span><span class="p">)</span>
+    <span class="n">all_files</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">bottle_files</span><span class="p">,</span> <span class="o">*</span><span class="n">ctd_files</span><span class="p">]</span>
+    <span class="n">file_paths</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="n">all_files</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Loading data files&quot;</span><span class="p">):</span>
+        <span class="n">file_paths</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cached_file_loader</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">file</span><span class="p">))</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
+                <span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span>
+                    <span class="n">mh</span><span class="o">.</span><span class="n">p_file_cf</span><span class="p">,</span> <span class="p">[(</span><span class="n">temp_dir</span><span class="p">,</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">file_paths</span><span class="p">]</span>
+                <span class="p">),</span>
+                <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">file_paths</span><span class="p">),</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Converting CF to Others&quot;</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="n">metadata</span><span class="p">,</span> <span class="n">excahnge_ok</span><span class="p">,</span> <span class="n">coards_ok</span><span class="p">,</span> <span class="n">woce_ok</span><span class="p">,</span> <span class="n">sum_ok</span> <span class="o">=</span> <span class="n">result</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Processed: </span><span class="si">{</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">excahnge_ok</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">coards_ok</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">woce_ok</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">sum_ok</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="p">(</span><span class="n">out_path</span> <span class="o">/</span> <span class="s2">&quot;index_cf.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;html&gt;</span>
+<span class="s2">            &lt;head&gt;</span>
+<span class="s2">            &lt;link href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot; integrity=&quot;sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC&quot; crossorigin=&quot;anonymous&quot;&gt;</span>
+<span class="s2">            &lt;/head&gt;</span>
+<span class="s2">            &lt;body&gt;</span>
+<span class="s2">            &lt;div class=&quot;container-fluid&quot;&gt;</span>
+<span class="s2">            &lt;table class=&quot;table&quot;&gt;&lt;thead&gt;</span>
+<span class="s2">            &lt;h2&gt;Versions&lt;/h2&gt;</span>
+<span class="s2">            cchdo.hydro: </span><span class="si">{</span><span class="n">hydro_version</span><span class="si">}</span><span class="s2">&lt;/br&gt;</span>
+<span class="s2">            cchdo.params: </span><span class="si">{</span><span class="n">params_version</span><span class="si">}</span><span class="s2">&lt;/br&gt;</span>
+<span class="s2">            &lt;h2&gt;Files&lt;/h2&gt;</span>
+<span class="s2">            &lt;tr&gt;</span>
+<span class="s2">            &lt;th&gt;Cruise(s)&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;File ID&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;File Download&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;Exchange&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;COARDS NC&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;WOCE&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;SUM&lt;/th&gt;</span>
+<span class="s2">            &lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&quot;&quot;&quot;</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]):</span>
+                <span class="n">metadata</span><span class="p">,</span> <span class="n">excahnge_ok</span><span class="p">,</span> <span class="n">coards_ok</span><span class="p">,</span> <span class="n">woce_ok</span><span class="p">,</span> <span class="n">sum_ok</span> <span class="o">=</span> <span class="n">result</span>
+                <span class="k">if</span> <span class="n">only_fail</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="n">excahnge_ok</span><span class="p">,</span> <span class="n">coards_ok</span><span class="p">,</span> <span class="n">woce_ok</span><span class="p">,</span> <span class="n">sum_ok</span><span class="p">]):</span>
+                    <span class="k">continue</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">expos</span> <span class="o">=</span> <span class="p">[</span><span class="n">cruises</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="s2">&quot;expocode&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;cruises&quot;</span><span class="p">]]</span>
+                    <span class="n">crs</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="sa">f</span><span class="s2">&quot;&lt;a href=&#39;https://cchdo.ucsd.edu/cruise/</span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&#39;&gt;</span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&lt;/a&gt;&quot;</span>
+                            <span class="k">for</span> <span class="n">ex</span> <span class="ow">in</span> <span class="n">expos</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;cruises&quot;</span><span class="p">])</span>
+                    <span class="k">raise</span>
+                <span class="n">fn</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;file_name&quot;</span><span class="p">]</span>
+                <span class="n">file_id</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;tr&gt;</span>
+<span class="s2">                        &lt;td&gt;</span><span class="si">{</span><span class="n">crs</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                        &lt;td&gt;</span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                        &lt;td&gt;&lt;a href=&quot;https://cchdo.ucsd.edu/data/</span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fn</span><span class="si">}</span><span class="s2">&quot;&gt;</span><span class="si">{</span><span class="n">fn</span><span class="si">}</span><span class="s2">&lt;/a&gt;&lt;/td&gt;</span>
+<span class="s2">                        &lt;td&gt;</span><span class="si">{</span><span class="s1">&#39;✅&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">excahnge_ok</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;❌&#39;</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                        &lt;td&gt;</span><span class="si">{</span><span class="s1">&#39;✅&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">coards_ok</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;❌&#39;</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                        &lt;td&gt;</span><span class="si">{</span><span class="s1">&#39;✅&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">woce_ok</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;❌&#39;</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                        &lt;td&gt;</span><span class="si">{</span><span class="s1">&#39;✅&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">sum_ok</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;❌&#39;</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                        &lt;/tr&gt;&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="cli">
+<a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.cli">[docs]</a>
+<span class="n">cli</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">version_option</span><span class="p">(</span><span class="n">__version__</span><span class="p">)(</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">CommandCollection</span><span class="p">(</span><span class="n">sources</span><span class="o">=</span><span class="p">[</span><span class="n">convert</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">edit</span><span class="p">])</span>
+<span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Regents of the University of California
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

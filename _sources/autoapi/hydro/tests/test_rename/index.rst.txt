@@ -1,0 +1,25 @@
+hydro.tests.test_rename
+=======================
+
+.. py:module:: hydro.tests.test_rename
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.tests.test_rename.is_not_none
+   hydro.tests.test_rename.test_rename
+   hydro.tests.test_rename.test_to_argo_variable_names
+
+
+Module Contents
+---------------
+
+.. py:function:: is_not_none(a)
+
+.. py:function:: test_rename()
+
+.. py:function:: test_to_argo_variable_names()
+

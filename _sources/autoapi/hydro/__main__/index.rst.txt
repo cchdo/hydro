@@ -1,0 +1,74 @@
+hydro.__main__
+==============
+
+.. py:module:: hydro.__main__
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.__main__.log
+   hydro.__main__.PrecisionSouceType
+   hydro.__main__.cli
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.__main__.setup_logging
+   hydro.__main__.convert
+   hydro.__main__._comment_loader
+   hydro.__main__.convert_exchange
+   hydro.__main__.convert_csv
+   hydro.__main__.edit
+   hydro.__main__.edit_comments
+   hydro.__main__.status
+   hydro.__main__.cchdo_loader
+   hydro.__main__.cached_file_loader
+   hydro.__main__.vars_with_value
+   hydro.__main__.status_exchange
+   hydro.__main__.status_cf_derived
+
+
+Module Contents
+---------------
+
+.. py:data:: log
+
+.. py:function:: setup_logging(level)
+
+.. py:function:: convert()
+
+.. py:function:: _comment_loader(str_or_path)
+
+.. py:data:: PrecisionSouceType
+
+.. py:function:: convert_exchange(exchange_path, out_path, check_flag, precision_source, comments)
+
+.. py:function:: convert_csv(csv_path, out_path, ftype, check_flag, precision_source, comments)
+
+.. py:function:: edit()
+
+.. py:function:: edit_comments(expocode, dtype)
+
+.. py:function:: status()
+
+.. py:function:: cchdo_loader(dtype, dformat='exchange')
+
+.. py:function:: cached_file_loader(file)
+
+.. py:function:: vars_with_value(ds)
+
+.. py:function:: status_exchange(dtype, out_dir, dump_unknown_params, verbose, dump_data_counts, roundtrip)
+
+   Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset.
+
+
+.. py:function:: status_cf_derived(out_dir, verbose, only_fail)
+
+.. py:data:: cli
+

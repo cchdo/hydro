@@ -1,0 +1,34 @@
+hydro.tests.test_merge
+======================
+
+.. py:module:: hydro.tests.test_merge
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.tests.test_merge.test_fq_merge
+   hydro.tests.test_merge.test_fq_merge_with_error
+   hydro.tests.test_merge.test_fq_merge_flag_error
+   hydro.tests.test_merge.test_fq_merge_flag_only
+   hydro.tests.test_merge.test_fq_merge_cdom
+   hydro.tests.test_merge.test_fq_merge_with_alt_params
+
+
+Module Contents
+---------------
+
+.. py:function:: test_fq_merge(nc_placeholder)
+
+.. py:function:: test_fq_merge_with_error(nc_placeholder)
+
+.. py:function:: test_fq_merge_flag_error(nc_placeholders)
+
+.. py:function:: test_fq_merge_flag_only(nc_placeholders)
+
+.. py:function:: test_fq_merge_cdom(nc_placeholders)
+
+.. py:function:: test_fq_merge_with_alt_params(nc_placeholders)
+

@@ -1,0 +1,23 @@
+hydro.checks
+============
+
+.. py:module:: hydro.checks
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.checks.check_ancillary_variables
+
+
+Module Contents
+---------------
+
+.. py:function:: check_ancillary_variables(ds)
+
+   Check that everything in an ancillary_variables attribute appears as a variable
+   Check that every variable that is known ancillary appears in at least one ancillary_variable attribute
+
+

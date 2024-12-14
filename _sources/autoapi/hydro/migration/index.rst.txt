@@ -1,0 +1,44 @@
+hydro.migration
+===============
+
+.. py:module:: hydro.migration
+
+.. autoapi-nested-parse::
+
+   Functions that hopefully can migrate from a past version of data to a future version.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hydro.migration.MigrationABC
+
+
+Module Contents
+---------------
+
+.. py:class:: MigrationABC
+
+   Bases: :py:obj:`abc.ABC`
+
+
+   Helper class that provides a standard way to create an ABC using
+   inheritance.
+
+
+   .. py:attribute:: version_from
+      :value: '1.0.0.0'
+
+
+
+   .. py:method:: can_migrate(ds)
+
+
+   .. py:method:: migrate(ds)
+      :abstractmethod:
+
+
+

@@ -1,0 +1,74 @@
+hydro.tutorial
+==============
+
+.. py:module:: hydro.tutorial
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.tutorial.bottle_uri
+   hydro.tutorial.bottle_fname
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hydro.tutorial.CCHDOBottleData
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.tutorial._cache_dir
+   hydro.tutorial.load_cchdo_bottle_data
+
+
+Module Contents
+---------------
+
+.. py:data:: bottle_uri
+   :value: 'https://cchdo.ucsd.edu/search?q=a&download=exchange%2cbottle'
+
+
+.. py:data:: bottle_fname
+   :value: 'bottle_data.zip'
+
+
+.. py:function:: _cache_dir()
+
+.. py:function:: load_cchdo_bottle_data()
+
+   Downloads some CCHDO data for playing with...
+
+
+.. py:class:: CCHDOBottleData
+
+   Bases: :py:obj:`collections.abc.Mapping`
+
+
+   A Mapping is a generic container for associating key/value
+   pairs.
+
+   This class provides concrete generic implementations of all
+   methods except for __getitem__, __iter__, and __len__.
+
+
+   .. py:attribute:: path
+
+
+   .. py:method:: __len__()
+
+
+   .. py:method:: __iter__()
+
+
+   .. py:method:: __getitem__(key)
+
+

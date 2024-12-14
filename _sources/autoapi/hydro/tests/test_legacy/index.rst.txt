@@ -1,0 +1,22 @@
+hydro.tests.test_legacy
+=======================
+
+.. py:module:: hydro.tests.test_legacy
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.tests.test_legacy.test_woce_flag_defs
+
+
+Module Contents
+---------------
+
+.. py:function:: test_woce_flag_defs()
+
+   This test was made to ensure that a refactor produced the same result
+
+

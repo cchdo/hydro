@@ -1,0 +1,39 @@
+hydro.tests.test_csv
+====================
+
+.. py:module:: hydro.tests.test_csv
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.tests.test_csv.test_read_csv
+   hydro.tests.test_csv.test_ignore_columns
+   hydro.tests.test_csv.test_all_flags_kept
+   hydro.tests.test_csv.test_all_error_params
+   hydro.tests.test_csv.test_station_ids
+
+
+Module Contents
+---------------
+
+.. py:function:: test_read_csv()
+
+.. py:function:: test_ignore_columns()
+
+.. py:function:: test_all_flags_kept()
+
+.. py:function:: test_all_error_params()
+
+   Tests a condition where the presence of an error param was causing other params to be invalid (BTL DATE and TIME)
+
+   Just needs to read without crashing
+
+
+.. py:function:: test_station_ids()
+
+   Tests for a bug where station IDs were being truncated
+
+

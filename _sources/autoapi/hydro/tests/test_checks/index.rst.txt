@@ -1,0 +1,25 @@
+hydro.tests.test_checks
+=======================
+
+.. py:module:: hydro.tests.test_checks
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.tests.test_checks.test_check_ancillary_variables_ok
+   hydro.tests.test_checks.test_check_ancillary_variables_unreferenced_vars
+   hydro.tests.test_checks.test_check_ancillary_variables_referenced_non_extant_var
+
+
+Module Contents
+---------------
+
+.. py:function:: test_check_ancillary_variables_ok(nc_placeholder)
+
+.. py:function:: test_check_ancillary_variables_unreferenced_vars(nc_placeholder)
+
+.. py:function:: test_check_ancillary_variables_referenced_non_extant_var(nc_placeholder)
+

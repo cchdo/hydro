@@ -1,0 +1,16 @@
+hydro.legacy
+============
+
+.. py:module:: hydro.legacy
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/hydro/legacy/coards/index
+   /autoapi/hydro/legacy/woce/index
+
+

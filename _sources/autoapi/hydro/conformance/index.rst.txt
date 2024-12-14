@@ -1,0 +1,71 @@
+hydro.conformance
+=================
+
+.. py:module:: hydro.conformance
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.conformance.FORMAT
+   hydro.conformance.log
+   hydro.conformance.CCHDOnetCDF
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hydro.conformance.CheckResult
+   hydro.conformance.CCHDOnetCDF10
+
+
+Module Contents
+---------------
+
+.. py:data:: FORMAT
+   :value: '%(message)s'
+
+
+.. py:data:: log
+
+.. py:class:: CheckResult
+
+   .. py:attribute:: error
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: warning
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:property:: ok
+      :type: bool
+
+
+
+.. py:class:: CCHDOnetCDF10
+
+   .. py:attribute:: __cchdo_version__
+      :value: '1.0'
+
+
+
+   .. py:method:: check_cf_version(ds)
+
+
+   .. py:method:: iter_errors(ds)
+
+
+   .. py:method:: validate(ds)
+
+
+.. py:data:: CCHDOnetCDF
+

@@ -1,0 +1,222 @@
+hydro.legacy.coards
+===================
+
+.. py:module:: hydro.legacy.coards
+
+.. autoapi-nested-parse::
+
+   Legacy COARDS netcdf make from libcchdo ported to take a CCHDO CF/netCDF xarray.Dataset object as input.
+
+   The goal is, as much as possible, to use the old code with minimal changes such that the following outputs are identical:
+
+   * Exchange -> CF/netCDF -> COARDS netCDF (this library)
+   * Exchange -> COARDS netCDF (using libcchdo)
+
+   The entrypoint function is :func:`to_coards`
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.legacy.coards.log
+   hydro.legacy.coards.PARAMS
+   hydro.legacy.coards.CTD_ZIP_FILE_EXTENSION
+   hydro.legacy.coards.BOTTLE_ZIP_FILE_EXTENSION
+   hydro.legacy.coards.FILL_VALUE
+   hydro.legacy.coards.QC_SUFFIX
+   hydro.legacy.coards.FILE_EXTENSION
+   hydro.legacy.coards.EPOCH
+   hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST
+   hydro.legacy.coards.NON_FLOAT_PARAMETERS
+   hydro.legacy.coards.UNKNOWN
+   hydro.legacy.coards.UNSPECIFIED_UNITS
+   hydro.legacy.coards.STRLEN
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.legacy.coards.strftime_woce_date_time
+   hydro.legacy.coards._ascii
+   hydro.legacy.coards.simplest_str
+   hydro.legacy.coards._pad_station_cast
+   hydro.legacy.coards.get_filename
+   hydro.legacy.coards.minutes_since_epoch
+   hydro.legacy.coards.get_coards_global_attributes
+   hydro.legacy.coards.get_dataarrays
+   hydro.legacy.coards.get_common_variables
+   hydro.legacy.coards.write_bottle
+   hydro.legacy.coards.write_ctd
+   hydro.legacy.coards.to_coards
+
+
+Package Contents
+----------------
+
+.. py:data:: log
+
+   logger object for message logging
+
+
+.. py:data:: PARAMS
+
+   mapping of whp names to nc names
+
+   This is loaded at module import time from a dump from the old internal params sqlite database
+
+
+.. py:data:: CTD_ZIP_FILE_EXTENSION
+   :value: 'nc_ctd.zip'
+
+
+   Filename extention for a zipped collection ctd coards netcdf files
+
+
+.. py:data:: BOTTLE_ZIP_FILE_EXTENSION
+   :value: 'nc_hyd.zip'
+
+
+   Filename extention for a zipped collection bottle coards netcdf files
+
+
+.. py:data:: FILL_VALUE
+   :value: -999.0
+
+
+   Const from old libcchdo, -999.0
+
+
+.. py:data:: QC_SUFFIX
+   :value: '_QC'
+
+
+   Variable name suffix for flag variables
+
+
+.. py:data:: FILE_EXTENSION
+   :value: 'nc'
+
+
+   filenmae extention for all netcdf files
+
+
+.. py:data:: EPOCH
+
+   dateime referenced in the units of time variables in netCDF files: 1980-01-01
+
+
+.. py:data:: STATIC_PARAMETERS_PER_CAST
+   :value: ('EXPOCODE', 'SECT_ID', 'STNNBR', 'CASTNO', '_DATETIME', 'LATITUDE', 'LONGITUDE', 'DEPTH',...
+
+
+   List of WHP names that are ignored when calling :func:`create_and_fill_data_variables`
+
+
+.. py:data:: NON_FLOAT_PARAMETERS
+   :value: ('CTDNOBS',)
+
+
+   params not in :attr:`STATIC_PARAMETERS_PER_CAST` that are also ignored by :func:`create_and_fill_data_variables`
+
+
+.. py:data:: UNKNOWN
+   :value: 'UNKNOWN'
+
+
+   Value used when some string value isn't found
+
+   This is mmostly mitigated by the guarantees of the new CF format, but e.g. section id might be missing
+
+
+.. py:data:: UNSPECIFIED_UNITS
+   :value: 'unspecified'
+
+
+   Value used when there are no units
+
+
+.. py:data:: STRLEN
+   :value: 40
+
+
+   length of char array variables, hardcoded to 40
+
+
+.. py:function:: strftime_woce_date_time(dt)
+
+   Take an xr.DataArray with time values in it and convert to strings.
+
+
+.. py:function:: _ascii(x)
+
+   Force all codepoints into valid ascii range.
+
+   Works by encoding the str into ascii bytes with the replace err param, then decoding the bytes to str again
+
+   :param x: string with any unicode codepoint in it
+   :returns: string with all non ascii codepoints replaced with whatever "replace" does in :py:meth:`str.encode`
+
+
+.. py:function:: simplest_str(s)
+
+   Give the simplest string representation.
+
+   If a float is almost equivalent to an integer, swap out for the integer.
+
+
+.. py:function:: _pad_station_cast(x)
+
+   Pad a station or cast identifier out to 5 characters.
+
+   This is usually for use in a file name.
+
+   :param x: a string to be padded
+   :type x: str
+
+
+.. py:function:: get_filename(expocode, station, cast, extension)
+
+   Generate the filename for COARDS netCDF files.
+
+   Was ported directly from libcchdo and should have the same formatting behavior
+
+
+.. py:function:: minutes_since_epoch(dt, epoch, error=-9)
+
+   Make the time value for netCDF files.
+
+   The custom implimentation in libcchdo was discarded in favor of the date2num function from cftime.
+   Not sure if cftime exsited in the netCDF4 python library at the time.
+
+
+.. py:function:: get_coards_global_attributes(ds, *, profile_type)
+
+   Makes the global attributes of a WHP COARDS netCDF File.
+
+   The order of the attributes is important/fixed, same with case
+
+
+.. py:function:: get_dataarrays(ds)
+
+.. py:function:: get_common_variables(ds)
+
+.. py:function:: write_bottle(ds)
+
+.. py:function:: write_ctd(ds)
+
+.. py:function:: to_coards(ds)
+
+   Convert an xr.Dataset to a zipfile with COARDS netCDF files inside.
+
+   This function does support mixed CTD and Bottle datasets and will convert using profile_type var on a per profile basis.
+
+
+   :param ds: A dataset conforming to CCHDO CF/netCDF
+   :returns: a zipfile with one or more COARDS netCDF files as members.
+
+

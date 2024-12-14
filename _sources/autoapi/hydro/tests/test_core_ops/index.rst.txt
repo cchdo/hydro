@@ -1,0 +1,31 @@
+hydro.tests.test_core_ops
+=========================
+
+.. py:module:: hydro.tests.test_core_ops
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.tests.test_core_ops.test_create_new
+   hydro.tests.test_core_ops.test_add_profile
+   hydro.tests.test_core_ops.test_add_param
+   hydro.tests.test_core_ops.test_remove_param
+   hydro.tests.test_core_ops.test_add_param_cdom
+
+
+Module Contents
+---------------
+
+.. py:function:: test_create_new()
+
+.. py:function:: test_add_profile()
+
+.. py:function:: test_add_param()
+
+.. py:function:: test_remove_param(param, flag, error, empty, require_empty)
+
+.. py:function:: test_add_param_cdom()
+

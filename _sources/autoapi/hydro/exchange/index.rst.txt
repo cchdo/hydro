@@ -1,0 +1,570 @@
+hydro.exchange
+==============
+
+.. py:module:: hydro.exchange
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/hydro/exchange/exceptions/index
+   /autoapi/hydro/exchange/flags/index
+   /autoapi/hydro/exchange/helpers/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.exchange.CCHDO_VERSION
+   hydro.exchange.log
+   hydro.exchange.DIMS
+   hydro.exchange.EXPOCODE
+   hydro.exchange.STNNBR
+   hydro.exchange.CASTNO
+   hydro.exchange.SAMPNO
+   hydro.exchange.DATE
+   hydro.exchange.TIME
+   hydro.exchange.LATITUDE
+   hydro.exchange.LONGITUDE
+   hydro.exchange.CTDPRS
+   hydro.exchange.BTLNBR
+   hydro.exchange.COORDS
+   hydro.exchange.SENTINEL_PREFIX
+   hydro.exchange.SENTINEL_PARAM
+   hydro.exchange.FLAG_SCHEME
+   hydro.exchange.GEOMETRY_VARS
+   hydro.exchange.FILLS_MAP
+   hydro.exchange.FileTypes
+   hydro.exchange.WHPNameIndex
+   hydro.exchange.WHPParamUnit
+   hydro.exchange.ExchangeIO
+   hydro.exchange.WHPNameAttr
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hydro.exchange.FileType
+   hydro.exchange._ExchangeData
+   hydro.exchange._ExchangeInfo
+   hydro.exchange.CheckOptions
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.exchange._has_no_nones
+   hydro.exchange._transform_whp_to_csv
+   hydro.exchange._get_params
+   hydro.exchange._ctd_get_header
+   hydro.exchange._is_all_dataarray
+   hydro.exchange.flatten_cdom_coordinate
+   hydro.exchange.add_cdom_coordinate
+   hydro.exchange.add_geometry_var
+   hydro.exchange.add_profile_type
+   hydro.exchange.finalize_ancillary_variables
+   hydro.exchange.combine_bottle_time
+   hydro.exchange.check_is_subset_shape
+   hydro.exchange.check_flags
+   hydro.exchange._get_fill_locs
+   hydro.exchange.extract_numeric_precisions
+   hydro.exchange._is_valid_exchange_numeric
+   hydro.exchange._combine_dt_ndarray
+   hydro.exchange.sort_ds
+   hydro.exchange.check_sorted
+   hydro.exchange.combine_dt
+   hydro.exchange.set_axis_attrs
+   hydro.exchange.set_coordinate_encoding_fill
+   hydro.exchange._load_raw_exchange
+   hydro.exchange.all_same
+   hydro.exchange.read_csv
+   hydro.exchange.read_exchange
+   hydro.exchange._from_exchange_data
+
+
+Package Contents
+----------------
+
+.. py:data:: CCHDO_VERSION
+   :value: ''
+
+
+.. py:data:: log
+
+.. py:data:: DIMS
+   :value: ('N_PROF', 'N_LEVELS')
+
+
+.. py:data:: EXPOCODE
+
+.. py:data:: STNNBR
+
+.. py:data:: CASTNO
+
+.. py:data:: SAMPNO
+
+.. py:data:: DATE
+
+.. py:data:: TIME
+
+.. py:data:: LATITUDE
+
+.. py:data:: LONGITUDE
+
+.. py:data:: CTDPRS
+
+.. py:data:: BTLNBR
+
+.. py:data:: COORDS
+
+.. py:data:: SENTINEL_PREFIX
+   :value: '__SENTINEL'
+
+
+.. py:data:: SENTINEL_PARAM
+
+.. py:data:: FLAG_SCHEME
+   :type:  dict[str, type[cchdo.hydro.exchange.flags.ExchangeFlag]]
+
+.. py:data:: GEOMETRY_VARS
+   :value: ('expocode', 'station', 'cast', 'section_id', 'time')
+
+
+.. py:data:: FILLS_MAP
+
+.. py:data:: FileTypes
+
+.. py:class:: FileType(*args, **kwds)
+
+   Bases: :py:obj:`enum.Enum`
+
+
+   Create a collection of name/value pairs.
+
+   Example enumeration:
+
+   >>> class Color(Enum):
+   ...     RED = 1
+   ...     BLUE = 2
+   ...     GREEN = 3
+
+   Access them by:
+
+   - attribute access::
+
+   >>> Color.RED
+   <Color.RED: 1>
+
+   - value lookup:
+
+   >>> Color(1)
+   <Color.RED: 1>
+
+   - name lookup:
+
+   >>> Color['RED']
+   <Color.RED: 1>
+
+   Enumerations can be iterated over, and know how many members they have:
+
+   >>> len(Color)
+   3
+
+   >>> list(Color)
+   [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+   Methods can be added to enumerations, and members can have their own
+   attributes -- see the documentation for details.
+
+
+   .. py:attribute:: CTD
+      :value: 'C'
+
+
+
+   .. py:attribute:: BOTTLE
+      :value: 'B'
+
+
+
+.. py:data:: WHPNameIndex
+
+.. py:data:: WHPParamUnit
+
+.. py:function:: _has_no_nones(val)
+
+.. py:function:: _transform_whp_to_csv(params, units)
+
+.. py:function:: _get_params(params_units, ignore_params = None)
+
+.. py:function:: _ctd_get_header(line, dtype=str)
+
+.. py:function:: _is_all_dataarray(val)
+
+.. py:function:: flatten_cdom_coordinate(dataset)
+
+   Takes the a dataset with a CDOM wavelength and explocdes it back into individual variables
+
+
+.. py:function:: add_cdom_coordinate(dataset)
+
+   Find all the paraters in the cdom group and add their wavelength in a new coordinate
+
+
+.. py:function:: add_geometry_var(dataset)
+
+   Adds a CF-1.8 Geometry container variable to the dataset
+
+   This allows for compatabiltiy with tools like gdal
+
+
+.. py:function:: add_profile_type(dataset, ftype)
+
+   Adds a `profile_type` string variable to the dataset.
+
+   This is for ODV compatability
+
+   .. warning::
+     Currently mixed profile types are not supported
+
+
+.. py:function:: finalize_ancillary_variables(dataset)
+
+   Turn the ancillary variable attr into a space seperated string
+
+   It is nice to have the ancillary variable be a list while things are being read into it
+
+
+.. py:function:: combine_bottle_time(dataset)
+
+   Combine the bottle dates and times if present
+
+   Raises if only one is present
+
+
+.. py:function:: check_is_subset_shape(a1, a2, strict='disallowed')
+
+   Ensure that the shape of the data in a2 is a subset (or strict subset) of the data shape of a1
+
+   For a given set of param, flag, and error arrays you would want to ensure that:
+
+   * errors are a subset of params (strict is allowed)
+   * params are a subset of flags (strict is allowed)
+
+   For string vars, the empty string is considered the "nothing" value.
+   For woce flags, flag 9s should be converted to nans (depending on scheme flag 5 and 1 may not have param values)
+
+   Return a boolean array of invalid locations
+
+
+.. py:function:: check_flags(dataset, raises=True)
+
+   Check WOCE flag values agaisnt their param and ensure that the param either has a value or is "nan" depedning on the flag definition.
+
+   Return a boolean array of invalid locations?
+
+
+.. py:class:: _ExchangeData
+
+   Dataclass containing exchange data which has been parsed into ndarrays
+
+
+   .. py:attribute:: single_profile
+      :type:  bool
+
+
+   .. py:attribute:: param_cols
+      :type:  dict[cchdo.params.WHPName, numpy.ndarray]
+
+
+   .. py:attribute:: flag_cols
+      :type:  dict[cchdo.params.WHPName, numpy.ndarray]
+
+
+   .. py:attribute:: error_cols
+      :type:  dict[cchdo.params.WHPName, numpy.ndarray]
+
+
+   .. py:attribute:: param_precisions
+      :type:  dict[cchdo.params.WHPName, numpy.typing.NDArray[numpy.int_]]
+
+
+   .. py:attribute:: error_precisions
+      :type:  dict[cchdo.params.WHPName, numpy.typing.NDArray[numpy.int_]]
+
+
+   .. py:attribute:: comments
+      :type:  str
+
+
+   .. py:method:: __post_init__()
+
+
+   .. py:method:: set_expected(params, flags, errors)
+
+      Puts fill columns for expected params which are missing
+
+      This can occur when there are disjoint columns in CTD files
+
+
+
+   .. py:method:: split_profiles()
+
+      Split into single profile containing _ExchangeData instances
+
+      Done by looking at the expocode+station+cast composate keys
+
+
+
+   .. py:property:: str_lens
+      :type: dict[cchdo.params.WHPName, int]
+
+
+      Figure out the length of all the string params
+
+      The char size can vary by platform.
+
+
+
+.. py:function:: _get_fill_locs(arr, fill_values = ('-999', ))
+
+.. py:class:: _ExchangeInfo
+
+   Low level dataclass containing the parts of an exchange file
+
+
+   .. py:attribute:: stamp_slice
+      :type:  slice
+
+
+   .. py:attribute:: comments_slice
+      :type:  slice
+
+
+   .. py:attribute:: ctd_headers_slice
+      :type:  slice
+
+
+   .. py:attribute:: params_idx
+      :type:  int
+
+
+   .. py:attribute:: units_idx
+      :type:  int
+
+
+   .. py:attribute:: data_slice
+      :type:  slice
+
+
+   .. py:attribute:: post_data_slice
+      :type:  slice
+
+
+   .. py:attribute:: _raw_lines
+      :type:  tuple[str, Ellipsis]
+
+
+   .. py:attribute:: _ctd_override
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: _ignore_columns
+      :type:  collections.abc.Iterable[str]
+      :value: ()
+
+
+
+   .. py:property:: stamp
+
+      Returns the filestamp of the exchange file
+
+      e.g. "BOTTLE,20210301CCHSIOAMB"
+
+
+
+   .. py:property:: comments
+
+      Returns the comments of the exchange file with leading # stripped
+
+
+
+   .. py:property:: ctd_headers
+
+      Returns a dict of the CTD headers and their value
+
+
+
+   .. py:property:: params
+
+      Returns a list of all parameters in the file (including CTD "headers")
+
+
+
+   .. py:property:: units
+
+      Returns a list of all the units in the file (including CTD "headers")
+
+      Will have the same shape as params
+
+
+
+   .. py:property:: data
+
+      Returns the data block of an exchange file as a tuple of strs.
+      One line per entry.
+
+
+
+   .. py:property:: post_data
+
+      Returns any post data content as a tuple of strs
+
+
+
+   .. py:property:: _whp_param_info
+
+      Parses the params and units for base parameters
+
+      Returns a dict with a WHPName to column index mapping
+
+
+
+   .. py:property:: whp_params
+
+
+   .. py:property:: whp_flags
+
+      Parses the params and units for flag values
+
+      returns a dict with a WHPName to column index of flags mapping
+
+
+
+   .. py:property:: whp_errors
+
+      Parses the params and units for uncertanty values
+
+      returns a dict with a WHPName to column index of errors mapping
+
+
+
+   .. py:property:: _np_data_block
+
+
+   .. py:method:: finalize(fill_values=('-999', ), precision_source='file')
+
+      Parse all the data into ndarrays of the correct dtype and shape
+
+      Returns an ExchangeData dataclass
+
+
+
+   .. py:method:: from_lines(lines, ftype, ignore_columns)
+      :classmethod:
+
+
+      Figure out the line numbers/indicies of the parts of the exchange file
+
+
+
+.. py:function:: extract_numeric_precisions(data)
+
+   Get the numeric precision of a printed decimal number
+
+
+.. py:function:: _is_valid_exchange_numeric(data)
+
+.. py:data:: ExchangeIO
+
+.. py:function:: _combine_dt_ndarray(date_arr, time_arr = None, time_pad=False)
+
+.. py:function:: sort_ds(dataset)
+
+   Sorts the data values in the dataset
+
+   Ensures that profiles are in the following order:
+
+   * Earlier before later (time will increase)
+   * Southerly before northerly (latitude will increase)
+   * Westerly before easterly (longitude will increase)
+
+   The two xy sorts are esentially tie breakers for when we are missing "time"
+
+   Inside profiles:
+
+   * Shallower before Deeper (pressure will increase)
+
+
+
+.. py:function:: check_sorted(dataset)
+
+   Check that the dataset is sorted by the rules in :func:`sort_ds`
+
+
+.. py:data:: WHPNameAttr
+
+.. py:function:: combine_dt(dataset, is_coord = True, date_name = DATE, time_name = TIME, time_pad=False)
+
+   Combine the exchange style string variables of date and optinally time into a single
+   variable containing real datetime objects
+
+   This will remove the time variable if present, and replace then rename the date variable.
+   Date is replaced/renamed to maintain variable order in the xr.DataSet
+
+
+.. py:function:: set_axis_attrs(dataset)
+
+   Set the CF axis attribute on our axis variables (XYZT)
+
+   * longitude = "X"
+   * latitude = "Y"
+   * pressure = "Z", addtionally, positive is down
+   * time = "T"
+
+
+.. py:function:: set_coordinate_encoding_fill(dataset)
+
+   Sets the _FillValue encoidng to None for 1D coordinate vars
+
+
+.. py:function:: _load_raw_exchange(filename_or_obj, *, file_seperator = None, keep_seperator=True, encoding='utf8')
+
+.. py:function:: all_same(ndarr)
+
+   Test if all the values of an ndarray are the same value
+
+
+.. py:class:: CheckOptions
+
+   Bases: :py:obj:`TypedDict`
+
+
+   Flags and config that controll how strict the file checks are
+
+
+   .. py:attribute:: flags
+      :type:  bool
+
+
+.. py:function:: read_csv(filename_or_obj, *, fill_values=('-999', ), ftype = FileType.BOTTLE, checks = None, precision_source='file', encoding='utf8', ignore_columns = None)
+
+.. py:function:: read_exchange(filename_or_obj, *, fill_values=('-999', ), checks = None, precision_source='file', file_seperator=None, keep_seperator=True, encoding='utf8', ignore_columns = None)
+
+   Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
+   CF/netCDF structure
+
+
+.. py:function:: _from_exchange_data(exchange_data, *, ftype=FileType.BOTTLE, checks = None)
+

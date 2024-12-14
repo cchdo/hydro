@@ -1,0 +1,24 @@
+hydro.tests
+===========
+
+.. py:module:: hydro.tests
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/hydro/tests/conftest/index
+   /autoapi/hydro/tests/data/index
+   /autoapi/hydro/tests/test_accessors/index
+   /autoapi/hydro/tests/test_checks/index
+   /autoapi/hydro/tests/test_core_ops/index
+   /autoapi/hydro/tests/test_csv/index
+   /autoapi/hydro/tests/test_exchange/index
+   /autoapi/hydro/tests/test_legacy/index
+   /autoapi/hydro/tests/test_merge/index
+   /autoapi/hydro/tests/test_rename/index
+
+

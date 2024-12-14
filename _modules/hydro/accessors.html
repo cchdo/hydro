@@ -1,0 +1,1376 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>hydro.accessors - hydro documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">hydro  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">hydro  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../format_spec.html">GO-SHIP CF/netCDF Data Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../attributes.html">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../erddap.html">Variables in ERDDAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ODF_CCHDO_netCDF_ops.html">Basic CF/netCDF operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exchange_checker.html">Exchange Checker/Converter</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../notebooks.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/2018_s04p_ctd/add_remove_param_s04p_merge.html">add/remove param S04P merge example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/round_trip.html">Round Trip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples/simple.html">Simple</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../autoapi/hydro/index.html">hydro</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of hydro</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/__main__/index.html">hydro.__main__</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/__main_helpers/index.html">hydro.__main_helpers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/accessors/index.html">hydro.accessors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/checks/index.html">hydro.checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/conformance/index.html">hydro.conformance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/convert/index.html">hydro.convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/core/index.html">hydro.core</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/hydro/exchange/index.html">hydro.exchange</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of hydro.exchange</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/exchange/exceptions/index.html">hydro.exchange.exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/exchange/flags/index.html">hydro.exchange.flags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/exchange/helpers/index.html">hydro.exchange.helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/hydro/legacy/index.html">hydro.legacy</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of hydro.legacy</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/legacy/coards/index.html">hydro.legacy.coards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/legacy/woce/index.html">hydro.legacy.woce</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/migration/index.html">hydro.migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/rename/index.html">hydro.rename</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/hydro/tests/index.html">hydro.tests</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of hydro.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/conftest/index.html">hydro.tests.conftest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/data/index.html">hydro.tests.data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_accessors/index.html">hydro.tests.test_accessors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_checks/index.html">hydro.tests.test_checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_core_ops/index.html">hydro.tests.test_core_ops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_csv/index.html">hydro.tests.test_csv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_exchange/index.html">hydro.tests.test_exchange</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_legacy/index.html">hydro.tests.test_legacy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_merge/index.html">hydro.tests.test_merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/test_rename/index.html">hydro.tests.test_rename</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/tutorial/index.html">hydro.tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for hydro.accessors</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">UTC</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BufferedWriter</span><span class="p">,</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">NamedTuple</span>
+<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">ZipFile</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="kn">from</span> <span class="nn">cchdo.params</span> <span class="kn">import</span> <span class="n">WHPName</span><span class="p">,</span> <span class="n">WHPNames</span>
+
+<span class="kn">from</span> <span class="nn">.exchange</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FileType</span><span class="p">,</span>
+    <span class="n">add_cdom_coordinate</span><span class="p">,</span>
+    <span class="n">all_same</span><span class="p">,</span>
+    <span class="n">extract_numeric_precisions</span><span class="p">,</span>
+    <span class="n">flatten_cdom_coordinate</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.exchange</span> <span class="kn">import</span> <span class="n">check_flags</span> <span class="k">as</span> <span class="n">_check_flags</span>
+
+<div class="viewcode-block" id="FLAG_NAME">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FLAG_NAME">[docs]</a>
+<span class="n">FLAG_NAME</span> <span class="o">=</span> <span class="s2">&quot;cchdo.hydro._qc&quot;</span></div>
+
+<div class="viewcode-block" id="ERROR_NAME">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.ERROR_NAME">[docs]</a>
+<span class="n">ERROR_NAME</span> <span class="o">=</span> <span class="s2">&quot;cchdo.hydro._error&quot;</span></div>
+
+
+<div class="viewcode-block" id="PathType">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.PathType">[docs]</a>
+<span class="n">PathType</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span></div>
+
+
+
+<div class="viewcode-block" id="write_or_return">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.write_or_return">[docs]</a>
+<span class="k">def</span> <span class="nf">write_or_return</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">path_or_fobj</span><span class="p">:</span> <span class="n">PathType</span> <span class="o">|</span> <span class="n">BufferedWriter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># assume path_or_fobj is an open filelike</span>
+    <span class="k">if</span> <span class="n">path_or_fobj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path_or_fobj</span><span class="p">,</span> <span class="n">BufferedWriter</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">path_or_fobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;File must be open for bytes writing&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_or_fobj</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<span class="c1"># maybe temp location for FQ merge machinery</span>
+<div class="viewcode-block" id="FQPointKey">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey">[docs]</a>
+<span class="k">class</span> <span class="nc">FQPointKey</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<div class="viewcode-block" id="FQPointKey.expocode">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey.expocode">[docs]</a>
+    <span class="n">expocode</span><span class="p">:</span> <span class="nb">str</span></div>
+
+<div class="viewcode-block" id="FQPointKey.station">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey.station">[docs]</a>
+    <span class="n">station</span><span class="p">:</span> <span class="nb">str</span></div>
+
+<div class="viewcode-block" id="FQPointKey.cast">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey.cast">[docs]</a>
+    <span class="n">cast</span><span class="p">:</span> <span class="nb">int</span></div>
+
+<div class="viewcode-block" id="FQPointKey.sample">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey.sample">[docs]</a>
+    <span class="n">sample</span><span class="p">:</span> <span class="nb">str</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FQProfileKey">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQProfileKey">[docs]</a>
+<span class="k">class</span> <span class="nc">FQProfileKey</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<div class="viewcode-block" id="FQProfileKey.expocode">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQProfileKey.expocode">[docs]</a>
+    <span class="n">expocode</span><span class="p">:</span> <span class="nb">str</span></div>
+
+<div class="viewcode-block" id="FQProfileKey.station">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQProfileKey.station">[docs]</a>
+    <span class="n">station</span><span class="p">:</span> <span class="nb">str</span></div>
+
+<div class="viewcode-block" id="FQProfileKey.cast">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQProfileKey.cast">[docs]</a>
+    <span class="n">cast</span><span class="p">:</span> <span class="nb">int</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="WHPIndxer">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer">[docs]</a>
+<span class="k">class</span> <span class="nc">WHPIndxer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="WHPIndxer.n_prof">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer.n_prof">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_prof</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">expocode</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">station</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">cast</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;expocode&quot;</span><span class="p">,</span> <span class="s2">&quot;station&quot;</span><span class="p">,</span> <span class="s2">&quot;cast&quot;</span><span class="p">],</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="WHPIndxer.n_level">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer.n_level">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_level</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">prof</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_level</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]))</span>
+
+<div class="viewcode-block" id="WHPIndxer.__getitem__">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer.__getitem__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">FQProfileKey</span> <span class="o">|</span> <span class="n">FQPointKey</span><span class="p">):</span>
+        <span class="n">prof_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_prof</span><span class="o">.</span><span class="n">get_loc</span><span class="p">((</span><span class="n">key</span><span class="o">.</span><span class="n">expocode</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">cast</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">FQPointKey</span><span class="p">):</span>
+            <span class="n">level_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_level</span><span class="p">[</span><span class="n">prof_idx</span><span class="p">]</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">level_idx</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">prof_idx</span><span class="p">,</span> <span class="n">level_idx</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="NormalizedFQ">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.NormalizedFQ">[docs]</a>
+<span class="n">NormalizedFQ</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="n">FQProfileKey</span> <span class="o">|</span> <span class="n">FQPointKey</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]]</span></div>
+
+
+
+<div class="viewcode-block" id="normalize_fq">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.normalize_fq">[docs]</a>
+<span class="k">def</span> <span class="nf">normalize_fq</span><span class="p">(</span><span class="n">fq</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="n">check_dupes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NormalizedFQ</span><span class="p">:</span>
+    <span class="n">normalized</span><span class="p">:</span> <span class="n">NormalizedFQ</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">key</span><span class="p">:</span> <span class="n">FQProfileKey</span> <span class="o">|</span> <span class="n">FQPointKey</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fq</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">expocode</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;EXPOCODE&quot;</span><span class="p">))</span>
+        <span class="n">station</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;STNNBR&quot;</span><span class="p">))</span>
+        <span class="n">cast</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;CASTNO&quot;</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sample</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;SAMPNO&quot;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">FQProfileKey</span><span class="p">(</span><span class="n">expocode</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">cast</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">FQPointKey</span><span class="p">(</span><span class="n">expocode</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">check_dupes</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">shared_keys</span> <span class="o">=</span> <span class="n">normalized</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">line</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shared_keys</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate input data found: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">normalized</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">normalized</span></div>
+
+
+
+<div class="viewcode-block" id="fq_get_precisions">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.fq_get_precisions">[docs]</a>
+<span class="k">def</span> <span class="nf">fq_get_precisions</span><span class="p">(</span><span class="n">fq</span><span class="p">:</span> <span class="n">NormalizedFQ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="n">collect</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fq</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">collect</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">param</span><span class="p">:</span> <span class="n">extract_numeric_precisions</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">collect</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="FTypeOptions">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FTypeOptions">[docs]</a>
+<span class="n">FTypeOptions</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;cf&quot;</span><span class="p">,</span> <span class="s2">&quot;exchange&quot;</span><span class="p">,</span> <span class="s2">&quot;coards&quot;</span><span class="p">,</span> <span class="s2">&quot;woce&quot;</span><span class="p">]</span></div>
+
+
+
+<span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s2">&quot;cchdo&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="CCHDOAccessor">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor">[docs]</a>
+<span class="k">class</span> <span class="nc">CCHDOAccessor</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<div class="viewcode-block" id="CCHDOAccessor._obj">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._obj">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor.jsonld">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.jsonld">[docs]</a>
+    <span class="k">def</span> <span class="nf">jsonld</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="c1"># we are going to mess with it a little</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="kn">import</span> <span class="nn">gsw</span>
+
+        <span class="n">DEPTH</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;CTDDEPTH [METERS]&quot;</span><span class="p">]</span>
+
+        <span class="n">base_schema</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;@context&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;@vocab&quot;</span><span class="p">:</span> <span class="s2">&quot;https://schema.org/&quot;</span><span class="p">},</span>
+            <span class="s2">&quot;@id&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">expocode</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">}</span><span class="s2">_bottle&quot;</span><span class="p">,</span>  <span class="c1"># what would this actually be?</span>
+            <span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;Dataset&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">variableMeasured</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">NS_TO_S</span> <span class="o">=</span> <span class="mi">1000000000</span>
+
+        <span class="c1"># Inject calcualted depth if not already present</span>
+        <span class="k">if</span> <span class="n">DEPTH</span><span class="o">.</span><span class="n">full_nc_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="n">obj</span><span class="p">[</span><span class="n">DEPTH</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
+                <span class="o">-</span><span class="n">gsw</span><span class="o">.</span><span class="n">z_from_p</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">latitude</span><span class="p">),</span>
+                <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;standard_name&quot;</span><span class="p">:</span> <span class="s2">&quot;depth&quot;</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;m&quot;</span><span class="p">},</span>
+                <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="s2">&quot;N_LEVELS&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="n">minx</span><span class="p">,</span> <span class="n">maxx</span><span class="p">,</span> <span class="n">miny</span><span class="p">,</span> <span class="n">maxy</span><span class="p">,</span> <span class="n">maxz</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;standard_name&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">standard_name</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;standard_name&quot;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">standard_name</span> <span class="o">==</span> <span class="s2">&quot;status_flag&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">variableMeasuredDict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;PropertyValue&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">var</span><span class="p">,</span>
+                <span class="s2">&quot;propertyID&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;http://vocab.nerc.ac.uk/standard_name/</span><span class="si">{</span><span class="n">standard_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="s2">&quot;units&quot;</span> <span class="ow">in</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="n">variableMeasuredDict</span><span class="p">[</span><span class="s2">&quot;unitText&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span>
+
+            <span class="c1"># min/max calculations</span>
+            <span class="n">min_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">max_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+            <span class="c1"># special case time to make it a unix UNIX timestamp... units are ???</span>
+            <span class="k">if</span> <span class="n">standard_name</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span><span class="p">:</span>
+                <span class="n">min_v</span> <span class="o">=</span> <span class="n">min_v</span> <span class="o">//</span> <span class="n">NS_TO_S</span>
+                <span class="n">max_v</span> <span class="o">=</span> <span class="n">max_v</span> <span class="o">//</span> <span class="n">NS_TO_S</span>
+
+            <span class="c1"># special case longitude so that &quot;min&quot; and &quot;max&quot; are always westernmost and easternmost</span>
+            <span class="k">if</span> <span class="n">standard_name</span> <span class="o">==</span> <span class="s2">&quot;longitude&quot;</span> <span class="ow">and</span> <span class="n">max_v</span> <span class="o">-</span> <span class="n">min_v</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+                <span class="n">max_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">da</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">initial</span><span class="o">=-</span><span class="mi">180</span><span class="p">)</span>
+                <span class="n">min_v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">da</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">min_v</span><span class="p">):</span>
+                <span class="n">variableMeasuredDict</span><span class="p">[</span><span class="s2">&quot;minValue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">min_v</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">max_v</span><span class="p">):</span>
+                <span class="n">variableMeasuredDict</span><span class="p">[</span><span class="s2">&quot;maxValue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_v</span>
+            <span class="c1"># if include_description and (sname := CFStandardNames.get(standard_name)) is not None:</span>
+            <span class="c1">#    variableMeasuredDict[&quot;description&quot;] = sname.description</span>
+
+            <span class="k">if</span> <span class="n">standard_name</span> <span class="o">==</span> <span class="s2">&quot;longitude&quot;</span><span class="p">:</span>
+                <span class="n">minx</span> <span class="o">=</span> <span class="n">min_v</span>
+                <span class="n">maxx</span> <span class="o">=</span> <span class="n">max_v</span>
+            <span class="k">if</span> <span class="n">standard_name</span> <span class="o">==</span> <span class="s2">&quot;latitude&quot;</span><span class="p">:</span>
+                <span class="n">miny</span> <span class="o">=</span> <span class="n">min_v</span>
+                <span class="n">maxy</span> <span class="o">=</span> <span class="n">max_v</span>
+            <span class="k">if</span> <span class="n">standard_name</span> <span class="o">==</span> <span class="s2">&quot;depth&quot;</span><span class="p">:</span>
+                <span class="n">maxz</span> <span class="o">=</span> <span class="n">max_v</span>
+
+            <span class="n">variableMeasured</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variableMeasuredDict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">minx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">maxx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">miny</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">maxy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">maxz</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="n">base_schema</span><span class="p">[</span><span class="s2">&quot;spatialCoverage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;Place&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;geo&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;GeoShape&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;box&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">miny</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">minx</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">maxy</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">maxx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;elevation&quot;</span><span class="p">:</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">maxz</span><span class="p">),</span>
+                <span class="p">},</span>
+            <span class="p">}</span>
+
+        <span class="n">dtstart</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">dtend</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">base_schema</span><span class="p">[</span><span class="s2">&quot;temporalCoverage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dtstart</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">dtend</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">base_schema</span><span class="p">[</span><span class="s2">&quot;variableMeasured&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">variableMeasured</span>
+        <span class="k">return</span> <span class="n">base_schema</span>  <span class="c1"># TODO pydantic models?</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor.to_mat">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_mat">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Experimental Matlab .mat data file generator.</span>
+
+<span class="sd">        The support for netCDF files in Matlab is really bad.</span>
+<span class="sd">        Matlab also has no built in support for the standards</span>
+<span class="sd">        we are trying to follow (CF, ACDD), the most egregious</span>
+<span class="sd">        lack of support is how to deal with times in netCDF files.</span>
+<span class="sd">        This was an attempt to make a mat file which takes</span>
+<span class="sd">        care of some of the things matlab won&#39;t do for you.</span>
+<span class="sd">        It requires scipy to function.</span>
+
+<span class="sd">        The file it produces is in no way stable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">scipy.io</span> <span class="kn">import</span> <span class="n">savemat</span> <span class="k">as</span> <span class="n">scipy_savemat</span>  <span class="c1"># noqa</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;scipy is required for mat file saving&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
+
+        <span class="n">mat_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="c1"># flatten</span>
+        <span class="k">for</span> <span class="n">coord</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">del</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span>
+            <span class="n">mat_dict</span><span class="p">[</span><span class="n">coord</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;data_vars&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">del</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span>
+            <span class="n">mat_dict</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c1"># cleanups for matlab users</span>
+        <span class="k">def</span> <span class="nf">to_matdate</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">dt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;NaT&quot;</span>
+            <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%b-%Y %H:%M:%S&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">dt_list_to_str_list</span><span class="p">(</span><span class="n">dtl</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">to_matdate</span><span class="p">,</span> <span class="n">dtl</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">mat_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attrs&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;standard_name&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span><span class="p">:</span>
+                <span class="c1"># the case of list of lists is bottle closure times, which is a sparse array</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]):</span>
+                    <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">dt_list_to_str_list</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt_list_to_str_list</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="s2">&quot;status_flag&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attrs&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;standard_name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                <span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">nan</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+
+        <span class="n">scipy_savemat</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">mat_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor.to_coards">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_coards">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_coards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.legacy.coards</span> <span class="kn">import</span> <span class="n">to_coards</span>
+
+        <span class="k">return</span> <span class="n">write_or_return</span><span class="p">(</span><span class="n">to_coards</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">),</span> <span class="n">path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor.to_woce">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_woce">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_woce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.legacy.woce</span> <span class="kn">import</span> <span class="n">to_woce</span>
+
+        <span class="k">return</span> <span class="n">write_or_return</span><span class="p">(</span><span class="n">to_woce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">),</span> <span class="n">path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor.to_sum">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_sum">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;NetCDF to WOCE sumfile maker.</span>
+
+<span class="sd">        This is missing some information that is not included anymore (wire out, height above bottom).</span>
+<span class="sd">        It is especially lacking in including woce parameter IDs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">COMMENTS</span> <span class="o">=</span> <span class="s2">&quot;CCHDO SumFile&quot;</span>  <span class="c1"># TODO is there a better way?</span>
+        <span class="n">SUM_COLUMN_HEADERS_1</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;SHIP/CRS&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;WOCE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;CAST&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;UTC&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;EVENT&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;POSITION&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;UNC&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;HT ABOVE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;WIRE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;MAX&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;NO. OF&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">SUM_COLUMN_HEADERS_2</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;EXPOCODE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SECT&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;STNNBR&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;CASTNO&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;TYPE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;DATE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;TIME&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;CODE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;LATITUDE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;LONGITUDE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;NAV&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;DEPTH&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;BOTTOM&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;OUT&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;PRESS&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;BOTTLES&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;PARAMETERS&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;COMMENTS&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="n">SUM_COL_JUSTIFICATION</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># note that python calls this &quot;align&quot;</span>
+            <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>  <span class="c1"># expo</span>
+            <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>  <span class="c1"># woce line</span>
+            <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>  <span class="c1"># station</span>
+            <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>  <span class="c1"># cast</span>
+            <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>  <span class="c1"># type</span>
+            <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>  <span class="c1"># date</span>
+            <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>  <span class="c1"># time</span>
+            <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>  <span class="c1"># EVENT (guess at justification)</span>
+            <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>  <span class="c1"># position 1</span>
+            <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>  <span class="c1"># position 2</span>
+            <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>  <span class="c1"># NAV (guess at justification)</span>
+            <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>  <span class="c1"># depth</span>
+            <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>  <span class="c1"># height</span>
+            <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>  <span class="c1"># wire out</span>
+            <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>  <span class="c1"># pres</span>
+            <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>  <span class="c1"># no bottles</span>
+            <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>  <span class="c1"># params</span>
+            <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>  <span class="c1"># comments</span>
+        <span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">sum_lat</span><span class="p">(</span><span class="n">deg_float</span><span class="p">):</span>
+            <span class="n">deg</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">deg_float</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">deg_float</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">hem</span> <span class="o">=</span> <span class="s2">&quot;N&quot;</span>
+                <span class="n">dec</span> <span class="o">=</span> <span class="n">deg_float</span> <span class="o">%</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hem</span> <span class="o">=</span> <span class="s2">&quot;S&quot;</span>
+                <span class="n">dec</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">deg_float</span> <span class="o">%</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">mins</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="n">dec</span>
+
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">deg</span><span class="si">:</span><span class="s2">&gt;2d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mins</span><span class="si">:</span><span class="s2">05.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">hem</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">def</span> <span class="nf">sum_lon</span><span class="p">(</span><span class="n">deg_float</span><span class="p">):</span>
+            <span class="n">deg</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">deg_float</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">deg_float</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">hem</span> <span class="o">=</span> <span class="s2">&quot;E&quot;</span>
+                <span class="n">dec</span> <span class="o">=</span> <span class="n">deg_float</span> <span class="o">%</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hem</span> <span class="o">=</span> <span class="s2">&quot;W&quot;</span>
+                <span class="n">dec</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">deg_float</span> <span class="o">%</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">mins</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="n">dec</span>
+
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">deg</span><span class="si">:</span><span class="s2">&gt;3d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mins</span><span class="si">:</span><span class="s2">05.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">hem</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">col_widths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SUM_COLUMN_HEADERS_1</span><span class="p">]</span>
+        <span class="n">col_widths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">col_widths</span><span class="p">,</span> <span class="n">SUM_COLUMN_HEADERS_2</span><span class="p">)]</span>
+
+        <span class="n">sum_rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">prof</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="n">prof</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">)</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+            <span class="n">sect_id</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">sect_ids</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">filter_by_attrs</span><span class="p">(</span><span class="n">whp_name</span><span class="o">=</span><span class="s2">&quot;SECT_ID&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">ids</span> <span class="ow">in</span> <span class="n">sect_ids</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">sect_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ids</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+                <span class="k">break</span>
+
+            <span class="n">depth</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">depths</span> <span class="o">=</span> <span class="n">prof</span><span class="o">.</span><span class="n">filter_by_attrs</span><span class="p">(</span><span class="n">whp_name</span><span class="o">=</span><span class="s2">&quot;DEPTH&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">meters</span> <span class="ow">in</span> <span class="n">depths</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">depth</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">meters</span><span class="o">.</span><span class="n">values</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="s2">&quot;nan&quot;</span><span class="p">:</span>
+                    <span class="n">depth</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">break</span>
+
+            <span class="n">no_of_bottles</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">values</span><span class="o">!=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">prof</span><span class="o">.</span><span class="n">profile_type</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_widths</span><span class="p">)</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="n">prof</span><span class="o">.</span><span class="n">expocode</span><span class="o">.</span><span class="n">values</span>
+            <span class="p">)</span>  <span class="c1"># TODO? Limit to 12 chars as per 3.3.1 of woce manual</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sect_id</span>  <span class="c1"># TODO? Maybe also limit to 12 chars?</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">station</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">cast</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ROS&quot;</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m</span><span class="si">%d</span><span class="s2">%y&quot;</span><span class="p">)</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M&quot;</span><span class="p">)</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;BO&quot;</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_lat</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="n">sum_lon</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">longitude</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;GPS&quot;</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="n">depth</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># height above &quot;BOTTOM&quot;</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># &quot;WIRE&quot; out</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">prof</span><span class="o">.</span><span class="n">pressure</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="n">no_of_bottles</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;&quot;</span>  <span class="c1"># &quot;PARAMS&quot; we have this info... needs to be calculated on a per profile basis though...</span>
+            <span class="p">)</span>
+            <span class="n">row</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># &quot;COMMENTS&quot;</span>
+            <span class="n">sum_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">col_widths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">col_widths</span><span class="p">,</span> <span class="n">row</span><span class="p">)]</span>
+
+        <span class="n">formats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">width</span><span class="p">,</span> <span class="n">align</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">col_widths</span><span class="p">,</span> <span class="n">SUM_COL_JUSTIFICATION</span><span class="p">):</span>
+            <span class="n">formats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;{: &quot;</span> <span class="o">+</span> <span class="n">align</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span><span class="p">)</span>
+        <span class="n">format_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formats</span><span class="p">)</span>
+
+        <span class="n">HEADERS_1</span> <span class="o">=</span> <span class="n">format_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">SUM_COLUMN_HEADERS_1</span><span class="p">)</span>
+        <span class="n">HEADERS_2</span> <span class="o">=</span> <span class="n">format_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">SUM_COLUMN_HEADERS_2</span><span class="p">)</span>
+        <span class="n">SEP_LINE</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">col_widths</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_widths</span><span class="p">))</span>
+        <span class="n">SUM_ROWS</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sum_rows</span><span class="p">:</span>
+            <span class="n">SUM_ROWS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">format_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">))</span>
+
+        <span class="n">sum_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">COMMENTS</span><span class="p">,</span> <span class="n">HEADERS_1</span><span class="p">,</span> <span class="n">HEADERS_2</span><span class="p">,</span> <span class="n">SEP_LINE</span><span class="p">,</span> <span class="o">*</span><span class="n">SUM_ROWS</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">write_or_return</span><span class="p">(</span><span class="n">sum_file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="CCHDOAccessor.__geo_interface__">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.__geo_interface__">[docs]</a>
+    <span class="k">def</span> <span class="nf">__geo_interface__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The station positions as a MultiPoint geo interface.</span>
+
+<span class="sd">        See https://gist.github.com/sgillies/2217756</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">latitude</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;MultiPoint&quot;</span><span class="p">,</span> <span class="s2">&quot;coordinates&quot;</span><span class="p">:</span> <span class="n">coords</span><span class="o">.</span><span class="n">tolist</span><span class="p">()}</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="CCHDOAccessor.track">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.track">[docs]</a>
+    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A dict which can be dumped to json which conforms to the expected structure for the CCHDO website.&quot;&quot;&quot;</span>
+        <span class="n">geo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__geo_interface__</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">geo</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Website only supports LineString which must contain at least 2 points</span>
+            <span class="c1"># They can be the same point though</span>
+            <span class="n">geo</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geo</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">geo</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;LineString&quot;</span>
+        <span class="k">return</span> <span class="n">geo</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="CCHDOAccessor._gen_fname">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._gen_fname">[docs]</a>
+    <span class="k">def</span> <span class="nf">_gen_fname</span><span class="p">(</span>
+        <span class="n">expocode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">station</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">cast</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">profile_type</span><span class="p">:</span> <span class="n">FileType</span><span class="p">,</span>
+        <span class="n">profile_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">ftype</span><span class="p">:</span> <span class="n">FTypeOptions</span> <span class="o">=</span> <span class="s2">&quot;cf&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">allowed_chars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;._</span><span class="si">{</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="si">}{</span><span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">ctd_one</span> <span class="o">=</span> <span class="s2">&quot;ctd.nc&quot;</span>
+        <span class="n">ctd_many</span> <span class="o">=</span> <span class="s2">&quot;ctd.nc&quot;</span>
+        <span class="n">bottle</span> <span class="o">=</span> <span class="s2">&quot;bottle.nc&quot;</span>
+
+        <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;exchange&quot;</span><span class="p">:</span>
+            <span class="n">ctd_one</span> <span class="o">=</span> <span class="s2">&quot;ct1.csv&quot;</span>
+            <span class="n">ctd_many</span> <span class="o">=</span> <span class="s2">&quot;ct1.zip&quot;</span>
+            <span class="n">bottle</span> <span class="o">=</span> <span class="s2">&quot;hy1.csv&quot;</span>
+
+        <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;coards&quot;</span><span class="p">:</span>
+            <span class="c1"># internal zip filenames are done by the legacy writer</span>
+            <span class="n">ctd_one</span> <span class="o">=</span> <span class="s2">&quot;nc_ctd.zip&quot;</span>
+            <span class="n">ctd_many</span> <span class="o">=</span> <span class="s2">&quot;nc_ctd.zip&quot;</span>
+            <span class="n">bottle</span> <span class="o">=</span> <span class="s2">&quot;nc_hyd.zip&quot;</span>
+
+        <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;woce&quot;</span><span class="p">:</span>
+            <span class="c1"># internal zip filenames are done by the legacy writer</span>
+            <span class="n">ctd_one</span> <span class="o">=</span> <span class="s2">&quot;ct.txt&quot;</span>
+            <span class="n">ctd_many</span> <span class="o">=</span> <span class="s2">&quot;ct.zip&quot;</span>
+            <span class="n">bottle</span> <span class="o">=</span> <span class="s2">&quot;hy.txt&quot;</span>
+
+        <span class="k">if</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="n">FileType</span><span class="o">.</span><span class="n">BOTTLE</span><span class="p">:</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expocode</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">bottle</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">elif</span> <span class="n">profile_count</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;woce&quot;</span><span class="p">,</span> <span class="s2">&quot;coards&quot;</span><span class="p">):</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expocode</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">ctd_many</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expocode</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">station</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">cast</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">ctd_one</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="o">-</span> <span class="n">allowed_chars</span><span class="p">:</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">char</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fname</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor.gen_fname">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.gen_fname">[docs]</a>
+    <span class="k">def</span> <span class="nf">gen_fname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ftype</span><span class="p">:</span> <span class="n">FTypeOptions</span> <span class="o">=</span> <span class="s2">&quot;cf&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a human friendly netCDF (or other output type) filename for this object.&quot;&quot;&quot;</span>
+        <span class="n">expocode</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="s2">&quot;expocode&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">station</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="s2">&quot;station&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cast</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="s2">&quot;cast&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">profile_type</span> <span class="o">=</span> <span class="n">FileType</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="s2">&quot;profile_type&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">profile_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="p">[]))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gen_fname</span><span class="p">(</span>
+            <span class="n">expocode</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">profile_type</span><span class="p">,</span> <span class="n">profile_count</span><span class="p">,</span> <span class="n">ftype</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor.compact_profile">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.compact_profile">[docs]</a>
+    <span class="k">def</span> <span class="nf">compact_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop the trailing empty data from a profile.</span>
+
+<span class="sd">        Because we use the incomplete multidimensional array representation of profiles</span>
+<span class="sd">        there is often &quot;wasted space&quot; at the end of any profile that is not the longest one.</span>
+<span class="sd">        This accessor drops that wasted space for xr.Dataset objects containing a single profile</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot compact Dataset with more than one profile&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">N_LEVELS</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">sample</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor.date_names">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.date_names">[docs]</a>
+    <span class="n">date_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;DATE&quot;</span><span class="p">],</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;BTL_DATE&quot;</span><span class="p">]}</span></div>
+
+<div class="viewcode-block" id="CCHDOAccessor.time_names">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.time_names">[docs]</a>
+    <span class="n">time_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;TIME&quot;</span><span class="p">],</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;BTL_TIME&quot;</span><span class="p">]}</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="CCHDOAccessor.file_type">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.file_type">[docs]</a>
+    <span class="k">def</span> <span class="nf">file_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO profile_type is guaranteed to be present</span>
+        <span class="c1"># TODO profile_type must have C or D as the value</span>
+        <span class="n">profile_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">profile_type</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">all_same</span><span class="p">(</span><span class="n">profile_type</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;Unable to convert a mix of ctd and bottle (or unknown) dtypes&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">profile_type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">FileType</span><span class="o">.</span><span class="n">CTD</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FileType</span><span class="o">.</span><span class="n">CTD</span>
+        <span class="k">elif</span> <span class="n">profile_type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">FileType</span><span class="o">.</span><span class="n">BOTTLE</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FileType</span><span class="o">.</span><span class="n">BOTTLE</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Unknown profile type encountered&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="CCHDOAccessor.cchdo_c_format_precision">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.cchdo_c_format_precision">[docs]</a>
+    <span class="k">def</span> <span class="nf">cchdo_c_format_precision</span><span class="p">(</span><span class="n">c_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">c_format</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">f_format</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\.(\d+)f&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">match</span> <span class="o">:=</span> <span class="n">f_format</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">c_format</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">match</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor._make_params_units_line">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._make_params_units_line">[docs]</a>
+    <span class="k">def</span> <span class="nf">_make_params_units_line</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">],</span>
+    <span class="p">):</span>
+        <span class="n">plist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ulist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">dataarray</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">==</span> <span class="n">FileType</span><span class="o">.</span><span class="n">CTD</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="n">param</span><span class="o">.</span><span class="n">scope</span> <span class="o">!=</span> <span class="s2">&quot;sample&quot;</span> <span class="ow">or</span> <span class="n">param</span><span class="o">.</span><span class="n">nc_name</span> <span class="o">==</span> <span class="s2">&quot;sample&quot;</span>
+            <span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">plist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">full_whp_name</span><span class="p">)</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">whp_unit</span>
+            <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+            <span class="n">ulist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">flag</span> <span class="o">:=</span> <span class="n">dataarray</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">FLAG_NAME</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">plist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">])</span>
+                <span class="n">ulist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">error</span> <span class="o">:=</span> <span class="n">dataarray</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ERROR_NAME</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">plist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">])</span>
+                <span class="n">ulist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">plist</span><span class="p">),</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ulist</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="CCHDOAccessor._whpname_from_attrs">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._whpname_from_attrs">[docs]</a>
+    <span class="k">def</span> <span class="nf">_whpname_from_attrs</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WHPName</span><span class="p">]:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">]</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;whp_unit&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">combined</span> <span class="ow">in</span> <span class="n">param</span><span class="p">:</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">WHPNames</span><span class="p">[(</span><span class="n">combined</span><span class="p">,</span> <span class="n">unit</span><span class="p">)])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[(</span><span class="n">param</span><span class="p">,</span> <span class="n">unit</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">error_col</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">WHPNames</span><span class="p">[(</span><span class="n">param</span><span class="p">,</span> <span class="n">unit</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">params</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor._make_ctd_headers">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._make_ctd_headers">[docs]</a>
+    <span class="k">def</span> <span class="nf">_make_ctd_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">scope</span> <span class="o">!=</span> <span class="s2">&quot;profile&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">date_or_time</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_names</span><span class="p">:</span>
+                <span class="n">date_or_time</span> <span class="o">=</span> <span class="s2">&quot;date&quot;</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_names</span><span class="p">:</span>
+                <span class="n">date_or_time</span> <span class="o">=</span> <span class="s2">&quot;time&quot;</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="n">numeric_precision_override</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cchdo_c_format_precision</span><span class="p">(</span>
+                    <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;C_format&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">strfex</span><span class="p">(</span>
+                    <span class="n">data</span><span class="p">,</span>
+                    <span class="n">date_or_time</span><span class="o">=</span><span class="n">date_or_time</span><span class="p">,</span>
+                    <span class="n">numeric_precision_override</span><span class="o">=</span><span class="n">numeric_precision_override</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">headers</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">whp_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;NUMBER_HEADERS = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor._make_data_block">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._make_data_block">[docs]</a>
+    <span class="k">def</span> <span class="nf">_make_data_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="c1"># TODO N_PROF is guaranteed</span>
+        <span class="n">valid_levels</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;SAMPNO&quot;</span><span class="p">]]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">data_block</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">==</span> <span class="n">FileType</span><span class="o">.</span><span class="n">CTD</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="n">param</span><span class="o">.</span><span class="n">scope</span> <span class="o">!=</span> <span class="s2">&quot;sample&quot;</span> <span class="ow">or</span> <span class="n">param</span><span class="o">.</span><span class="n">nc_name</span> <span class="o">==</span> <span class="s2">&quot;sample&quot;</span>
+            <span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">date_or_time</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># TODO, deal with missing time in BTL_DATE</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_names</span><span class="p">:</span>
+                <span class="n">date_or_time</span> <span class="o">=</span> <span class="s2">&quot;date&quot;</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">da</span><span class="p">[</span><span class="n">valid_levels</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">da</span><span class="p">[</span><span class="n">valid_levels</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-999&quot;</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_names</span><span class="p">:</span>
+                <span class="n">date_or_time</span> <span class="o">=</span> <span class="s2">&quot;time&quot;</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">da</span><span class="p">[</span><span class="n">valid_levels</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">da</span><span class="p">[</span><span class="n">valid_levels</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H%M&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-999&quot;</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">da</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">char</span> <span class="o">==</span> <span class="s2">&quot;m&quot;</span><span class="p">:</span>
+                    <span class="n">nat_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnat</span><span class="p">(</span><span class="n">da</span><span class="p">)</span>
+                    <span class="n">data_t</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;timedelta64[s]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+                    <span class="n">data_t</span><span class="p">[</span><span class="n">nat_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">data_t</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="n">valid_levels</span><span class="p">],</span> <span class="n">flags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;refs_ok&quot;</span><span class="p">])</span>
+                <span class="n">numeric_precision_override</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cchdo_c_format_precision</span><span class="p">(</span>
+                    <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;C_format&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">param</span><span class="o">.</span><span class="n">strfex</span><span class="p">(</span>
+                        <span class="n">v</span><span class="p">,</span>
+                        <span class="n">date_or_time</span><span class="o">=</span><span class="n">date_or_time</span><span class="p">,</span>
+                        <span class="n">numeric_precision_override</span><span class="o">=</span><span class="n">numeric_precision_override</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span>
+                <span class="p">]</span>
+
+            <span class="n">data_block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">flags</span> <span class="o">:=</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">FLAG_NAME</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">flags</span><span class="p">[</span><span class="n">valid_levels</span><span class="p">])</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">strfex</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+                <span class="n">data_block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">:=</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ERROR_NAME</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">errors</span><span class="p">[</span><span class="n">valid_levels</span><span class="p">])</span>
+                <span class="n">numeric_precision_override</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cchdo_c_format_precision</span><span class="p">(</span>
+                    <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;C_format&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">param</span><span class="o">.</span><span class="n">strfex</span><span class="p">(</span>
+                        <span class="n">v</span><span class="p">,</span>
+                        <span class="n">date_or_time</span><span class="o">=</span><span class="n">date_or_time</span><span class="p">,</span>
+                        <span class="n">numeric_precision_override</span><span class="o">=</span><span class="n">numeric_precision_override</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span>
+                <span class="p">]</span>
+                <span class="n">data_block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data_block</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor._get_comments">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._get_comments">[docs]</a>
+    <span class="k">def</span> <span class="nf">_get_comments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comments</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comments&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">comment_line</span> <span class="ow">in</span> <span class="n">comments</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">comment_line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor.to_whp_columns">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_whp_columns">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_whp_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compact</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">]:</span>
+        <span class="c1"># collect all the Exchange variables</span>
+        <span class="c1"># TODO, all things that appear in an exchange file, must have WHP name</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">flatten_cdom_coordinate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">)</span>
+
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">reset_coords</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;expocode&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;station&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;cast&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;sample&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;time&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;latitude&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;longitude&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;pressure&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">ex</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="s2">&quot;N_LEVELS&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">compact</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">ex</span><span class="o">=</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">sample</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+        <span class="n">exchange_vars</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">filter_by_attrs</span><span class="p">(</span><span class="n">whp_name</span><span class="o">=</span><span class="k">lambda</span> <span class="n">name</span><span class="p">:</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">exchange_vars</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">whp_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_whpname_from_attrs</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">whp_params</span><span class="p">:</span>
+                <span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
+
+            <span class="n">ancillary_vars_attr</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ancillary_variables&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ancillary_vars_attr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># CF says these need to be space seperated</span>
+            <span class="n">ancillary_vars</span> <span class="o">=</span> <span class="n">ancillary_vars_attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ancillary_var</span> <span class="ow">in</span> <span class="n">ancillary_vars</span><span class="p">:</span>
+                <span class="n">ancillary</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">ancillary_var</span><span class="p">]</span>
+
+                <span class="n">standard_name</span> <span class="o">=</span> <span class="n">ancillary</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;standard_name&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">standard_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ancillary</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;whp_name&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># TODO maybe raise...</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># currently there are three types of ancillary: flags, errors, and analytical temps (e.g. for pH)</span>
+                <span class="k">if</span> <span class="n">standard_name</span> <span class="o">==</span> <span class="s2">&quot;temperature_of_analysis_of_sea_water&quot;</span><span class="p">:</span>
+                    <span class="c1"># this needs to get treated like a param</span>
+                    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_whpname_from_attrs</span><span class="p">(</span><span class="n">ancillary</span><span class="o">.</span><span class="n">attrs</span><span class="p">):</span>
+                        <span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">ancillary</span>
+
+                <span class="k">elif</span> <span class="n">standard_name</span> <span class="o">==</span> <span class="s2">&quot;status_flag&quot;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">whp_params</span><span class="p">:</span>
+                        <span class="n">ancillary</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="o">.</span><span class="n">full_whp_name</span><span class="si">}</span><span class="s2">_FLAG_W&quot;</span>
+                        <span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">FLAG_NAME</span><span class="p">]</span> <span class="o">=</span> <span class="n">ancillary</span>
+
+                <span class="c1"># TODO find a way to test this</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">error_param</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span>
+                        <span class="p">(</span>
+                            <span class="n">ancillary</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;whp_name&quot;</span><span class="p">),</span>
+                            <span class="n">ancillary</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;whp_unit&quot;</span><span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="p">]</span>
+                    <span class="k">if</span> <span class="n">error_param</span><span class="o">.</span><span class="n">error_col</span><span class="p">:</span>
+                        <span class="n">ancillary</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">error_param</span><span class="o">.</span><span class="n">full_error_name</span>
+                        <span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">ERROR_NAME</span><span class="p">]</span> <span class="o">=</span> <span class="n">ancillary</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">params</span></div>
+
+
+<div class="viewcode-block" id="CCHDOAccessor.to_exchange">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_exchange">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_exchange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a CCHDO CF netCDF dataset to exchange.&quot;&quot;&quot;</span>
+        <span class="c1"># all of the todo comments are for documenting/writing validators</span>
+        <span class="n">output_files</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">==</span> <span class="n">FileType</span><span class="o">.</span><span class="n">CTD</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">ds1</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="n">ds1</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">gen_fname</span><span class="p">(</span><span class="n">ftype</span><span class="o">=</span><span class="s2">&quot;exchange&quot;</span><span class="p">)</span>
+
+                <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CTD,</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span><span class="si">:</span><span class="s2">%Y%m%d</span><span class="si">}</span><span class="s2">CCHHYDRO&quot;</span><span class="p">)</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_comments</span><span class="p">())</span>
+
+                <span class="n">params</span> <span class="o">=</span> <span class="n">ds1</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_whp_columns</span><span class="p">()</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_ctd_headers</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_params_units_line</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+
+                <span class="n">data_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_data_block</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">data_block</span><span class="p">):</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">))</span>
+
+                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;END_DATA</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">output_files</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">==</span> <span class="n">FileType</span><span class="o">.</span><span class="n">BOTTLE</span><span class="p">:</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">gen_fname</span><span class="p">(</span><span class="n">ftype</span><span class="o">=</span><span class="s2">&quot;exchange&quot;</span><span class="p">)</span>
+
+            <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BOTTLE,</span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span><span class="si">:</span><span class="s2">%Y%m%d</span><span class="si">}</span><span class="s2">CCHHYDRO&quot;</span><span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_comments</span><span class="p">())</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_whp_columns</span><span class="p">()</span>
+
+            <span class="c1"># add the params and units line</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_params_units_line</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+
+            <span class="n">data_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_data_block</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">data_block</span><span class="p">):</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">))</span>
+
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;END_DATA</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">output_files</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">write_or_return</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">output_files</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">output_zip</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">output_zip</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="n">ZIP_DEFLATED</span><span class="p">)</span> <span class="k">as</span> <span class="n">zipfile</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">output_files</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">zipfile</span><span class="o">.</span><span class="n">writestr</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="n">output_zip</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">write_or_return</span><span class="p">(</span><span class="n">output_zip</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">path</span><span class="p">)</span></div>
+
+
+    <span class="c1"># Until I figure out how to use the pandas machinery (or the explict index project of xarray pays off)</span>
+    <span class="c1"># I will use a &quot;custom&quot; indexer here to index into the variables</span>
+    <span class="c1"># This will rely on the N_PROF and N_LEVELS (with extra at some point)</span>
+    <span class="c1"># * N_PROF will be indexed with (expocode, station, cast)</span>
+    <span class="c1"># * N_LEVELS will be subindexd with (sample)</span>
+<div class="viewcode-block" id="CCHDOAccessor.merge_fq">
+<a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.merge_fq">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge_fq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fq</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="n">check_flags</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># TODOs...</span>
+        <span class="c1"># * (default True) restrict to open &quot;slots&quot; of non flag 9s</span>
+        <span class="c1"># * Update history attribute...</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span>
+        <span class="n">new_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">new_obj</span> <span class="o">=</span> <span class="n">flatten_cdom_coordinate</span><span class="p">(</span><span class="n">new_obj</span><span class="p">)</span>
+        <span class="n">idxer</span> <span class="o">=</span> <span class="n">WHPIndxer</span><span class="p">(</span><span class="n">new_obj</span><span class="p">)</span>
+
+        <span class="n">normalized_fq</span> <span class="o">=</span> <span class="n">normalize_fq</span><span class="p">(</span><span class="n">fq</span><span class="p">)</span>
+        <span class="n">input_precisions</span> <span class="o">=</span> <span class="n">fq_get_precisions</span><span class="p">(</span><span class="n">normalized_fq</span><span class="p">)</span>
+        <span class="n">idxes</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">idxer</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">normalized_fq</span><span class="p">}</span>
+        <span class="c1"># invert keys and indexes?</span>
+        <span class="n">inverted</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">fq_values</span> <span class="ow">in</span> <span class="n">normalized_fq</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fq_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">idxes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">inverted</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;profs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">inverted</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;levels&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">inverted</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;values&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">inverted</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">whpname</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">whpname</span><span class="o">.</span><span class="n">error_col</span><span class="p">:</span>
+                <span class="n">col_ref</span> <span class="o">=</span> <span class="n">new_obj</span><span class="p">[</span><span class="n">whpname</span><span class="o">.</span><span class="n">nc_name_error</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">whpname</span><span class="o">.</span><span class="n">flag_col</span><span class="p">:</span>
+                <span class="n">col_ref</span> <span class="o">=</span> <span class="n">new_obj</span><span class="p">[</span><span class="n">whpname</span><span class="o">.</span><span class="n">nc_name_flag</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">col_ref</span> <span class="o">=</span> <span class="n">new_obj</span><span class="p">[</span><span class="n">whpname</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span>
+
+            <span class="n">col_ref</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;profs&quot;</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;levels&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">]</span>
+
+            <span class="n">col_ref</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;date_modified&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s2">&quot;seconds&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">param</span> <span class="ow">in</span> <span class="n">input_precisions</span>
+                <span class="ow">and</span> <span class="n">whpname</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;decimal&quot;</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">whpname</span><span class="o">.</span><span class="n">flag_col</span>
+            <span class="p">):</span>
+                <span class="n">new_c_format</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;%.</span><span class="si">{</span><span class="n">input_precisions</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="si">}</span><span class="s2">f&quot;</span>
+                <span class="n">new_c_format_source</span> <span class="o">=</span> <span class="s2">&quot;input_file&quot;</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">col_ref</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;C_format&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">new_c_format</span>
+                    <span class="ow">or</span> <span class="n">col_ref</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;C_format_source&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">new_c_format_source</span>
+                <span class="p">):</span>
+                    <span class="n">col_ref</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;C_format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_c_format</span>
+                    <span class="n">col_ref</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;C_format_source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_c_format_source</span>
+                    <span class="n">col_ref</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;date_metadata_modified&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span>
+                        <span class="n">timespec</span><span class="o">=</span><span class="s2">&quot;seconds&quot;</span>
+                    <span class="p">)</span>
+        <span class="n">new_obj</span> <span class="o">=</span> <span class="n">add_cdom_coordinate</span><span class="p">(</span><span class="n">new_obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check_flags</span><span class="p">:</span>
+            <span class="n">_check_flags</span><span class="p">(</span><span class="n">new_obj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_obj</span></div>
+</div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Regents of the University of California
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

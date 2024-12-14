@@ -1,0 +1,1260 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Attributes" href="attributes.html" /><link rel="prev" title="Getting Started" href="getting_started.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>GO-SHIP CF/netCDF Data Format Specification - hydro documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">hydro  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">hydro  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">GO-SHIP CF/netCDF Data Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="attributes.html">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="erddap.html">Variables in ERDDAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ODF_CCHDO_netCDF_ops.html">Basic CF/netCDF operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange_checker.html">Exchange Checker/Converter</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="notebooks.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/2018_s04p_ctd/add_remove_param_s04p_merge.html">add/remove param S04P merge example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/round_trip.html">Round Trip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/simple.html">Simple</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/hydro/index.html">hydro</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of hydro</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/__main__/index.html">hydro.__main__</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/__main_helpers/index.html">hydro.__main_helpers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/accessors/index.html">hydro.accessors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/checks/index.html">hydro.checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/conformance/index.html">hydro.conformance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/convert/index.html">hydro.convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/core/index.html">hydro.core</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/hydro/exchange/index.html">hydro.exchange</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of hydro.exchange</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/exchange/exceptions/index.html">hydro.exchange.exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/exchange/flags/index.html">hydro.exchange.flags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/exchange/helpers/index.html">hydro.exchange.helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/hydro/legacy/index.html">hydro.legacy</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of hydro.legacy</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/legacy/coards/index.html">hydro.legacy.coards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/legacy/woce/index.html">hydro.legacy.woce</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/migration/index.html">hydro.migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/rename/index.html">hydro.rename</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/hydro/tests/index.html">hydro.tests</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of hydro.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/conftest/index.html">hydro.tests.conftest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/data/index.html">hydro.tests.data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_accessors/index.html">hydro.tests.test_accessors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_checks/index.html">hydro.tests.test_checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_core_ops/index.html">hydro.tests.test_core_ops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_csv/index.html">hydro.tests.test_csv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_exchange/index.html">hydro.tests.test_exchange</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_legacy/index.html">hydro.tests.test_legacy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_merge/index.html">hydro.tests.test_merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_rename/index.html">hydro.tests.test_rename</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/tutorial/index.html">hydro.tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/format_spec.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="go-ship-cf-netcdf-data-format-specification">
+<h1>GO-SHIP CF/netCDF Data Format Specification<a class="headerlink" href="#go-ship-cf-netcdf-data-format-specification" title="Link to this heading">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>The traditional way that formats are thought about and described is via “file formats”.
+How the bytes arranged on disk, what the data types are, maybe even just some text with numeric characters in it.
+Instead of focusing on how the data exist “at rest” or “on disk”, netCDF instead describes a data model and an API (application programer interface) for data access.
+Rather than specify the “on disk” format, we instead will specify a data model, and any format that supports the netCDF enhanced data model and can be accessed via the netCDF API is acceptable.
+At the time of writing, the two most common at rest formats include HDF5, the traditional netCDF4 file, and zarr, a “cloud native” format designed for non disk/seekable storage mediums.</p>
+<div class="admonition-requirements admonition">
+<p class="admonition-title">Requirements</p>
+<p>The “on disk” or storage format is anything that supports:</p>
+<ul class="simple">
+<li><p>Access via the netCDF4 software library API</p></li>
+<li><p>The data and metadata model presented in this document</p></li>
+</ul>
+</div>
+</section>
+<section id="requirement-levels">
+<h2>Requirement Levels<a class="headerlink" href="#requirement-levels" title="Link to this heading">¶</a></h2>
+<p>When specifying our requirements, we will follow the guidelines set in <a class="reference external" href="https://www.rfc-editor.org/info/bcp14">BCP 14</a>:</p>
+<blockquote>
+<div><p>The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “NOT RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be interpreted as described in <a class="reference external" href="https://www.rfc-editor.org/info/bcp14">BCP 14</a> [<a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc2119">RFC2119</a>] [<a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc8174">RFC8174</a>] when, and only when, they appear in all capitals, as shown here.</p>
+</div></blockquote>
+<p>Additionally, we will try very hard to make sure all the requirements are in clearly marked admonitions.</p>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>These requirement levels specify our “guarantees” when accessing the data and are specific to each published version.
+We will try very hard not to change things in a non backwards compatible way, but there may always be mistakes, bugs, community standards changes, etc., that require something breaking.</p>
+<p>If something is not specified here, you MUST assume it is undefined behavior that MAY change at any time.</p>
+</div>
+</section>
+<section id="conventions">
+<h2>Conventions<a class="headerlink" href="#conventions" title="Link to this heading">¶</a></h2>
+<p>To increase data reusability and ease of access it is very useful to follow one or more community conventions when making decisions about data layout, what metadata to include, etc.
+The  <a class="reference external" href="https://cfconventions.org/">CF Metadata Conventions</a> were chosen as the base for our data model, with influences of Argo and OceanSITES.
+Specifically, we are using the <a class="reference external" href="https://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html">NetCDF Climate and Forecast (CF) Metadata Conventions version 1.8</a></p>
+<div class="admonition-requirements admonition">
+<p class="admonition-title">Requirements</p>
+<p>The data and metadata MUST conform to <a class="reference external" href="https://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html">NetCDF Climate and Forecast (CF) Metadata Conventions version 1.8</a></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Internally, CCHDO is using <a class="reference external" href="https://docs.xarray.dev/en/stable/">xarray</a> as the base for almost all the internal software working with netCDF.
+The internal data model of <a class="reference external" href="https://docs.xarray.dev/en/stable/">xarray</a> is very close to but not exactly CF 1.8, and is a subset of what CF 1.8 allows.
+We have found that accepting the minor limitations of xarray to be worth the access to the large <a class="reference external" href="https://docs.xarray.dev/en/stable/ecosystem.html">scientific software ecosystem</a> that has developed around it.</p>
+</div>
+</section>
+<section id="file-naming-conventions">
+<h2>File Naming Conventions<a class="headerlink" href="#file-naming-conventions" title="Link to this heading">¶</a></h2>
+<p>When data are being distributed or shared using files, computer systems often rely on a file extension to identify the file type.</p>
+<div class="admonition-requirements admonition">
+<p class="admonition-title">Requirements</p>
+<p>As per <a class="reference external" href="https://cfconventions.org/Data/cf-conventions/cf-conventions-1.8/cf-conventions.html#_filename">CF-1.8 Section 2.1</a>, netCDF HDF5 files SHOULD have the extension <code class="docutils literal notranslate"><span class="pre">.nc</span></code></p>
+</div>
+<p>At CCHDO, out usual data management granularity is cruise/leg, separated by discrete sample (bottle) and continuous sample (CTD) data types.
+As a convenience, an additional suffix may be added to easily identify data containing only bottle or CTD data.</p>
+<div class="admonition-requirements admonition">
+<p class="admonition-title">Requirements</p>
+<ul class="simple">
+<li><p>netCDF files containing exclusively bottle data MAY end with <code class="docutils literal notranslate"><span class="pre">_bottle.nc</span></code>.</p></li>
+<li><p>netCDF files containing exclusively ctd data MAY end with <code class="docutils literal notranslate"><span class="pre">_ctd.nc</span></code>.</p></li>
+<li><p>netCDF files containing mixed ctd and bottle data MUST NOT end with either <code class="docutils literal notranslate"><span class="pre">_bottle.nc</span></code> or <code class="docutils literal notranslate"><span class="pre">_ctd.nc</span></code>.</p></li>
+</ul>
+</div>
+</section>
+<section id="definitions">
+<h2>Definitions<a class="headerlink" href="#definitions" title="Link to this heading">¶</a></h2>
+<p>The terminology used to describe netCDF data tends to be very technical, with very specific definitions.
+To confuse things, the netCDF user guide, the CF conventions, and popular software tools such as xarray all have slight variations on their usage of these definitions.
+Due to this, we feel the need to include some of these definitions here.</p>
+<dl class="glossary">
+<dt id="term-dataset">dataset<a class="headerlink" href="#term-dataset" title="Link to this term">¶</a></dt><dd><p>A dataset is the point of entry for the netCDF api.
+Datasets contain <a class="reference internal" href="#term-group"><span class="xref std std-term">groups</span></a>, <a class="reference internal" href="#term-dimension"><span class="xref std std-term">dimensions</span></a>, <a class="reference internal" href="#term-variable"><span class="xref std std-term">variables</span></a>, and <a class="reference internal" href="#term-attribute"><span class="xref std std-term">attributes</span></a>.</p>
+</dd>
+<dt id="term-group">group<a class="headerlink" href="#term-group" title="Link to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-dimension"><span class="xref std std-term">Dimensions</span></a>, <a class="reference internal" href="#term-variable"><span class="xref std std-term">variables</span></a>, and <a class="reference internal" href="#term-attribute"><span class="xref std std-term">attributes</span></a> can all be organized in a hierarchical structure within netCDF.
+This is similar to how files and directories exist on a computer filesystem.
+All netCDF4 files have at least one root group called “/” (forward slash).
+Currently, no addtional groups are used in GO-SHIP netCDF files.</p>
+</dd>
+<dt id="term-dimension">dimension<a class="headerlink" href="#term-dimension" title="Link to this term">¶</a></dt><dd><p>The netCDf data model is primarily concerned with storing data inside arrays, almost always this is numeric data.
+A netCDf dimension is the size of one side of these arrays and is given a name to reference it by.
+For example, a 2-d array of shape NxM has dimensions N and M.
+netCDf supports arrays with no dimensions, a scalar.</p>
+</dd>
+<dt id="term-variable">variable<a class="headerlink" href="#term-variable" title="Link to this term">¶</a></dt><dd><p>In a netCDF file, a variable is the most basic data object
+Variables have a name, a data type, a shape, some attributes, and the data itself.
+Variable names can be almost anything, the only character not allowed in a netCDF variable name is the forward slash “/”.
+Names may start with or contain anything in unicode, they may not be valid variable names in your programing environment of choice.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is also important to understand that variable names are simple labels and not data descriptors.
+If the name does have some human readable meaning, it often meant to help quickly identify which variables might be of interest, not describe the variable with scientific rigor.
+Do not rely on the inferred meaning of a variable name unless you have no other source of information (attributes, documentation, emails from colleagues, etc.).</p>
+</div>
+</dd>
+<dt id="term-ancillary-variable">ancillary variable<a class="headerlink" href="#term-ancillary-variable" title="Link to this term">¶</a></dt><dd><p>In CF, an ancillary variable is still a normal variable described above, but it contains information about other variables.
+Perhaps the most common example of an ancillary variable is the quality control flag, but also include information such as uncertainties.
+Some of the carbon data have strong temperature dependencies and so the temperature of analysis might be reported along side in an ancillary variable.</p>
+</dd>
+<dt id="term-coordinate">coordinate<a class="headerlink" href="#term-coordinate" title="Link to this term">¶</a></dt><dd><p>Coordinates are variables that provide the labels for some axis, usually for identifying data in space and time.
+The typical examples of coordinates are longitude (X-axis), latitude (Y-axis), and time (T-axis).
+The vertical coordinate is a little more varied, usually oceanographic observation data will use pressure as the Z-axis coordinate.</p>
+<p>Xarray calls these “coordinates”</p>
+</dd>
+<dt id="term-coordinate-variables">coordinate variables<a class="headerlink" href="#term-coordinate-variables" title="Link to this term">¶</a></dt><dd><p>In many netCDF aware applications there is a special case of variables called “coordinate variables” or “Dimension coordinate”.
+The technical way you will see this defined is as a single dimensional variable that has the same name as its dimension.
+There tend to be other rules most programs enforce: there must be no missing values, values must be numeric, and values must be monotonic.
+These are most useful when the data occur on some regular grid.</p>
+<p>Perhaps a good way to think of coordinates variables is as the values the ticks would be in a figure plot.</p>
+<p>Xarray calls these “Dimension coordinates” and will be shown with a little asterisk <code class="docutils literal notranslate"><span class="pre">*</span></code> when exploring an xarray Dataset.</p>
+</dd>
+<dt id="term-auxiliary-coordinate">auxiliary coordinate<a class="headerlink" href="#term-auxiliary-coordinate" title="Link to this term">¶</a></dt><dd><p>Auxiliary coordinates or “Non-dimension coordinates” are variables that do not share the same names as a dimension.
+These variables still label axes, but are more flexible for when the data do not occur on a regular grid or when there are multiple sets of coordinates in use.
+Auxiliary coordinates may be multidimensional.
+CF requires auxiliary coordinates to appear in the <code class="docutils literal notranslate"><span class="pre">coordinates</span></code> attribute of the variables it labels.</p>
+<p>Xarray calls these “Non-dimension coordinates” and will not have an asterisk next to their names when exploring an xarray dataset.</p>
+</dd>
+<dt id="term-attribute">attribute<a class="headerlink" href="#term-attribute" title="Link to this term">¶</a></dt><dd><p>Attributes are extra pieces of data that are attached to each variable and is where the flexibility of netCDF to describe data is greatly enhanced.
+Attributes may also be attached at the “global” level
+Attributes are simple “key” to “value” mappings, the computer science term for these is “associative array”.
+Python and Julia calls these “dictionaries”, in matlab these are usually “Structure Arrays”.</p>
+<p>Most of the focus of the common community data standards, CF, ACDD, OceanSITES etc., are on defining attribute keys, values, and how to interpret them.
+CF defines and controls attributes important to CF, but then allows any number of extra attributes.</p>
+</dd>
+</dl>
+</section>
+<section id="dataset-structure">
+<h2>Dataset Structure<a class="headerlink" href="#dataset-structure" title="Link to this heading">¶</a></h2>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>write overview</p>
+<ul class="simple">
+<li><p>Global attributes</p></li>
+<li><p>Required variables</p></li>
+<li><p>Technical variables and attrs (the geometry ones)</p></li>
+<li><p>Notes on strings and chars
+* Encoding, line endings
+* where are actual strings allowed, netCDF4 python forces string types if non ascii</p></li>
+</ul>
+</div>
+<p>The CF conventions document is long, verbose, and (we think) intimidating at first glance.
+This is due to the wide range of data structures supported by CF, and the need to carefully describe things in detail.
+It is hard to know what parts are important for your, or our, data.
+For any given dataset, only a small portion of the CF conventions will be used.
+This is true not just for GO-SHIP data, but any data claiming to be compatable with CF.
+We selected what we hope will be an easy entry point into the data stored in this standardized structure.</p>
+<p>Chapter 9 of the CF conventions define what are called discrete sampling geometries, often refered to as a DSG.
+Specifically, we selected the incomplete multidimensional array representation defined in 9.3.2 (TODO Ref).
+This representation has two primary dimmensions, one of the profile and the other as the vertical level in that profile.
+When each profile has different number of vertical levels, fill values will be in the trailing data slots.</p>
+</section>
+<section id="dimensions">
+<h2>Dimensions<a class="headerlink" href="#dimensions" title="Link to this heading">¶</a></h2>
+<p>There are two basic dimensions in the data file, how many profiles there are, and how many vertical levels there are.
+The two dimension names match the dimenion names found in argo profile files: N_PROF and N_LEVELS.</p>
+<p>While netCDF4 supports an actual string data type, for compatibility and compression reasons, character arrays will be used to represent text data.
+Character arrays have the string length as their last dimension, the number and values of these string dimensions is currently uncontrolled (xarray sets these automatically).
+All char arrays or strings will be UTF-8 encoded.</p>
+<div class="admonition-requirements admonition">
+<p class="admonition-title">Requirements</p>
+<ul class="simple">
+<li><p>There MUST be a dimension named <code class="docutils literal notranslate"><span class="pre">N_PROF</span></code> that describes the first axis of variables with a “profile” dimension.</p></li>
+<li><p>There MUST be a dimension named <code class="docutils literal notranslate"><span class="pre">N_LEVELS</span></code> that describes the first axis of variables with no “profile” dimension, or the second axis of variables with a “profile” dimension</p></li>
+<li><p>There MAY be zero or more string length dimensions.</p></li>
+<li><p>Extra dimensions MAY exist if needed by data variables, these extra names are not standardized.</p></li>
+<li><p>Any char array or strings, both in variable and attributes, MUST be UTF-8 encoded and MUST NOT have a byte order mark.</p></li>
+</ul>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is currently a single variable which requires an additional dimension to describe the radiation wavelength of its measurement.
+This dimension is currently called <code class="docutils literal notranslate"><span class="pre">CDOM_WAVELENGTHS</span></code> and is stored as the only coordinate variable in use.
+The actual relationship between the parent variable and this coordinate is contained in attributes defined by the CF conventions.</p>
+</div>
+</section>
+<section id="global-attributes">
+<h2>Global Attributes<a class="headerlink" href="#global-attributes" title="Link to this heading">¶</a></h2>
+<p>Attributes are bits of metadata with a name and a value attached to it.
+Almost all the “work” being done by the CF conventions and other metadata standards are happening in the attributes, CF for example, does not standardize the variable names at all.</p>
+<p>Global attributes contain information that applies to the entire dataset.
+Some of these are defined by community standards, other by this document for internal use.
+The following, case sensitive, global attributes are REQUIRED to be present:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Conventions</span></code></dt><dd><p>Conventions is a char array listing what community standards and their versions are being followed.
+It MUST have the value <code class="docutils literal notranslate"><span class="pre">&quot;CF-1.8</span> <span class="pre">CCHDO-1.0&quot;</span></code> and will change as new conventions are adopted</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">featureType</span></code></dt><dd><p>The feature type char array attribute comes from the CF conventions section about discrete sampling geometries.
+It MUST have the value <code class="docutils literal notranslate"><span class="pre">&quot;profile&quot;</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cchdo_software_version</span></code></dt><dd><p>The cchdo software version is a char array containing the version of the cchdo.hydro library used to create or manipulate the dataset.
+It currently takes the form of <code class="docutils literal notranslate"><span class="pre">&quot;hydro</span> <span class="pre">w.x.y.z&quot;</span></code> where w.x is the data conventions version, and y.z is the actual software library version.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cchdo_parameters_version</span></code></dt><dd><p>The cchdo parameters version char array contains the version for the internal parameters database the software was using at the time of dataset creation or manipulation.
+It currently takes the form of <code class="docutils literal notranslate"><span class="pre">&quot;params</span> <span class="pre">x.y.z&quot;</span></code>.</p>
+</dd>
+</dl>
+<p>The following, case sensitive, global attributes are OPTIONAL:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">comments</span></code></dt><dd><p>Comments human readable string containing information not captured in any other attributes or variables.</p>
+</dd>
+</dl>
+<div class="admonition-requirements admonition">
+<p class="admonition-title">Requirements</p>
+<ul class="simple">
+<li><p>There MUST be a <code class="docutils literal notranslate"><span class="pre">Conventions</span></code> global attribute char array with space separate convention version strings defined by those conventions.</p></li>
+<li><p>There MUST be a <code class="docutils literal notranslate"><span class="pre">featureType</span></code> global attribute char array with the value “profile”.</p></li>
+<li><p>There MUST be a <code class="docutils literal notranslate"><span class="pre">cchdo_software_version</span></code> global attribute char array with the version string of the cchdo.hydro software.</p></li>
+<li><p>There MUST be a <code class="docutils literal notranslate"><span class="pre">cchdo_parameters_version</span></code> global attribute char array with the version string of the cchdo.params database.</p></li>
+<li><p>There MAY be a <code class="docutils literal notranslate"><span class="pre">comments</span></code> attribute with more information. This attribute MAY be a string rather than a char array if there are non ASCII code points present.</p></li>
+</ul>
+</div>
+</section>
+<section id="variable-attributes">
+<h2>Variable Attributes<a class="headerlink" href="#variable-attributes" title="Link to this heading">¶</a></h2>
+<div class="admonition-todo admonition" id="id2">
+<p class="admonition-title">Todo</p>
+<p>Attrs to talk about:</p>
+<ul class="simple">
+<li><p>whp_name</p></li>
+<li><p>whp_unit</p></li>
+<li><p>geometry</p></li>
+<li><p>_Encoding</p></li>
+<li><p>coordinates</p></li>
+<li><p>ancillary_variables</p></li>
+<li><p>standard_name</p></li>
+<li><p>flag_values</p></li>
+<li><p>flag_meanings</p></li>
+<li><p>conventions</p></li>
+<li><p>resolution (time)</p></li>
+<li><p>axis</p></li>
+<li><p>units</p></li>
+<li><p>calendar</p></li>
+<li><p>C_format</p></li>
+<li><p>C_format_source</p></li>
+<li><p>positive</p></li>
+<li><p>reference_scale</p></li>
+<li><p>geometry_type</p></li>
+<li><p>node_coordinates</p></li>
+</ul>
+</div>
+<p>Variable attributes are like the global attributes, but instead of being attached to the entire dataset, are attached to variables.
+These attributes are where almost all the metadata about a variable exist, things such as what the units of the measuremnet are or what the flag values mean.</p>
+<section id="fillvalue">
+<h3><code class="docutils literal notranslate"><span class="pre">_FillValue</span></code><a class="headerlink" href="#fillvalue" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>same as the variable</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>only if there are missing data</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CF-1.8, NUG</p>
+</dd>
+</dl>
+<section id="cf-definiton">
+<h4>CF Definiton<a class="headerlink" href="#cf-definiton" title="Link to this heading">¶</a></h4>
+<p>A value used to represent missing or undefined data. Allowed for auxiliary coordinate variables but not allowed for coordinate variables.</p>
+</section>
+<section id="cchdo-usage">
+<h4>CCHDO Usage<a class="headerlink" href="#cchdo-usage" title="Link to this heading">¶</a></h4>
+<p>For floating point type data (float, double), the IEEE NaN value will be used.
+Woce flag variables will be initialized with the value <cite>9b</cite>.
+Some special coordinate variables are not allowed to have any <code class="docutils literal notranslate"><span class="pre">_FillValue</span></code> values in them</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">_FillValue</span></code> attribute has special meaning to the netCDF4 libraries (C and Java).
+When the size of the variable is known (i.e. the variable does not have an “unlimited” dimmension) at the time the netCDF file is written, all of the space in the variable will be initalized with the value in <code class="docutils literal notranslate"><span class="pre">_FillValue</span></code>.
+This is usually almost entirely transparent to you the user, some software will change the data type when a variable still contains <code class="docutils literal notranslate"><span class="pre">_FillValue</span></code> values.
+Matlab for example, will change byte (integers between 0 and 255) data into IEEE floating point values while replacing the fill value with NaNs.</p>
+</section>
+</section>
+<section id="whp-name">
+<span id="id3"></span><h3><code class="docutils literal notranslate"><span class="pre">whp_name</span></code><a class="headerlink" href="#whp-name" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>char or array of strings</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>conditionally (see CCHDO Usage)</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CCHDO</p>
+</dd>
+</dl>
+<section id="id4">
+<h4>CF Definiton<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<p>Not used or defined in the CF conventions.</p>
+</section>
+<section id="id5">
+<h4>CCHDO Usage<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
+<p>This attribute contains the name this variable would have inside a WHP Exchange or WOCE sea/ctd file.
+Forms a pair with <a class="reference internal" href="#whp-unit"><span class="std std-ref">whp_unit</span></a>
+This attribute will only be on variables which are data, and not on flag variables or certain specal variables meant to be interpreted by CF compliant readers (e.g. <code class="docutils literal notranslate"><span class="pre">geometry_container</span></code>).</p>
+<p>Some variables cannot be represented by a single column in the WHP Exchange format, when this occurs, the attribute will be an array of strings containing all the names needed to represent this variable in WHP Exchange format.
+The most frequent example will be the <code class="docutils literal notranslate"><span class="pre">time</span></code> variable, in WHP Exchange files, this may either be a pair of columns (DATE, TIME) or a single column (DATE) when time of day is not reported.
+This will very likly be used to represet ex and em wavelengths for optical sensors with multiple channels.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>There is no requiremnt that all variables in a netCDF file contain unique <code class="docutils literal notranslate"><span class="pre">whp_name</span></code> and <code class="docutils literal notranslate"><span class="pre">whp_unit</span></code> pairs.</p>
+</div>
+</section>
+</section>
+<section id="whp-unit">
+<span id="id6"></span><h3><code class="docutils literal notranslate"><span class="pre">whp_unit</span></code><a class="headerlink" href="#whp-unit" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>char or array of strings</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>conditionally (see CCHDO Usage)</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CCHDO</p>
+</dd>
+</dl>
+<section id="id7">
+<h4>CF Definiton<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
+<p>Not used or defined in the CF conventions.</p>
+</section>
+<section id="id8">
+<h4>CCHDO Usage<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h4>
+<p>For this variable, the value which would appear in the units line of the WHP Exchange or WOCE sea/ctd file.
+Forms a pair with <a class="reference internal" href="#whp-name"><span class="std std-ref">whp_name</span></a>
+Usage is the same as <code class="docutils literal notranslate"><span class="pre">whp_name</span></code></p>
+</section>
+</section>
+<section id="standard-name">
+<h3><code class="docutils literal notranslate"><span class="pre">standard_name</span></code><a class="headerlink" href="#standard-name" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>char</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>conditionally (see CF Usage)</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CF 1.8</p>
+</dd>
+</dl>
+<section id="id9">
+<h4>CF Definiton<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h4>
+<div class="admonition-todo admonition" id="id10">
+<p class="admonition-title">Todo</p>
+<p>get cf definiton</p>
+</div>
+</section>
+<section id="id11">
+<h4>CCHDO Usage<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h4>
+<p>The CF usage will be followed, if a CF standard name exists for physical quantity represeted by a variable, the most specific name MUST be used and appear in the <code class="docutils literal notranslate"><span class="pre">standard_name</span></code> attribute.
+The CF standard names table is updated frequently, as names are added they will be evaluated for including in the CCHDO netCDF files to both be more specific or to add a standard name to a variable that did not have one previously.
+Always check the param version attribute to see which version of the standard name table is in use for a particular file.</p>
+<p>It is important to understand that standard names represet the physical quantity of the variable and not how the data was made.
+Standard names cannot distinguish between salinity measured in situ with a CTD, salinity measured with an autosal, or even salinity from a model output.
+The names are meant to help with intercomparison of the values themselves, not methods of determing that value.</p>
+</section>
+</section>
+<section id="units">
+<h3><code class="docutils literal notranslate"><span class="pre">units</span></code><a class="headerlink" href="#units" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>char</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>conditionally</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CF 1.8</p>
+</dd>
+</dl>
+<section id="id12">
+<h4>CF Definiton<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h4>
+<div class="admonition-todo admonition" id="id13">
+<p class="admonition-title">Todo</p>
+<p>get cf definiton</p>
+</div>
+</section>
+<section id="id14">
+<h4>CCHDO Usage<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h4>
+<p>The units attribute will follow CF.
+The value must be physically comparible with the canonical units of the <code class="docutils literal notranslate"><span class="pre">standard_name</span></code>.
+The value will be the <code class="docutils literal notranslate"><span class="pre">whp_unit</span></code> translated into SI.</p>
+<p>Unitless parameters will have the symbol “1” as their units.</p>
+<div class="admonition-todo admonition" id="id15">
+<p class="admonition-title">Todo</p>
+<p>get ref to SI paper</p>
+</div>
+<p>Some examples:</p>
+<ul class="simple">
+<li><p>discintigrations per minute (DPM) will be translated to their equivalent Bq, which will be scaled (1DPM = 0.0166 Bq)</p></li>
+<li><p>Practical salinity will have the units of “1”, not variabtions on “PSU” or even “0.001” implying g/kg of actual salinity.</p></li>
+<li><p>Tritium Units are really parts per 1e18, so the equivalent SI units are the recriprical: 1e-18</p></li>
+</ul>
+</section>
+</section>
+<section id="reference-scale">
+<h3><code class="docutils literal notranslate"><span class="pre">reference_scale</span></code><a class="headerlink" href="#reference-scale" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>char</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>conditionally</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>OceanSITES 1.4</p>
+</dd>
+</dl>
+<section id="id16">
+<h4>CF Definiton<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h4>
+<p>This attribute is not defined in CF.</p>
+</section>
+<section id="id17">
+<h4>CCHDO Usage<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h4>
+<div class="admonition-todo admonition" id="id18">
+<p class="admonition-title">Todo</p>
+<p>get OceanSITES definition.</p>
+</div>
+<p>Some variables (e.g. temperature) are not described well enough by their units and standard name alone.
+For example, depending on when it was measured, the temperature sensors may have been calibrated on the ITS-90, IPTS-68, or WHAT_WAS_BEFORE_t68 calibration scales.
+While all the temperatures are degree C, users doing precice work need to know the difference.</p>
+<div class="admonition-todo admonition" id="id19">
+<p class="admonition-title">Todo</p>
+<p>this is a controlled list internally, list which variables have a scale and what their value can be.</p>
+</div>
+</section>
+</section>
+<section id="c-format">
+<h3><code class="docutils literal notranslate"><span class="pre">C_format</span></code><a class="headerlink" href="#c-format" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>char</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>NUG</p>
+</dd>
+</dl>
+<section id="id20">
+<h4>CF Definiton<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">C_format</span></code> is not mentioned at all in the CF-1.8 docs.</p>
+</section>
+<section id="id21">
+<h4>CCHDO Usage<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">C_format</span></code> attribute will contain the format string from either the internal database of parameters or calcualted when converting from a text input.
+The presence or lack of presence of this attribute will not change the underlyying values in the variable (e.g. you cannot round the values to the nearst integer using C_format).
+This attribute is sometimes used when _displaying_ data values to a user.
+When performing calculations in most software, the underlying data values are almost always used directly.
+The only software we have seen respect the <code class="docutils literal notranslate"><span class="pre">C_format</span></code> attribute is ncdump when dumping to CDL.</p>
+<p>If the data soure for this variable came from a text source, the <code class="docutils literal notranslate"><span class="pre">C_format</span></code> will contain the format string which represents the largest string seen.
+For example, if a data source had text values of “0.001” and “0.0010”, the <code class="docutils literal notranslate"><span class="pre">C_format</span></code> attribute would be set to <code class="docutils literal notranslate"><span class="pre">&quot;%.4f&quot;</span></code>.
+This can be tricky for data managers: if for example, the data source was an excel file, it is important to use the underlying value as the actual data and not a copy/paste or text based export.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">C_format</span></code> as implied uncertanty if you have <cite>no other</cite> source of uncertanty (including statistical methods across the dataset).</p>
+<p>Historically, storing numeric values in text and the cost of storage meant there was a tradeoff between cost and precision.
+When looking though our database of format strings, the text print precision was almost always set at one decimal place more than the actual measuremnt uncertanty.
+Having these values published in the WOCE manual also lead to values being reported a certain way to conform to the WOCE format, which disconnected “print precision” from uncertanty.
+Additionally, the WOCE format was designed when IEEE floating point numbers were quite new.</p>
+<p>More recent measuremnets have started to include explicit uncertanties which will be reported along side the data values.
+Often, the cruise report will contain some charicterizaion of the uncertanty of a given measumrnet.</p>
+</div>
+</section>
+</section>
+<section id="c-format-source">
+<h3><code class="docutils literal notranslate"><span class="pre">C_format_source</span></code><a class="headerlink" href="#c-format-source" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>char</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>yes if C_format is present</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CCHDO</p>
+</dd>
+</dl>
+<section id="id22">
+<h4>CF Definiton<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h4>
+<p>This attribute is not used in CF.</p>
+</section>
+<section id="id23">
+<h4>CCHDO Usage<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h4>
+<p>This attribute describes where the value in <code class="docutils literal notranslate"><span class="pre">C_format</span></code> came from.
+This attribute will only have the values of either <code class="docutils literal notranslate"><span class="pre">&quot;database&quot;</span></code> to indicate the <code class="docutils literal notranslate"><span class="pre">C_format</span></code> was taken from the internal parameters table, or <code class="docutils literal notranslate"><span class="pre">&quot;source_file&quot;</span></code> if the values was calcualted from input text.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="geometry">
+<h3><code class="docutils literal notranslate"><span class="pre">geometry</span></code><a class="headerlink" href="#geometry" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id24">
+<h4>CF Definiton<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id25">
+<h4>CCHDO Usage<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="encoding">
+<h3><code class="docutils literal notranslate"><span class="pre">_Encoding</span></code><a class="headerlink" href="#encoding" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>char</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ref?</p>
+</dd>
+</dl>
+<section id="id26">
+<h4>CF Definiton<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h4>
+<p>This is not defined by CF, it is however a reserved attribute in <a class="reference external" href="https://docs.unidata.ucar.edu/netcdf-c/current/file_format_specifications.html">Appendix B</a> of the netCDF4-C manual.</p>
+</section>
+<section id="id27">
+<h4>CCHDO Usage<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h4>
+<p>This attribute is set by the libraries we use to make our data.
+It will almost always be set on string or char array data with a value of “utf8”.</p>
+</section>
+</section>
+<section id="coordinates">
+<h3><code class="docutils literal notranslate"><span class="pre">coordinates</span></code><a class="headerlink" href="#coordinates" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>char</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>conditionally</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CF 1.8</p>
+</dd>
+</dl>
+<section id="id28">
+<h4>CF Definiton<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id29">
+<h4>CCHDO Usage<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="ancillary-variables">
+<h3><code class="docutils literal notranslate"><span class="pre">ancillary_variables</span></code><a class="headerlink" href="#ancillary-variables" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id30">
+<h4>CF Definiton<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id31">
+<h4>CCHDO Usage<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="flag-values">
+<h3><code class="docutils literal notranslate"><span class="pre">flag_values</span></code><a class="headerlink" href="#flag-values" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id32">
+<h4>CF Definiton<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id33">
+<h4>CCHDO Usage<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="flag-meanings">
+<h3><code class="docutils literal notranslate"><span class="pre">flag_meanings</span></code><a class="headerlink" href="#flag-meanings" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id34">
+<h4>CF Definiton<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id35">
+<h4>CCHDO Usage<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="id36">
+<h3><code class="docutils literal notranslate"><span class="pre">conventions</span></code><a class="headerlink" href="#id36" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id37">
+<h4>CF Definiton<a class="headerlink" href="#id37" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id38">
+<h4>CCHDO Usage<a class="headerlink" href="#id38" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="resolution-time">
+<h3><code class="docutils literal notranslate"><span class="pre">resolution</span> <span class="pre">(time)</span></code><a class="headerlink" href="#resolution-time" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id39">
+<h4>CF Definiton<a class="headerlink" href="#id39" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id40">
+<h4>CCHDO Usage<a class="headerlink" href="#id40" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="axis">
+<h3><code class="docutils literal notranslate"><span class="pre">axis</span></code><a class="headerlink" href="#axis" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id41">
+<h4>CF Definiton<a class="headerlink" href="#id41" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id42">
+<h4>CCHDO Usage<a class="headerlink" href="#id42" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="calendar">
+<h3><code class="docutils literal notranslate"><span class="pre">calendar</span></code><a class="headerlink" href="#calendar" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id43">
+<h4>CF Definiton<a class="headerlink" href="#id43" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id44">
+<h4>CCHDO Usage<a class="headerlink" href="#id44" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="positive">
+<h3><code class="docutils literal notranslate"><span class="pre">positive</span></code><a class="headerlink" href="#positive" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id45">
+<h4>CF Definiton<a class="headerlink" href="#id45" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id46">
+<h4>CCHDO Usage<a class="headerlink" href="#id46" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="geometry-type">
+<h3><code class="docutils literal notranslate"><span class="pre">geometry_type</span></code><a class="headerlink" href="#geometry-type" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id47">
+<h4>CF Definiton<a class="headerlink" href="#id47" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id48">
+<h4>CCHDO Usage<a class="headerlink" href="#id48" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+<section id="node-coordinates">
+<h3><code class="docutils literal notranslate"><span class="pre">node_coordinates</span></code><a class="headerlink" href="#node-coordinates" title="Link to this heading">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">dtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dtype</p>
+</dd>
+<dt class="field-even">required<span class="colon">:</span></dt>
+<dd class="field-even"><p>maybe</p>
+</dd>
+<dt class="field-odd">reference<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ref</p>
+</dd>
+</dl>
+<section id="id49">
+<h4>CF Definiton<a class="headerlink" href="#id49" title="Link to this heading">¶</a></h4>
+</section>
+<section id="id50">
+<h4>CCHDO Usage<a class="headerlink" href="#id50" title="Link to this heading">¶</a></h4>
+</section>
+</section>
+</section>
+<section id="required-variables">
+<h2>Required Variables<a class="headerlink" href="#required-variables" title="Link to this heading">¶</a></h2>
+<p>The following variables are required in all files:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">geometry_container</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">profile_type</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">expocode</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">station</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cast</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sample</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">longitude</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">latitude</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pressure</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">time</span></code></p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="attributes.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Attributes</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="getting_started.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Getting Started</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Regents of the University of California
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">GO-SHIP CF/netCDF Data Format Specification</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#requirement-levels">Requirement Levels</a></li>
+<li><a class="reference internal" href="#conventions">Conventions</a></li>
+<li><a class="reference internal" href="#file-naming-conventions">File Naming Conventions</a></li>
+<li><a class="reference internal" href="#definitions">Definitions</a></li>
+<li><a class="reference internal" href="#dataset-structure">Dataset Structure</a></li>
+<li><a class="reference internal" href="#dimensions">Dimensions</a></li>
+<li><a class="reference internal" href="#global-attributes">Global Attributes</a></li>
+<li><a class="reference internal" href="#variable-attributes">Variable Attributes</a><ul>
+<li><a class="reference internal" href="#fillvalue"><code class="docutils literal notranslate"><span class="pre">_FillValue</span></code></a><ul>
+<li><a class="reference internal" href="#cf-definiton">CF Definiton</a></li>
+<li><a class="reference internal" href="#cchdo-usage">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#whp-name"><code class="docutils literal notranslate"><span class="pre">whp_name</span></code></a><ul>
+<li><a class="reference internal" href="#id4">CF Definiton</a></li>
+<li><a class="reference internal" href="#id5">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#whp-unit"><code class="docutils literal notranslate"><span class="pre">whp_unit</span></code></a><ul>
+<li><a class="reference internal" href="#id7">CF Definiton</a></li>
+<li><a class="reference internal" href="#id8">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#standard-name"><code class="docutils literal notranslate"><span class="pre">standard_name</span></code></a><ul>
+<li><a class="reference internal" href="#id9">CF Definiton</a></li>
+<li><a class="reference internal" href="#id11">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#units"><code class="docutils literal notranslate"><span class="pre">units</span></code></a><ul>
+<li><a class="reference internal" href="#id12">CF Definiton</a></li>
+<li><a class="reference internal" href="#id14">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#reference-scale"><code class="docutils literal notranslate"><span class="pre">reference_scale</span></code></a><ul>
+<li><a class="reference internal" href="#id16">CF Definiton</a></li>
+<li><a class="reference internal" href="#id17">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#c-format"><code class="docutils literal notranslate"><span class="pre">C_format</span></code></a><ul>
+<li><a class="reference internal" href="#id20">CF Definiton</a></li>
+<li><a class="reference internal" href="#id21">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#c-format-source"><code class="docutils literal notranslate"><span class="pre">C_format_source</span></code></a><ul>
+<li><a class="reference internal" href="#id22">CF Definiton</a></li>
+<li><a class="reference internal" href="#id23">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#geometry"><code class="docutils literal notranslate"><span class="pre">geometry</span></code></a><ul>
+<li><a class="reference internal" href="#id24">CF Definiton</a></li>
+<li><a class="reference internal" href="#id25">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#encoding"><code class="docutils literal notranslate"><span class="pre">_Encoding</span></code></a><ul>
+<li><a class="reference internal" href="#id26">CF Definiton</a></li>
+<li><a class="reference internal" href="#id27">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#coordinates"><code class="docutils literal notranslate"><span class="pre">coordinates</span></code></a><ul>
+<li><a class="reference internal" href="#id28">CF Definiton</a></li>
+<li><a class="reference internal" href="#id29">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ancillary-variables"><code class="docutils literal notranslate"><span class="pre">ancillary_variables</span></code></a><ul>
+<li><a class="reference internal" href="#id30">CF Definiton</a></li>
+<li><a class="reference internal" href="#id31">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#flag-values"><code class="docutils literal notranslate"><span class="pre">flag_values</span></code></a><ul>
+<li><a class="reference internal" href="#id32">CF Definiton</a></li>
+<li><a class="reference internal" href="#id33">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#flag-meanings"><code class="docutils literal notranslate"><span class="pre">flag_meanings</span></code></a><ul>
+<li><a class="reference internal" href="#id34">CF Definiton</a></li>
+<li><a class="reference internal" href="#id35">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id36"><code class="docutils literal notranslate"><span class="pre">conventions</span></code></a><ul>
+<li><a class="reference internal" href="#id37">CF Definiton</a></li>
+<li><a class="reference internal" href="#id38">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resolution-time"><code class="docutils literal notranslate"><span class="pre">resolution</span> <span class="pre">(time)</span></code></a><ul>
+<li><a class="reference internal" href="#id39">CF Definiton</a></li>
+<li><a class="reference internal" href="#id40">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#axis"><code class="docutils literal notranslate"><span class="pre">axis</span></code></a><ul>
+<li><a class="reference internal" href="#id41">CF Definiton</a></li>
+<li><a class="reference internal" href="#id42">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#calendar"><code class="docutils literal notranslate"><span class="pre">calendar</span></code></a><ul>
+<li><a class="reference internal" href="#id43">CF Definiton</a></li>
+<li><a class="reference internal" href="#id44">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#positive"><code class="docutils literal notranslate"><span class="pre">positive</span></code></a><ul>
+<li><a class="reference internal" href="#id45">CF Definiton</a></li>
+<li><a class="reference internal" href="#id46">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#geometry-type"><code class="docutils literal notranslate"><span class="pre">geometry_type</span></code></a><ul>
+<li><a class="reference internal" href="#id47">CF Definiton</a></li>
+<li><a class="reference internal" href="#id48">CCHDO Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#node-coordinates"><code class="docutils literal notranslate"><span class="pre">node_coordinates</span></code></a><ul>
+<li><a class="reference internal" href="#id49">CF Definiton</a></li>
+<li><a class="reference internal" href="#id50">CCHDO Usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#required-variables">Required Variables</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

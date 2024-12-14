@@ -1,0 +1,744 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="hydro.legacy.woce" href="../woce/index.html" /><link rel="prev" title="hydro.legacy" href="../index.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>hydro.legacy.coards - hydro documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">hydro  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">hydro  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../format_spec.html">GO-SHIP CF/netCDF Data Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../attributes.html">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../erddap.html">Variables in ERDDAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ODF_CCHDO_netCDF_ops.html">Basic CF/netCDF operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../exchange_checker.html">Exchange Checker/Converter</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../notebooks.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/2018_s04p_ctd/add_remove_param_s04p_merge.html">add/remove param S04P merge example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/round_trip.html">Round Trip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../examples/simple.html">Simple</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../../index.html">hydro</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of hydro</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../__main__/index.html">hydro.__main__</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../__main_helpers/index.html">hydro.__main_helpers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../accessors/index.html">hydro.accessors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../checks/index.html">hydro.checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../conformance/index.html">hydro.conformance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../convert/index.html">hydro.convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../core/index.html">hydro.core</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../exchange/index.html">hydro.exchange</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of hydro.exchange</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../exchange/exceptions/index.html">hydro.exchange.exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../exchange/flags/index.html">hydro.exchange.flags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../exchange/helpers/index.html">hydro.exchange.helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="../index.html">hydro.legacy</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of hydro.legacy</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">hydro.legacy.coards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../woce/index.html">hydro.legacy.woce</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../migration/index.html">hydro.migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../rename/index.html">hydro.rename</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../tests/index.html">hydro.tests</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of hydro.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../tests/conftest/index.html">hydro.tests.conftest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests/data/index.html">hydro.tests.data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests/test_accessors/index.html">hydro.tests.test_accessors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests/test_checks/index.html">hydro.tests.test_checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests/test_core_ops/index.html">hydro.tests.test_core_ops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests/test_csv/index.html">hydro.tests.test_csv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests/test_exchange/index.html">hydro.tests.test_exchange</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests/test_legacy/index.html">hydro.tests.test_legacy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests/test_merge/index.html">hydro.tests.test_merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../tests/test_rename/index.html">hydro.tests.test_rename</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorial/index.html">hydro.tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../../../_sources/autoapi/hydro/legacy/coards/index.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-hydro.legacy.coards">
+<span id="hydro-legacy-coards"></span><h1>hydro.legacy.coards<a class="headerlink" href="#module-hydro.legacy.coards" title="Link to this heading">¶</a></h1>
+<p>Legacy COARDS netcdf make from libcchdo ported to take a CCHDO CF/netCDF xarray.Dataset object as input.</p>
+<p>The goal is, as much as possible, to use the old code with minimal changes such that the following outputs are identical:</p>
+<ul class="simple">
+<li><p>Exchange -&gt; CF/netCDF -&gt; COARDS netCDF (this library)</p></li>
+<li><p>Exchange -&gt; COARDS netCDF (using libcchdo)</p></li>
+</ul>
+<p>The entrypoint function is <a class="reference internal" href="#hydro.legacy.coards.to_coards" title="hydro.legacy.coards.to_coards"><code class="xref py py-func docutils literal notranslate"><span class="pre">to_coards()</span></code></a></p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.log" title="hydro.legacy.coards.log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log</span></code></a></p></td>
+<td><p>logger object for message logging</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.PARAMS" title="hydro.legacy.coards.PARAMS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PARAMS</span></code></a></p></td>
+<td><p>mapping of whp names to nc names</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.CTD_ZIP_FILE_EXTENSION" title="hydro.legacy.coards.CTD_ZIP_FILE_EXTENSION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CTD_ZIP_FILE_EXTENSION</span></code></a></p></td>
+<td><p>Filename extention for a zipped collection ctd coards netcdf files</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.BOTTLE_ZIP_FILE_EXTENSION" title="hydro.legacy.coards.BOTTLE_ZIP_FILE_EXTENSION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BOTTLE_ZIP_FILE_EXTENSION</span></code></a></p></td>
+<td><p>Filename extention for a zipped collection bottle coards netcdf files</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.FILL_VALUE" title="hydro.legacy.coards.FILL_VALUE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FILL_VALUE</span></code></a></p></td>
+<td><p>Const from old libcchdo, -999.0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.QC_SUFFIX" title="hydro.legacy.coards.QC_SUFFIX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QC_SUFFIX</span></code></a></p></td>
+<td><p>Variable name suffix for flag variables</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.FILE_EXTENSION" title="hydro.legacy.coards.FILE_EXTENSION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FILE_EXTENSION</span></code></a></p></td>
+<td><p>filenmae extention for all netcdf files</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.EPOCH" title="hydro.legacy.coards.EPOCH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EPOCH</span></code></a></p></td>
+<td><p>dateime referenced in the units of time variables in netCDF files: 1980-01-01</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST" title="hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST"><code class="xref py py-obj docutils literal notranslate"><span class="pre">STATIC_PARAMETERS_PER_CAST</span></code></a></p></td>
+<td><p>List of WHP names that are ignored when calling <code class="xref py py-func docutils literal notranslate"><span class="pre">create_and_fill_data_variables()</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.NON_FLOAT_PARAMETERS" title="hydro.legacy.coards.NON_FLOAT_PARAMETERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NON_FLOAT_PARAMETERS</span></code></a></p></td>
+<td><p>params not in <a class="reference internal" href="#hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST" title="hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST"><code class="xref py py-attr docutils literal notranslate"><span class="pre">STATIC_PARAMETERS_PER_CAST</span></code></a> that are also ignored by <code class="xref py py-func docutils literal notranslate"><span class="pre">create_and_fill_data_variables()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.UNKNOWN" title="hydro.legacy.coards.UNKNOWN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UNKNOWN</span></code></a></p></td>
+<td><p>Value used when some string value isn't found</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.UNSPECIFIED_UNITS" title="hydro.legacy.coards.UNSPECIFIED_UNITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UNSPECIFIED_UNITS</span></code></a></p></td>
+<td><p>Value used when there are no units</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.STRLEN" title="hydro.legacy.coards.STRLEN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">STRLEN</span></code></a></p></td>
+<td><p>length of char array variables, hardcoded to 40</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.strftime_woce_date_time" title="hydro.legacy.coards.strftime_woce_date_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strftime_woce_date_time</span></code></a>(dt)</p></td>
+<td><p>Take an xr.DataArray with time values in it and convert to strings.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards._ascii" title="hydro.legacy.coards._ascii"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ascii</span></code></a>(x)</p></td>
+<td><p>Force all codepoints into valid ascii range.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.simplest_str" title="hydro.legacy.coards.simplest_str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simplest_str</span></code></a>(s)</p></td>
+<td><p>Give the simplest string representation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards._pad_station_cast" title="hydro.legacy.coards._pad_station_cast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_pad_station_cast</span></code></a>(x)</p></td>
+<td><p>Pad a station or cast identifier out to 5 characters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_filename" title="hydro.legacy.coards.get_filename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_filename</span></code></a>(expocode, station, cast, extension)</p></td>
+<td><p>Generate the filename for COARDS netCDF files.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.minutes_since_epoch" title="hydro.legacy.coards.minutes_since_epoch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">minutes_since_epoch</span></code></a>(dt, epoch[, error])</p></td>
+<td><p>Make the time value for netCDF files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_coards_global_attributes" title="hydro.legacy.coards.get_coards_global_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_coards_global_attributes</span></code></a>(ds, *, profile_type)</p></td>
+<td><p>Makes the global attributes of a WHP COARDS netCDF File.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_dataarrays" title="hydro.legacy.coards.get_dataarrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dataarrays</span></code></a>(ds)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.get_common_variables" title="hydro.legacy.coards.get_common_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_common_variables</span></code></a>(ds)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.write_bottle" title="hydro.legacy.coards.write_bottle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_bottle</span></code></a>(ds)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.legacy.coards.write_ctd" title="hydro.legacy.coards.write_ctd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_ctd</span></code></a>(ds)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.legacy.coards.to_coards" title="hydro.legacy.coards.to_coards"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_coards</span></code></a>(ds)</p></td>
+<td><p>Convert an xr.Dataset to a zipfile with COARDS netCDF files inside.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.log">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">log</span></span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.log" title="Link to this definition">¶</a></dt>
+<dd><p>logger object for message logging</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.PARAMS">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">PARAMS</span></span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#PARAMS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.PARAMS" title="Link to this definition">¶</a></dt>
+<dd><p>mapping of whp names to nc names</p>
+<p>This is loaded at module import time from a dump from the old internal params sqlite database</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.CTD_ZIP_FILE_EXTENSION">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">CTD_ZIP_FILE_EXTENSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'nc_ctd.zip'</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#CTD_ZIP_FILE_EXTENSION"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.CTD_ZIP_FILE_EXTENSION" title="Link to this definition">¶</a></dt>
+<dd><p>Filename extention for a zipped collection ctd coards netcdf files</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.BOTTLE_ZIP_FILE_EXTENSION">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">BOTTLE_ZIP_FILE_EXTENSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'nc_hyd.zip'</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#BOTTLE_ZIP_FILE_EXTENSION"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.BOTTLE_ZIP_FILE_EXTENSION" title="Link to this definition">¶</a></dt>
+<dd><p>Filename extention for a zipped collection bottle coards netcdf files</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.FILL_VALUE">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">FILL_VALUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-999.0</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#FILL_VALUE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.FILL_VALUE" title="Link to this definition">¶</a></dt>
+<dd><p>Const from old libcchdo, -999.0</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.QC_SUFFIX">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">QC_SUFFIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_QC'</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#QC_SUFFIX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.QC_SUFFIX" title="Link to this definition">¶</a></dt>
+<dd><p>Variable name suffix for flag variables</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.FILE_EXTENSION">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">FILE_EXTENSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'nc'</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#FILE_EXTENSION"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.FILE_EXTENSION" title="Link to this definition">¶</a></dt>
+<dd><p>filenmae extention for all netcdf files</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.EPOCH">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">EPOCH</span></span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#EPOCH"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.EPOCH" title="Link to this definition">¶</a></dt>
+<dd><p>dateime referenced in the units of time variables in netCDF files: 1980-01-01</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">STATIC_PARAMETERS_PER_CAST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('EXPOCODE',</span> <span class="pre">'SECT_ID',</span> <span class="pre">'STNNBR',</span> <span class="pre">'CASTNO',</span> <span class="pre">'_DATETIME',</span> <span class="pre">'LATITUDE',</span> <span class="pre">'LONGITUDE',</span> <span class="pre">'DEPTH',...</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#STATIC_PARAMETERS_PER_CAST"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST" title="Link to this definition">¶</a></dt>
+<dd><p>List of WHP names that are ignored when calling <code class="xref py py-func docutils literal notranslate"><span class="pre">create_and_fill_data_variables()</span></code></p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.NON_FLOAT_PARAMETERS">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">NON_FLOAT_PARAMETERS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('CTDNOBS',)</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#NON_FLOAT_PARAMETERS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.NON_FLOAT_PARAMETERS" title="Link to this definition">¶</a></dt>
+<dd><p>params not in <a class="reference internal" href="#hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST" title="hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST"><code class="xref py py-attr docutils literal notranslate"><span class="pre">STATIC_PARAMETERS_PER_CAST</span></code></a> that are also ignored by <code class="xref py py-func docutils literal notranslate"><span class="pre">create_and_fill_data_variables()</span></code></p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.UNKNOWN">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">UNKNOWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'UNKNOWN'</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#UNKNOWN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.UNKNOWN" title="Link to this definition">¶</a></dt>
+<dd><p>Value used when some string value isn’t found</p>
+<p>This is mmostly mitigated by the guarantees of the new CF format, but e.g. section id might be missing</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.UNSPECIFIED_UNITS">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">UNSPECIFIED_UNITS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unspecified'</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#UNSPECIFIED_UNITS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.UNSPECIFIED_UNITS" title="Link to this definition">¶</a></dt>
+<dd><p>Value used when there are no units</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.legacy.coards.STRLEN">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">STRLEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">40</span></em><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#STRLEN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.STRLEN" title="Link to this definition">¶</a></dt>
+<dd><p>length of char array variables, hardcoded to 40</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.strftime_woce_date_time">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">strftime_woce_date_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#strftime_woce_date_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.strftime_woce_date_time" title="Link to this definition">¶</a></dt>
+<dd><p>Take an xr.DataArray with time values in it and convert to strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2024.11.1.dev0)"><em>xarray.DataArray</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards._ascii">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">_ascii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#_ascii"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards._ascii" title="Link to this definition">¶</a></dt>
+<dd><p>Force all codepoints into valid ascii range.</p>
+<p>Works by encoding the str into ascii bytes with the replace err param, then decoding the bytes to str again</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – string with any unicode codepoint in it</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>string with all non ascii codepoints replaced with whatever “replace” does in <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str.encode" title="(in Python v3.13)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.encode()</span></code></a></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.simplest_str">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">simplest_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#simplest_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.simplest_str" title="Link to this definition">¶</a></dt>
+<dd><p>Give the simplest string representation.</p>
+<p>If a float is almost equivalent to an integer, swap out for the integer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards._pad_station_cast">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">_pad_station_cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#_pad_station_cast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards._pad_station_cast" title="Link to this definition">¶</a></dt>
+<dd><p>Pad a station or cast identifier out to 5 characters.</p>
+<p>This is usually for use in a file name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – a string to be padded</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.get_filename">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">get_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expocode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cast</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#get_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.get_filename" title="Link to this definition">¶</a></dt>
+<dd><p>Generate the filename for COARDS netCDF files.</p>
+<p>Was ported directly from libcchdo and should have the same formatting behavior</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.minutes_since_epoch">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">minutes_since_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epoch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#minutes_since_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.minutes_since_epoch" title="Link to this definition">¶</a></dt>
+<dd><p>Make the time value for netCDF files.</p>
+<p>The custom implimentation in libcchdo was discarded in favor of the date2num function from cftime.
+Not sure if cftime exsited in the netCDF4 python library at the time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2024.11.1.dev0)"><em>xarray.DataArray</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.get_coards_global_attributes">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">get_coards_global_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#get_coards_global_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.get_coards_global_attributes" title="Link to this definition">¶</a></dt>
+<dd><p>Makes the global attributes of a WHP COARDS netCDF File.</p>
+<p>The order of the attributes is important/fixed, same with case</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p></li>
+<li><p><strong>profile_type</strong> (<em>Literal</em><em>[</em><em>'B'</em><em>, </em><em>'C'</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.get_dataarrays">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">get_dataarrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#get_dataarrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.get_dataarrays" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.get_common_variables">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">get_common_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#get_common_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.get_common_variables" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.write_bottle">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">write_bottle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#write_bottle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.write_bottle" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.13)">bytes</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.write_ctd">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">write_ctd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#write_ctd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.write_ctd" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.13)">bytes</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.legacy.coards.to_coards">
+<span class="sig-prename descclassname"><span class="pre">hydro.legacy.coards.</span></span><span class="sig-name descname"><span class="pre">to_coards</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/legacy/coards.html#to_coards"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.legacy.coards.to_coards" title="Link to this definition">¶</a></dt>
+<dd><p>Convert an xr.Dataset to a zipfile with COARDS netCDF files inside.</p>
+<p>This function does support mixed CTD and Bottle datasets and will convert using profile_type var on a per profile basis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>) – A dataset conforming to CCHDO CF/netCDF</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a zipfile with one or more COARDS netCDF files as members.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.13)">bytes</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../woce/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">hydro.legacy.woce</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">hydro.legacy</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Regents of the University of California
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">hydro.legacy.coards</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#package-contents">Package Contents</a><ul>
+<li><a class="reference internal" href="#hydro.legacy.coards.log"><code class="docutils literal notranslate"><span class="pre">log</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.PARAMS"><code class="docutils literal notranslate"><span class="pre">PARAMS</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.CTD_ZIP_FILE_EXTENSION"><code class="docutils literal notranslate"><span class="pre">CTD_ZIP_FILE_EXTENSION</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.BOTTLE_ZIP_FILE_EXTENSION"><code class="docutils literal notranslate"><span class="pre">BOTTLE_ZIP_FILE_EXTENSION</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.FILL_VALUE"><code class="docutils literal notranslate"><span class="pre">FILL_VALUE</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.QC_SUFFIX"><code class="docutils literal notranslate"><span class="pre">QC_SUFFIX</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.FILE_EXTENSION"><code class="docutils literal notranslate"><span class="pre">FILE_EXTENSION</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.EPOCH"><code class="docutils literal notranslate"><span class="pre">EPOCH</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST"><code class="docutils literal notranslate"><span class="pre">STATIC_PARAMETERS_PER_CAST</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.NON_FLOAT_PARAMETERS"><code class="docutils literal notranslate"><span class="pre">NON_FLOAT_PARAMETERS</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.UNKNOWN"><code class="docutils literal notranslate"><span class="pre">UNKNOWN</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.UNSPECIFIED_UNITS"><code class="docutils literal notranslate"><span class="pre">UNSPECIFIED_UNITS</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.STRLEN"><code class="docutils literal notranslate"><span class="pre">STRLEN</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.strftime_woce_date_time"><code class="docutils literal notranslate"><span class="pre">strftime_woce_date_time()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards._ascii"><code class="docutils literal notranslate"><span class="pre">_ascii()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.simplest_str"><code class="docutils literal notranslate"><span class="pre">simplest_str()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards._pad_station_cast"><code class="docutils literal notranslate"><span class="pre">_pad_station_cast()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.get_filename"><code class="docutils literal notranslate"><span class="pre">get_filename()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.minutes_since_epoch"><code class="docutils literal notranslate"><span class="pre">minutes_since_epoch()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.get_coards_global_attributes"><code class="docutils literal notranslate"><span class="pre">get_coards_global_attributes()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.get_dataarrays"><code class="docutils literal notranslate"><span class="pre">get_dataarrays()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.get_common_variables"><code class="docutils literal notranslate"><span class="pre">get_common_variables()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.write_bottle"><code class="docutils literal notranslate"><span class="pre">write_bottle()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.write_ctd"><code class="docutils literal notranslate"><span class="pre">write_ctd()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.legacy.coards.to_coards"><code class="docutils literal notranslate"><span class="pre">to_coards()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

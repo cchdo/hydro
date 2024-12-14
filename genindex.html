@@ -1,0 +1,1710 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 --><title>Index - hydro documentation</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">hydro  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">hydro  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format_spec.html">GO-SHIP CF/netCDF Data Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="attributes.html">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="erddap.html">Variables in ERDDAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ODF_CCHDO_netCDF_ops.html">Basic CF/netCDF operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange_checker.html">Exchange Checker/Converter</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="notebooks.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/2018_s04p_ctd/add_remove_param_s04p_merge.html">add/remove param S04P merge example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/round_trip.html">Round Trip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/simple.html">Simple</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/hydro/index.html">hydro</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of hydro</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/__main__/index.html">hydro.__main__</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/__main_helpers/index.html">hydro.__main_helpers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/accessors/index.html">hydro.accessors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/checks/index.html">hydro.checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/conformance/index.html">hydro.conformance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/convert/index.html">hydro.convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/core/index.html">hydro.core</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/hydro/exchange/index.html">hydro.exchange</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of hydro.exchange</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/exchange/exceptions/index.html">hydro.exchange.exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/exchange/flags/index.html">hydro.exchange.flags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/exchange/helpers/index.html">hydro.exchange.helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/hydro/legacy/index.html">hydro.legacy</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of hydro.legacy</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/legacy/coards/index.html">hydro.legacy.coards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/legacy/woce/index.html">hydro.legacy.woce</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/migration/index.html">hydro.migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/rename/index.html">hydro.rename</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/hydro/tests/index.html">hydro.tests</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of hydro.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/conftest/index.html">hydro.tests.conftest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/data/index.html">hydro.tests.data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_accessors/index.html">hydro.tests.test_accessors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_checks/index.html">hydro.tests.test_checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_core_ops/index.html">hydro.tests.test_core_ops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_csv/index.html">hydro.tests.test_csv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_exchange/index.html">hydro.tests.test_exchange</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_legacy/index.html">hydro.tests.test_legacy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_merge/index.html">hydro.tests.test_merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_rename/index.html">hydro.tests.test_rename</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/tutorial/index.html">hydro.tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#_"><strong>_</strong></a> | <a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#J"><strong>J</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
+</section>
+<section id="_" class="genindex-section">
+  <h2>_</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.CCHDOnetCDF10.__cchdo_version__">__cchdo_version__ (hydro.conformance.CCHDOnetCDF10 attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.__geo_interface__">__geo_interface__ (hydro.accessors.CCHDOAccessor property)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer.__getitem__">__getitem__() (hydro.accessors.WHPIndxer method)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/tutorial/index.html#hydro.tutorial.CCHDOBottleData.__getitem__">(hydro.tutorial.CCHDOBottleData method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/tutorial/index.html#hydro.tutorial.CCHDOBottleData.__iter__">__iter__() (hydro.tutorial.CCHDOBottleData method)</a>
+</li>
+        <li><a href="autoapi/hydro/tutorial/index.html#hydro.tutorial.CCHDOBottleData.__len__">__len__() (hydro.tutorial.CCHDOBottleData method)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.__post_init__">__post_init__() (hydro.exchange._ExchangeData method)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards._ascii">_ascii() (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/tutorial/index.html#hydro.tutorial._cache_dir">_cache_dir() (in module hydro.tutorial)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._combine_dt_ndarray">_combine_dt_ndarray() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__._comment_loader">_comment_loader() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ctd_get_header">_ctd_get_header() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo._ctd_override">_ctd_override (hydro.exchange._ExchangeInfo attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData">_ExchangeData (class in hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo">_ExchangeInfo (class in hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce._EXWOCE_PARAMS">_EXWOCE_PARAMS (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag._flag_definitions">_flag_definitions (hydro.exchange.flags.ExchangeBottleFlag property)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag._flag_definitions">(hydro.exchange.flags.ExchangeCTDFlag property)</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag._flag_definitions">(hydro.exchange.flags.ExchangeSampleFlag property)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._from_exchange_data">_from_exchange_data() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._gen_fname">_gen_fname() (hydro.accessors.CCHDOAccessor static method)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._get_comments">_get_comments() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._get_fill_locs">_get_fill_locs() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._get_params">_get_params() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._has_no_nones">_has_no_nones() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo._ignore_columns">_ignore_columns (hydro.exchange._ExchangeInfo attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._is_all_dataarray">_is_all_dataarray() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._is_valid_exchange_numeric">_is_valid_exchange_numeric() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._load_raw_exchange">_load_raw_exchange() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._make_ctd_headers">_make_ctd_headers() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._make_data_block">_make_data_block() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._make_params_units_line">_make_params_units_line() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag._no_data_flags">_no_data_flags (hydro.exchange.flags.ExchangeBottleFlag property)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag._no_data_flags">(hydro.exchange.flags.ExchangeCTDFlag property)</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag._no_data_flags">(hydro.exchange.flags.ExchangeSampleFlag property)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo._np_data_block">_np_data_block (hydro.exchange._ExchangeInfo property)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._obj">_obj (hydro.accessors.CCHDOAccessor attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards._pad_station_cast">_pad_station_cast() (in module hydro.legacy.coards)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce._pad_station_cast">(in module hydro.legacy.woce)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo._raw_lines">_raw_lines (hydro.exchange._ExchangeInfo attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._transform_whp_to_csv">_transform_whp_to_csv() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce._UNWRITTEN_COLUMNS">_UNWRITTEN_COLUMNS (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo._whp_param_info">_whp_param_info (hydro.exchange._ExchangeInfo property)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._whpname_from_attrs">_whpname_from_attrs() (hydro.accessors.CCHDOAccessor static method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.add_cdom_coordinate">add_cdom_coordinate() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.add_geometry_var">add_geometry_var() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.add_level">add_level() (in module hydro.core)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.add_param">add_param() (in module hydro.core)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.add_profile">add_profile() (in module hydro.core)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.add_profile_level">add_profile_level() (in module hydro.core)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.add_profile_type">add_profile_type() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.all_same">all_same() (in module hydro.exchange)</a>
+</li>
+        <li><a href="format_spec.html#term-ancillary-variable"><strong>ancillary variable</strong></a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.ASTERISK_FLAG">ASTERISK_FLAG (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="format_spec.html#term-attribute"><strong>attribute</strong></a>
+</li>
+        <li><a href="format_spec.html#term-auxiliary-coordinate"><strong>auxiliary coordinate</strong></a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag.BAD">BAD (hydro.exchange.flags.ExchangeCTDFlag attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.BAD">(hydro.exchange.flags.ExchangeSampleFlag attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag.BAD_TRIP">BAD_TRIP (hydro.exchange.flags.ExchangeBottleFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.FileType.BOTTLE">BOTTLE (hydro.exchange.FileType attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.BOTTLE_FILE_EXTENSION">BOTTLE_FILE_EXTENSION (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.BOTTLE_FLAG_DESCRIPTION">BOTTLE_FLAG_DESCRIPTION (in module hydro.legacy.woce)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.BOTTLE_FLAGS">BOTTLE_FLAGS (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/tutorial/index.html#hydro.tutorial.bottle_fname">bottle_fname (in module hydro.tutorial)</a>
+</li>
+        <li><a href="autoapi/hydro/tutorial/index.html#hydro.tutorial.bottle_uri">bottle_uri (in module hydro.tutorial)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.BOTTLE_ZIP_FILE_EXTENSION">BOTTLE_ZIP_FILE_EXTENSION (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.BTLNBR">BTLNBR (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.BTLNBR">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.cached_file_loader">cached_file_loader() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/migration/index.html#hydro.migration.MigrationABC.can_migrate">can_migrate() (hydro.migration.MigrationABC method)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey.cast">cast (hydro.accessors.FQPointKey attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FQProfileKey.cast">(hydro.accessors.FQProfileKey attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.CASTNO">CASTNO (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.CASTNO">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.cchdo_c_format_precision">cchdo_c_format_precision() (hydro.accessors.CCHDOAccessor static method)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.cchdo_loader">cchdo_loader() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.CCHDO_VERSION">CCHDO_VERSION (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor">CCHDOAccessor (class in hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tutorial/index.html#hydro.tutorial.CCHDOBottleData">CCHDOBottleData (class in hydro.tutorial)</a>
+</li>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.CCHDOnetCDF">CCHDOnetCDF (in module hydro.conformance)</a>
+</li>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.CCHDOnetCDF10">CCHDOnetCDF10 (class in hydro.conformance)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag.cf_def">cf_def (hydro.exchange.flags.ExchangeFlag property)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.CHARACTER_PARAMETERS">CHARACTER_PARAMETERS (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/checks/index.html#hydro.checks.check_ancillary_variables">check_ancillary_variables() (in module hydro.checks)</a>
+</li>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.CCHDOnetCDF10.check_cf_version">check_cf_version() (hydro.conformance.CCHDOnetCDF10 method)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.check_flags">check_flags() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.check_is_subset_shape">check_is_subset_shape() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.check_sorted">check_sorted() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.CheckOptions">CheckOptions (class in hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.CheckResult">CheckResult (class in hydro.conformance)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.CHROMA_IRREGULAR">CHROMA_IRREGULAR (hydro.exchange.flags.ExchangeSampleFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.CHROMA_MANUAL">CHROMA_MANUAL (hydro.exchange.flags.ExchangeSampleFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.cli">cli (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.COLUMN_WIDTH">COLUMN_WIDTH (in module hydro.legacy.woce)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.columns_and_base_format">columns_and_base_format() (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.combine_bottle_time">combine_bottle_time() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.combine_dt">combine_dt() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.comments">comments (hydro.exchange._ExchangeData attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.comments">(hydro.exchange._ExchangeInfo property)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.comments_slice">comments_slice (hydro.exchange._ExchangeInfo attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.compact_profile">compact_profile() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.convert">convert() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.convert_csv">convert_csv() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.convert_exchange">convert_exchange() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.convert_fortran_format_to_c">convert_fortran_format_to_c() (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="format_spec.html#term-coordinate"><strong>coordinate</strong></a>
+</li>
+        <li><a href="format_spec.html#term-coordinate-variables"><strong>coordinate variables</strong></a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.COORDS">COORDS (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.COORDS">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.create_new">create_new() (in module hydro.core)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.FileType.CTD">CTD (hydro.exchange.FileType attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.CTD_FILE_EXTENSION">CTD_FILE_EXTENSION (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.CTD_FLAG_DESCRIPTION">CTD_FLAG_DESCRIPTION (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.CTD_FLAGS">CTD_FLAGS (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.ctd_headers">ctd_headers (hydro.exchange._ExchangeInfo property)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.ctd_headers_slice">ctd_headers_slice (hydro.exchange._ExchangeInfo attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.CTD_ZIP_FILE_EXTENSION">CTD_ZIP_FILE_EXTENSION (in module hydro.legacy.coards)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.CTD_ZIP_FILE_EXTENSION">(in module hydro.legacy.woce)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.CTDPRS">CTDPRS (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.CTDPRS">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.data">data (hydro.exchange._ExchangeInfo property)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.data_slice">data_slice (hydro.exchange._ExchangeInfo attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.dataarray_factory">dataarray_factory() (in module hydro.core)</a>
+</li>
+        <li><a href="format_spec.html#term-dataset"><strong>dataset</strong></a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.DATE">DATE (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.DATE">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.date_names">date_names (hydro.accessors.CCHDOAccessor attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag.definition">definition (hydro.exchange.flags.ExchangeFlag property)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag.DESPIKED">DESPIKED (hydro.exchange.flags.ExchangeCTDFlag attribute)</a>
+</li>
+        <li><a href="format_spec.html#term-dimension"><strong>dimension</strong></a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.DIMS">DIMS (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.DIMS">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag.DISCREPANCY">DISCREPANCY (hydro.exchange.flags.ExchangeBottleFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.dtype_map">dtype_map (in module hydro.core)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.edit">edit() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.edit_comments">edit_comments() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.EPOCH">EPOCH (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.CheckResult.error">error (hydro.conformance.CheckResult attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.error_cols">error_cols (hydro.exchange._ExchangeData attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataFlagPairError.error_data">error_data (hydro.exchange.exceptions.ExchangeDataFlagPairError attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeParameterUndefError.error_data">(hydro.exchange.exceptions.ExchangeParameterUndefError attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.ERROR_NAME">ERROR_NAME (in module hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.error_precisions">error_precisions (hydro.exchange._ExchangeData attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeBOMError">ExchangeBOMError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag">ExchangeBottleFlag (class in hydro.exchange.flags)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag">ExchangeCTDFlag (class in hydro.exchange.flags)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataColumnAlignmentError">ExchangeDataColumnAlignmentError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataError">ExchangeDataError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataFlagPairError">ExchangeDataFlagPairError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataInconsistentCoordinateError">ExchangeDataInconsistentCoordinateError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataPartialCoordinateError">ExchangeDataPartialCoordinateError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataPartialKeyError">ExchangeDataPartialKeyError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDuplicateKeyError">ExchangeDuplicateKeyError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDuplicateParameterError">ExchangeDuplicateParameterError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeEncodingError">ExchangeEncodingError</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeEndDataError">ExchangeEndDataError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeError">ExchangeError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag">ExchangeFlag (class in hydro.exchange.flags)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeFlaglessParameterError">ExchangeFlaglessParameterError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeFlagUnitError">ExchangeFlagUnitError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeInconsistentMergeType">ExchangeInconsistentMergeType</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.ExchangeIO">ExchangeIO (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeLEError">ExchangeLEError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeMagicNumberError">ExchangeMagicNumberError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeOrphanErrorError">ExchangeOrphanErrorError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeOrphanFlagError">ExchangeOrphanFlagError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeParameterError">ExchangeParameterError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeParameterUndefError">ExchangeParameterUndefError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeParameterUnitAlignmentError">ExchangeParameterUnitAlignmentError</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeRecursiveZip">ExchangeRecursiveZip</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag">ExchangeSampleFlag (class in hydro.exchange.flags)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.exp_stn_cast">exp_stn_cast (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey.expocode">expocode (hydro.accessors.FQPointKey attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FQProfileKey.expocode">(hydro.accessors.FQProfileKey attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.EXPOCODE">EXPOCODE (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.EXPOCODE">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.extract_numeric_precisions">extract_numeric_precisions() (in module hydro.exchange)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.FILE_EXTENSION">FILE_EXTENSION (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.file_type">file_type (hydro.accessors.CCHDOAccessor property)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.FileType">FileType (class in hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.FileTypes">FileTypes (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.FILL_VALUE">FILL_VALUE (in module hydro.legacy.coards)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.FILL_VALUE">(in module hydro.legacy.woce)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.FILLS_MAP">FILLS_MAP (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.FILLS_MAP">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.finalize">finalize() (hydro.exchange._ExchangeInfo method)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.finalize_ancillary_variables">finalize_ancillary_variables() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag.flag">flag (hydro.exchange.flags.ExchangeFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.flag_cols">flag_cols (hydro.exchange._ExchangeData attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.flag_description">flag_description() (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FLAG_NAME">FLAG_NAME (in module hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.FLAG_SCHEME">FLAG_SCHEME (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.FLAG_SCHEME">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.CheckOptions.flags">flags (hydro.exchange.CheckOptions attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.flatten_cdom_coordinate">flatten_cdom_coordinate() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.FORMAT">FORMAT (in module hydro.conformance)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.fq_get_precisions">fq_get_precisions() (in module hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey">FQPointKey (class in hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FQProfileKey">FQProfileKey (class in hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.from_lines">from_lines() (hydro.exchange._ExchangeInfo class method)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FTypeOptions">FTypeOptions (in module hydro.accessors)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.gen_fname">gen_fname() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/helpers/index.html#hydro.exchange.helpers.gen_template">gen_template() (in module hydro.exchange.helpers)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.GEOMETRY_VARS">GEOMETRY_VARS (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.get_coards_global_attributes">get_coards_global_attributes() (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.get_common_variables">get_common_variables() (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.get_dataarrays">get_dataarrays() (in module hydro.legacy.coards)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.get_exwoce_params">get_exwoce_params() (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.get_filename">get_filename() (in module hydro.legacy.coards)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.get_filename">(in module hydro.legacy.woce)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag.GOOD">GOOD (hydro.exchange.flags.ExchangeBottleFlag attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag.GOOD">(hydro.exchange.flags.ExchangeCTDFlag attribute)</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.GOOD">(hydro.exchange.flags.ExchangeSampleFlag attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="format_spec.html#term-group"><strong>group</strong></a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag.has_value">has_value (hydro.exchange.flags.ExchangeFlag property)</a>
+</li>
+        <li>
+    hydro
+
+        <ul>
+          <li><a href="autoapi/hydro/index.html#module-hydro">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.__main__
+
+        <ul>
+          <li><a href="autoapi/hydro/__main__/index.html#module-hydro.__main__">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.__main_helpers
+
+        <ul>
+          <li><a href="autoapi/hydro/__main_helpers/index.html#module-hydro.__main_helpers">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.accessors
+
+        <ul>
+          <li><a href="autoapi/hydro/accessors/index.html#module-hydro.accessors">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.checks
+
+        <ul>
+          <li><a href="autoapi/hydro/checks/index.html#module-hydro.checks">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.conformance
+
+        <ul>
+          <li><a href="autoapi/hydro/conformance/index.html#module-hydro.conformance">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.convert
+
+        <ul>
+          <li><a href="autoapi/hydro/convert/index.html#module-hydro.convert">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.core
+
+        <ul>
+          <li><a href="autoapi/hydro/core/index.html#module-hydro.core">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.exchange
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#module-hydro.exchange">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.exchange.exceptions
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/exceptions/index.html#module-hydro.exchange.exceptions">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.exchange.flags
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#module-hydro.exchange.flags">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.exchange.helpers
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/helpers/index.html#module-hydro.exchange.helpers">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.legacy
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/index.html#module-hydro.legacy">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.legacy.coards
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/coards/index.html#module-hydro.legacy.coards">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    hydro.legacy.woce
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/woce/index.html#module-hydro.legacy.woce">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.migration
+
+        <ul>
+          <li><a href="autoapi/hydro/migration/index.html#module-hydro.migration">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.rename
+
+        <ul>
+          <li><a href="autoapi/hydro/rename/index.html#module-hydro.rename">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/index.html#module-hydro.tests">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests.conftest
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/conftest/index.html#module-hydro.tests.conftest">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests.data
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/data/index.html#module-hydro.tests.data">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests.test_accessors
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/test_accessors/index.html#module-hydro.tests.test_accessors">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests.test_checks
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/test_checks/index.html#module-hydro.tests.test_checks">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests.test_core_ops
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/test_core_ops/index.html#module-hydro.tests.test_core_ops">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests.test_csv
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/test_csv/index.html#module-hydro.tests.test_csv">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests.test_exchange
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/test_exchange/index.html#module-hydro.tests.test_exchange">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests.test_legacy
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/test_legacy/index.html#module-hydro.tests.test_legacy">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests.test_merge
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/test_merge/index.html#module-hydro.tests.test_merge">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tests.test_rename
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/test_rename/index.html#module-hydro.tests.test_rename">module</a>
+</li>
+        </ul></li>
+        <li>
+    hydro.tutorial
+
+        <ul>
+          <li><a href="autoapi/hydro/tutorial/index.html#module-hydro.tutorial">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag.INTERPOLATED">INTERPOLATED (hydro.exchange.flags.ExchangeCTDFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/rename/index.html#hydro.rename.is_not_none">is_not_none() (in module hydro.rename)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/tests/test_rename/index.html#hydro.tests.test_rename.is_not_none">(in module hydro.tests.test_rename)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.CCHDOnetCDF10.iter_errors">iter_errors() (hydro.conformance.CCHDOnetCDF10 method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="J" class="genindex-section">
+  <h2>J</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.jsonld">jsonld() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.LATITUDE">LATITUDE (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.LATITUDE">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag.LEAKING">LEAKING (hydro.exchange.flags.ExchangeBottleFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/tutorial/index.html#hydro.tutorial.load_cchdo_bottle_data">load_cchdo_bottle_data() (in module hydro.tutorial)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.log">log (in module hydro.__main__)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.log">(in module hydro.conformance)</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.log">(in module hydro.exchange)</a>
+</li>
+          <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.log">(in module hydro.legacy.coards)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.LONGITUDE">LONGITUDE (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.LONGITUDE">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/__main_helpers/index.html#hydro.__main_helpers.make_netcdf_file_json">make_netcdf_file_json() (in module hydro.__main_helpers)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.MEAN">MEAN (hydro.exchange.flags.ExchangeSampleFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.merge_fq">merge_fq() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+        <li><a href="autoapi/hydro/migration/index.html#hydro.migration.MigrationABC.migrate">migrate() (hydro.migration.MigrationABC method)</a>
+</li>
+        <li><a href="autoapi/hydro/migration/index.html#hydro.migration.MigrationABC">MigrationABC (class in hydro.migration)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.minutes_since_epoch">minutes_since_epoch() (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.MISSING">MISSING (hydro.exchange.flags.ExchangeSampleFlag attribute)</a>
+</li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="autoapi/hydro/index.html#module-hydro">hydro</a>
+</li>
+          <li><a href="autoapi/hydro/__main__/index.html#module-hydro.__main__">hydro.__main__</a>
+</li>
+          <li><a href="autoapi/hydro/__main_helpers/index.html#module-hydro.__main_helpers">hydro.__main_helpers</a>
+</li>
+          <li><a href="autoapi/hydro/accessors/index.html#module-hydro.accessors">hydro.accessors</a>
+</li>
+          <li><a href="autoapi/hydro/checks/index.html#module-hydro.checks">hydro.checks</a>
+</li>
+          <li><a href="autoapi/hydro/conformance/index.html#module-hydro.conformance">hydro.conformance</a>
+</li>
+          <li><a href="autoapi/hydro/convert/index.html#module-hydro.convert">hydro.convert</a>
+</li>
+          <li><a href="autoapi/hydro/core/index.html#module-hydro.core">hydro.core</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/index.html#module-hydro.exchange">hydro.exchange</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/exceptions/index.html#module-hydro.exchange.exceptions">hydro.exchange.exceptions</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#module-hydro.exchange.flags">hydro.exchange.flags</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/helpers/index.html#module-hydro.exchange.helpers">hydro.exchange.helpers</a>
+</li>
+          <li><a href="autoapi/hydro/legacy/index.html#module-hydro.legacy">hydro.legacy</a>
+</li>
+          <li><a href="autoapi/hydro/legacy/coards/index.html#module-hydro.legacy.coards">hydro.legacy.coards</a>
+</li>
+          <li><a href="autoapi/hydro/legacy/woce/index.html#module-hydro.legacy.woce">hydro.legacy.woce</a>
+</li>
+          <li><a href="autoapi/hydro/migration/index.html#module-hydro.migration">hydro.migration</a>
+</li>
+          <li><a href="autoapi/hydro/rename/index.html#module-hydro.rename">hydro.rename</a>
+</li>
+          <li><a href="autoapi/hydro/tests/index.html#module-hydro.tests">hydro.tests</a>
+</li>
+          <li><a href="autoapi/hydro/tests/conftest/index.html#module-hydro.tests.conftest">hydro.tests.conftest</a>
+</li>
+          <li><a href="autoapi/hydro/tests/data/index.html#module-hydro.tests.data">hydro.tests.data</a>
+</li>
+          <li><a href="autoapi/hydro/tests/test_accessors/index.html#module-hydro.tests.test_accessors">hydro.tests.test_accessors</a>
+</li>
+          <li><a href="autoapi/hydro/tests/test_checks/index.html#module-hydro.tests.test_checks">hydro.tests.test_checks</a>
+</li>
+          <li><a href="autoapi/hydro/tests/test_core_ops/index.html#module-hydro.tests.test_core_ops">hydro.tests.test_core_ops</a>
+</li>
+          <li><a href="autoapi/hydro/tests/test_csv/index.html#module-hydro.tests.test_csv">hydro.tests.test_csv</a>
+</li>
+          <li><a href="autoapi/hydro/tests/test_exchange/index.html#module-hydro.tests.test_exchange">hydro.tests.test_exchange</a>
+</li>
+          <li><a href="autoapi/hydro/tests/test_legacy/index.html#module-hydro.tests.test_legacy">hydro.tests.test_legacy</a>
+</li>
+          <li><a href="autoapi/hydro/tests/test_merge/index.html#module-hydro.tests.test_merge">hydro.tests.test_merge</a>
+</li>
+          <li><a href="autoapi/hydro/tests/test_rename/index.html#module-hydro.tests.test_rename">hydro.tests.test_rename</a>
+</li>
+          <li><a href="autoapi/hydro/tutorial/index.html#module-hydro.tutorial">hydro.tutorial</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer.n_level">n_level (hydro.accessors.WHPIndxer attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer.n_prof">n_prof (hydro.accessors.WHPIndxer attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/conftest/index.html#hydro.tests.conftest.nc_empty">nc_empty() (in module hydro.tests.conftest)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/conftest/index.html#hydro.tests.conftest.nc_placeholder">nc_placeholder() (in module hydro.tests.conftest)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/conftest/index.html#hydro.tests.conftest.nc_placeholders">nc_placeholders() (in module hydro.tests.conftest)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag.NO_INFO">NO_INFO (hydro.exchange.flags.ExchangeBottleFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag.NOFLAG">NOFLAG (hydro.exchange.flags.ExchangeBottleFlag attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag.NOFLAG">(hydro.exchange.flags.ExchangeCTDFlag attribute)</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.NOFLAG">(hydro.exchange.flags.ExchangeSampleFlag attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.NON_FLOAT_PARAMETERS">NON_FLOAT_PARAMETERS (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.normalize_fq">normalize_fq() (in module hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.NormalizedFQ">NormalizedFQ (in module hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag.NOT_REPORTED">NOT_REPORTED (hydro.exchange.flags.ExchangeBottleFlag attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag.NOT_REPORTED">(hydro.exchange.flags.ExchangeCTDFlag attribute)</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.NOT_REPORTED">(hydro.exchange.flags.ExchangeSampleFlag attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag.NOT_SAMPLED">NOT_SAMPLED (hydro.exchange.flags.ExchangeBottleFlag attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag.NOT_SAMPLED">(hydro.exchange.flags.ExchangeCTDFlag attribute)</a>
+</li>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.NOT_SAMPLED">(hydro.exchange.flags.ExchangeSampleFlag attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.CheckResult.ok">ok (hydro.conformance.CheckResult property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/__main_helpers/index.html#hydro.__main_helpers.p_file">p_file() (in module hydro.__main_helpers)</a>
+</li>
+        <li><a href="autoapi/hydro/__main_helpers/index.html#hydro.__main_helpers.p_file_cf">p_file_cf() (in module hydro.__main_helpers)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag.PAIR">PAIR (hydro.exchange.flags.ExchangeBottleFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.param_cols">param_cols (hydro.exchange._ExchangeData attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.param_precisions">param_precisions (hydro.exchange._ExchangeData attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.params">params (hydro.exchange._ExchangeInfo property)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.PARAMS">PARAMS (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.params_idx">params_idx (hydro.exchange._ExchangeInfo attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/tutorial/index.html#hydro.tutorial.CCHDOBottleData.path">path (hydro.tutorial.CCHDOBottleData attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.PathType">PathType (in module hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.post_data">post_data (hydro.exchange._ExchangeInfo property)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.post_data_slice">post_data_slice (hydro.exchange._ExchangeInfo attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.PrecisionSouceType">PrecisionSouceType (in module hydro.__main__)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.QC_SUFFIX">QC_SUFFIX (in module hydro.legacy.coards)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag.QUESTIONABLE">QUESTIONABLE (hydro.exchange.flags.ExchangeCTDFlag attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.QUESTIONABLE">(hydro.exchange.flags.ExchangeSampleFlag attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/index.html#hydro.read_csv">read_csv() (in module hydro)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.read_csv">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/index.html#hydro.read_exchange">read_exchange() (in module hydro)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.read_exchange">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.remove_param">remove_param() (in module hydro.core)</a>
+</li>
+        <li><a href="autoapi/hydro/rename/index.html#hydro.rename.rename_with_bookkeeping">rename_with_bookkeeping() (in module hydro.rename)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.SAFE_COLUMN_WIDTH">SAFE_COLUMN_WIDTH (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey.sample">sample (hydro.accessors.FQPointKey attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.SAMPNO">SAMPNO (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.SAMPNO">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.SENTINEL_PARAM">SENTINEL_PARAM (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.SENTINEL_PREFIX">SENTINEL_PREFIX (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.set_axis_attrs">set_axis_attrs() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.set_coordinate_encoding_fill">set_coordinate_encoding_fill() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.set_expected">set_expected() (hydro.exchange._ExchangeData method)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.setup_logging">setup_logging() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/helpers/index.html#hydro.exchange.helpers.simple_bottle_exchange">simple_bottle_exchange() (in module hydro.exchange.helpers)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.simplest_str">simplest_str() (in module hydro.legacy.coards)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.simplest_str">(in module hydro.legacy.woce)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.single_profile">single_profile (hydro.exchange._ExchangeData attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.sort_ds">sort_ds() (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.split_profiles">split_profiles() (hydro.exchange._ExchangeData method)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.stamp">stamp (hydro.exchange._ExchangeInfo property)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.stamp_slice">stamp_slice (hydro.exchange._ExchangeInfo attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.STATIC_PARAMETERS_PER_CAST">STATIC_PARAMETERS_PER_CAST (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey.station">station (hydro.accessors.FQPointKey attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.FQProfileKey.station">(hydro.accessors.FQProfileKey attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.status">status() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.status_cf_derived">status_cf_derived() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.status_exchange">status_exchange() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.STNNBR">STNNBR (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.STNNBR">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.str_lens">str_lens (hydro.exchange._ExchangeData property)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.strftime_woce_date_time">strftime_woce_date_time() (in module hydro.legacy.coards)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.STRLEN">STRLEN (in module hydro.legacy.coards)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/tests/test_core_ops/index.html#hydro.tests.test_core_ops.test_add_param">test_add_param() (in module hydro.tests.test_core_ops)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_core_ops/index.html#hydro.tests.test_core_ops.test_add_param_cdom">test_add_param_cdom() (in module hydro.tests.test_core_ops)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_core_ops/index.html#hydro.tests.test_core_ops.test_add_profile">test_add_profile() (in module hydro.tests.test_core_ops)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_csv/index.html#hydro.tests.test_csv.test_all_error_params">test_all_error_params() (in module hydro.tests.test_csv)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_csv/index.html#hydro.tests.test_csv.test_all_flags_kept">test_all_flags_kept() (in module hydro.tests.test_csv)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_alternate_encoding">test_alternate_encoding() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_alternate_params">test_alternate_params() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_alternate_params_flags">test_alternate_params_flags() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_btl_date_time">test_btl_date_time() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_btl_date_time_fill_round_trip">test_btl_date_time_fill_round_trip() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_btl_date_time_missing_warn">test_btl_date_time_missing_warn() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_checks/index.html#hydro.tests.test_checks.test_check_ancillary_variables_ok">test_check_ancillary_variables_ok() (in module hydro.tests.test_checks)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_checks/index.html#hydro.tests.test_checks.test_check_ancillary_variables_referenced_non_extant_var">test_check_ancillary_variables_referenced_non_extant_var() (in module hydro.tests.test_checks)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_checks/index.html#hydro.tests.test_checks.test_check_ancillary_variables_unreferenced_vars">test_check_ancillary_variables_unreferenced_vars() (in module hydro.tests.test_checks)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_coards_ctdnobs_with_missing">test_coards_ctdnobs_with_missing() (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_coards_no_comments">test_coards_no_comments() (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_core_ops/index.html#hydro.tests.test_core_ops.test_create_new">test_create_new() (in module hydro.tests.test_core_ops)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_ctd_nan">test_ctd_nan() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_duplicate_name_different_units">test_duplicate_name_different_units() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_duplicate_name_different_units_keep_flags">test_duplicate_name_different_units_keep_flags() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_duplicate_name_same_units">test_duplicate_name_same_units() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_empty_string_data">test_empty_string_data() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_exchange_bottle_round_trip">test_exchange_bottle_round_trip() (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_exchange_bottle_round_trip_cdom">test_exchange_bottle_round_trip_cdom() (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_exchange_bottle_round_trip_with_alt">test_exchange_bottle_round_trip_with_alt() (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_exchange_ctd_round_trip">test_exchange_ctd_round_trip() (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_file_seperator">test_file_seperator() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_fix_bottle_time_span">test_fix_bottle_time_span() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_merge/index.html#hydro.tests.test_merge.test_fq_merge">test_fq_merge() (in module hydro.tests.test_merge)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_merge/index.html#hydro.tests.test_merge.test_fq_merge_cdom">test_fq_merge_cdom() (in module hydro.tests.test_merge)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_merge/index.html#hydro.tests.test_merge.test_fq_merge_flag_error">test_fq_merge_flag_error() (in module hydro.tests.test_merge)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_merge/index.html#hydro.tests.test_merge.test_fq_merge_flag_only">test_fq_merge_flag_only() (in module hydro.tests.test_merge)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_merge/index.html#hydro.tests.test_merge.test_fq_merge_with_alt_params">test_fq_merge_with_alt_params() (in module hydro.tests.test_merge)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/tests/test_merge/index.html#hydro.tests.test_merge.test_fq_merge_with_error">test_fq_merge_with_error() (in module hydro.tests.test_merge)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_gen_fname_machinery">test_gen_fname_machinery() (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_http_loads">test_http_loads() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_csv/index.html#hydro.tests.test_csv.test_ignore_columns">test_ignore_columns() (in module hydro.tests.test_csv)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_multiple_unknown_params">test_multiple_unknown_params() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_multiple_unknown_params_flag">test_multiple_unknown_params_flag() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_multiple_unknown_params_ignore">test_multiple_unknown_params_ignore() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_nc_serialize_all_ctd">test_nc_serialize_all_ctd() (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_nc_serialize_all_ctdetime">test_nc_serialize_all_ctdetime() (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_pressure_flags">test_pressure_flags() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_pressure_flags_bad">test_pressure_flags_bad() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_csv/index.html#hydro.tests.test_csv.test_read_csv">test_read_csv() (in module hydro.tests.test_csv)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_exchange/index.html#hydro.tests.test_exchange.test_reject_bad_examples">test_reject_bad_examples() (in module hydro.tests.test_exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_core_ops/index.html#hydro.tests.test_core_ops.test_remove_param">test_remove_param() (in module hydro.tests.test_core_ops)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_rename/index.html#hydro.tests.test_rename.test_rename">test_rename() (in module hydro.tests.test_rename)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_csv/index.html#hydro.tests.test_csv.test_station_ids">test_station_ids() (in module hydro.tests.test_csv)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_rename/index.html#hydro.tests.test_rename.test_to_argo_variable_names">test_to_argo_variable_names() (in module hydro.tests.test_rename)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_woce_ctd_no_flags">test_woce_ctd_no_flags() (in module hydro.tests.test_accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/tests/test_legacy/index.html#hydro.tests.test_legacy.test_woce_flag_defs">test_woce_flag_defs() (in module hydro.tests.test_legacy)</a>
+</li>
+        <li><a href="autoapi/hydro/core/index.html#hydro.core.TIME">TIME (in module hydro.core)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.TIME">(in module hydro.exchange)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.time_names">time_names (hydro.accessors.CCHDOAccessor attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/rename/index.html#hydro.rename.to_argo_variable_names">to_argo_variable_names() (in module hydro.rename)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_coards">to_coards() (hydro.accessors.CCHDOAccessor method)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.to_coards">(in module hydro.legacy.coards)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_exchange">to_exchange() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_mat">to_mat() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_sum">to_sum() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_whp_columns">to_whp_columns() (hydro.accessors.CCHDOAccessor method)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_woce">to_woce() (hydro.accessors.CCHDOAccessor method)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.to_woce">(in module hydro.legacy.woce)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.track">track (hydro.accessors.CCHDOAccessor property)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.truncate_row">truncate_row() (in module hydro.legacy.woce)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag.UNCALIBRATED">UNCALIBRATED (hydro.exchange.flags.ExchangeCTDFlag attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.units">units (hydro.exchange._ExchangeInfo property)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.units_idx">units_idx (hydro.exchange._ExchangeInfo attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.UNKNONW_TIME_FILL">UNKNONW_TIME_FILL (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag.UNKNOWN">UNKNOWN (hydro.exchange.flags.ExchangeBottleFlag attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.UNKNOWN">(in module hydro.legacy.coards)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.UNSPECIFIED_UNITS">UNSPECIFIED_UNITS (in module hydro.legacy.coards)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.CCHDOnetCDF10.validate">validate() (hydro.conformance.CCHDOnetCDF10 method)</a>
+</li>
+        <li><a href="format_spec.html#term-variable"><strong>variable</strong></a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/__main__/index.html#hydro.__main__.vars_with_value">vars_with_value() (in module hydro.__main__)</a>
+</li>
+        <li><a href="autoapi/hydro/migration/index.html#hydro.migration.MigrationABC.version_from">version_from (hydro.migration.MigrationABC attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/conformance/index.html#hydro.conformance.CheckResult.warning">warning (hydro.conformance.CheckResult attribute)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.WATER_SAMPLE_FLAG_DESCRIPTION">WATER_SAMPLE_FLAG_DESCRIPTION (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.WATER_SAMPLE_FLAGS">WATER_SAMPLE_FLAGS (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.whp_errors">whp_errors (hydro.exchange._ExchangeInfo property)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.whp_flags">whp_flags (hydro.exchange._ExchangeInfo property)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.whp_params">whp_params (hydro.exchange._ExchangeInfo property)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer">WHPIndxer (class in hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.WHPNameAttr">WHPNameAttr (in module hydro.exchange)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.WHPNameIndex">WHPNameIndex (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/exchange/index.html#hydro.exchange.WHPParamUnit">WHPParamUnit (in module hydro.exchange)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.write_bottle">write_bottle() (in module hydro.legacy.coards)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.write_bottle">(in module hydro.legacy.woce)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.write_ctd">write_ctd() (in module hydro.legacy.coards)</a>
+
+        <ul>
+          <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.write_ctd">(in module hydro.legacy.woce)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.write_data">write_data() (in module hydro.legacy.woce)</a>
+</li>
+        <li><a href="autoapi/hydro/accessors/index.html#hydro.accessors.write_or_return">write_or_return() (in module hydro.accessors)</a>
+</li>
+        <li><a href="autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.writeable_columns">writeable_columns() (in module hydro.legacy.woce)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Regents of the University of California
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

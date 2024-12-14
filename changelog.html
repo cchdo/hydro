@@ -1,0 +1,600 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="autoapi/index.html" /><link rel="prev" title="Simple" href="examples/simple.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>Changelog - hydro documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">hydro  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">hydro  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format_spec.html">GO-SHIP CF/netCDF Data Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="attributes.html">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="erddap.html">Variables in ERDDAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ODF_CCHDO_netCDF_ops.html">Basic CF/netCDF operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange_checker.html">Exchange Checker/Converter</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="notebooks.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/2018_s04p_ctd/add_remove_param_s04p_merge.html">add/remove param S04P merge example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/round_trip.html">Round Trip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/simple.html">Simple</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Changelog</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/hydro/index.html">hydro</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of hydro</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/__main__/index.html">hydro.__main__</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/__main_helpers/index.html">hydro.__main_helpers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/accessors/index.html">hydro.accessors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/checks/index.html">hydro.checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/conformance/index.html">hydro.conformance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/convert/index.html">hydro.convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/core/index.html">hydro.core</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/hydro/exchange/index.html">hydro.exchange</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of hydro.exchange</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/exchange/exceptions/index.html">hydro.exchange.exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/exchange/flags/index.html">hydro.exchange.flags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/exchange/helpers/index.html">hydro.exchange.helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/hydro/legacy/index.html">hydro.legacy</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of hydro.legacy</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/legacy/coards/index.html">hydro.legacy.coards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/legacy/woce/index.html">hydro.legacy.woce</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/migration/index.html">hydro.migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/rename/index.html">hydro.rename</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/hydro/tests/index.html">hydro.tests</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of hydro.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/conftest/index.html">hydro.tests.conftest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/data/index.html">hydro.tests.data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_accessors/index.html">hydro.tests.test_accessors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_checks/index.html">hydro.tests.test_checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_core_ops/index.html">hydro.tests.test_core_ops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_csv/index.html">hydro.tests.test_csv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_exchange/index.html">hydro.tests.test_exchange</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_legacy/index.html">hydro.tests.test_legacy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_merge/index.html">hydro.tests.test_merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/hydro/tests/test_rename/index.html">hydro.tests.test_rename</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/hydro/tutorial/index.html">hydro.tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/changelog.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
+<section id="v1-0-2-13-2024-11">
+<h2>v1.0.2.13 (2024-11-??)<a class="headerlink" href="#v1-0-2-13-2024-11" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Support specifying the text encoding of the input exchange file</p></li>
+<li><p>(Bug) Fix fill values in bottle date/time being printed as nan in generated exchange files</p></li>
+<li><p>Add the ability to ignore columns using the ODV parameter syntax to <code class="docutils literal notranslate"><span class="pre">read_exchange</span></code> and <code class="docutils literal notranslate"><span class="pre">read_csv</span></code></p></li>
+<li><p>Add a –roundtrip flag to the status-exchange command, this will convert from the exchange file online at CCHDO to xarray/netCDF then back to exchange, then back to netCDF, the purpose is to check that the derived exchange is valid.</p></li>
+</ul>
+</section>
+<section id="v1-0-2-12-2024-10-29">
+<h2>v1.0.2.12 (2024-10-29)<a class="headerlink" href="#v1-0-2-12-2024-10-29" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Add support for adding CDOM params/wavelengths</p></li>
+<li><p>Add support for merging CDOM in merge_fq</p></li>
+<li><p>(Bug) Fix merge_fq putting alternate paramter data in the wrong place</p></li>
+<li><p>(Bug) Fix a crash in the COARDS writer on some architectures (x64) when CTDNOBS has fill values</p></li>
+<li><p>Fix exception caused by string dtype parameters with all fill values</p></li>
+</ul>
+</section>
+<section id="v1-0-2-11-2024-08-30">
+<h2>v1.0.2.11 (2024-08-30)<a class="headerlink" href="#v1-0-2-11-2024-08-30" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Removed 2 rouge debug print statemnets from digging into that WOCE bug</p></li>
+</ul>
+</section>
+<section id="v1-0-2-10-2024-08-30">
+<h2>v1.0.2.10 (2024-08-30)<a class="headerlink" href="#v1-0-2-10-2024-08-30" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>(Major Bug) Fix not calculating the correct string length for string fields that have an inconsistent length (e.g. station)</p></li>
+<li><p>(Bug) Fix the legacy woce writer not writing the data block if no quality flags are in the file</p></li>
+</ul>
+</section>
+<section id="v1-0-2-9-2024-08-08">
+<h2>v1.0.2.9 (2024-08-08)<a class="headerlink" href="#v1-0-2-9-2024-08-08" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>(New) Added :py:func:<code class="docutils literal notranslate"><span class="pre">hydro.core.add_param</span></code> and :py:func:<code class="docutils literal notranslate"><span class="pre">hydro.core.remove_param</span></code> functions</p></li>
+<li><p>(Bug) Fix crash in the COARDS writer when the comments are just an empty string</p></li>
+<li><p>Add cchdo.auth to cli optional requiremnets</p></li>
+<li><p>Vectorize the merge_fq accessor for greater speed</p></li>
+<li><p>use absolute imports throughout the library</p></li>
+<li><p>Speedups in string processing (precision extraction) from numpy 2</p></li>
+</ul>
+</section>
+<section id="v1-0-2-8-2024-03-22">
+<h2>v1.0.2.8 (2024-03-22)<a class="headerlink" href="#v1-0-2-8-2024-03-22" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>netCDF4 is now requried as part of the selftest option when installing</p></li>
+</ul>
+</section>
+<section id="v1-0-2-7-2024-03-22">
+<h2>v1.0.2.7 (2024-03-22)<a class="headerlink" href="#v1-0-2-7-2024-03-22" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>(Bug) fix to_exchange accessor failing for variables with seconds and the unit</p></li>
+<li><p>(Bug) fix to_coards accessor failing for variables with seconds and the unit</p></li>
+<li><p>Add status-cf-derived command that tests all all public CF files at CCHDO going from netCDF to every other supported format</p></li>
+</ul>
+</section>
+<section id="v1-0-2-6-2024-03-18">
+<h2>v1.0.2.6 (2024-03-18)<a class="headerlink" href="#v1-0-2-6-2024-03-18" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Support for duplicate parameters</p></li>
+<li><p>(Bug) fix to_exchange accessor failing with a Dataset containing CDOM variables</p></li>
+<li><p>(Bug) fix for the flag column getting lost when alternate units for the same parameter were present in one file
+If, for example, a file had CTDTMP [ITS-90] and CTDTMP [IPTS-68] and both had CTDTMP_FLAG_W columns, only one of the parameters would get a flag column</p></li>
+<li><p>Added “coards” and “woce” file name generation support to <code class="docutils literal notranslate"><span class="pre">gen_fname()</span></code> accessor</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">to_woce()</span></code> now always returns zipfile bytes for ctd data</p></li>
+<li><p>Omit the “STAMP” text from generated WOCE files</p></li>
+<li><p>(changed) Bump min <code class="docutils literal notranslate"><span class="pre">cchdo.params</span></code> version to 2024.3</p></li>
+</ul>
+</section>
+<section id="v1-0-2-5-2023-10-05">
+<h2>v1.0.2.5 (2023-10-05)<a class="headerlink" href="#v1-0-2-5-2023-10-05" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Rewrite the COARDS netCDF output to create xarray objects rather than netCDF datasets directly.
+In some quick testing, this results in about a 3x speed up, this depends more on variable count vs data length, so most of the performance increase is actually in the bottle output</p>
+<ul>
+<li><p>Fixed a bug in COARDS where the fill value was not being set in the bottom depth variable</p></li>
+</ul>
+</li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">fill_values</span></code> and <code class="docutils literal notranslate"><span class="pre">precision_source</span></code> arguments to <code class="docutils literal notranslate"><span class="pre">read_csv</span></code></p></li>
+<li><p>Add string literal types for the <code class="docutils literal notranslate"><span class="pre">ftype</span></code> parameter of <code class="docutils literal notranslate"><span class="pre">read_csv</span></code></p></li>
+<li><p>CLI improvements:</p>
+<ul>
+<li><p>made “precision_source” and option rather than positional argument</p></li>
+<li><p>added a <code class="docutils literal notranslate"><span class="pre">--comments</span></code> option to allow the override of comments from either a string or file path prefixed with &#64;.</p></li>
+<li><p>Add a convert_csv subcommand which takes an additional ftype option to specify (C)TD or (B)ottle</p></li>
+</ul>
+</li>
+<li><p>Removed the <code class="docutils literal notranslate"><span class="pre">matlab</span></code> optional install extra, this previously had a single dependency of “scipy” in it.
+Scipy is used by xarray for netCDF3 output so this dependency has been moved to the <code class="docutils literal notranslate"><span class="pre">netcdf</span></code> optional install extra.</p></li>
+</ul>
+</section>
+<section id="v1-0-2-4-2023-09-05">
+<h2>v1.0.2.4 (2023-09-05)<a class="headerlink" href="#v1-0-2-4-2023-09-05" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>(improved) the read_csv method now handles ctd data better, specifically you do not need to include a SAMPNO column if the FileType is CTD.</p></li>
+<li><p>Switched linting in pre-commit and CI to use ruff</p></li>
+<li><p>(changed) Bump min <code class="docutils literal notranslate"><span class="pre">cchdo.params</span></code> version to 2023.9</p></li>
+</ul>
+</section>
+<section id="v1-0-2-3-2023-07-24">
+<h2>v1.0.2.3 (2023-07-24)<a class="headerlink" href="#v1-0-2-3-2023-07-24" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">read_csv</span></code> method</p></li>
+<li><p>(bug) Remove the <code class="docutils literal notranslate"><span class="pre">C_format</span></code> and <code class="docutils literal notranslate"><span class="pre">C_format_source</span></code> attributes for non floating point variables. Integer and string values are exact so do not need any sort of format hint. Including a format string for non floating point values is undefined behavior in the netCDF-C Library and can result in crashing.</p></li>
+<li><p>(new) Add <code class="docutils literal notranslate"><span class="pre">to_coards()</span></code> and <code class="docutils literal notranslate"><span class="pre">to_woce()</span></code> accessors to maintain legacy formats at CCHDO.</p></li>
+<li><p>(new) All the <code class="docutils literal notranslate"><span class="pre">to_*</span></code> accessors now support a path argument that will accept a writeable binary mode file like object or a filesystem path to write to.</p></li>
+<li><p>(new) Add a <code class="docutils literal notranslate"><span class="pre">compact_profile()</span></code> accessor that drops the trailing fill values from a profile</p></li>
+<li><p>(new) Add the a <code class="docutils literal notranslate"><span class="pre">file_seperator</span></code> and <code class="docutils literal notranslate"><span class="pre">keep_seperator</span></code> to <code class="docutils literal notranslate"><span class="pre">cchdo.hydro.exchange.read_exchange()</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">keep_seperator</span></code> argument defaults to True.
+This is specifically to allow the reading of CTD exchange files that have been concatenated together (rather than zipped).
+Assuming there is nothing after “END_DATA” and you cat a bunch of _ct1.csv files together, they should be readable if “END_DATA” is passed into the <code class="docutils literal notranslate"><span class="pre">file_seperator</span></code> argument.</p></li>
+<li><p>(new) Add <code class="docutils literal notranslate"><span class="pre">--dump-data-counts</span></code> option to the exchange status generator which will dump a json document containing a object with nc_var name strings to count integers of how many
+variables with this name actually contain any data (i.e. are not just entirely fill value).</p></li>
+<li><p>Add a <code class="docutils literal notranslate"><span class="pre">--version</span></code> option to the cli interface</p></li>
+<li><p>(changed) Export <code class="docutils literal notranslate"><span class="pre">read_exchange</span></code> from the top level <code class="docutils literal notranslate"><span class="pre">cchdo.hydro</span></code> namespace.</p></li>
+<li><p>(changed) Bump min <code class="docutils literal notranslate"><span class="pre">cchdo.params</span></code> version to 0.1.21</p></li>
+<li><p>(changed) Dropped netCDF4 as required for installation, if netCDF4 isn’t installed already you can install with the <code class="docutils literal notranslate"><span class="pre">cchdo.hydro[netcdf4]</span></code> optional.</p>
+<ul>
+<li><p>While this might seem like an odd choice for a library that started as one to convert WHP Exchange files to netCDf, netCDF
+itself is not called until the very end of the conversion process. Internally, everything is an <code class="docutils literal notranslate"><span class="pre">xarray.Dataset</span></code>. This means you can
+install this library to read exchange files in tricky environments like pyodide or jupyterlite which already tend to have pandas and numpy in them.</p></li>
+</ul>
+</li>
+<li><p>(bug) fix <code class="docutils literal notranslate"><span class="pre">pressure</span></code> variable not having a <code class="docutils literal notranslate"><span class="pre">_FillValue</span></code> attribute</p></li>
+</ul>
+</section>
+<section id="v1-0-2-2-2022-08-18">
+<h2>v1.0.2.2 (2022-08-18)<a class="headerlink" href="#v1-0-2-2-2022-08-18" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Support for time values that are equal to 2400, when this is encountered, the date will be set to midnight of the next day.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read_exchange()</span></code> will now accept bytes and bytearray objects as input, wrapping data in an <code class="docutils literal notranslate"><span class="pre">io.BytesIO</span></code> is not needed anymore.</p></li>
+</ul>
+</section>
+<section id="v1-0-2-1-2022-07-08">
+<h2>v1.0.2.1 (2022-07-08)<a class="headerlink" href="#v1-0-2-1-2022-07-08" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>(breaking) fix misspelling of <code class="docutils literal notranslate"><span class="pre">convert_exchange</span></code> subcommand</p></li>
+<li><p>Will not rely on the python universal newlines for reading exchange data</p></li>
+<li><p>Will now combine CDOM parameters into a single variable with a new wavelength dimension in the last axis.</p></li>
+<li><p>Update the WHP error name lookup to be compatible with cchdo.params v0.1.18, this is now the minimum version</p></li>
+<li><p>Add an <code class="docutils literal notranslate"><span class="pre">error_data</span></code> attribute to <code class="docutils literal notranslate"><span class="pre">ExchangeParameterUndefError</span></code> that will contain a list of all the unknown <code class="docutils literal notranslate"><span class="pre">(param,</span> <span class="pre">unit)</span></code> pairs in an exchange file when attempting to read one.</p></li>
+<li><p>Add an <code class="docutils literal notranslate"><span class="pre">error_data</span></code> attribute to <code class="docutils literal notranslate"><span class="pre">ExchangeDataFlagPairError</span></code> that will contain a list of all the found flag errors as an xarray.Dataset</p></li>
+<li><p>Automatically attempt to use BTLNBR as a fallback if SAMPNO is not present in a bottle file.</p></li>
+<li><p>Automatically reconstruct the date of a missing BTL_DATE param if only BTL_TIME is present.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">--dump-unknown-params</span></code> option to the status_exchange subcommand which will dump an unknown param list into a json format into the <code class="docutils literal notranslate"><span class="pre">out_dir</span></code>.</p></li>
+<li><p>Performing a flag check is now behind a feature switch (defaults to true, for the status-exchange it is set to false)</p></li>
+<li><p>If a TIME column contains entirely the string “0” (not 0000) it will be ignored</p></li>
+</ul>
+</section>
+<section id="v1-0-2-0-2022-04-12">
+<h2>v1.0.2.0 (2022-04-12)<a class="headerlink" href="#v1-0-2-0-2022-04-12" title="Link to this heading">¶</a></h2>
+<p>This release includes an almost complete rewrite of how the exchange to netCDF conversion works.
+It now more directly uses numpy and has significant memory reduction and speed improvements when converting CTD (bottle is about the same).</p>
+<ul class="simple">
+<li><p>(breaking) The CLI was changed to support multiple actions which caused the exchange to netCDF functions to be moved to a sub-command “convert-exchnage” with the same interface as before.</p></li>
+<li><p>(breaking) The “source_C_format” attribute has been removed in favor of only having one “C_format” attribute, the “source” of the value in the C_format attribute will be listed in a new attribute “C_format_source” with the value of either “input_file” if the C_format was calculated from a text based input, or “database” if the C_format was taken from the internal database.</p></li>
+<li><p>(temporary) the netCDF to exchange function is not quite ready yet to work as an xarray accessor.</p></li>
+<li><p>(provisional) the order which netCDF variables appear is now in “exchange preferred” order.</p></li>
+</ul>
+<section id="bug-fixes">
+<h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed an issue where the WOCE sumfile accessor would misalign latitude columns near the equator since they lacked a digit in the tens place.</p></li>
+<li><p>Fixed an issue where the WOCE sumfile accessor would use “pressure levels” of CTD source netCDF files as the number of bottles.</p></li>
+<li><p>Fixed an issue where stations might occur in an unexpected order.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-0-1-3-2021-08-25">
+<h2>v1.0.1.3 (2021-08-25)<a class="headerlink" href="#v1-0-1-3-2021-08-25" title="Link to this heading">¶</a></h2>
+<p>This release fixes many of the issues identified after the initial “1.0.0.0” release. Highlights include:</p>
+<ul class="simple">
+<li><p>Explicitly set the <code class="docutils literal notranslate"><span class="pre">_FillValue</span></code> attribute for the bottle closure time variable.</p></li>
+<li><p>The dtype for real number variables has been changed from <code class="docutils literal notranslate"><span class="pre">float</span></code> to <code class="docutils literal notranslate"><span class="pre">double</span></code></p></li>
+<li><p>If the source data is an “exchange csv”, a <code class="docutils literal notranslate"><span class="pre">source_C_format</span></code> attribute will (with some exceptions) be present on the real number data variables.</p></li>
+</ul>
+</section>
+<section id="v1-0-1-2-2021-03-11">
+<h2>v1.0.1.2 (2021-03-11)<a class="headerlink" href="#v1-0-1-2-2021-03-11" title="Link to this heading">¶</a></h2>
+<p>This release fixes a typo in the pyproject.toml file which would cause the _version.py file to be invalid.</p>
+</section>
+<section id="v1-0-1-0-2021-03-11">
+<h2>v1.0.1.0 (2021-03-11)<a class="headerlink" href="#v1-0-1-0-2021-03-11" title="Link to this heading">¶</a></h2>
+<p>Hopefully this fixes the errors which prevented the project from being published automatically to pypi.</p>
+</section>
+<section id="v1-0-0-0-2021-03-11">
+<h2>v1.0.0.0 (2021-03-11)<a class="headerlink" href="#v1-0-0-0-2021-03-11" title="Link to this heading">¶</a></h2>
+<p>After a whole bunch of testing, meetings, more testing, arguments, and a lot of work. We have declared the current status of the project as “good enough” for a 1.0.0 release.</p>
+<p>There is much work to be done, especially since not all our files convert currently, but we think the ones that do convert are ready for public consumption. Unless something crazy goes wrong or is discovered, format changes should only be additive in nature (e.g. new attributes on variables).</p>
+<p>The version will hopefully use the following (close to semver):</p>
+<p>x.y.z</p>
+<p>Where:</p>
+<ul class="simple">
+<li><p>x is incremented when a real breaking change to the netCDF output format is made.</p></li>
+<li><p>y is incremented when things are added to the netCDF format that should not break code which relies on previously existing attributes</p></li>
+<li><p>z is incremented for normal software releases that don’t change the netCDF output.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The version number was since updated to be w.x.y.z where w.x is the CCHDO netCDF format version and y.z is the software versions</p>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="autoapi/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">API Reference</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="examples/simple.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Simple</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Regents of the University of California
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Changelog</a><ul>
+<li><a class="reference internal" href="#v1-0-2-13-2024-11">v1.0.2.13 (2024-11-??)</a></li>
+<li><a class="reference internal" href="#v1-0-2-12-2024-10-29">v1.0.2.12 (2024-10-29)</a></li>
+<li><a class="reference internal" href="#v1-0-2-11-2024-08-30">v1.0.2.11 (2024-08-30)</a></li>
+<li><a class="reference internal" href="#v1-0-2-10-2024-08-30">v1.0.2.10 (2024-08-30)</a></li>
+<li><a class="reference internal" href="#v1-0-2-9-2024-08-08">v1.0.2.9 (2024-08-08)</a></li>
+<li><a class="reference internal" href="#v1-0-2-8-2024-03-22">v1.0.2.8 (2024-03-22)</a></li>
+<li><a class="reference internal" href="#v1-0-2-7-2024-03-22">v1.0.2.7 (2024-03-22)</a></li>
+<li><a class="reference internal" href="#v1-0-2-6-2024-03-18">v1.0.2.6 (2024-03-18)</a></li>
+<li><a class="reference internal" href="#v1-0-2-5-2023-10-05">v1.0.2.5 (2023-10-05)</a></li>
+<li><a class="reference internal" href="#v1-0-2-4-2023-09-05">v1.0.2.4 (2023-09-05)</a></li>
+<li><a class="reference internal" href="#v1-0-2-3-2023-07-24">v1.0.2.3 (2023-07-24)</a></li>
+<li><a class="reference internal" href="#v1-0-2-2-2022-08-18">v1.0.2.2 (2022-08-18)</a></li>
+<li><a class="reference internal" href="#v1-0-2-1-2022-07-08">v1.0.2.1 (2022-07-08)</a></li>
+<li><a class="reference internal" href="#v1-0-2-0-2022-04-12">v1.0.2.0 (2022-04-12)</a><ul>
+<li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v1-0-1-3-2021-08-25">v1.0.1.3 (2021-08-25)</a></li>
+<li><a class="reference internal" href="#v1-0-1-2-2021-03-11">v1.0.1.2 (2021-03-11)</a></li>
+<li><a class="reference internal" href="#v1-0-1-0-2021-03-11">v1.0.1.0 (2021-03-11)</a></li>
+<li><a class="reference internal" href="#v1-0-0-0-2021-03-11">v1.0.0.0 (2021-03-11)</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

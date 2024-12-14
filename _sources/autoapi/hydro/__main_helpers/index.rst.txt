@@ -1,0 +1,25 @@
+hydro.__main_helpers
+====================
+
+.. py:module:: hydro.__main_helpers
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.__main_helpers.make_netcdf_file_json
+   hydro.__main_helpers.p_file
+   hydro.__main_helpers.p_file_cf
+
+
+Module Contents
+---------------
+
+.. py:function:: make_netcdf_file_json(path)
+
+.. py:function:: p_file(file_m)
+
+.. py:function:: p_file_cf(file_m)
+

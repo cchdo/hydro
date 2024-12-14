@@ -1,0 +1,25 @@
+hydro.tests.conftest
+====================
+
+.. py:module:: hydro.tests.conftest
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.tests.conftest.nc_empty
+   hydro.tests.conftest.nc_placeholder
+   hydro.tests.conftest.nc_placeholders
+
+
+Module Contents
+---------------
+
+.. py:function:: nc_empty()
+
+.. py:function:: nc_placeholder()
+
+.. py:function:: nc_placeholders()
+

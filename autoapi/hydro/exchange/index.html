@@ -1,0 +1,1537 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="hydro.exchange.exceptions" href="exceptions/index.html" /><link rel="prev" title="hydro.core" href="../core/index.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>hydro.exchange - hydro documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">hydro  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">hydro  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../format_spec.html">GO-SHIP CF/netCDF Data Format Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../attributes.html">Attributes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../erddap.html">Variables in ERDDAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ODF_CCHDO_netCDF_ops.html">Basic CF/netCDF operators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exchange_checker.html">Exchange Checker/Converter</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../notebooks.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/2018_s04p_ctd/add_remove_param_s04p_merge.html">add/remove param S04P merge example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/round_trip.html">Round Trip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/simple.html">Simple</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">hydro</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of hydro</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../__main__/index.html">hydro.__main__</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../__main_helpers/index.html">hydro.__main_helpers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../accessors/index.html">hydro.accessors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../checks/index.html">hydro.checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../conformance/index.html">hydro.conformance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../convert/index.html">hydro.convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../core/index.html">hydro.core</a></li>
+<li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">hydro.exchange</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of hydro.exchange</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="exceptions/index.html">hydro.exchange.exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flags/index.html">hydro.exchange.flags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="helpers/index.html">hydro.exchange.helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../legacy/index.html">hydro.legacy</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of hydro.legacy</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../legacy/coards/index.html">hydro.legacy.coards</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../legacy/woce/index.html">hydro.legacy.woce</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../migration/index.html">hydro.migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rename/index.html">hydro.rename</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../tests/index.html">hydro.tests</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of hydro.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../tests/conftest/index.html">hydro.tests.conftest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tests/data/index.html">hydro.tests.data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tests/test_accessors/index.html">hydro.tests.test_accessors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tests/test_checks/index.html">hydro.tests.test_checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tests/test_core_ops/index.html">hydro.tests.test_core_ops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tests/test_csv/index.html">hydro.tests.test_csv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tests/test_exchange/index.html">hydro.tests.test_exchange</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tests/test_legacy/index.html">hydro.tests.test_legacy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tests/test_merge/index.html">hydro.tests.test_merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tests/test_rename/index.html">hydro.tests.test_rename</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/index.html">hydro.tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../../_sources/autoapi/hydro/exchange/index.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-hydro.exchange">
+<span id="hydro-exchange"></span><h1>hydro.exchange<a class="headerlink" href="#module-hydro.exchange" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="exceptions/index.html">hydro.exchange.exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flags/index.html">hydro.exchange.flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/index.html">hydro.exchange.helpers</a></li>
+</ul>
+</div>
+</section>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.CCHDO_VERSION" title="hydro.exchange.CCHDO_VERSION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CCHDO_VERSION</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.log" title="hydro.exchange.log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.DIMS" title="hydro.exchange.DIMS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DIMS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.EXPOCODE" title="hydro.exchange.EXPOCODE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EXPOCODE</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.STNNBR" title="hydro.exchange.STNNBR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">STNNBR</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.CASTNO" title="hydro.exchange.CASTNO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CASTNO</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.SAMPNO" title="hydro.exchange.SAMPNO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SAMPNO</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.DATE" title="hydro.exchange.DATE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DATE</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.TIME" title="hydro.exchange.TIME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TIME</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.LATITUDE" title="hydro.exchange.LATITUDE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LATITUDE</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.LONGITUDE" title="hydro.exchange.LONGITUDE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LONGITUDE</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.CTDPRS" title="hydro.exchange.CTDPRS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CTDPRS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.BTLNBR" title="hydro.exchange.BTLNBR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BTLNBR</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.COORDS" title="hydro.exchange.COORDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">COORDS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.SENTINEL_PREFIX" title="hydro.exchange.SENTINEL_PREFIX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SENTINEL_PREFIX</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.SENTINEL_PARAM" title="hydro.exchange.SENTINEL_PARAM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SENTINEL_PARAM</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.FLAG_SCHEME" title="hydro.exchange.FLAG_SCHEME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FLAG_SCHEME</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.GEOMETRY_VARS" title="hydro.exchange.GEOMETRY_VARS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GEOMETRY_VARS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.FILLS_MAP" title="hydro.exchange.FILLS_MAP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FILLS_MAP</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.FileTypes" title="hydro.exchange.FileTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileTypes</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.WHPNameIndex" title="hydro.exchange.WHPNameIndex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WHPNameIndex</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.WHPParamUnit" title="hydro.exchange.WHPParamUnit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WHPParamUnit</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.ExchangeIO" title="hydro.exchange.ExchangeIO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExchangeIO</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.WHPNameAttr" title="hydro.exchange.WHPNameAttr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WHPNameAttr</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.FileType" title="hydro.exchange.FileType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileType</span></code></a></p></td>
+<td><p>Create a collection of name/value pairs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange._ExchangeData" title="hydro.exchange._ExchangeData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ExchangeData</span></code></a></p></td>
+<td><p>Dataclass containing exchange data which has been parsed into ndarrays</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange._ExchangeInfo" title="hydro.exchange._ExchangeInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ExchangeInfo</span></code></a></p></td>
+<td><p>Low level dataclass containing the parts of an exchange file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.CheckOptions" title="hydro.exchange.CheckOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CheckOptions</span></code></a></p></td>
+<td><p>Flags and config that controll how strict the file checks are</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange._has_no_nones" title="hydro.exchange._has_no_nones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_has_no_nones</span></code></a>(val)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange._transform_whp_to_csv" title="hydro.exchange._transform_whp_to_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_transform_whp_to_csv</span></code></a>(params, units)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange._get_params" title="hydro.exchange._get_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_params</span></code></a>(params_units[, ignore_params])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange._ctd_get_header" title="hydro.exchange._ctd_get_header"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ctd_get_header</span></code></a>(line[, dtype])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange._is_all_dataarray" title="hydro.exchange._is_all_dataarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_is_all_dataarray</span></code></a>(val)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.flatten_cdom_coordinate" title="hydro.exchange.flatten_cdom_coordinate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_cdom_coordinate</span></code></a>(dataset)</p></td>
+<td><p>Takes the a dataset with a CDOM wavelength and explocdes it back into individual variables</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.add_cdom_coordinate" title="hydro.exchange.add_cdom_coordinate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_cdom_coordinate</span></code></a>(dataset)</p></td>
+<td><p>Find all the paraters in the cdom group and add their wavelength in a new coordinate</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.add_geometry_var" title="hydro.exchange.add_geometry_var"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_geometry_var</span></code></a>(dataset)</p></td>
+<td><p>Adds a CF-1.8 Geometry container variable to the dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.add_profile_type" title="hydro.exchange.add_profile_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_profile_type</span></code></a>(dataset, ftype)</p></td>
+<td><p>Adds a <cite>profile_type</cite> string variable to the dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.finalize_ancillary_variables" title="hydro.exchange.finalize_ancillary_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">finalize_ancillary_variables</span></code></a>(dataset)</p></td>
+<td><p>Turn the ancillary variable attr into a space seperated string</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.combine_bottle_time" title="hydro.exchange.combine_bottle_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine_bottle_time</span></code></a>(dataset)</p></td>
+<td><p>Combine the bottle dates and times if present</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.check_is_subset_shape" title="hydro.exchange.check_is_subset_shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_is_subset_shape</span></code></a>(a1, a2[, strict])</p></td>
+<td><p>Ensure that the shape of the data in a2 is a subset (or strict subset) of the data shape of a1</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.check_flags" title="hydro.exchange.check_flags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_flags</span></code></a>(dataset[, raises])</p></td>
+<td><p>Check WOCE flag values agaisnt their param and ensure that the param either has a value or is &quot;nan&quot; depedning on the flag definition.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange._get_fill_locs" title="hydro.exchange._get_fill_locs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_fill_locs</span></code></a>(arr[, fill_values])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.extract_numeric_precisions" title="hydro.exchange.extract_numeric_precisions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_numeric_precisions</span></code></a>(data)</p></td>
+<td><p>Get the numeric precision of a printed decimal number</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange._is_valid_exchange_numeric" title="hydro.exchange._is_valid_exchange_numeric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_is_valid_exchange_numeric</span></code></a>(data)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange._combine_dt_ndarray" title="hydro.exchange._combine_dt_ndarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_combine_dt_ndarray</span></code></a>(date_arr[, time_arr, time_pad])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.sort_ds" title="hydro.exchange.sort_ds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_ds</span></code></a>(dataset)</p></td>
+<td><p>Sorts the data values in the dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.check_sorted" title="hydro.exchange.check_sorted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_sorted</span></code></a>(dataset)</p></td>
+<td><p>Check that the dataset is sorted by the rules in <a class="reference internal" href="#hydro.exchange.sort_ds" title="hydro.exchange.sort_ds"><code class="xref py py-func docutils literal notranslate"><span class="pre">sort_ds()</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.combine_dt" title="hydro.exchange.combine_dt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">combine_dt</span></code></a>(dataset[, is_coord, date_name, time_name, ...])</p></td>
+<td><p>Combine the exchange style string variables of date and optinally time into a single</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.set_axis_attrs" title="hydro.exchange.set_axis_attrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_axis_attrs</span></code></a>(dataset)</p></td>
+<td><p>Set the CF axis attribute on our axis variables (XYZT)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.set_coordinate_encoding_fill" title="hydro.exchange.set_coordinate_encoding_fill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_coordinate_encoding_fill</span></code></a>(dataset)</p></td>
+<td><p>Sets the _FillValue encoidng to None for 1D coordinate vars</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange._load_raw_exchange" title="hydro.exchange._load_raw_exchange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_load_raw_exchange</span></code></a>(filename_or_obj, *[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.all_same" title="hydro.exchange.all_same"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_same</span></code></a>(ndarr)</p></td>
+<td><p>Test if all the values of an ndarray are the same value</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.read_csv" title="hydro.exchange.read_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_csv</span></code></a>(filename_or_obj, *[, fill_values, ftype, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.read_exchange" title="hydro.exchange.read_exchange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_exchange</span></code></a>(filename_or_obj, *[, fill_values, ...])</p></td>
+<td><p>Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange._from_exchange_data" title="hydro.exchange._from_exchange_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_from_exchange_data</span></code></a>(exchange_data, *[, ftype, checks])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.CCHDO_VERSION">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">CCHDO_VERSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#CCHDO_VERSION"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.CCHDO_VERSION" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.log">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">log</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.log" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.DIMS">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">DIMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('N_PROF',</span> <span class="pre">'N_LEVELS')</span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#DIMS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.DIMS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.EXPOCODE">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">EXPOCODE</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#EXPOCODE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.EXPOCODE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.STNNBR">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">STNNBR</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#STNNBR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.STNNBR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.CASTNO">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">CASTNO</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#CASTNO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.CASTNO" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.SAMPNO">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">SAMPNO</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#SAMPNO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.SAMPNO" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.DATE">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">DATE</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#DATE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.DATE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.TIME">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">TIME</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#TIME"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.TIME" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.LATITUDE">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">LATITUDE</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#LATITUDE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.LATITUDE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.LONGITUDE">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">LONGITUDE</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#LONGITUDE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.LONGITUDE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.CTDPRS">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">CTDPRS</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#CTDPRS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.CTDPRS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.BTLNBR">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">BTLNBR</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#BTLNBR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.BTLNBR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.COORDS">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">COORDS</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#COORDS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.COORDS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.SENTINEL_PREFIX">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">SENTINEL_PREFIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'__SENTINEL'</span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#SENTINEL_PREFIX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.SENTINEL_PREFIX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.SENTINEL_PARAM">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">SENTINEL_PARAM</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#SENTINEL_PARAM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.SENTINEL_PARAM" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.FLAG_SCHEME">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">FLAG_SCHEME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">cchdo.hydro.exchange.flags.ExchangeFlag</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#FLAG_SCHEME"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.FLAG_SCHEME" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.GEOMETRY_VARS">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">GEOMETRY_VARS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('expocode',</span> <span class="pre">'station',</span> <span class="pre">'cast',</span> <span class="pre">'section_id',</span> <span class="pre">'time')</span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#GEOMETRY_VARS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.GEOMETRY_VARS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.FILLS_MAP">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">FILLS_MAP</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#FILLS_MAP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.FILLS_MAP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.FileTypes">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">FileTypes</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#FileTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.FileTypes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.exchange.FileType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">FileType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#FileType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.FileType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>Create a collection of name/value pairs.</p>
+<p>Example enumeration:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p>Access them by:</p>
+<ul class="simple">
+<li><p>attribute access:</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span>
+<span class="go">&lt;Color.RED: 1&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>value lookup:</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">&lt;Color.RED: 1&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>name lookup:</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="p">[</span><span class="s1">&#39;RED&#39;</span><span class="p">]</span>
+<span class="go">&lt;Color.RED: 1&gt;</span>
+</pre></div>
+</div>
+<p>Enumerations can be iterated over, and know how many members they have:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">Color</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">Color</span><span class="p">)</span>
+<span class="go">[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]</span>
+</pre></div>
+</div>
+<p>Methods can be added to enumerations, and members can have their own
+attributes – see the documentation for details.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange.FileType.CTD">
+<span class="sig-name descname"><span class="pre">CTD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'C'</span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#FileType.CTD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.FileType.CTD" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange.FileType.BOTTLE">
+<span class="sig-name descname"><span class="pre">BOTTLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'B'</span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#FileType.BOTTLE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.FileType.BOTTLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.WHPNameIndex">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">WHPNameIndex</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#WHPNameIndex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.WHPNameIndex" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.WHPParamUnit">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">WHPParamUnit</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#WHPParamUnit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.WHPParamUnit" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange._has_no_nones">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_has_no_nones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_has_no_nones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._has_no_nones" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>val</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>TypeGuard[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange._transform_whp_to_csv">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_transform_whp_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_transform_whp_to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._transform_whp_to_csv" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>)</p></li>
+<li><p><strong>units</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange._get_params">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._get_params" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><em>collections.abc.Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>)</p></li>
+<li><p><strong>ignore_params</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><em>collections.abc.Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a>[WHPNameIndex, WHPNameIndex, WHPNameIndex]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange._ctd_get_header">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_ctd_get_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ctd_get_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ctd_get_header" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange._is_all_dataarray">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_is_all_dataarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_is_all_dataarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._is_all_dataarray" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>val</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><em>Any</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>TypeGuard[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2024.11.1.dev0)">xarray.DataArray</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.flatten_cdom_coordinate">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">flatten_cdom_coordinate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#flatten_cdom_coordinate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.flatten_cdom_coordinate" title="Link to this definition">¶</a></dt>
+<dd><p>Takes the a dataset with a CDOM wavelength and explocdes it back into individual variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.add_cdom_coordinate">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">add_cdom_coordinate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#add_cdom_coordinate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.add_cdom_coordinate" title="Link to this definition">¶</a></dt>
+<dd><p>Find all the paraters in the cdom group and add their wavelength in a new coordinate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.add_geometry_var">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">add_geometry_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#add_geometry_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.add_geometry_var" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a CF-1.8 Geometry container variable to the dataset</p>
+<p>This allows for compatabiltiy with tools like gdal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.add_profile_type">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">add_profile_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ftype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#add_profile_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.add_profile_type" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a <cite>profile_type</cite> string variable to the dataset.</p>
+<p>This is for ODV compatability</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Currently mixed profile types are not supported</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p></li>
+<li><p><strong>ftype</strong> (<a class="reference internal" href="#hydro.exchange.FileType" title="hydro.exchange.FileType"><em>FileType</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.finalize_ancillary_variables">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">finalize_ancillary_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#finalize_ancillary_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.finalize_ancillary_variables" title="Link to this definition">¶</a></dt>
+<dd><p>Turn the ancillary variable attr into a space seperated string</p>
+<p>It is nice to have the ancillary variable be a list while things are being read into it</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.combine_bottle_time">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">combine_bottle_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#combine_bottle_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.combine_bottle_time" title="Link to this definition">¶</a></dt>
+<dd><p>Combine the bottle dates and times if present</p>
+<p>Raises if only one is present</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.check_is_subset_shape">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">check_is_subset_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'disallowed'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#check_is_subset_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.check_is_subset_shape" title="Link to this definition">¶</a></dt>
+<dd><p>Ensure that the shape of the data in a2 is a subset (or strict subset) of the data shape of a1</p>
+<p>For a given set of param, flag, and error arrays you would want to ensure that:</p>
+<ul class="simple">
+<li><p>errors are a subset of params (strict is allowed)</p></li>
+<li><p>params are a subset of flags (strict is allowed)</p></li>
+</ul>
+<p>For string vars, the empty string is considered the “nothing” value.
+For woce flags, flag 9s should be converted to nans (depending on scheme flag 5 and 1 may not have param values)</p>
+<p>Return a boolean array of invalid locations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a1</strong> (<em>numpy.typing.NDArray</em>)</p></li>
+<li><p><strong>a2</strong> (<em>numpy.typing.NDArray</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.typing.NDArray[numpy.bool_]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.check_flags">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">check_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raises</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#check_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.check_flags" title="Link to this definition">¶</a></dt>
+<dd><p>Check WOCE flag values agaisnt their param and ensure that the param either has a value or is “nan” depedning on the flag definition.</p>
+<p>Return a boolean array of invalid locations?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_ExchangeData</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData" title="Link to this definition">¶</a></dt>
+<dd><p>Dataclass containing exchange data which has been parsed into ndarrays</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.single_profile">
+<span class="sig-name descname"><span class="pre">single_profile</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.single_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.single_profile" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.param_cols">
+<span class="sig-name descname"><span class="pre">param_cols</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">cchdo.params.WHPName</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.param_cols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.param_cols" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.flag_cols">
+<span class="sig-name descname"><span class="pre">flag_cols</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">cchdo.params.WHPName</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.flag_cols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.flag_cols" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.error_cols">
+<span class="sig-name descname"><span class="pre">error_cols</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">cchdo.params.WHPName</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.error_cols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.error_cols" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.param_precisions">
+<span class="sig-name descname"><span class="pre">param_precisions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">cchdo.params.WHPName</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.typing.NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.int_</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.param_precisions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.param_precisions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.error_precisions">
+<span class="sig-name descname"><span class="pre">error_precisions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">cchdo.params.WHPName</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.typing.NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.int_</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.error_precisions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.error_precisions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.comments">
+<span class="sig-name descname"><span class="pre">comments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.comments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.comments" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.__post_init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.set_expected">
+<span class="sig-name descname"><span class="pre">set_expected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.set_expected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.set_expected" title="Link to this definition">¶</a></dt>
+<dd><p>Puts fill columns for expected params which are missing</p>
+<p>This can occur when there are disjoint columns in CTD files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><em>set</em></a><em>[</em><em>cchdo.params.WHPName</em><em>]</em>)</p></li>
+<li><p><strong>flags</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><em>set</em></a><em>[</em><em>cchdo.params.WHPName</em><em>]</em>)</p></li>
+<li><p><strong>errors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><em>set</em></a><em>[</em><em>cchdo.params.WHPName</em><em>]</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.split_profiles">
+<span class="sig-name descname"><span class="pre">split_profiles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.split_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.split_profiles" title="Link to this definition">¶</a></dt>
+<dd><p>Split into single profile containing _ExchangeData instances</p>
+<p>Done by looking at the expocode+station+cast composate keys</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeData.str_lens">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">str_lens</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">cchdo.params.WHPName</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeData.str_lens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeData.str_lens" title="Link to this definition">¶</a></dt>
+<dd><p>Figure out the length of all the string params</p>
+<p>The char size can vary by platform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a>[cchdo.params.WHPName, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange._get_fill_locs">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_get_fill_locs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('-999',)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_get_fill_locs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._get_fill_locs" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fill_values</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Ellipsis</em><em>]</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_ExchangeInfo</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo" title="Link to this definition">¶</a></dt>
+<dd><p>Low level dataclass containing the parts of an exchange file</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.stamp_slice">
+<span class="sig-name descname"><span class="pre">stamp_slice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><span class="pre">slice</span></a></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.stamp_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.stamp_slice" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.comments_slice">
+<span class="sig-name descname"><span class="pre">comments_slice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><span class="pre">slice</span></a></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.comments_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.comments_slice" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.ctd_headers_slice">
+<span class="sig-name descname"><span class="pre">ctd_headers_slice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><span class="pre">slice</span></a></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.ctd_headers_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.ctd_headers_slice" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.params_idx">
+<span class="sig-name descname"><span class="pre">params_idx</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.params_idx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.params_idx" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.units_idx">
+<span class="sig-name descname"><span class="pre">units_idx</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.units_idx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.units_idx" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.data_slice">
+<span class="sig-name descname"><span class="pre">data_slice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><span class="pre">slice</span></a></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.data_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.data_slice" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.post_data_slice">
+<span class="sig-name descname"><span class="pre">post_data_slice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.13)"><span class="pre">slice</span></a></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.post_data_slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.post_data_slice" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo._raw_lines">
+<span class="sig-name descname"><span class="pre">_raw_lines</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo._raw_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo._raw_lines" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo._ctd_override">
+<span class="sig-name descname"><span class="pre">_ctd_override</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo._ctd_override"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo._ctd_override" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo._ignore_columns">
+<span class="sig-name descname"><span class="pre">_ignore_columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><span class="pre">collections.abc.Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo._ignore_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo._ignore_columns" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.stamp">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stamp</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.stamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.stamp" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the filestamp of the exchange file</p>
+<p>e.g. “BOTTLE,20210301CCHSIOAMB”</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.comments">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">comments</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.comments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.comments" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the comments of the exchange file with leading # stripped</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.ctd_headers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ctd_headers</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.ctd_headers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.ctd_headers" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a dict of the CTD headers and their value</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">params</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.params" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a list of all parameters in the file (including CTD “headers”)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.units">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">units</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.units" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a list of all the units in the file (including CTD “headers”)</p>
+<p>Will have the same shape as params</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.data" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the data block of an exchange file as a tuple of strs.
+One line per entry.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.post_data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">post_data</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.post_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.post_data" title="Link to this definition">¶</a></dt>
+<dd><p>Returns any post data content as a tuple of strs</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo._whp_param_info">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_whp_param_info</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo._whp_param_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo._whp_param_info" title="Link to this definition">¶</a></dt>
+<dd><p>Parses the params and units for base parameters</p>
+<p>Returns a dict with a WHPName to column index mapping</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.whp_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">whp_params</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.whp_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.whp_params" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.whp_flags">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">whp_flags</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.whp_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.whp_flags" title="Link to this definition">¶</a></dt>
+<dd><p>Parses the params and units for flag values</p>
+<p>returns a dict with a WHPName to column index of flags mapping</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.whp_errors">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">whp_errors</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.whp_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.whp_errors" title="Link to this definition">¶</a></dt>
+<dd><p>Parses the params and units for uncertanty values</p>
+<p>returns a dict with a WHPName to column index of errors mapping</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo._np_data_block">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_np_data_block</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo._np_data_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo._np_data_block" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('-999',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.finalize" title="Link to this definition">¶</a></dt>
+<dd><p>Parse all the data into ndarrays of the correct dtype and shape</p>
+<p>Returns an ExchangeData dataclass</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#hydro.exchange._ExchangeData" title="hydro.exchange._ExchangeData">_ExchangeData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.from_lines">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ftype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_columns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.from_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.from_lines" title="Link to this definition">¶</a></dt>
+<dd><p>Figure out the line numbers/indicies of the parts of the exchange file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lines</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Ellipsis</em><em>]</em>)</p></li>
+<li><p><strong>ftype</strong> (<a class="reference internal" href="#hydro.exchange.FileType" title="hydro.exchange.FileType"><em>FileType</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.extract_numeric_precisions">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">extract_numeric_precisions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#extract_numeric_precisions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.extract_numeric_precisions" title="Link to this definition">¶</a></dt>
+<dd><p>Get the numeric precision of a printed decimal number</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>] </em><em>| </em><em>numpy.typing.NDArray</em><em>[</em><em>numpy.str_</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.typing.NDArray[numpy.int_]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange._is_valid_exchange_numeric">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_is_valid_exchange_numeric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_is_valid_exchange_numeric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._is_valid_exchange_numeric" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.typing.NDArray</em><em>[</em><em>numpy.str_</em><em>]</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.bool_</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.ExchangeIO">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">ExchangeIO</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#ExchangeIO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.ExchangeIO" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange._combine_dt_ndarray">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_combine_dt_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_arr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_combine_dt_ndarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._combine_dt_ndarray" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date_arr</strong> (<em>numpy.typing.NDArray</em><em>[</em><em>numpy.str_</em><em>]</em>)</p></li>
+<li><p><strong>time_arr</strong> (<em>numpy.typing.NDArray</em><em>[</em><em>numpy.str_</em><em>] </em><em>| </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.sort_ds">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">sort_ds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#sort_ds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.sort_ds" title="Link to this definition">¶</a></dt>
+<dd><p>Sorts the data values in the dataset</p>
+<p>Ensures that profiles are in the following order:</p>
+<ul class="simple">
+<li><p>Earlier before later (time will increase)</p></li>
+<li><p>Southerly before northerly (latitude will increase)</p></li>
+<li><p>Westerly before easterly (longitude will increase)</p></li>
+</ul>
+<p>The two xy sorts are esentially tie breakers for when we are missing “time”</p>
+<p>Inside profiles:</p>
+<ul class="simple">
+<li><p>Shallower before Deeper (pressure will increase)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.check_sorted">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">check_sorted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#check_sorted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.check_sorted" title="Link to this definition">¶</a></dt>
+<dd><p>Check that the dataset is sorted by the rules in <a class="reference internal" href="#hydro.exchange.sort_ds" title="hydro.exchange.sort_ds"><code class="xref py py-func docutils literal notranslate"><span class="pre">sort_ds()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.WHPNameAttr">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">WHPNameAttr</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#WHPNameAttr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.WHPNameAttr" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.combine_dt">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">combine_dt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_coord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DATE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TIME</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#combine_dt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.combine_dt" title="Link to this definition">¶</a></dt>
+<dd><p>Combine the exchange style string variables of date and optinally time into a single
+variable containing real datetime objects</p>
+<p>This will remove the time variable if present, and replace then rename the date variable.
+Date is replaced/renamed to maintain variable order in the xr.DataSet</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p></li>
+<li><p><strong>is_coord</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>)</p></li>
+<li><p><strong>date_name</strong> (<em>cchdo.params.WHPName</em>)</p></li>
+<li><p><strong>time_name</strong> (<em>cchdo.params.WHPName</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.set_axis_attrs">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">set_axis_attrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#set_axis_attrs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.set_axis_attrs" title="Link to this definition">¶</a></dt>
+<dd><p>Set the CF axis attribute on our axis variables (XYZT)</p>
+<ul class="simple">
+<li><p>longitude = “X”</p></li>
+<li><p>latitude = “Y”</p></li>
+<li><p>pressure = “Z”, addtionally, positive is down</p></li>
+<li><p>time = “T”</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.set_coordinate_encoding_fill">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">set_coordinate_encoding_fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#set_coordinate_encoding_fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.set_coordinate_encoding_fill" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the _FillValue encoidng to None for 1D coordinate vars</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange._load_raw_exchange">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_load_raw_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_seperator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_seperator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_load_raw_exchange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._load_raw_exchange" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename_or_obj</strong> (<em>ExchangeIO</em>)</p></li>
+<li><p><strong>file_seperator</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.all_same">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">all_same</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndarr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#all_same"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.all_same" title="Link to this definition">¶</a></dt>
+<dd><p>Test if all the values of an ndarray are the same value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ndarr</strong> (<em>numpy.ndarray</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.bool_</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.exchange.CheckOptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">CheckOptions</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#CheckOptions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.CheckOptions" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>Flags and config that controll how strict the file checks are</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange.CheckOptions.flags">
+<span class="sig-name descname"><span class="pre">flags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><a class="reference internal" href="../../../_modules/hydro/exchange.html#CheckOptions.flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.CheckOptions.flags" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.read_csv">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">read_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('-999',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ftype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">FileType.BOTTLE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#read_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.read_csv" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename_or_obj</strong> (<em>ExchangeIO</em>)</p></li>
+<li><p><strong>ftype</strong> (<a class="reference internal" href="#hydro.exchange.FileType" title="hydro.exchange.FileType"><em>FileType</em></a><em> | </em><em>FileTypes</em>)</p></li>
+<li><p><strong>checks</strong> (<a class="reference internal" href="#hydro.exchange.CheckOptions" title="hydro.exchange.CheckOptions"><em>CheckOptions</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>ignore_columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><em>collections.abc.Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange.read_exchange">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">read_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_obj</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('-999',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_seperator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_seperator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#read_exchange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.read_exchange" title="Link to this definition">¶</a></dt>
+<dd><p>Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
+CF/netCDF structure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename_or_obj</strong> (<em>ExchangeIO</em>)</p></li>
+<li><p><strong>checks</strong> (<a class="reference internal" href="#hydro.exchange.CheckOptions" title="hydro.exchange.CheckOptions"><em>CheckOptions</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>ignore_columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><em>collections.abc.Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.exchange._from_exchange_data">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_from_exchange_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exchange_data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ftype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">FileType.BOTTLE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_from_exchange_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._from_exchange_data" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exchange_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference internal" href="#hydro.exchange._ExchangeData" title="hydro.exchange._ExchangeData"><em>_ExchangeData</em></a><em>]</em>)</p></li>
+<li><p><strong>checks</strong> (<a class="reference internal" href="#hydro.exchange.CheckOptions" title="hydro.exchange.CheckOptions"><em>CheckOptions</em></a><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2024.11.1.dev0)">xarray.Dataset</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="exceptions/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">hydro.exchange.exceptions</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../core/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">hydro.core</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Regents of the University of California
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">hydro.exchange</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#package-contents">Package Contents</a><ul>
+<li><a class="reference internal" href="#hydro.exchange.CCHDO_VERSION"><code class="docutils literal notranslate"><span class="pre">CCHDO_VERSION</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.log"><code class="docutils literal notranslate"><span class="pre">log</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.DIMS"><code class="docutils literal notranslate"><span class="pre">DIMS</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.EXPOCODE"><code class="docutils literal notranslate"><span class="pre">EXPOCODE</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.STNNBR"><code class="docutils literal notranslate"><span class="pre">STNNBR</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.CASTNO"><code class="docutils literal notranslate"><span class="pre">CASTNO</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.SAMPNO"><code class="docutils literal notranslate"><span class="pre">SAMPNO</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.DATE"><code class="docutils literal notranslate"><span class="pre">DATE</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.TIME"><code class="docutils literal notranslate"><span class="pre">TIME</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.LATITUDE"><code class="docutils literal notranslate"><span class="pre">LATITUDE</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.LONGITUDE"><code class="docutils literal notranslate"><span class="pre">LONGITUDE</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.CTDPRS"><code class="docutils literal notranslate"><span class="pre">CTDPRS</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.BTLNBR"><code class="docutils literal notranslate"><span class="pre">BTLNBR</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.COORDS"><code class="docutils literal notranslate"><span class="pre">COORDS</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.SENTINEL_PREFIX"><code class="docutils literal notranslate"><span class="pre">SENTINEL_PREFIX</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.SENTINEL_PARAM"><code class="docutils literal notranslate"><span class="pre">SENTINEL_PARAM</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.FLAG_SCHEME"><code class="docutils literal notranslate"><span class="pre">FLAG_SCHEME</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.GEOMETRY_VARS"><code class="docutils literal notranslate"><span class="pre">GEOMETRY_VARS</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.FILLS_MAP"><code class="docutils literal notranslate"><span class="pre">FILLS_MAP</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.FileTypes"><code class="docutils literal notranslate"><span class="pre">FileTypes</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.FileType"><code class="docutils literal notranslate"><span class="pre">FileType</span></code></a><ul>
+<li><a class="reference internal" href="#hydro.exchange.FileType.CTD"><code class="docutils literal notranslate"><span class="pre">FileType.CTD</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.FileType.BOTTLE"><code class="docutils literal notranslate"><span class="pre">FileType.BOTTLE</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hydro.exchange.WHPNameIndex"><code class="docutils literal notranslate"><span class="pre">WHPNameIndex</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.WHPParamUnit"><code class="docutils literal notranslate"><span class="pre">WHPParamUnit</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._has_no_nones"><code class="docutils literal notranslate"><span class="pre">_has_no_nones()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._transform_whp_to_csv"><code class="docutils literal notranslate"><span class="pre">_transform_whp_to_csv()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._get_params"><code class="docutils literal notranslate"><span class="pre">_get_params()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ctd_get_header"><code class="docutils literal notranslate"><span class="pre">_ctd_get_header()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._is_all_dataarray"><code class="docutils literal notranslate"><span class="pre">_is_all_dataarray()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.flatten_cdom_coordinate"><code class="docutils literal notranslate"><span class="pre">flatten_cdom_coordinate()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.add_cdom_coordinate"><code class="docutils literal notranslate"><span class="pre">add_cdom_coordinate()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.add_geometry_var"><code class="docutils literal notranslate"><span class="pre">add_geometry_var()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.add_profile_type"><code class="docutils literal notranslate"><span class="pre">add_profile_type()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.finalize_ancillary_variables"><code class="docutils literal notranslate"><span class="pre">finalize_ancillary_variables()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.combine_bottle_time"><code class="docutils literal notranslate"><span class="pre">combine_bottle_time()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.check_is_subset_shape"><code class="docutils literal notranslate"><span class="pre">check_is_subset_shape()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.check_flags"><code class="docutils literal notranslate"><span class="pre">check_flags()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData"><code class="docutils literal notranslate"><span class="pre">_ExchangeData</span></code></a><ul>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.single_profile"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.single_profile</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.param_cols"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.param_cols</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.flag_cols"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.flag_cols</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.error_cols"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.error_cols</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.param_precisions"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.param_precisions</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.error_precisions"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.error_precisions</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.comments"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.comments</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.__post_init__"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.__post_init__()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.set_expected"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.set_expected()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.split_profiles"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.split_profiles()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeData.str_lens"><code class="docutils literal notranslate"><span class="pre">_ExchangeData.str_lens</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hydro.exchange._get_fill_locs"><code class="docutils literal notranslate"><span class="pre">_get_fill_locs()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo</span></code></a><ul>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.stamp_slice"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.stamp_slice</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.comments_slice"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.comments_slice</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.ctd_headers_slice"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.ctd_headers_slice</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.params_idx"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.params_idx</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.units_idx"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.units_idx</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.data_slice"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.data_slice</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.post_data_slice"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.post_data_slice</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo._raw_lines"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo._raw_lines</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo._ctd_override"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo._ctd_override</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo._ignore_columns"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo._ignore_columns</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.stamp"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.stamp</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.comments"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.comments</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.ctd_headers"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.ctd_headers</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.params"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.params</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.units"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.units</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.data"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.data</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.post_data"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.post_data</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo._whp_param_info"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo._whp_param_info</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.whp_params"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.whp_params</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.whp_flags"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.whp_flags</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.whp_errors"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.whp_errors</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo._np_data_block"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo._np_data_block</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.finalize"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.finalize()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._ExchangeInfo.from_lines"><code class="docutils literal notranslate"><span class="pre">_ExchangeInfo.from_lines()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hydro.exchange.extract_numeric_precisions"><code class="docutils literal notranslate"><span class="pre">extract_numeric_precisions()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._is_valid_exchange_numeric"><code class="docutils literal notranslate"><span class="pre">_is_valid_exchange_numeric()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.ExchangeIO"><code class="docutils literal notranslate"><span class="pre">ExchangeIO</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._combine_dt_ndarray"><code class="docutils literal notranslate"><span class="pre">_combine_dt_ndarray()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.sort_ds"><code class="docutils literal notranslate"><span class="pre">sort_ds()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.check_sorted"><code class="docutils literal notranslate"><span class="pre">check_sorted()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.WHPNameAttr"><code class="docutils literal notranslate"><span class="pre">WHPNameAttr</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.combine_dt"><code class="docutils literal notranslate"><span class="pre">combine_dt()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.set_axis_attrs"><code class="docutils literal notranslate"><span class="pre">set_axis_attrs()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.set_coordinate_encoding_fill"><code class="docutils literal notranslate"><span class="pre">set_coordinate_encoding_fill()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._load_raw_exchange"><code class="docutils literal notranslate"><span class="pre">_load_raw_exchange()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.all_same"><code class="docutils literal notranslate"><span class="pre">all_same()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.CheckOptions"><code class="docutils literal notranslate"><span class="pre">CheckOptions</span></code></a><ul>
+<li><a class="reference internal" href="#hydro.exchange.CheckOptions.flags"><code class="docutils literal notranslate"><span class="pre">CheckOptions.flags</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hydro.exchange.read_csv"><code class="docutils literal notranslate"><span class="pre">read_csv()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.read_exchange"><code class="docutils literal notranslate"><span class="pre">read_exchange()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange._from_exchange_data"><code class="docutils literal notranslate"><span class="pre">_from_exchange_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

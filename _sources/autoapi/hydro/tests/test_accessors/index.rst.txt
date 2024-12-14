@@ -1,0 +1,71 @@
+hydro.tests.test_accessors
+==========================
+
+.. py:module:: hydro.tests.test_accessors
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.tests.test_accessors.exp_stn_cast
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.tests.test_accessors.test_gen_fname_machinery
+   hydro.tests.test_accessors.test_coards_no_comments
+   hydro.tests.test_accessors.test_exchange_bottle_round_trip
+   hydro.tests.test_accessors.test_exchange_bottle_round_trip_with_alt
+   hydro.tests.test_accessors.test_exchange_bottle_round_trip_cdom
+   hydro.tests.test_accessors.test_exchange_ctd_round_trip
+   hydro.tests.test_accessors.test_nc_serialize_all_ctd
+   hydro.tests.test_accessors.test_nc_serialize_all_ctdetime
+   hydro.tests.test_accessors.test_woce_ctd_no_flags
+   hydro.tests.test_accessors.test_coards_ctdnobs_with_missing
+
+
+Module Contents
+---------------
+
+.. py:data:: exp_stn_cast
+
+.. py:function:: test_gen_fname_machinery(expocode, station, cast, profile_type, profile_count, ftype)
+
+.. py:function:: test_coards_no_comments()
+
+.. py:function:: test_exchange_bottle_round_trip()
+
+.. py:function:: test_exchange_bottle_round_trip_with_alt()
+
+.. py:function:: test_exchange_bottle_round_trip_cdom()
+
+.. py:function:: test_exchange_ctd_round_trip()
+
+.. py:function:: test_nc_serialize_all_ctd(tmp_path)
+
+   A crash was discovered when the ctd elapsed time param was present, and was seralized to disk then read back in
+
+
+.. py:function:: test_nc_serialize_all_ctdetime(tmp_path)
+
+   A crash was discovered when the ctd elapsed time param was present, and was seralized to disk then read back in
+
+
+.. py:function:: test_woce_ctd_no_flags(tmp_path)
+
+   make sure data is written to the woce files when there are no qc flags
+
+
+.. py:function:: test_coards_ctdnobs_with_missing()
+
+   Test a condition where exception might be thrown when a float array with nans is cast to int
+
+   This is very platform dependent and depends on undefined behavior in C. Lucky for us we can see if
+   numpy is issuing a runtime warning (they are considering makeing this throw in the future anyway)
+
+

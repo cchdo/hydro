@@ -1,0 +1,47 @@
+hydro
+=====
+
+.. py:module:: hydro
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/hydro/__main__/index
+   /autoapi/hydro/__main_helpers/index
+   /autoapi/hydro/accessors/index
+   /autoapi/hydro/checks/index
+   /autoapi/hydro/conformance/index
+   /autoapi/hydro/convert/index
+   /autoapi/hydro/core/index
+   /autoapi/hydro/exchange/index
+   /autoapi/hydro/legacy/index
+   /autoapi/hydro/migration/index
+   /autoapi/hydro/rename/index
+   /autoapi/hydro/tests/index
+   /autoapi/hydro/tutorial/index
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.read_csv
+   hydro.read_exchange
+
+
+Package Contents
+----------------
+
+.. py:function:: read_csv(filename_or_obj, *, fill_values=('-999', ), ftype = FileType.BOTTLE, checks = None, precision_source='file', encoding='utf8', ignore_columns = None)
+
+.. py:function:: read_exchange(filename_or_obj, *, fill_values=('-999', ), checks = None, precision_source='file', file_seperator=None, keep_seperator=True, encoding='utf8', ignore_columns = None)
+
+   Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
+   CF/netCDF structure
+
+

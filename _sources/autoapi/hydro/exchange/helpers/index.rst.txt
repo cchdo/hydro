@@ -1,0 +1,22 @@
+hydro.exchange.helpers
+======================
+
+.. py:module:: hydro.exchange.helpers
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.exchange.helpers.simple_bottle_exchange
+   hydro.exchange.helpers.gen_template
+
+
+Module Contents
+---------------
+
+.. py:function:: simple_bottle_exchange(params=None, units=None, data=None, comments = None)
+
+.. py:function:: gen_template(ftype='B', param_counts = None, min_count=5, filter_erddap=False)
+

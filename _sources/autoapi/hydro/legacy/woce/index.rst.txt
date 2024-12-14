@@ -1,0 +1,184 @@
+hydro.legacy.woce
+=================
+
+.. py:module:: hydro.legacy.woce
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.legacy.woce.CTD_ZIP_FILE_EXTENSION
+   hydro.legacy.woce.CTD_FILE_EXTENSION
+   hydro.legacy.woce.BOTTLE_FILE_EXTENSION
+   hydro.legacy.woce.FILL_VALUE
+   hydro.legacy.woce.ASTERISK_FLAG
+   hydro.legacy.woce.CHARACTER_PARAMETERS
+   hydro.legacy.woce.COLUMN_WIDTH
+   hydro.legacy.woce.SAFE_COLUMN_WIDTH
+   hydro.legacy.woce.UNKNONW_TIME_FILL
+   hydro.legacy.woce.BOTTLE_FLAGS
+   hydro.legacy.woce.CTD_FLAGS
+   hydro.legacy.woce.WATER_SAMPLE_FLAGS
+   hydro.legacy.woce.BOTTLE_FLAG_DESCRIPTION
+   hydro.legacy.woce.CTD_FLAG_DESCRIPTION
+   hydro.legacy.woce.WATER_SAMPLE_FLAG_DESCRIPTION
+   hydro.legacy.woce._UNWRITTEN_COLUMNS
+   hydro.legacy.woce._EXWOCE_PARAMS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.legacy.woce.flag_description
+   hydro.legacy.woce.simplest_str
+   hydro.legacy.woce._pad_station_cast
+   hydro.legacy.woce.get_filename
+   hydro.legacy.woce.convert_fortran_format_to_c
+   hydro.legacy.woce.get_exwoce_params
+   hydro.legacy.woce.writeable_columns
+   hydro.legacy.woce.columns_and_base_format
+   hydro.legacy.woce.truncate_row
+   hydro.legacy.woce.write_data
+   hydro.legacy.woce.write_bottle
+   hydro.legacy.woce.write_ctd
+   hydro.legacy.woce.to_woce
+
+
+Package Contents
+----------------
+
+.. py:data:: CTD_ZIP_FILE_EXTENSION
+   :value: 'ct.zip'
+
+
+.. py:data:: CTD_FILE_EXTENSION
+   :value: 'ct.txt'
+
+
+.. py:data:: BOTTLE_FILE_EXTENSION
+   :value: 'hy.txt'
+
+
+.. py:data:: FILL_VALUE
+   :value: -9
+
+
+.. py:data:: ASTERISK_FLAG
+   :value: '*******'
+
+
+.. py:data:: CHARACTER_PARAMETERS
+   :value: ['STNNBR', 'SAMPNO', 'BTLNBR']
+
+
+.. py:data:: COLUMN_WIDTH
+   :value: 8
+
+
+.. py:data:: SAFE_COLUMN_WIDTH
+   :value: 7
+
+
+.. py:data:: UNKNONW_TIME_FILL
+   :value: '0000'
+
+
+.. py:data:: BOTTLE_FLAGS
+
+.. py:data:: CTD_FLAGS
+
+.. py:data:: WATER_SAMPLE_FLAGS
+
+.. py:function:: flag_description(flag_map)
+
+.. py:data:: BOTTLE_FLAG_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: CTD_FLAG_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: WATER_SAMPLE_FLAG_DESCRIPTION
+   :value: ''
+
+
+.. py:data:: _UNWRITTEN_COLUMNS
+   :value: ['EXPOCODE', 'SECT_ID', 'LATITUDE', 'LONGITUDE', 'DEPTH', '_DATETIME']
+
+
+.. py:function:: simplest_str(s)
+
+   Give the simplest string representation.
+
+   If a float is almost equivalent to an integer, swap out for the integer.
+
+
+.. py:function:: _pad_station_cast(x)
+
+   Pad a station or cast identifier out to 5 characters. This is usually
+   for use in a file name.
+
+   :param x: a string to be padded
+   :type x: str
+
+
+.. py:function:: get_filename(expocode, station, cast, file_ext)
+
+.. py:function:: convert_fortran_format_to_c(ffmt)
+
+   Simplistic conversion from Fortran format string to C format string.
+
+   This only operates on F formats.
+
+
+.. py:function:: get_exwoce_params()
+
+   Return a dictionary of WOCE parameters allowed for Exchange conversion.
+
+   :return: {'PMNEMON': {'unit_mnemonic': 'WOCE', 'range': [0.0, 10.0], 'format': '%8.3f'}}
+
+
+.. py:data:: _EXWOCE_PARAMS
+
+.. py:function:: writeable_columns(ds, is_ctd=False)
+
+   Return the columns that belong in a WOCE data file.
+
+
+.. py:function:: columns_and_base_format(dfile, is_ctd=False)
+
+   Return columns and base format for WOCE fixed column data.
+
+
+.. py:function:: truncate_row(lll)
+
+   Return a new row where all items are less than or equal to column width.
+
+   Warnings will be given for any truncations.
+
+
+.. py:function:: write_data(ds, columns, base_format)
+
+   Write WOCE data in fixed width columns.
+
+   columns and base_format should be obtained from
+   columns_and_base_format()
+
+
+.. py:function:: write_bottle(ds)
+
+   How to write a Bottle WOCE file.
+
+
+.. py:function:: write_ctd(ds)
+
+   How to write a CTD WOCE file.
+
+
+.. py:function:: to_woce(ds)
+

@@ -1,0 +1,79 @@
+hydro.tests.test_exchange
+=========================
+
+.. py:module:: hydro.tests.test_exchange
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.tests.test_exchange.test_btl_date_time
+   hydro.tests.test_exchange.test_btl_date_time_fill_round_trip
+   hydro.tests.test_exchange.test_btl_date_time_missing_warn
+   hydro.tests.test_exchange.test_ctd_nan
+   hydro.tests.test_exchange.test_file_seperator
+   hydro.tests.test_exchange.test_reject_bad_examples
+   hydro.tests.test_exchange.test_http_loads
+   hydro.tests.test_exchange.test_pressure_flags
+   hydro.tests.test_exchange.test_pressure_flags_bad
+   hydro.tests.test_exchange.test_duplicate_name_different_units
+   hydro.tests.test_exchange.test_duplicate_name_different_units_keep_flags
+   hydro.tests.test_exchange.test_duplicate_name_same_units
+   hydro.tests.test_exchange.test_multiple_unknown_params
+   hydro.tests.test_exchange.test_multiple_unknown_params_ignore
+   hydro.tests.test_exchange.test_multiple_unknown_params_flag
+   hydro.tests.test_exchange.test_alternate_params
+   hydro.tests.test_exchange.test_alternate_params_flags
+   hydro.tests.test_exchange.test_fix_bottle_time_span
+   hydro.tests.test_exchange.test_empty_string_data
+   hydro.tests.test_exchange.test_alternate_encoding
+
+
+Module Contents
+---------------
+
+.. py:function:: test_btl_date_time()
+
+.. py:function:: test_btl_date_time_fill_round_trip()
+
+.. py:function:: test_btl_date_time_missing_warn()
+
+.. py:function:: test_ctd_nan()
+
+.. py:function:: test_file_seperator()
+
+.. py:function:: test_reject_bad_examples(data, error)
+
+.. py:function:: test_http_loads(uri, requests_mock)
+
+.. py:function:: test_pressure_flags(flag)
+
+.. py:function:: test_pressure_flags_bad(flag)
+
+.. py:function:: test_duplicate_name_different_units()
+
+.. py:function:: test_duplicate_name_different_units_keep_flags()
+
+.. py:function:: test_duplicate_name_same_units()
+
+.. py:function:: test_multiple_unknown_params()
+
+.. py:function:: test_multiple_unknown_params_ignore()
+
+.. py:function:: test_multiple_unknown_params_flag()
+
+.. py:function:: test_alternate_params()
+
+.. py:function:: test_alternate_params_flags()
+
+.. py:function:: test_fix_bottle_time_span()
+
+.. py:function:: test_empty_string_data()
+
+   A bug was found in new numpy where an all fill value string param would not convert succesfully
+
+
+.. py:function:: test_alternate_encoding()
+
