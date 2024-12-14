@@ -170,7 +170,9 @@ def remove_param(
     :returns: A new dataset with the requested variables removed, will return a new dataset even if the results of calling this function are no-op
     """
     if isinstance(param, str):
-        param = WHPNames[param]
+        _param = WHPNames[param]
+    else:
+        _param = param
 
     # deleting the primary var requries the delete cascade
     if delete_param is True:
@@ -179,9 +181,9 @@ def remove_param(
         # TODO ancillary
         # delete_ancillary = True
 
-    nc_name = param.full_nc_name
-    nc_flag = param.nc_name_flag
-    nc_error = param.nc_name_error
+    nc_name = _param.full_nc_name
+    nc_flag = _param.nc_name_flag
+    nc_error = _param.nc_name_error
 
     to_delete = []
     if delete_param:
@@ -203,7 +205,7 @@ def remove_param(
     ds = ds.copy()
     ds = flatten_cdom_coordinate(ds)
     # TODO: this relies on the param name, should rely on attrs somehow
-    base_param = ds[param.full_nc_name]
+    base_param = ds[_param.full_nc_name]
     ancillary_vars = {
         name: ds[name]
         for name in base_param.attrs.get("ancillary_variables", "").split()
@@ -254,23 +256,25 @@ def add_param(
     :param with_ancillary: Currently a no-op, hopefully will be used to add ancillary variable for things like analytical temperature
     :return: A new dataset with the requested variables added, will return a new dataset even if the results of calling this function are no-op"""
     if isinstance(param, str):
-        param = WHPNames[param]
+        _param = WHPNames[param]
+    else:
+        _param = param
 
     _ds = ds.copy()
     _ds = flatten_cdom_coordinate(_ds)
     vars_to_add = []
 
-    if param.full_nc_name in _ds:
-        var = _ds[param.full_nc_name]
+    if _param.full_nc_name in _ds:
+        var = _ds[_param.full_nc_name]
     else:
         var = dataarray_factory(
-            param, N_PROF=ds.sizes["N_PROF"], N_LEVELS=ds.sizes["N_LEVELS"]
+            _param, N_PROF=ds.sizes["N_PROF"], N_LEVELS=ds.sizes["N_LEVELS"]
         )
         vars_to_add.append(var)
 
-    if with_flag and param.nc_name_flag not in _ds:
+    if with_flag and _param.nc_name_flag not in _ds:
         flag_var = dataarray_factory(
-            param,
+            _param,
             N_PROF=ds.sizes["N_PROF"],
             N_LEVELS=ds.sizes["N_LEVELS"],
             ctype="flag",
@@ -281,12 +285,12 @@ def add_param(
         var.attrs["ancillary_variables"] = " ".join(sorted(ancillary))
         vars_to_add.append(flag_var)
 
-    if with_error and param.full_error_name is None:
-        raise ValueError(f"{param} does not have a defined error/uncertainty name")
+    if with_error and _param.full_error_name is None:
+        raise ValueError(f"{_param} does not have a defined error/uncertainty name")
 
-    if with_error and param.nc_name_error not in _ds:
+    if with_error and _param.nc_name_error not in _ds:
         error_var = dataarray_factory(
-            param,
+            _param,
             N_PROF=ds.sizes["N_PROF"],
             N_LEVELS=ds.sizes["N_LEVELS"],
             ctype="error",
