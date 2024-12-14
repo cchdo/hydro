@@ -1411,7 +1411,7 @@ def read_csv(
     sentinel_count = 0
     for name in params_units.split(","):
         if name in ignore_columns:
-            whp_params.append(SENTINEL_PARAM.as_depth(sentinel_count))
+            whp_params.append(SENTINEL_PARAM.as_depth(sentinel_count + 1))
             sentinel_count += 1
         else:
             whp_params.append(WHPNames[name])
