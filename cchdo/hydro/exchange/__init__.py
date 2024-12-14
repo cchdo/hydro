@@ -776,7 +776,7 @@ class _ExchangeData:
         lens = {}
         for param, data in self.param_cols.items():
             if param.dtype == "string":
-                lens[param] = int(np.max(np.strings.str_len(data)))
+                lens[param] = int(np.max(np.char.str_len(data)))
 
         return lens
 
