@@ -4,7 +4,7 @@ It will also output the other legacy formats at CCHDO: WOCE, the COARDS netCDF f
 This converter is only available in the html/browser versions of the documentation.
 
 :::{note}
-Processing a CTD file can take a long time.
+Processing a CTD file can take a long time and I don't yet know how to show progress in the browser.
 :::
 
 :::{warning}
