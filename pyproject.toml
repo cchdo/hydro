@@ -49,15 +49,22 @@ selftest = [
     "pytest",
     "requests-mock",
 ]
-dev = [
-    "cchdo.hydro[selftest]",
+test = [
+    "cchdo.hydro[selftest,cli]",
     "pytest-cov",
-    "pre-commit",
-    "black",
+    "pytest-xdist",
     "codecov",
     "mypy",
-    "ruff",
     "types-requests",
+    "ruff",
+]
+testminnumpy = [
+    "cchdo.hydro[test]",
+    "numpy==1.24",
+]
+dev = [
+    "cchdo.hydro[test]",
+    "pre-commit",
 ]
 docs = [
     "Sphinx",
