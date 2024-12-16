@@ -61,7 +61,7 @@ jobs:
         pip install -e .[${{matrix.dep}}]
     - name: Test with pytest
       run: |
-        if [["${{ matrix.dep }}" == "selftest"]];
+        if [[ "${{ matrix.dep }}" == "selftest" ]];
         then
           pytest --pyargs cchdo.hydro
         else
