@@ -376,7 +376,7 @@ This converter is only available in the html/browser versions of the documentati
         nc_download_link = document.createElement("a")
         nc_download_link.href = nc_url
         nc_download_link.download = nc_fname
-        nc_download_link.innerText = f"Downlaod {nc_fname}"
+        nc_download_link.innerText = f"Download {nc_fname}"
         output = document.querySelector("#output")
         output.appendChild(nc_download_link)
         output.appendChild(document.createElement("br"))
@@ -406,7 +406,7 @@ This converter is only available in the html/browser versions of the documentati
 
     def _handle_fail(something):
         status = document.querySelector("#status")
-        status.innerText = f"Failure see traceback..."
+        status.innerText = f"Failure see traceback... (or JS console log)"
         document.querySelector("#process_exchange").disabled = False
 
     @when("click", "#process_exchange")

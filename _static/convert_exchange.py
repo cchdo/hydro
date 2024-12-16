@@ -61,7 +61,7 @@ def to_xarray(array_buffer, checks):
     ex_bytes = io.BytesIO(bytes)
     try:
         ex = read_exchange(ex_bytes, checks=checks)
-        logger("success! makeing a netCDF file")
+        logger("success! making a netCDF file")
     except ValueError as er:
         display(Pre("".join(traceback.format_exception(er))), target="log", append=True)
         display(er.error_data, target="log", append=True)
