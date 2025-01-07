@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>hydro.accessors - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -290,29 +290,29 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for hydro.accessors</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">string</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">UTC</span><span class="p">,</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BufferedWriter</span><span class="p">,</span> <span class="n">BytesIO</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">NamedTuple</span>
-<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">ZipFile</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">UTC</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BufferedWriter</span><span class="p">,</span> <span class="n">BytesIO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">NamedTuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zipfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">ZipFile</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
-<span class="kn">from</span> <span class="nn">cchdo.params</span> <span class="kn">import</span> <span class="n">WHPName</span><span class="p">,</span> <span class="n">WHPNames</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">WHPName</span><span class="p">,</span> <span class="n">WHPNames</span>
 
-<span class="kn">from</span> <span class="nn">.exchange</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exchange</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">FileType</span><span class="p">,</span>
     <span class="n">add_cdom_coordinate</span><span class="p">,</span>
     <span class="n">all_same</span><span class="p">,</span>
     <span class="n">extract_numeric_precisions</span><span class="p">,</span>
     <span class="n">flatten_cdom_coordinate</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.exchange</span> <span class="kn">import</span> <span class="n">check_flags</span> <span class="k">as</span> <span class="n">_check_flags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exchange</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_flags</span> <span class="k">as</span> <span class="n">_check_flags</span>
 
 <div class="viewcode-block" id="FLAG_NAME">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FLAG_NAME">[docs]</a>
@@ -331,7 +331,7 @@
 
 <div class="viewcode-block" id="write_or_return">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.write_or_return">[docs]</a>
-<span class="k">def</span> <span class="nf">write_or_return</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_or_return</span><span class="p">(</span>
     <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">path_or_fobj</span><span class="p">:</span> <span class="n">PathType</span> <span class="o">|</span> <span class="n">BufferedWriter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
     <span class="c1"># assume path_or_fobj is an open filelike</span>
@@ -342,7 +342,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">path_or_fobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;File must be open for bytes writing&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;File must be open for bytes writing&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_or_fobj</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -354,7 +354,7 @@
 <span class="c1"># maybe temp location for FQ merge machinery</span>
 <div class="viewcode-block" id="FQPointKey">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey">[docs]</a>
-<span class="k">class</span> <span class="nc">FQPointKey</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FQPointKey</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
 <div class="viewcode-block" id="FQPointKey.expocode">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQPointKey.expocode">[docs]</a>
     <span class="n">expocode</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -376,7 +376,7 @@
 
 <div class="viewcode-block" id="FQProfileKey">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQProfileKey">[docs]</a>
-<span class="k">class</span> <span class="nc">FQProfileKey</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FQProfileKey</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
 <div class="viewcode-block" id="FQProfileKey.expocode">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FQProfileKey.expocode">[docs]</a>
     <span class="n">expocode</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -394,8 +394,8 @@
 
 <div class="viewcode-block" id="WHPIndxer">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer">[docs]</a>
-<span class="k">class</span> <span class="nc">WHPIndxer</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WHPIndxer</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <div class="viewcode-block" id="WHPIndxer.n_prof">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer.n_prof">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_prof</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
@@ -417,7 +417,7 @@
 
 <div class="viewcode-block" id="WHPIndxer.__getitem__">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.WHPIndxer.__getitem__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">FQProfileKey</span> <span class="o">|</span> <span class="n">FQPointKey</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">FQProfileKey</span> <span class="o">|</span> <span class="n">FQPointKey</span><span class="p">):</span>
         <span class="n">prof_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_prof</span><span class="o">.</span><span class="n">get_loc</span><span class="p">((</span><span class="n">key</span><span class="o">.</span><span class="n">expocode</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">cast</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">FQPointKey</span><span class="p">):</span>
             <span class="n">level_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_level</span><span class="p">[</span><span class="n">prof_idx</span><span class="p">]</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
@@ -437,7 +437,7 @@
 
 <div class="viewcode-block" id="normalize_fq">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.normalize_fq">[docs]</a>
-<span class="k">def</span> <span class="nf">normalize_fq</span><span class="p">(</span><span class="n">fq</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="n">check_dupes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NormalizedFQ</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_fq</span><span class="p">(</span><span class="n">fq</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="n">check_dupes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NormalizedFQ</span><span class="p">:</span>
     <span class="n">normalized</span><span class="p">:</span> <span class="n">NormalizedFQ</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">key</span><span class="p">:</span> <span class="n">FQProfileKey</span> <span class="o">|</span> <span class="n">FQPointKey</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fq</span><span class="p">:</span>
@@ -465,7 +465,7 @@
 
 <div class="viewcode-block" id="fq_get_precisions">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.fq_get_precisions">[docs]</a>
-<span class="k">def</span> <span class="nf">fq_get_precisions</span><span class="p">(</span><span class="n">fq</span><span class="p">:</span> <span class="n">NormalizedFQ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fq_get_precisions</span><span class="p">(</span><span class="n">fq</span><span class="p">:</span> <span class="n">NormalizedFQ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
     <span class="n">collect</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">fq</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -488,8 +488,8 @@
 <span class="nd">@xr</span><span class="o">.</span><span class="n">register_dataset_accessor</span><span class="p">(</span><span class="s2">&quot;cchdo&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="CCHDOAccessor">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor">[docs]</a>
-<span class="k">class</span> <span class="nc">CCHDOAccessor</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CCHDOAccessor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xarray_obj</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
 <div class="viewcode-block" id="CCHDOAccessor._obj">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._obj">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">xarray_obj</span></div>
@@ -497,11 +497,11 @@
 
 <div class="viewcode-block" id="CCHDOAccessor.jsonld">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.jsonld">[docs]</a>
-    <span class="k">def</span> <span class="nf">jsonld</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">jsonld</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="c1"># we are going to mess with it a little</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="kn">import</span> <span class="nn">gsw</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">gsw</span>
 
         <span class="n">DEPTH</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;CTDDEPTH [METERS]&quot;</span><span class="p">]</span>
 
@@ -592,7 +592,7 @@
 
 <div class="viewcode-block" id="CCHDOAccessor.to_mat">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_mat">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Experimental Matlab .mat data file generator.</span>
 
 <span class="sd">        The support for netCDF files in Matlab is really bad.</span>
@@ -606,9 +606,9 @@
 <span class="sd">        The file it produces is in no way stable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">scipy.io</span> <span class="kn">import</span> <span class="n">savemat</span> <span class="k">as</span> <span class="n">scipy_savemat</span>  <span class="c1"># noqa</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">savemat</span> <span class="k">as</span> <span class="n">scipy_savemat</span>  <span class="c1"># noqa</span>
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;scipy is required for mat file saving&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">error</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;scipy is required for mat file saving&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
 
         <span class="n">mat_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
@@ -622,12 +622,12 @@
             <span class="n">mat_dict</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
         <span class="c1"># cleanups for matlab users</span>
-        <span class="k">def</span> <span class="nf">to_matdate</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_matdate</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">dt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="s2">&quot;NaT&quot;</span>
             <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%b-%Y %H:%M:%S&quot;</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">dt_list_to_str_list</span><span class="p">(</span><span class="n">dtl</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">dt_list_to_str_list</span><span class="p">(</span><span class="n">dtl</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">to_matdate</span><span class="p">,</span> <span class="n">dtl</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">mat_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -646,23 +646,23 @@
 
 <div class="viewcode-block" id="CCHDOAccessor.to_coards">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_coards">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_coards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">.legacy.coards</span> <span class="kn">import</span> <span class="n">to_coards</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_coards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.legacy.coards</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_coards</span>
 
         <span class="k">return</span> <span class="n">write_or_return</span><span class="p">(</span><span class="n">to_coards</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">),</span> <span class="n">path</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CCHDOAccessor.to_woce">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_woce">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_woce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">.legacy.woce</span> <span class="kn">import</span> <span class="n">to_woce</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_woce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.legacy.woce</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_woce</span>
 
         <span class="k">return</span> <span class="n">write_or_return</span><span class="p">(</span><span class="n">to_woce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">),</span> <span class="n">path</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CCHDOAccessor.to_sum">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_sum">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;NetCDF to WOCE sumfile maker.</span>
 
 <span class="sd">        This is missing some information that is not included anymore (wire out, height above bottom).</span>
@@ -731,7 +731,7 @@
             <span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>  <span class="c1"># comments</span>
         <span class="p">]</span>
 
-        <span class="k">def</span> <span class="nf">sum_lat</span><span class="p">(</span><span class="n">deg_float</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">sum_lat</span><span class="p">(</span><span class="n">deg_float</span><span class="p">):</span>
             <span class="n">deg</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">deg_float</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">deg_float</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">hem</span> <span class="o">=</span> <span class="s2">&quot;N&quot;</span>
@@ -744,7 +744,7 @@
 
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">deg</span><span class="si">:</span><span class="s2">&gt;2d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">mins</span><span class="si">:</span><span class="s2">05.2f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">hem</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="k">def</span> <span class="nf">sum_lon</span><span class="p">(</span><span class="n">deg_float</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">sum_lon</span><span class="p">(</span><span class="n">deg_float</span><span class="p">):</span>
             <span class="n">deg</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">deg_float</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">deg_float</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">hem</span> <span class="o">=</span> <span class="s2">&quot;E&quot;</span>
@@ -830,7 +830,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="CCHDOAccessor.__geo_interface__">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.__geo_interface__">[docs]</a>
-    <span class="k">def</span> <span class="nf">__geo_interface__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__geo_interface__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The station positions as a MultiPoint geo interface.</span>
 
 <span class="sd">        See https://gist.github.com/sgillies/2217756</span>
@@ -844,7 +844,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="CCHDOAccessor.track">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.track">[docs]</a>
-    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A dict which can be dumped to json which conforms to the expected structure for the CCHDO website.&quot;&quot;&quot;</span>
         <span class="n">geo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__geo_interface__</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">geo</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -859,7 +859,7 @@
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="CCHDOAccessor._gen_fname">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._gen_fname">[docs]</a>
-    <span class="k">def</span> <span class="nf">_gen_fname</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_gen_fname</span><span class="p">(</span>
         <span class="n">expocode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">station</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">cast</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -905,7 +905,7 @@
 
 <div class="viewcode-block" id="CCHDOAccessor.gen_fname">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.gen_fname">[docs]</a>
-    <span class="k">def</span> <span class="nf">gen_fname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ftype</span><span class="p">:</span> <span class="n">FTypeOptions</span> <span class="o">=</span> <span class="s2">&quot;cf&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_fname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ftype</span><span class="p">:</span> <span class="n">FTypeOptions</span> <span class="o">=</span> <span class="s2">&quot;cf&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a human friendly netCDF (or other output type) filename for this object.&quot;&quot;&quot;</span>
         <span class="n">expocode</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="s2">&quot;expocode&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">station</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">[</span><span class="s2">&quot;station&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
@@ -921,7 +921,7 @@
 
 <div class="viewcode-block" id="CCHDOAccessor.compact_profile">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.compact_profile">[docs]</a>
-    <span class="k">def</span> <span class="nf">compact_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compact_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop the trailing empty data from a profile.</span>
 
 <span class="sd">        Because we use the incomplete multidimensional array representation of profiles</span>
@@ -947,7 +947,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="CCHDOAccessor.file_type">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.file_type">[docs]</a>
-    <span class="k">def</span> <span class="nf">file_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">file_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TODO profile_type is guaranteed to be present</span>
         <span class="c1"># TODO profile_type must have C or D as the value</span>
         <span class="n">profile_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">profile_type</span>
@@ -967,7 +967,7 @@
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="CCHDOAccessor.cchdo_c_format_precision">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.cchdo_c_format_precision">[docs]</a>
-    <span class="k">def</span> <span class="nf">cchdo_c_format_precision</span><span class="p">(</span><span class="n">c_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cchdo_c_format_precision</span><span class="p">(</span><span class="n">c_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">c_format</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -979,7 +979,7 @@
 
 <div class="viewcode-block" id="CCHDOAccessor._make_params_units_line">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._make_params_units_line">[docs]</a>
-    <span class="k">def</span> <span class="nf">_make_params_units_line</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_params_units_line</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">],</span>
     <span class="p">):</span>
@@ -1011,7 +1011,7 @@
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="CCHDOAccessor._whpname_from_attrs">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._whpname_from_attrs">[docs]</a>
-    <span class="k">def</span> <span class="nf">_whpname_from_attrs</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WHPName</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_whpname_from_attrs</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WHPName</span><span class="p">]:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">param</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">]</span>
         <span class="n">unit</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;whp_unit&quot;</span><span class="p">)</span>
@@ -1031,7 +1031,7 @@
 
 <div class="viewcode-block" id="CCHDOAccessor._make_ctd_headers">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._make_ctd_headers">[docs]</a>
-    <span class="k">def</span> <span class="nf">_make_ctd_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_ctd_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">scope</span> <span class="o">!=</span> <span class="s2">&quot;profile&quot;</span><span class="p">:</span>
@@ -1067,7 +1067,7 @@
 
 <div class="viewcode-block" id="CCHDOAccessor._make_data_block">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._make_data_block">[docs]</a>
-    <span class="k">def</span> <span class="nf">_make_data_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_data_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="c1"># TODO N_PROF is guaranteed</span>
         <span class="n">valid_levels</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;SAMPNO&quot;</span><span class="p">]]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">data_block</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1136,7 +1136,7 @@
 
 <div class="viewcode-block" id="CCHDOAccessor._get_comments">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._get_comments">[docs]</a>
-    <span class="k">def</span> <span class="nf">_get_comments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_comments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comments</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comments&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">comment_line</span> <span class="ow">in</span> <span class="n">comments</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
@@ -1146,7 +1146,7 @@
 
 <div class="viewcode-block" id="CCHDOAccessor.to_whp_columns">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_whp_columns">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_whp_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compact</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_whp_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compact</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">]:</span>
         <span class="c1"># collect all the Exchange variables</span>
         <span class="c1"># TODO, all things that appear in an exchange file, must have WHP name</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">flatten_cdom_coordinate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">)</span>
@@ -1219,7 +1219,7 @@
 
 <div class="viewcode-block" id="CCHDOAccessor.to_exchange">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.to_exchange">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_exchange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_exchange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a CCHDO CF netCDF dataset to exchange.&quot;&quot;&quot;</span>
         <span class="c1"># all of the todo comments are for documenting/writing validators</span>
         <span class="n">output_files</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1279,7 +1279,7 @@
     <span class="c1"># * N_LEVELS will be subindexd with (sample)</span>
 <div class="viewcode-block" id="CCHDOAccessor.merge_fq">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor.merge_fq">[docs]</a>
-    <span class="k">def</span> <span class="nf">merge_fq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fq</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="n">check_flags</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_fq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fq</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">float</span><span class="p">]],</span> <span class="o">*</span><span class="p">,</span> <span class="n">check_flags</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="c1"># TODOs...</span>
         <span class="c1"># * (default True) restrict to open &quot;slots&quot; of non flag 9s</span>
         <span class="c1"># * Update history attribute...</span>

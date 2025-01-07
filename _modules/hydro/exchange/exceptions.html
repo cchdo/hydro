@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>hydro.exchange.exceptions - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -290,12 +290,12 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for hydro.exchange.exceptions</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
 
 <div class="viewcode-block" id="ExchangeError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is the base exception which all the other exceptions derive from.</span>
 <span class="sd">    It is a subclass of ValueError.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
@@ -312,52 +312,52 @@
 
 <div class="viewcode-block" id="ExchangeEncodingError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeEncodingError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeEncodingError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeEncodingError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when the bytes for some exchange file cannot be decoded as UTF-8.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeBOMError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeBOMError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeBOMError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeBOMError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when the exchange file has a byte order mark.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeLEError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeLEError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeLEError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeLEError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when the exchange file does not have the correct line endings.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeMagicNumberError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeMagicNumberError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeMagicNumberError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeMagicNumberError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when the exchange file does not start with ``BOTTLE`` or ``CTD``.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeEndDataError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeEndDataError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeEndDataError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeEndDataError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Erorr raised when ``END_DATA`` cannot be found in the exchange file.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeParameterError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeParameterError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeParameterError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeParameterError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base exception for errors related to parameters and units.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeParameterUndefError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeParameterUndefError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeParameterUndefError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeParameterUndefError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when the library does not have a definition for a parameter/unit pair in the exchange file.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">error_data</span><span class="p">)</span>
 <div class="viewcode-block" id="ExchangeParameterUndefError.error_data">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeParameterUndefError.error_data">[docs]</a>
@@ -368,63 +368,63 @@
 
 <div class="viewcode-block" id="ExchangeParameterUnitAlignmentError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeParameterUnitAlignmentError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeParameterUnitAlignmentError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeParameterUnitAlignmentError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when there is a mismatch between the number of parameters and number of units in the exchange file.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeDuplicateParameterError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDuplicateParameterError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeDuplicateParameterError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeDuplicateParameterError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when the same parameter/unit pair occurs more than once in the excahnge file.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeOrphanFlagError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeOrphanFlagError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeOrphanFlagError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeOrphanFlagError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when there exists a flag column with no corresponding parameter column.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeOrphanErrorError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeOrphanErrorError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeOrphanErrorError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeOrphanErrorError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when there exists an error column with no corresponding parameter column.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeFlaglessParameterError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeFlaglessParameterError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeFlaglessParameterError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeFlaglessParameterError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when a parameter has a flag column when it is not supposed to.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeFlagUnitError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeFlagUnitError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeFlagUnitError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeFlagUnitError</span><span class="p">(</span><span class="n">ExchangeParameterError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised if a flag column has a non empty units.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeDataError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeDataError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeDataError</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base exception for errors which occur when parsing the data porition of an exchange file.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeDataColumnAlignmentError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataColumnAlignmentError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeDataColumnAlignmentError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeDataColumnAlignmentError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when the number of columns in a data line does not match the expected number of columns based on the parameter/unit lines.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeDataFlagPairError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataFlagPairError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeDataFlagPairError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeDataFlagPairError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;There is a mismatch between what the flag value expects, and the fill/data value.</span>
 
 <span class="sd">    Examples</span>
@@ -433,7 +433,7 @@
 <span class="sd">    * something with a flag of ``2`` as a fill value instead of data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_data</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_data</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">error_data</span><span class="p">)</span>
 <div class="viewcode-block" id="ExchangeDataFlagPairError.error_data">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataFlagPairError.error_data">[docs]</a>
@@ -444,7 +444,7 @@
 
 <div class="viewcode-block" id="ExchangeDataPartialKeyError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataPartialKeyError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeDataPartialKeyError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeDataPartialKeyError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when there is no value for one (or more) of the following parameters.</span>
 
 <span class="sd">    * EXPOCODE</span>
@@ -460,7 +460,7 @@
 
 <div class="viewcode-block" id="ExchangeDuplicateKeyError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDuplicateKeyError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeDuplicateKeyError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeDuplicateKeyError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when there is a duplicate composite key in the exchange file.</span>
 
 <span class="sd">    This would occur if the exact values for the following parameters occur in more than one data row:</span>
@@ -476,7 +476,7 @@
 
 <div class="viewcode-block" id="ExchangeDataPartialCoordinateError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataPartialCoordinateError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeDataPartialCoordinateError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeDataPartialCoordinateError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised if values for latitude, longitude, or pressure are missing.</span>
 
 <span class="sd">    It is OK by the standard to omit the time of day.</span>
@@ -486,7 +486,7 @@
 
 <div class="viewcode-block" id="ExchangeDataInconsistentCoordinateError">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeDataInconsistentCoordinateError">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeDataInconsistentCoordinateError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeDataInconsistentCoordinateError</span><span class="p">(</span><span class="n">ExchangeDataError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised if the reported latitude, longitude, and date (and time) vary for a single profile.</span>
 
 <span class="sd">    A &quot;profile&quot; in an exchange file is a grouping of data rows which all have the same EXPOCODE, STNNBR, and CASTNO.</span>
@@ -497,14 +497,14 @@
 
 <div class="viewcode-block" id="ExchangeInconsistentMergeType">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeInconsistentMergeType">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeInconsistentMergeType</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeInconsistentMergeType</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised when the merge_ex method is called on mixed ctd and bottle exchange types.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ExchangeRecursiveZip">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/exceptions/index.html#hydro.exchange.exceptions.ExchangeRecursiveZip">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeRecursiveZip</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeRecursiveZip</span><span class="p">(</span><span class="n">ExchangeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Error raised if there are zip files inside the zip file that read exchange is trying to read.&quot;&quot;&quot;</span></div>
 
 </pre></div>

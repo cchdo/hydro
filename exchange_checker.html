@@ -7,7 +7,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>Exchange Checker/Converter - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -303,11 +303,7 @@ It will also output the other legacy formats at CCHDO: WOCE, the COARDS netCDF f
 This converter is only available in the html/browser versions of the documentation.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Processing a CTD file can take a long time and I don’t yet know how to show progress in the browser.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This has been pinned to an older version of cchdo.hydro while numpy 2 support is worked on in pyodide.</p>
+<p>Processing a CTD file can take a long time.</p>
 </div>
 <link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css">
 <script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
@@ -343,10 +339,10 @@ This converter is only available in the html/browser versions of the documentati
 </code>
 </div>
 </div>
-<script type="py" src="./_static/convert_exchange.py" service-worker="./sw.js" worker name="my-worker" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4"]}'></script>
-<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived1" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4" ]}'></script>
-<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived2" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4" ]}'></script>
-<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived3" config='{"packages": ["xarray", "cchdo.hydro<=1.0.2.8", "netcdf4" ]}'></script>
+<script type="py" src="./_static/convert_exchange.py" service-worker="./sw.js" worker name="my-worker" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4"], "interpreter": "0.27.0"}'></script>
+<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived1" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4" ], "interpreter": "0.27.0"}'></script>
+<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived2" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4" ], "interpreter": "0.27.0"}'></script>
+<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived3" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4" ], "interpreter": "0.27.0"}'></script>
 <script type="py">
     from pyscript import workers, display, when
     from js import document, console, window, Uint8Array, Blob

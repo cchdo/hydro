@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>hydro.legacy.woce - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -290,19 +290,19 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for hydro.legacy.woce</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">csv</span> <span class="kn">import</span> <span class="n">reader</span> <span class="k">as</span> <span class="n">csv_reader</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">csv</span><span class="w"> </span><span class="kn">import</span> <span class="n">reader</span> <span class="k">as</span> <span class="n">csv_reader</span>
 
 <span class="c1"># TODO: switch to files().joinpath().open when python 3.8 is dropped</span>
 <span class="c1"># 2023-04-16</span>
-<span class="kn">from</span> <span class="nn">importlib.resources</span> <span class="kn">import</span> <span class="n">open_text</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
-<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">ZipFile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">open_text</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">zip_longest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zipfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">ZipFile</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
-<span class="kn">from</span> <span class="nn">cchdo.hydro</span> <span class="kn">import</span> <span class="n">accessors</span> <span class="k">as</span> <span class="n">acc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro</span><span class="w"> </span><span class="kn">import</span> <span class="n">accessors</span> <span class="k">as</span> <span class="n">acc</span>
 
 <span class="c1">#</span>
 <div class="viewcode-block" id="CTD_ZIP_FILE_EXTENSION">
@@ -405,7 +405,7 @@
 
 <div class="viewcode-block" id="flag_description">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.flag_description">[docs]</a>
-<span class="k">def</span> <span class="nf">flag_description</span><span class="p">(</span><span class="n">flag_map</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flag_description</span><span class="p">(</span><span class="n">flag_map</span><span class="p">):</span>
     <span class="k">return</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
         <span class="p">[</span><span class="s2">&quot;:&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">flag</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">flag</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">flag_map</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">]</span>
     <span class="p">)</span></div>
@@ -444,7 +444,7 @@
 
 <div class="viewcode-block" id="simplest_str">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.simplest_str">[docs]</a>
-<span class="k">def</span> <span class="nf">simplest_str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">simplest_str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Give the simplest string representation.</span>
 
 <span class="sd">    If a float is almost equivalent to an integer, swap out for the integer.</span>
@@ -461,7 +461,7 @@
 
 <div class="viewcode-block" id="_pad_station_cast">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce._pad_station_cast">[docs]</a>
-<span class="k">def</span> <span class="nf">_pad_station_cast</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pad_station_cast</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pad a station or cast identifier out to 5 characters. This is usually</span>
 <span class="sd">    for use in a file name.</span>
 
@@ -474,7 +474,7 @@
 
 <div class="viewcode-block" id="get_filename">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.get_filename">[docs]</a>
-<span class="k">def</span> <span class="nf">get_filename</span><span class="p">(</span><span class="n">expocode</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">file_ext</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_filename</span><span class="p">(</span><span class="n">expocode</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">file_ext</span><span class="p">):</span>
     <span class="n">station</span> <span class="o">=</span> <span class="n">_pad_station_cast</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
     <span class="n">cast</span> <span class="o">=</span> <span class="n">_pad_station_cast</span><span class="p">(</span><span class="n">cast</span><span class="p">)</span>
     <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -489,7 +489,7 @@
 
 <div class="viewcode-block" id="convert_fortran_format_to_c">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.convert_fortran_format_to_c">[docs]</a>
-<span class="k">def</span> <span class="nf">convert_fortran_format_to_c</span><span class="p">(</span><span class="n">ffmt</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_fortran_format_to_c</span><span class="p">(</span><span class="n">ffmt</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simplistic conversion from Fortran format string to C format string.</span>
 
 <span class="sd">    This only operates on F formats.</span>
@@ -512,7 +512,7 @@
 
 <div class="viewcode-block" id="get_exwoce_params">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.get_exwoce_params">[docs]</a>
-<span class="k">def</span> <span class="nf">get_exwoce_params</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_exwoce_params</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a dictionary of WOCE parameters allowed for Exchange conversion.</span>
 
 <span class="sd">    :return: {&#39;PMNEMON&#39;: {&#39;unit_mnemonic&#39;: &#39;WOCE&#39;, &#39;range&#39;: [0.0, 10.0], &#39;format&#39;: &#39;%8.3f&#39;}}</span>
@@ -555,7 +555,7 @@
 
 <div class="viewcode-block" id="writeable_columns">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.writeable_columns">[docs]</a>
-<span class="k">def</span> <span class="nf">writeable_columns</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">is_ctd</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">writeable_columns</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">is_ctd</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the columns that belong in a WOCE data file.&quot;&quot;&quot;</span>
     <span class="n">CTD_IGNORE</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;STNNBR&quot;</span><span class="p">,</span> <span class="s2">&quot;CASTNO&quot;</span><span class="p">,</span> <span class="s2">&quot;SAMPNO&quot;</span><span class="p">]</span>
 
@@ -583,7 +583,7 @@
 
 <div class="viewcode-block" id="columns_and_base_format">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.columns_and_base_format">[docs]</a>
-<span class="k">def</span> <span class="nf">columns_and_base_format</span><span class="p">(</span><span class="n">dfile</span><span class="p">,</span> <span class="n">is_ctd</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">columns_and_base_format</span><span class="p">(</span><span class="n">dfile</span><span class="p">,</span> <span class="n">is_ctd</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return columns and base format for WOCE fixed column data.&quot;&quot;&quot;</span>
     <span class="n">columns</span> <span class="o">=</span> <span class="n">writeable_columns</span><span class="p">(</span><span class="n">dfile</span><span class="p">,</span> <span class="n">is_ctd</span><span class="o">=</span><span class="n">is_ctd</span><span class="p">)</span>
     <span class="n">num_qualt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">col</span><span class="p">:</span> <span class="n">acc</span><span class="o">.</span><span class="n">FLAG_NAME</span> <span class="ow">in</span> <span class="n">col</span><span class="o">.</span><span class="n">attrs</span><span class="p">,</span> <span class="n">columns</span><span class="p">)))</span>
@@ -598,7 +598,7 @@
 
 <div class="viewcode-block" id="truncate_row">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.truncate_row">[docs]</a>
-<span class="k">def</span> <span class="nf">truncate_row</span><span class="p">(</span><span class="n">lll</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">truncate_row</span><span class="p">(</span><span class="n">lll</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a new row where all items are less than or equal to column width.</span>
 
 <span class="sd">    Warnings will be given for any truncations.</span>
@@ -617,23 +617,23 @@
 
 <div class="viewcode-block" id="write_data">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.write_data">[docs]</a>
-<span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">base_format</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_data</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">base_format</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write WOCE data in fixed width columns.</span>
 
 <span class="sd">    columns and base_format should be obtained from</span>
 <span class="sd">    columns_and_base_format()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">parameter_name_of</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parameter_name_of</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">column</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">units_of</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">units_of</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;whp_unit&quot;</span> <span class="ow">in</span> <span class="n">column</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">column</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_unit&quot;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">quality_flags_of</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">quality_flags_of</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ASTERISK_FLAG</span> <span class="k">if</span> <span class="n">acc</span><span class="o">.</span><span class="n">FLAG_NAME</span> <span class="ow">in</span> <span class="n">column</span><span class="o">.</span><span class="n">attrs</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
 
     <span class="n">all_headers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">parameter_name_of</span><span class="p">,</span> <span class="n">columns</span><span class="p">))</span>
@@ -688,7 +688,7 @@
 
 <div class="viewcode-block" id="write_bottle">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.write_bottle">[docs]</a>
-<span class="k">def</span> <span class="nf">write_bottle</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_bottle</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;How to write a Bottle WOCE file.&quot;&quot;&quot;</span>
     <span class="c1"># Look through datetime for begin and end dates</span>
     <span class="n">begin_date</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
@@ -718,7 +718,7 @@
 
 <div class="viewcode-block" id="write_ctd">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.write_ctd">[docs]</a>
-<span class="k">def</span> <span class="nf">write_ctd</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_ctd</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;How to write a CTD WOCE file.&quot;&quot;&quot;</span>
     <span class="c1"># We can only write the CTD file if there is a unique</span>
     <span class="c1"># EXPOCODE, STNNBR, and CASTNO in the file.</span>
@@ -754,7 +754,7 @@
 
 <div class="viewcode-block" id="to_woce">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/woce/index.html#hydro.legacy.woce.to_woce">[docs]</a>
-<span class="k">def</span> <span class="nf">to_woce</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_woce</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="n">output_files</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">profile_type_nd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">profile_type</span><span class="p">)</span>
 

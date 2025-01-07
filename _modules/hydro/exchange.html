@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>hydro.exchange - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -290,31 +290,31 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for hydro.exchange</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">dataclasses</span>
-<span class="kn">import</span> <span class="nn">io</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
-<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">attrgetter</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">attrgetter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
     <span class="n">Literal</span><span class="p">,</span>
     <span class="n">TypedDict</span><span class="p">,</span>
     <span class="n">TypeGuard</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZipFile</span><span class="p">,</span> <span class="n">is_zipfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zipfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZipFile</span><span class="p">,</span> <span class="n">is_zipfile</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
-<span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
-<span class="kn">from</span> <span class="nn">cchdo.hydro.exchange.exceptions</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.exchange.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ExchangeBOMError</span><span class="p">,</span>
     <span class="n">ExchangeDataFlagPairError</span><span class="p">,</span>
     <span class="n">ExchangeDataInconsistentCoordinateError</span><span class="p">,</span>
@@ -332,17 +332,17 @@
     <span class="n">ExchangeParameterUndefError</span><span class="p">,</span>
     <span class="n">ExchangeParameterUnitAlignmentError</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">cchdo.hydro.exchange.flags</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.exchange.flags</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ExchangeBottleFlag</span><span class="p">,</span>
     <span class="n">ExchangeCTDFlag</span><span class="p">,</span>
     <span class="n">ExchangeFlag</span><span class="p">,</span>
     <span class="n">ExchangeSampleFlag</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">cchdo.params</span> <span class="kn">import</span> <span class="n">WHPName</span><span class="p">,</span> <span class="n">WHPNames</span>
-<span class="kn">from</span> <span class="nn">cchdo.params</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">params_version</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">WHPName</span><span class="p">,</span> <span class="n">WHPNames</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">params_version</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">cchdo.hydro</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">hydro_version</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">hydro_version</span>
 
 <div class="viewcode-block" id="CCHDO_VERSION">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.CCHDO_VERSION">[docs]</a>
@@ -458,7 +458,7 @@
 
 <div class="viewcode-block" id="FileType">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.FileType">[docs]</a>
-<span class="k">class</span> <span class="nc">FileType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <div class="viewcode-block" id="FileType.CTD">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.FileType.CTD">[docs]</a>
     <span class="n">CTD</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span></div>
@@ -485,14 +485,14 @@
 
 <div class="viewcode-block" id="_has_no_nones">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._has_no_nones">[docs]</a>
-<span class="k">def</span> <span class="nf">_has_no_nones</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_has_no_nones</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
     <span class="k">return</span> <span class="kc">None</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val</span></div>
 
 
 
 <div class="viewcode-block" id="_transform_whp_to_csv">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._transform_whp_to_csv">[docs]</a>
-<span class="k">def</span> <span class="nf">_transform_whp_to_csv</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">units</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_transform_whp_to_csv</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">units</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="n">slots</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">))]</span>
 
     <span class="n">pairs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">units</span><span class="p">))</span>
@@ -534,7 +534,7 @@
 
 <div class="viewcode-block" id="_get_params">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._get_params">[docs]</a>
-<span class="k">def</span> <span class="nf">_get_params</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_params</span><span class="p">(</span>
     <span class="n">params_units</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">ignore_params</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">WHPNameIndex</span><span class="p">,</span> <span class="n">WHPNameIndex</span><span class="p">,</span> <span class="n">WHPNameIndex</span><span class="p">]:</span>
     <span class="n">params</span><span class="p">:</span> <span class="n">WHPNameIndex</span> <span class="o">=</span> <span class="p">{}</span>
@@ -592,7 +592,7 @@
 
 <div class="viewcode-block" id="_ctd_get_header">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ctd_get_header">[docs]</a>
-<span class="k">def</span> <span class="nf">_ctd_get_header</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ctd_get_header</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">):</span>
     <span class="n">header</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">header</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;_SAMPLING_RATE&quot;</span><span class="p">,</span> <span class="s2">&quot;SAMPLING_RATE&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;hz&quot;</span><span class="p">):</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot; HZhz&quot;</span><span class="p">)</span>
@@ -602,14 +602,14 @@
 
 <div class="viewcode-block" id="_is_all_dataarray">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._is_all_dataarray">[docs]</a>
-<span class="k">def</span> <span class="nf">_is_all_dataarray</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_all_dataarray</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">]]:</span>
     <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">val</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="flatten_cdom_coordinate">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.flatten_cdom_coordinate">[docs]</a>
-<span class="k">def</span> <span class="nf">flatten_cdom_coordinate</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flatten_cdom_coordinate</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Takes the a dataset with a CDOM wavelength and explocdes it back into individual variables&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;cdom&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">dataset</span>
@@ -647,7 +647,7 @@
 
 <div class="viewcode-block" id="add_cdom_coordinate">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.add_cdom_coordinate">[docs]</a>
-<span class="k">def</span> <span class="nf">add_cdom_coordinate</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_cdom_coordinate</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find all the paraters in the cdom group and add their wavelength in a new coordinate&quot;&quot;&quot;</span>
 
     <span class="n">cdom_names</span> <span class="o">=</span> <span class="p">[</span>
@@ -766,7 +766,7 @@
 
 <div class="viewcode-block" id="add_geometry_var">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.add_geometry_var">[docs]</a>
-<span class="k">def</span> <span class="nf">add_geometry_var</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_geometry_var</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a CF-1.8 Geometry container variable to the dataset</span>
 
 <span class="sd">    This allows for compatabiltiy with tools like gdal</span>
@@ -790,7 +790,7 @@
 
 <div class="viewcode-block" id="add_profile_type">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.add_profile_type">[docs]</a>
-<span class="k">def</span> <span class="nf">add_profile_type</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">ftype</span><span class="p">:</span> <span class="n">FileType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_profile_type</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">ftype</span><span class="p">:</span> <span class="n">FileType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a `profile_type` string variable to the dataset.</span>
 
 <span class="sd">    This is for ODV compatability</span>
@@ -812,7 +812,7 @@
 
 <div class="viewcode-block" id="finalize_ancillary_variables">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.finalize_ancillary_variables">[docs]</a>
-<span class="k">def</span> <span class="nf">finalize_ancillary_variables</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">finalize_ancillary_variables</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Turn the ancillary variable attr into a space seperated string</span>
 
 <span class="sd">    It is nice to have the ancillary variable be a list while things are being read into it</span>
@@ -838,7 +838,7 @@
 
 <div class="viewcode-block" id="combine_bottle_time">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.combine_bottle_time">[docs]</a>
-<span class="k">def</span> <span class="nf">combine_bottle_time</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">combine_bottle_time</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine the bottle dates and times if present</span>
 
 <span class="sd">    Raises if only one is present</span>
@@ -881,7 +881,7 @@
 
 <div class="viewcode-block" id="check_is_subset_shape">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.check_is_subset_shape">[docs]</a>
-<span class="k">def</span> <span class="nf">check_is_subset_shape</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_is_subset_shape</span><span class="p">(</span>
     <span class="n">a1</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">a2</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="s2">&quot;disallowed&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure that the shape of the data in a2 is a subset (or strict subset) of the data shape of a1</span>
@@ -908,7 +908,7 @@
 
 <div class="viewcode-block" id="check_flags">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.check_flags">[docs]</a>
-<span class="k">def</span> <span class="nf">check_flags</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">raises</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_flags</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">raises</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check WOCE flag values agaisnt their param and ensure that the param either has a value or is &quot;nan&quot; depedning on the flag definition.</span>
 
 <span class="sd">    Return a boolean array of invalid locations?</span>
@@ -999,7 +999,7 @@
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <div class="viewcode-block" id="_ExchangeData">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData">[docs]</a>
-<span class="k">class</span> <span class="nc">_ExchangeData</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_ExchangeData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Dataclass containing exchange data which has been parsed into ndarrays&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="_ExchangeData.single_profile">
@@ -1036,7 +1036,7 @@
 
 <div class="viewcode-block" id="_ExchangeData.__post_init__">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.__post_init__">[docs]</a>
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># check the shapes of all the nd arrays are the same</span>
         <span class="n">get_shape</span> <span class="o">=</span> <span class="n">attrgetter</span><span class="p">(</span><span class="s2">&quot;shape&quot;</span><span class="p">)</span>
         <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span>
@@ -1070,7 +1070,7 @@
                     <span class="n">sample_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_cols</span><span class="p">[</span><span class="n">BTLNBR</span><span class="p">]</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">param_cols</span><span class="p">[</span><span class="n">SAMPNO</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_cols</span><span class="p">[</span><span class="n">BTLNBR</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">ExchangeDataPartialKeyError</span><span class="p">(</span><span class="s2">&quot;Missing SAMPNO&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+                    <span class="k">raise</span> <span class="n">ExchangeDataPartialKeyError</span><span class="p">(</span><span class="s2">&quot;Missing SAMPNO&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
 
             <span class="n">unique_sample_ids</span><span class="p">,</span> <span class="n">unique_sample_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
                 <span class="n">sample_ids</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span>
@@ -1110,7 +1110,7 @@
 
 <div class="viewcode-block" id="_ExchangeData.set_expected">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.set_expected">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_expected</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_expected</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">WHPName</span><span class="p">],</span> <span class="n">flags</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">WHPName</span><span class="p">],</span> <span class="n">errors</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">WHPName</span><span class="p">]</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Puts fill columns for expected params which are missing</span>
@@ -1151,7 +1151,7 @@
 
 <div class="viewcode-block" id="_ExchangeData.split_profiles">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.split_profiles">[docs]</a>
-    <span class="k">def</span> <span class="nf">split_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">split_profiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Split into single profile containing _ExchangeData instances</span>
 
 <span class="sd">        Done by looking at the expocode+station+cast composate keys</span>
@@ -1159,15 +1159,15 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">expocode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_cols</span><span class="p">[</span><span class="n">EXPOCODE</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ExchangeDataPartialKeyError</span><span class="p">(</span><span class="s2">&quot;Missing EXPOCODE&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+            <span class="k">raise</span> <span class="n">ExchangeDataPartialKeyError</span><span class="p">(</span><span class="s2">&quot;Missing EXPOCODE&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">station</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_cols</span><span class="p">[</span><span class="n">STNNBR</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ExchangeDataPartialKeyError</span><span class="p">(</span><span class="s2">&quot;Missing STNNBR&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+            <span class="k">raise</span> <span class="n">ExchangeDataPartialKeyError</span><span class="p">(</span><span class="s2">&quot;Missing STNNBR&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">cast</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_cols</span><span class="p">[</span><span class="n">CASTNO</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ExchangeDataPartialKeyError</span><span class="p">(</span><span class="s2">&quot;Missing CASTNO&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+            <span class="k">raise</span> <span class="n">ExchangeDataPartialKeyError</span><span class="p">(</span><span class="s2">&quot;Missing CASTNO&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
 
         <span class="c1"># need to split up by profiles and _not_ assume the bottles are in order</span>
         <span class="c1"># use the actual values to sort things out</span>
@@ -1207,7 +1207,7 @@
     <span class="nd">@cached_property</span>
 <div class="viewcode-block" id="_ExchangeData.str_lens">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeData.str_lens">[docs]</a>
-    <span class="k">def</span> <span class="nf">str_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">str_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">WHPName</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Figure out the length of all the string params</span>
 
 <span class="sd">        The char size can vary by platform.</span>
@@ -1225,7 +1225,7 @@
 
 <div class="viewcode-block" id="_get_fill_locs">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._get_fill_locs">[docs]</a>
-<span class="k">def</span> <span class="nf">_get_fill_locs</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">fill_values</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,)):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_fill_locs</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">fill_values</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,)):</span>
     <span class="n">fill</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">fill_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fill_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">fill_value</span> <span class="ow">in</span> <span class="n">fill_values</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
@@ -1237,7 +1237,7 @@
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <div class="viewcode-block" id="_ExchangeInfo">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo">[docs]</a>
-<span class="k">class</span> <span class="nc">_ExchangeInfo</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_ExchangeInfo</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Low level dataclass containing the parts of an exchange file&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="_ExchangeInfo.stamp_slice">
@@ -1284,7 +1284,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_ExchangeInfo.stamp">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.stamp">[docs]</a>
-    <span class="k">def</span> <span class="nf">stamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the filestamp of the exchange file</span>
 
 <span class="sd">        e.g. &quot;BOTTLE,20210301CCHSIOAMB&quot;</span>
@@ -1295,7 +1295,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_ExchangeInfo.comments">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.comments">[docs]</a>
-    <span class="k">def</span> <span class="nf">comments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">comments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the comments of the exchange file with leading # stripped&quot;&quot;&quot;</span>
         <span class="n">raw_comments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_lines</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">comments_slice</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">raw_comments</span><span class="p">]</span></div>
@@ -1304,7 +1304,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_ExchangeInfo.ctd_headers">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.ctd_headers">[docs]</a>
-    <span class="k">def</span> <span class="nf">ctd_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ctd_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dict of the CTD headers and their value&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="p">[</span><span class="n">_ctd_get_header</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_lines</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ctd_headers_slice</span><span class="p">]]</span>
@@ -1314,7 +1314,7 @@
     <span class="nd">@cached_property</span>
 <div class="viewcode-block" id="_ExchangeInfo.params">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.params">[docs]</a>
-    <span class="k">def</span> <span class="nf">params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of all parameters in the file (including CTD &quot;headers&quot;)&quot;&quot;&quot;</span>
         <span class="n">ctd_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctd_headers</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="n">data_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_lines</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">params_idx</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
@@ -1324,7 +1324,7 @@
     <span class="nd">@cached_property</span>
 <div class="viewcode-block" id="_ExchangeInfo.units">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.units">[docs]</a>
-    <span class="k">def</span> <span class="nf">units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of all the units in the file (including CTD &quot;headers&quot;)</span>
 
 <span class="sd">        Will have the same shape as params</span>
@@ -1348,7 +1348,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_ExchangeInfo.data">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.data">[docs]</a>
-    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the data block of an exchange file as a tuple of strs.</span>
 <span class="sd">        One line per entry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1358,7 +1358,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_ExchangeInfo.post_data">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.post_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">post_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns any post data content as a tuple of strs&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_lines</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">post_data_slice</span><span class="p">]</span></div>
 
@@ -1366,7 +1366,7 @@
     <span class="nd">@cached_property</span>
 <div class="viewcode-block" id="_ExchangeInfo._whp_param_info">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo._whp_param_info">[docs]</a>
-    <span class="k">def</span> <span class="nf">_whp_param_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_whp_param_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses the params and units for base parameters</span>
 
 <span class="sd">        Returns a dict with a WHPName to column index mapping</span>
@@ -1408,14 +1408,14 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_ExchangeInfo.whp_params">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.whp_params">[docs]</a>
-    <span class="k">def</span> <span class="nf">whp_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">whp_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_whp_param_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_ExchangeInfo.whp_flags">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.whp_flags">[docs]</a>
-    <span class="k">def</span> <span class="nf">whp_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">whp_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses the params and units for flag values</span>
 
 <span class="sd">        returns a dict with a WHPName to column index of flags mapping</span>
@@ -1426,7 +1426,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_ExchangeInfo.whp_errors">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.whp_errors">[docs]</a>
-    <span class="k">def</span> <span class="nf">whp_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">whp_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses the params and units for uncertanty values</span>
 
 <span class="sd">        returns a dict with a WHPName to column index of errors mapping</span>
@@ -1437,7 +1437,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_ExchangeInfo._np_data_block">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo._np_data_block">[docs]</a>
-    <span class="k">def</span> <span class="nf">_np_data_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_np_data_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">_raw_data</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="nb">tuple</span><span class="p">((</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ctd_headers</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="o">*</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)))</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
@@ -1447,7 +1447,7 @@
 
 <div class="viewcode-block" id="_ExchangeInfo.finalize">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.finalize">[docs]</a>
-    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fill_values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,),</span> <span class="n">precision_source</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_ExchangeData</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fill_values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,),</span> <span class="n">precision_source</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_ExchangeData</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse all the data into ndarrays of the correct dtype and shape</span>
 
 <span class="sd">        Returns an ExchangeData dataclass</span>
@@ -1516,7 +1516,7 @@
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="_ExchangeInfo.from_lines">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.from_lines">[docs]</a>
-    <span class="k">def</span> <span class="nf">from_lines</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">ftype</span><span class="p">:</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">ignore_columns</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_lines</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">ftype</span><span class="p">:</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">ignore_columns</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Figure out the line numbers/indicies of the parts of the exchange file&quot;&quot;&quot;</span>
         <span class="n">stamp</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># file stamp is always the first line of a valid exchange</span>
         <span class="n">comments_start</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1530,7 +1530,7 @@
         <span class="n">post_data_start</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">post_data_end</span> <span class="o">=</span> <span class="mi">1</span>
 
-        <span class="k">class</span> <span class="nc">LookingFor</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="k">class</span><span class="w"> </span><span class="nc">LookingFor</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;States for the FSM that is this parser&quot;&quot;&quot;</span>
 
             <span class="n">FILE_STAMP</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
@@ -1612,7 +1612,7 @@
 
 <div class="viewcode-block" id="extract_numeric_precisions">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.extract_numeric_precisions">[docs]</a>
-<span class="k">def</span> <span class="nf">extract_numeric_precisions</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_numeric_precisions</span><span class="p">(</span>
     <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the numeric precision of a printed decimal number&quot;&quot;&quot;</span>
@@ -1628,7 +1628,7 @@
 
 <div class="viewcode-block" id="_is_valid_exchange_numeric">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._is_valid_exchange_numeric">[docs]</a>
-<span class="k">def</span> <span class="nf">_is_valid_exchange_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_valid_exchange_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
     <span class="c1"># see allowed code points of the exchange doc</span>
     <span class="c1"># essentially, only %f types (not %g)</span>
     <span class="n">allowed_exchange_numeric_data_chars</span> <span class="o">=</span> <span class="p">[</span>
@@ -1647,18 +1647,18 @@
 
 <div class="viewcode-block" id="_combine_dt_ndarray">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._combine_dt_ndarray">[docs]</a>
-<span class="k">def</span> <span class="nf">_combine_dt_ndarray</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_combine_dt_ndarray</span><span class="p">(</span>
     <span class="n">date_arr</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">],</span>
     <span class="n">time_arr</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">time_pad</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="c1"># TODO: When min pyver is 3.10, maybe consider pattern matching here</span>
-    <span class="k">def</span> <span class="nf">_parse_date</span><span class="p">(</span><span class="n">date_val</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_date</span><span class="p">(</span><span class="n">date_val</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">date_val</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s2">&quot;nat&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date_val</span><span class="p">,</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_parse_datetime</span><span class="p">(</span><span class="n">date_val</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_datetime</span><span class="p">(</span><span class="n">date_val</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">date_val</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s2">&quot;nat&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">date_val</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;2400&quot;</span><span class="p">):</span>
@@ -1691,7 +1691,7 @@
 
 <div class="viewcode-block" id="sort_ds">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.sort_ds">[docs]</a>
-<span class="k">def</span> <span class="nf">sort_ds</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_ds</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sorts the data values in the dataset</span>
 
 <span class="sd">    Ensures that profiles are in the following order:</span>
@@ -1727,7 +1727,7 @@
 
 <div class="viewcode-block" id="check_sorted">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.check_sorted">[docs]</a>
-<span class="k">def</span> <span class="nf">check_sorted</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_sorted</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check that the dataset is sorted by the rules in :func:`sort_ds`&quot;&quot;&quot;</span>
     <span class="n">sorted_ds</span> <span class="o">=</span> <span class="n">sort_ds</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
@@ -1753,7 +1753,7 @@
 
 <div class="viewcode-block" id="combine_dt">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.combine_dt">[docs]</a>
-<span class="k">def</span> <span class="nf">combine_dt</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">combine_dt</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span>
     <span class="n">is_coord</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">date_name</span><span class="p">:</span> <span class="n">WHPName</span> <span class="o">=</span> <span class="n">DATE</span><span class="p">,</span>
@@ -1783,7 +1783,7 @@
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ExchangeError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Could not parse date/time cols </span><span class="si">{</span><span class="n">date_name</span><span class="o">.</span><span class="n">whp_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">time_name</span><span class="o">.</span><span class="n">whp_name</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
 
     <span class="n">precision</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">24</span> <span class="o">/</span> <span class="mi">60</span>  <span class="c1"># minute as day fraction</span>
     <span class="k">if</span> <span class="n">dt_arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;datetime64[D]&quot;</span><span class="p">:</span>
@@ -1822,7 +1822,7 @@
 
 <div class="viewcode-block" id="set_axis_attrs">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.set_axis_attrs">[docs]</a>
-<span class="k">def</span> <span class="nf">set_axis_attrs</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_axis_attrs</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the CF axis attribute on our axis variables (XYZT)</span>
 
 <span class="sd">    * longitude = &quot;X&quot;</span>
@@ -1841,7 +1841,7 @@
 
 <div class="viewcode-block" id="set_coordinate_encoding_fill">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.set_coordinate_encoding_fill">[docs]</a>
-<span class="k">def</span> <span class="nf">set_coordinate_encoding_fill</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_coordinate_encoding_fill</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets the _FillValue encoidng to None for 1D coordinate vars&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">COORDS</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">coord</span> <span class="ow">is</span> <span class="n">TIME</span> <span class="ow">and</span> <span class="n">coord</span><span class="o">.</span><span class="n">nc_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
@@ -1855,7 +1855,7 @@
 
 <div class="viewcode-block" id="_load_raw_exchange">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._load_raw_exchange">[docs]</a>
-<span class="k">def</span> <span class="nf">_load_raw_exchange</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_raw_exchange</span><span class="p">(</span>
     <span class="n">filename_or_obj</span><span class="p">:</span> <span class="n">ExchangeIO</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">file_seperator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1900,13 +1900,13 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zipfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">zipinfo</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">))</span>
                 <span class="k">except</span> <span class="ne">UnicodeDecodeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">ExchangeEncodingError</span> <span class="kn">from</span> <span class="nn">error</span>
+                    <span class="k">raise</span> <span class="n">ExchangeEncodingError</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">data_raw</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># is_zipfile moves the &quot;tell&quot; position</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_raw</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">UnicodeDecodeError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ExchangeEncodingError</span> <span class="kn">from</span> <span class="nn">error</span>
+            <span class="k">raise</span> <span class="n">ExchangeEncodingError</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
 
     <span class="c1"># cleanup the data_raw to free the memory</span>
     <span class="n">data_raw</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -1916,7 +1916,7 @@
 
 <div class="viewcode-block" id="all_same">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.all_same">[docs]</a>
-<span class="k">def</span> <span class="nf">all_same</span><span class="p">(</span><span class="n">ndarr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">all_same</span><span class="p">(</span><span class="n">ndarr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Test if all the values of an ndarray are the same value&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">ndarr</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ndarr</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ndarr</span><span class="p">))</span>
@@ -1926,7 +1926,7 @@
 
 <div class="viewcode-block" id="CheckOptions">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.CheckOptions">[docs]</a>
-<span class="k">class</span> <span class="nc">CheckOptions</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CheckOptions</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Flags and config that controll how strict the file checks are&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="CheckOptions.flags">
@@ -1938,7 +1938,7 @@
 
 <div class="viewcode-block" id="read_csv">
 <a class="viewcode-back" href="../../autoapi/hydro/index.html#hydro.exchange.read_csv">[docs]</a>
-<span class="k">def</span> <span class="nf">read_csv</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_csv</span><span class="p">(</span>
     <span class="n">filename_or_obj</span><span class="p">:</span> <span class="n">ExchangeIO</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">fill_values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,),</span>
@@ -2004,7 +2004,7 @@
 
 <div class="viewcode-block" id="read_exchange">
 <a class="viewcode-back" href="../../autoapi/hydro/index.html#hydro.exchange.read_exchange">[docs]</a>
-<span class="k">def</span> <span class="nf">read_exchange</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_exchange</span><span class="p">(</span>
     <span class="n">filename_or_obj</span><span class="p">:</span> <span class="n">ExchangeIO</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">fill_values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,),</span>
@@ -2064,14 +2064,14 @@
 
 <div class="viewcode-block" id="_from_exchange_data">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._from_exchange_data">[docs]</a>
-<span class="k">def</span> <span class="nf">_from_exchange_data</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_from_exchange_data</span><span class="p">(</span>
     <span class="n">exchange_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">_ExchangeData</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">ftype</span><span class="o">=</span><span class="n">FileType</span><span class="o">.</span><span class="n">BOTTLE</span><span class="p">,</span>
     <span class="n">checks</span><span class="p">:</span> <span class="n">CheckOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
     <span class="c1"># Need to avoid circular import for now</span>
-    <span class="kn">from</span> <span class="nn">cchdo.hydro.core</span> <span class="kn">import</span> <span class="n">dataarray_factory</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataarray_factory</span>
 
     <span class="n">_checks</span><span class="p">:</span> <span class="n">CheckOptions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;flags&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">checks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

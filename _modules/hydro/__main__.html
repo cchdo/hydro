@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>hydro.__main__ - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -290,35 +290,35 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for hydro.__main__</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
-<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha256</span>
-<span class="kn">from</span> <span class="nn">html</span> <span class="kn">import</span> <span class="n">escape</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span><span class="p">,</span> <span class="n">TemporaryDirectory</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hashlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">sha256</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">html</span><span class="w"> </span><span class="kn">import</span> <span class="n">escape</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tempfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTemporaryFile</span><span class="p">,</span> <span class="n">TemporaryDirectory</span>
 
-<span class="kn">import</span> <span class="nn">click</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-<span class="kn">from</span> <span class="nn">rich.logging</span> <span class="kn">import</span> <span class="n">RichHandler</span>
-<span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">RichHandler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.progress</span><span class="w"> </span><span class="kn">import</span> <span class="n">track</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">__main_helpers</span> <span class="k">as</span> <span class="n">mh</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">__main_helpers</span> <span class="k">as</span> <span class="n">mh</span>
 
 <div class="viewcode-block" id="log">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.log">[docs]</a>
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
 
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
 
 
 <div class="viewcode-block" id="setup_logging">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.setup_logging">[docs]</a>
-<span class="k">def</span> <span class="nf">setup_logging</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_logging</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
     <span class="n">FORMAT</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%(funcName)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span>
     <span class="n">log_handler</span> <span class="o">=</span> <span class="n">RichHandler</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
@@ -331,13 +331,13 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
 <div class="viewcode-block" id="convert">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.convert">[docs]</a>
-<span class="k">def</span> <span class="nf">convert</span><span class="p">():</span> <span class="o">...</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">():</span> <span class="o">...</span></div>
 
 
 
 <div class="viewcode-block" id="_comment_loader">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__._comment_loader">[docs]</a>
-<span class="k">def</span> <span class="nf">_comment_loader</span><span class="p">(</span><span class="n">str_or_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_comment_loader</span><span class="p">(</span><span class="n">str_or_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">str_or_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">str_or_path</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -364,10 +364,10 @@
 <span class="p">)</span>
 <div class="viewcode-block" id="convert_exchange">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.convert_exchange">[docs]</a>
-<span class="k">def</span> <span class="nf">convert_exchange</span><span class="p">(</span><span class="n">exchange_path</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">check_flag</span><span class="p">,</span> <span class="n">precision_source</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_exchange</span><span class="p">(</span><span class="n">exchange_path</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">check_flag</span><span class="p">,</span> <span class="n">precision_source</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
     <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading read_exchange&quot;</span><span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">.exchange</span> <span class="kn">import</span> <span class="n">read_exchange</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.exchange</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_exchange</span>
 
     <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;flags&quot;</span><span class="p">:</span> <span class="n">check_flag</span><span class="p">}</span>
 
@@ -400,10 +400,10 @@
 <span class="p">)</span>
 <div class="viewcode-block" id="convert_csv">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.convert_csv">[docs]</a>
-<span class="k">def</span> <span class="nf">convert_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">ftype</span><span class="p">,</span> <span class="n">check_flag</span><span class="p">,</span> <span class="n">precision_source</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">ftype</span><span class="p">,</span> <span class="n">check_flag</span><span class="p">,</span> <span class="n">precision_source</span><span class="p">,</span> <span class="n">comments</span><span class="p">):</span>
     <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading read_exchange&quot;</span><span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">.exchange</span> <span class="kn">import</span> <span class="n">read_csv</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.exchange</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_csv</span>
 
     <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;flags&quot;</span><span class="p">:</span> <span class="n">check_flag</span><span class="p">}</span>
 
@@ -422,7 +422,7 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
 <div class="viewcode-block" id="edit">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.edit">[docs]</a>
-<span class="k">def</span> <span class="nf">edit</span><span class="p">():</span> <span class="o">...</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">edit</span><span class="p">():</span> <span class="o">...</span></div>
 
 
 
@@ -431,8 +431,8 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="edit_comments">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.edit_comments">[docs]</a>
-<span class="k">def</span> <span class="nf">edit_comments</span><span class="p">(</span><span class="n">expocode</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">cchdo.auth.session</span> <span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">s</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">edit_comments</span><span class="p">(</span><span class="n">expocode</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.auth.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">s</span>
 
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading Cruise Metadata&quot;</span><span class="p">)</span>
     <span class="n">cruises</span> <span class="o">=</span> <span class="p">{</span>
@@ -510,21 +510,21 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
 <div class="viewcode-block" id="status">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.status">[docs]</a>
-<span class="k">def</span> <span class="nf">status</span><span class="p">():</span> <span class="o">...</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">():</span> <span class="o">...</span></div>
 
 
 
 <div class="viewcode-block" id="cchdo_loader">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.cchdo_loader">[docs]</a>
-<span class="k">def</span> <span class="nf">cchdo_loader</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dformat</span><span class="o">=</span><span class="s2">&quot;exchange&quot;</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">cchdo.auth.session</span> <span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">s</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cchdo_loader</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dformat</span><span class="o">=</span><span class="s2">&quot;exchange&quot;</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.auth.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">s</span>
 
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading Cruise Metadata&quot;</span><span class="p">)</span>
     <span class="n">cruises</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://cchdo.ucsd.edu/api/v1/cruise/all&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading Cruise File&quot;</span><span class="p">)</span>
     <span class="n">files</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://cchdo.ucsd.edu/api/v1/file/all&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">file_filter</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">file_filter</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="n">file</span><span class="p">[</span><span class="s2">&quot;data_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dtype</span>
             <span class="ow">and</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;dataset&quot;</span>
@@ -537,12 +537,12 @@
 
 <div class="viewcode-block" id="cached_file_loader">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.cached_file_loader">[docs]</a>
-<span class="k">def</span> <span class="nf">cached_file_loader</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">codes</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cached_file_loader</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">requests</span><span class="w"> </span><span class="kn">import</span> <span class="n">codes</span>
 
-    <span class="kn">from</span> <span class="nn">cchdo.auth.session</span> <span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">s</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.auth.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">session</span> <span class="k">as</span> <span class="n">s</span>
 
-    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_hydro_appdirs</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_hydro_appdirs</span>
 
     <span class="n">cache_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">_hydro_appdirs</span><span class="o">.</span><span class="n">user_cache_dir</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;convert&quot;</span>
     <span class="n">cache_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -564,7 +564,7 @@
 
 <div class="viewcode-block" id="vars_with_value">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.vars_with_value">[docs]</a>
-<span class="k">def</span> <span class="nf">vars_with_value</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">vars_with_value</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="n">vars_with_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
@@ -585,12 +585,12 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--roundtrip&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <div class="viewcode-block" id="status_exchange">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.status_exchange">[docs]</a>
-<span class="k">def</span> <span class="nf">status_exchange</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">status_exchange</span><span class="p">(</span>
     <span class="n">dtype</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">dump_unknown_params</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">dump_data_counts</span><span class="p">,</span> <span class="n">roundtrip</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a bottle conversion status for all ex files of type type in the CCHDO Dataset.&quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">cchdo.hydro</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">hydro_version</span>
-    <span class="kn">from</span> <span class="nn">cchdo.params</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">params_version</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">hydro_version</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">params_version</span>
 
     <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;CRITICAL&quot;</span><span class="p">)</span>
@@ -721,9 +721,9 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--only-fail&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <div class="viewcode-block" id="status_cf_derived">
 <a class="viewcode-back" href="../../autoapi/hydro/__main__/index.html#hydro.__main__.status_cf_derived">[docs]</a>
-<span class="k">def</span> <span class="nf">status_cf_derived</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">only_fail</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">cchdo.hydro</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">hydro_version</span>
-    <span class="kn">from</span> <span class="nn">cchdo.params</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">params_version</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">status_cf_derived</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">only_fail</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">hydro_version</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">params_version</span>
 
     <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">setup_logging</span><span class="p">(</span><span class="s2">&quot;CRITICAL&quot;</span><span class="p">)</span>

@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>hydro.tests.test_accessors - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -290,18 +290,18 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for hydro.tests.test_accessors</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">importlib.resources</span> <span class="kn">import</span> <span class="n">read_text</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
-<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZipFile</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_text</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zipfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZipFile</span>
 
-<span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-<span class="kn">from</span> <span class="nn">xarray.testing</span> <span class="kn">import</span> <span class="n">assert_identical</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xarray.testing</span><span class="w"> </span><span class="kn">import</span> <span class="n">assert_identical</span>
 
-<span class="kn">from</span> <span class="nn">cchdo.hydro.accessors</span> <span class="kn">import</span> <span class="n">CCHDOAccessor</span>
-<span class="kn">from</span> <span class="nn">cchdo.hydro.exchange</span> <span class="kn">import</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">read_csv</span><span class="p">,</span> <span class="n">read_exchange</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.accessors</span><span class="w"> </span><span class="kn">import</span> <span class="n">CCHDOAccessor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.exchange</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">read_csv</span><span class="p">,</span> <span class="n">read_exchange</span>
 
 <div class="viewcode-block" id="exp_stn_cast">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.exp_stn_cast">[docs]</a>
@@ -317,7 +317,7 @@
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;ftype&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;cf&quot;</span><span class="p">,</span> <span class="s2">&quot;exchange&quot;</span><span class="p">,</span> <span class="s2">&quot;coards&quot;</span><span class="p">,</span> <span class="s2">&quot;woce&quot;</span><span class="p">])</span>
 <div class="viewcode-block" id="test_gen_fname_machinery">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_gen_fname_machinery">[docs]</a>
-<span class="k">def</span> <span class="nf">test_gen_fname_machinery</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_gen_fname_machinery</span><span class="p">(</span>
     <span class="n">expocode</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">profile_type</span><span class="p">,</span> <span class="n">profile_count</span><span class="p">,</span> <span class="n">ftype</span>
 <span class="p">):</span>
     <span class="n">CCHDOAccessor</span><span class="o">.</span><span class="n">_gen_fname</span><span class="p">(</span>
@@ -328,7 +328,7 @@
 
 <div class="viewcode-block" id="test_coards_no_comments">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_coards_no_comments">[docs]</a>
-<span class="k">def</span> <span class="nf">test_coards_no_comments</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_coards_no_comments</span><span class="p">():</span>
     <span class="c1"># note that the differet bottle and sampno are intentional</span>
     <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;BOTTLE,test</span>
 <span class="s2"># some comment</span>
@@ -345,7 +345,7 @@
 
 <div class="viewcode-block" id="test_exchange_bottle_round_trip">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_exchange_bottle_round_trip">[docs]</a>
-<span class="k">def</span> <span class="nf">test_exchange_bottle_round_trip</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exchange_bottle_round_trip</span><span class="p">():</span>
     <span class="c1"># note that the differet bottle and sampno are intentional</span>
     <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;BOTTLE,test</span>
 <span class="s2"># some comment</span>
@@ -363,7 +363,7 @@
 
 <div class="viewcode-block" id="test_exchange_bottle_round_trip_with_alt">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_exchange_bottle_round_trip_with_alt">[docs]</a>
-<span class="k">def</span> <span class="nf">test_exchange_bottle_round_trip_with_alt</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exchange_bottle_round_trip_with_alt</span><span class="p">():</span>
     <span class="c1"># note that the differet bottle and sampno are intentional</span>
     <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;BOTTLE,test</span>
 <span class="s2"># some comment</span>
@@ -381,7 +381,7 @@
 
 <div class="viewcode-block" id="test_exchange_bottle_round_trip_cdom">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_exchange_bottle_round_trip_cdom">[docs]</a>
-<span class="k">def</span> <span class="nf">test_exchange_bottle_round_trip_cdom</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exchange_bottle_round_trip_cdom</span><span class="p">():</span>
     <span class="c1"># note that the differet bottle and sampno are intentional</span>
     <span class="c1"># note that we do want the print precision of the two CDOMs to differ</span>
     <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;BOTTLE,test</span>
@@ -400,7 +400,7 @@
 
 <div class="viewcode-block" id="test_exchange_ctd_round_trip">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_exchange_ctd_round_trip">[docs]</a>
-<span class="k">def</span> <span class="nf">test_exchange_ctd_round_trip</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_exchange_ctd_round_trip</span><span class="p">():</span>
     <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;CTD,test</span>
 <span class="s2"># some comment</span>
 <span class="s2">NUMBER_HEADERS = 8</span>
@@ -425,7 +425,7 @@
 
 <div class="viewcode-block" id="test_nc_serialize_all_ctd">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_nc_serialize_all_ctd">[docs]</a>
-<span class="k">def</span> <span class="nf">test_nc_serialize_all_ctd</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_nc_serialize_all_ctd</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A crash was discovered when the ctd elapsed time param was present, and was seralized to disk then read back in&quot;&quot;&quot;</span>
     <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;CTD,test</span>
 <span class="s2"># some comment</span>
@@ -456,7 +456,7 @@
 
 <div class="viewcode-block" id="test_nc_serialize_all_ctdetime">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_nc_serialize_all_ctdetime">[docs]</a>
-<span class="k">def</span> <span class="nf">test_nc_serialize_all_ctdetime</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_nc_serialize_all_ctdetime</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A crash was discovered when the ctd elapsed time param was present, and was seralized to disk then read back in&quot;&quot;&quot;</span>
     <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;CTD,test</span>
 <span class="s2"># some comment</span>
@@ -487,7 +487,7 @@
 
 <div class="viewcode-block" id="test_woce_ctd_no_flags">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_woce_ctd_no_flags">[docs]</a>
-<span class="k">def</span> <span class="nf">test_woce_ctd_no_flags</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_woce_ctd_no_flags</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;make sure data is written to the woce files when there are no qc flags&quot;&quot;&quot;</span>
     <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;EXPOCODE,SECT_ID,STNNBR,CASTNO,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR],CTDTMP [DEG C],CTDSAL [PSS-78],CTDOXY [UMOL/KG],CTDFLUOR [MG/M^3],CTDBEAMCP [/METER]</span>
 <span class="s2">64PE20110724,AR07E,9,1,20110729,1919,59.57017,-38.77183,3006.0,1.2096,34.8913,304.0,0.0,0.161</span>
@@ -505,7 +505,7 @@
 
 <div class="viewcode-block" id="test_coards_ctdnobs_with_missing">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_coards_ctdnobs_with_missing">[docs]</a>
-<span class="k">def</span> <span class="nf">test_coards_ctdnobs_with_missing</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_coards_ctdnobs_with_missing</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Test a condition where exception might be thrown when a float array with nans is cast to int</span>
 
 <span class="sd">    This is very platform dependent and depends on undefined behavior in C. Lucky for us we can see if</span>

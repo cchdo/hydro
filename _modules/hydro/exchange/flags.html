@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>hydro.exchange.flags - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -292,13 +292,13 @@
           <h1>Source code for hydro.exchange.flags</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;A Collection of Flag Schemes.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span>
 
 
 <div class="viewcode-block" id="ExchangeFlag">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeFlag</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeFlag</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <div class="viewcode-block" id="ExchangeFlag.flag">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag.flag">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">=</span> <span class="n">flag</span></div>
@@ -307,21 +307,21 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ExchangeFlag.definition">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag.definition">[docs]</a>
-    <span class="k">def</span> <span class="nf">definition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">definition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_definitions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">]</span></div>
 
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ExchangeFlag.cf_def">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag.cf_def">[docs]</a>
-    <span class="k">def</span> <span class="nf">cf_def</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cf_def</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span></div>
 
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ExchangeFlag.has_value">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag.has_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">has_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_data_flags</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
@@ -331,7 +331,7 @@
 
 <div class="viewcode-block" id="ExchangeBottleFlag">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeBottleFlag</span><span class="p">(</span><span class="n">ExchangeFlag</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeBottleFlag</span><span class="p">(</span><span class="n">ExchangeFlag</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Enum representing a WHP Bottle flag.</span>
 
 <span class="sd">    This flag represents information about the sampling device itself</span>
@@ -383,14 +383,14 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ExchangeBottleFlag._no_data_flags">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag._no_data_flags">[docs]</a>
-    <span class="k">def</span> <span class="nf">_no_data_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_no_data_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ExchangeBottleFlag._flag_definitions">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeBottleFlag._flag_definitions">[docs]</a>
-    <span class="k">def</span> <span class="nf">_flag_definitions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_flag_definitions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;No Flag assigned&quot;</span><span class="p">,</span>
             <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;Bottle information unavailable.&quot;</span><span class="p">,</span>
@@ -409,7 +409,7 @@
 
 <div class="viewcode-block" id="ExchangeSampleFlag">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeSampleFlag</span><span class="p">(</span><span class="n">ExchangeFlag</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeSampleFlag</span><span class="p">(</span><span class="n">ExchangeFlag</span><span class="p">):</span>
 <div class="viewcode-block" id="ExchangeSampleFlag.NOFLAG">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag.NOFLAG">[docs]</a>
     <span class="n">NOFLAG</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># no idea if this will cause issue</span></div>
@@ -454,14 +454,14 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ExchangeSampleFlag._no_data_flags">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag._no_data_flags">[docs]</a>
-    <span class="k">def</span> <span class="nf">_no_data_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_no_data_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ExchangeSampleFlag._flag_definitions">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeSampleFlag._flag_definitions">[docs]</a>
-    <span class="k">def</span> <span class="nf">_flag_definitions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_flag_definitions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;No Flag assigned&quot;</span><span class="p">,</span>
             <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;Sample for this measurement was drawn from water bottle but analysis not received.&quot;</span><span class="p">,</span>  <span class="c1"># noqa: E501</span>
@@ -480,7 +480,7 @@
 
 <div class="viewcode-block" id="ExchangeCTDFlag">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag">[docs]</a>
-<span class="k">class</span> <span class="nc">ExchangeCTDFlag</span><span class="p">(</span><span class="n">ExchangeFlag</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExchangeCTDFlag</span><span class="p">(</span><span class="n">ExchangeFlag</span><span class="p">):</span>
 <div class="viewcode-block" id="ExchangeCTDFlag.NOFLAG">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag.NOFLAG">[docs]</a>
     <span class="n">NOFLAG</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># no idea if this will cause issue</span></div>
@@ -521,14 +521,14 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ExchangeCTDFlag._no_data_flags">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag._no_data_flags">[docs]</a>
-    <span class="k">def</span> <span class="nf">_no_data_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_no_data_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ExchangeCTDFlag._flag_definitions">
 <a class="viewcode-back" href="../../../autoapi/hydro/exchange/flags/index.html#hydro.exchange.flags.ExchangeCTDFlag._flag_definitions">[docs]</a>
-    <span class="k">def</span> <span class="nf">_flag_definitions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_flag_definitions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;No Flag assigned&quot;</span><span class="p">,</span>
             <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;Not calibrated.&quot;</span><span class="p">,</span>

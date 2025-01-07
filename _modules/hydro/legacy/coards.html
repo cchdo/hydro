@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>hydro.legacy.coards - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -300,24 +300,24 @@
 <span class="sd">The entrypoint function is :func:`to_coards`</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">csv</span> <span class="kn">import</span> <span class="n">DictReader</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">csv</span><span class="w"> </span><span class="kn">import</span> <span class="n">DictReader</span>
 
 <span class="c1"># TODO: switch to files().joinpath().open when python 3.8 is dropped</span>
 <span class="c1"># 2023-04-16</span>
-<span class="kn">from</span> <span class="nn">importlib.resources</span> <span class="kn">import</span> <span class="n">open_text</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
-<span class="kn">from</span> <span class="nn">logging</span> <span class="kn">import</span> <span class="n">getLogger</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
-<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">ZipFile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">open_text</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tempfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">TemporaryDirectory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zipfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">ZipFile</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
-<span class="kn">from</span> <span class="nn">cftime</span> <span class="kn">import</span> <span class="n">date2num</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cftime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date2num</span>
 
-<span class="kn">from</span> <span class="nn">cchdo.hydro</span> <span class="kn">import</span> <span class="n">accessors</span> <span class="k">as</span> <span class="n">acc</span>
-<span class="kn">from</span> <span class="nn">cchdo.hydro.legacy</span> <span class="kn">import</span> <span class="n">woce</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro</span><span class="w"> </span><span class="kn">import</span> <span class="n">accessors</span> <span class="k">as</span> <span class="n">acc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.legacy</span><span class="w"> </span><span class="kn">import</span> <span class="n">woce</span>
 
 <div class="viewcode-block" id="log">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.log">[docs]</a>
@@ -426,7 +426,7 @@
 
 <div class="viewcode-block" id="bytes_via_temp">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.bytes_via_temp">[docs]</a>
-<span class="k">def</span> <span class="nf">bytes_via_temp</span><span class="p">(</span><span class="n">xr</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bytes_via_temp</span><span class="p">(</span><span class="n">xr</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">td</span><span class="p">:</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">td</span> <span class="o">+</span> <span class="s2">&quot;/tmp.nc&quot;</span>
         <span class="n">xr</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;NETCDF3_CLASSIC&quot;</span><span class="p">)</span>
@@ -439,7 +439,7 @@
 <span class="c1"># this function needs modification</span>
 <div class="viewcode-block" id="strftime_woce_date_time">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.strftime_woce_date_time">[docs]</a>
-<span class="k">def</span> <span class="nf">strftime_woce_date_time</span><span class="p">(</span><span class="n">dt</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">strftime_woce_date_time</span><span class="p">(</span><span class="n">dt</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Take an xr.DataArray with time values in it and convert to strings.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -455,7 +455,7 @@
 <span class="c1"># name change ascii -&gt; _ascii to avoid builtin conflict</span>
 <div class="viewcode-block" id="_ascii">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards._ascii">[docs]</a>
-<span class="k">def</span> <span class="nf">_ascii</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ascii</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Force all codepoints into valid ascii range.</span>
 
 <span class="sd">    Works by encoding the str into ascii bytes with the replace err param, then decoding the bytes to str again</span>
@@ -469,7 +469,7 @@
 
 <div class="viewcode-block" id="simplest_str">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.simplest_str">[docs]</a>
-<span class="k">def</span> <span class="nf">simplest_str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">simplest_str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Give the simplest string representation.</span>
 
 <span class="sd">    If a float is almost equivalent to an integer, swap out for the integer.</span>
@@ -486,7 +486,7 @@
 
 <div class="viewcode-block" id="_pad_station_cast">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards._pad_station_cast">[docs]</a>
-<span class="k">def</span> <span class="nf">_pad_station_cast</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pad_station_cast</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pad a station or cast identifier out to 5 characters.</span>
 
 <span class="sd">    This is usually for use in a file name.</span>
@@ -500,7 +500,7 @@
 
 <div class="viewcode-block" id="get_filename">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.get_filename">[docs]</a>
-<span class="k">def</span> <span class="nf">get_filename</span><span class="p">(</span><span class="n">expocode</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_filename</span><span class="p">(</span><span class="n">expocode</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate the filename for COARDS netCDF files.</span>
 
 <span class="sd">    Was ported directly from libcchdo and should have the same formatting behavior</span>
@@ -517,7 +517,7 @@
 
 <div class="viewcode-block" id="minutes_since_epoch">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.minutes_since_epoch">[docs]</a>
-<span class="k">def</span> <span class="nf">minutes_since_epoch</span><span class="p">(</span><span class="n">dt</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">error</span><span class="o">=-</span><span class="mi">9</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">minutes_since_epoch</span><span class="p">(</span><span class="n">dt</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">error</span><span class="o">=-</span><span class="mi">9</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Make the time value for netCDF files.</span>
 
 <span class="sd">    The custom implimentation in libcchdo was discarded in favor of the date2num function from cftime.</span>
@@ -536,7 +536,7 @@
 
 <div class="viewcode-block" id="get_coards_global_attributes">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.get_coards_global_attributes">[docs]</a>
-<span class="k">def</span> <span class="nf">get_coards_global_attributes</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">profile_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_coards_global_attributes</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">profile_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Makes the global attributes of a WHP COARDS netCDF File.</span>
 
 <span class="sd">    The order of the attributes is important/fixed, same with case&quot;&quot;&quot;</span>
@@ -597,7 +597,7 @@
 
 <div class="viewcode-block" id="get_dataarrays">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.get_dataarrays">[docs]</a>
-<span class="k">def</span> <span class="nf">get_dataarrays</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_dataarrays</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
     <span class="n">dataarrays</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">whpname</span><span class="p">,</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_whp_columns</span><span class="p">(</span><span class="n">compact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -713,7 +713,7 @@
 
 <div class="viewcode-block" id="get_common_variables">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.get_common_variables">[docs]</a>
-<span class="k">def</span> <span class="nf">get_common_variables</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_common_variables</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
     <span class="c1"># In the origional it creates these all manually (not in a loop)</span>
     <span class="n">common_variables</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">time_units</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;minutes since </span><span class="si">{</span><span class="n">EPOCH</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -807,7 +807,7 @@
 
 <div class="viewcode-block" id="write_bottle">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.write_bottle">[docs]</a>
-<span class="k">def</span> <span class="nf">write_bottle</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_bottle</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="n">get_coards_global_attributes</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">profile_type</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
     <span class="n">data_vars</span> <span class="o">=</span> <span class="n">get_dataarrays</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
     <span class="n">common_vars</span> <span class="o">=</span> <span class="n">get_common_variables</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
@@ -819,7 +819,7 @@
 
 <div class="viewcode-block" id="write_ctd">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.write_ctd">[docs]</a>
-<span class="k">def</span> <span class="nf">write_ctd</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_ctd</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="n">get_coards_global_attributes</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">profile_type</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
     <span class="n">data_vars</span> <span class="o">=</span> <span class="n">get_dataarrays</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 
@@ -848,7 +848,7 @@
 
 <div class="viewcode-block" id="to_coards">
 <a class="viewcode-back" href="../../../autoapi/hydro/legacy/coards/index.html#hydro.legacy.coards.to_coards">[docs]</a>
-<span class="k">def</span> <span class="nf">to_coards</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_coards</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an xr.Dataset to a zipfile with COARDS netCDF files inside.</span>
 
 <span class="sd">    This function does support mixed CTD and Bottle datasets and will convert using profile_type var on a per profile basis.</span>

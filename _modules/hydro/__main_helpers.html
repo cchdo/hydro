@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>hydro.__main_helpers - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -290,24 +290,24 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for hydro.__main_helpers</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">b64encode</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">base64</span><span class="w"> </span><span class="kn">import</span> <span class="n">b64encode</span>
 
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
-<span class="kn">from</span> <span class="nn">cchdo.hydro</span> <span class="kn">import</span> <span class="n">accessors</span>  <span class="c1"># noqa</span>
-<span class="kn">from</span> <span class="nn">cchdo.hydro.exchange</span> <span class="kn">import</span> <span class="n">read_exchange</span>
-<span class="kn">from</span> <span class="nn">cchdo.hydro.exchange.exceptions</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro</span><span class="w"> </span><span class="kn">import</span> <span class="n">accessors</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.exchange</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_exchange</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.exchange.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ExchangeDataFlagPairError</span><span class="p">,</span>
     <span class="n">ExchangeParameterUndefError</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">cchdo.params</span> <span class="kn">import</span> <span class="n">WHPNames</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">WHPNames</span>
 
 
 <div class="viewcode-block" id="make_netcdf_file_json">
 <a class="viewcode-back" href="../../autoapi/hydro/__main_helpers/index.html#hydro.__main_helpers.make_netcdf_file_json">[docs]</a>
-<span class="k">def</span> <span class="nf">make_netcdf_file_json</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_netcdf_file_json</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;netcdf.nc&quot;</span><span class="p">,</span>  <span class="c1"># not important isn&#39;t used</span>
@@ -319,7 +319,7 @@
 
 <div class="viewcode-block" id="p_file">
 <a class="viewcode-back" href="../../autoapi/hydro/__main_helpers/index.html#hydro.__main_helpers.p_file">[docs]</a>
-<span class="k">def</span> <span class="nf">p_file</span><span class="p">(</span><span class="n">file_m</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">p_file</span><span class="p">(</span><span class="n">file_m</span><span class="p">):</span>
     <span class="n">t_dir</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">file_metadata</span><span class="p">,</span> <span class="n">roundtrip</span> <span class="o">=</span> <span class="n">file_m</span>
     <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;flags&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
     <span class="n">unknown_params</span> <span class="o">=</span> <span class="p">[]</span>
@@ -380,7 +380,7 @@
 
 <div class="viewcode-block" id="p_file_cf">
 <a class="viewcode-back" href="../../autoapi/hydro/__main_helpers/index.html#hydro.__main_helpers.p_file_cf">[docs]</a>
-<span class="k">def</span> <span class="nf">p_file_cf</span><span class="p">(</span><span class="n">file_m</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">p_file_cf</span><span class="p">(</span><span class="n">file_m</span><span class="p">):</span>
     <span class="n">t_dir</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">file_metadata</span> <span class="o">=</span> <span class="n">file_m</span>
 
     <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>

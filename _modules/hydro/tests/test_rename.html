@@ -6,7 +6,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>hydro.tests.test_rename - hydro documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -290,21 +290,21 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for hydro.tests.test_rename</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
-<span class="kn">from</span> <span class="nn">cchdo.hydro.rename</span> <span class="kn">import</span> <span class="n">rename_with_bookkeeping</span><span class="p">,</span> <span class="n">to_argo_variable_names</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.rename</span><span class="w"> </span><span class="kn">import</span> <span class="n">rename_with_bookkeeping</span><span class="p">,</span> <span class="n">to_argo_variable_names</span>
 
 
 <div class="viewcode-block" id="is_not_none">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_rename/index.html#hydro.tests.test_rename.is_not_none">[docs]</a>
-<span class="k">def</span> <span class="nf">is_not_none</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_not_none</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
 
 <div class="viewcode-block" id="test_rename">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_rename/index.html#hydro.tests.test_rename.test_rename">[docs]</a>
-<span class="k">def</span> <span class="nf">test_rename</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_rename</span><span class="p">():</span>
     <span class="n">example</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
         <span class="p">{</span>
             <span class="s2">&quot;var0&quot;</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
@@ -329,7 +329,7 @@
 
 <div class="viewcode-block" id="test_to_argo_variable_names">
 <a class="viewcode-back" href="../../../autoapi/hydro/tests/test_rename/index.html#hydro.tests.test_rename.test_to_argo_variable_names">[docs]</a>
-<span class="k">def</span> <span class="nf">test_to_argo_variable_names</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_to_argo_variable_names</span><span class="p">():</span>
     <span class="n">to_argo_variable_names</span><span class="p">(</span><span class="s2">&quot;TODO&quot;</span><span class="p">)</span></div>
 
 </pre></div>
