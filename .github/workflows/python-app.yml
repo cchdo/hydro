@@ -33,13 +33,35 @@ jobs:
         uvx ruff format --check
 
   pytest:
-    name: Pytest ${{matrix.dep}}
+    name: Pytest 
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix: 
-        dep: ["selftest", "test"]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
+    - name: "Set up Python"
+      uses: actions/setup-python@v5
+      with:
+        python-version-file: ".python-version"
+    - name: Install dependencies
+      run: uv sync
+    - name: Test with pytest
+      run: uv run pytest --pyargs cchdo.hydro -n 4 --cov-report xml --cov=src
+    - name: Upload coverage to Coveralls
+      uses: coverallsapp/github-action@v2.3.0
+      if: ${{matrix.dep}} != "selftest"
+      continue-on-error: true
+      with:
+        file: ./coverage.xml
+
+  selftest:
+    name: Selftest
+
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -53,27 +75,10 @@ jobs:
         python-version-file: ".python-version"
     - name: Install dependencies
       run: |
-        if [[ "${{ matrix.dep }}" == "selftest" ]];
-        then
           uv venv
           uv pip install .[selftest]
-        else
-          uv sync
-        fi
     - name: Test with pytest
-      run: |
-        if [[ "${{ matrix.dep }}" == "selftest" ]];
-        then
-          uv run pytest --pyargs cchdo.hydro
-        else
-          uv run pytest --pyargs cchdo.hydro -n 4 --cov-report xml --cov=src
-        fi
-    - name: Upload coverage to Coveralls
-      uses: coverallsapp/github-action@v2.3.0
-      if: ${{matrix.dep}} != "selftest"
-      continue-on-error: true
-      with:
-        file: ./coverage.xml
+      run: uv run pytest --pyargs cchdo.hydro
 
   typing:
     name: Typing with mypy
