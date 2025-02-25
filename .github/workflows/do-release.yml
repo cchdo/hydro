@@ -15,19 +15,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    - name: Install Bundling dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install twine build
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
     - name: Build Dists
-      run: |
-        python -m build --sdist --wheel --outdir dist/
-    - name: Test Wheel
-      run: |
-        cd dist && pip install $(ls *.whl)'[selftest]' && python -m pytest --pyargs cchdo.hydro && twine check *
+      run: uv build 
     - name: Publish Python distribution to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
+      run: uv publish
