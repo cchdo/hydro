@@ -49,7 +49,7 @@ extensions = [
 myst_enable_extensions = ["colon_fence"]
 jupyter_execute_notebooks = "off"
 
-autoapi_dirs = ["../cchdo", "../cchdo/hydro"]
+autoapi_dirs = ["../src/cchdo", "../src/cchdo/hydro"]
 autoapi_python_use_implicit_namespaces = True
 
 autodoc_typehints = "description"
