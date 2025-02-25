@@ -145,7 +145,7 @@ class CCHDOAccessor:
 
         base_schema: dict[str, Any] = {
             "@context": {"@vocab": "https://schema.org/"},
-            "@id": f"{obj.expocode[0].item()}_bottle",  # what would this actually be?
+            "@id": f"{obj.expocode[0].item()}_{obj.profile_type[0].item()}",  # what would this actually be?
             "@type": "Dataset",
         }
         variableMeasured = []
