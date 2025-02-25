@@ -78,7 +78,7 @@ jobs:
           uv venv
           uv pip install .[selftest]
     - name: Test with pytest
-      run: uv run pytest --pyargs cchdo.hydro
+      run: uv run --no-default-groups pytest --pyargs cchdo.hydro
 
   typing:
     name: Typing with mypy
