@@ -406,7 +406,7 @@ class CCHDOAccessor:
                 break
 
             no_of_bottles = (
-                f"{sum(prof.sample.values!='')}" if prof.profile_type == "B" else ""
+                f"{sum(prof.sample.values != '')}" if prof.profile_type == "B" else ""
             )
 
             row = [""] * len(col_widths)

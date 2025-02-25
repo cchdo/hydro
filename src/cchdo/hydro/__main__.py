@@ -295,7 +295,7 @@ def status_exchange(
         nc_path = out_path / "nc"
         nc_path.mkdir(exist_ok=True)
         success_len = len(list(filter(lambda x: x[0] == 200, results)))
-        success_str = f"Converted {success_len} of {len(results)} ({success_len/len(results) * 100}%)"
+        success_str = f"Converted {success_len} of {len(results)} ({success_len / len(results) * 100}%)"
         with (out_path / f"index_{dtype}.html").open("w") as f:
             f.write(
                 f"""<html>
@@ -467,10 +467,10 @@ def status_cf_derived(out_dir, verbose, only_fail):
                         <td>{crs}</td>
                         <td>{file_id}</td>
                         <td><a href="https://cchdo.ucsd.edu/data/{file_id}/{fn}">{fn}</a></td>
-                        <td>{'✅' if excahnge_ok else '❌'}</td>
-                        <td>{'✅' if coards_ok else '❌'}</td>
-                        <td>{'✅' if woce_ok else '❌'}</td>
-                        <td>{'✅' if sum_ok else '❌'}</td>
+                        <td>{"✅" if excahnge_ok else "❌"}</td>
+                        <td>{"✅" if coards_ok else "❌"}</td>
+                        <td>{"✅" if woce_ok else "❌"}</td>
+                        <td>{"✅" if sum_ok else "❌"}</td>
                         </tr>"""
                 )
             f.write("</tbody></table></div></body></html>")

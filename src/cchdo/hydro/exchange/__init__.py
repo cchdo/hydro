@@ -248,7 +248,7 @@ def flatten_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
             CDOM_WAVELENGTHS=cdom_wavelength
         )
 
-        whp_name = WHPNames[f'{cdom.attrs["whp_name"]} [{cdom.attrs["whp_unit"]}]']
+        whp_name = WHPNames[f"{cdom.attrs['whp_name']} [{cdom.attrs['whp_unit']}]"]
 
         if cdom_qc is not None:
             cdom.attrs["ancillary_variables"] = whp_name.nc_name_flag

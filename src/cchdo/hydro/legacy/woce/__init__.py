@@ -35,8 +35,7 @@ BOTTLE_FLAGS = {
     4: "Did not trip correctly.",
     5: "Not reported.",
     6: (
-        "Significant discrepancy in measured values between Gerard and Niskin "
-        "bottles."
+        "Significant discrepancy in measured values between Gerard and Niskin bottles."
     ),
     7: "Unknown problem.",
     8: (
