@@ -29,6 +29,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering",
 ]
 
@@ -49,32 +50,6 @@ selftest = [
     "pytest",
     "requests-mock",
 ]
-test = [
-    "cchdo.hydro[selftest,cli]",
-    "pytest-cov",
-    "pytest-xdist",
-    "codecov",
-    "mypy",
-    "types-requests",
-    "ruff",
-]
-testminnumpy = [
-    "cchdo.hydro[test]",
-    "numpy==1.25",
-]
-dev = [
-    "cchdo.hydro[test]",
-    "pre-commit",
-]
-docs = [
-    "Sphinx",
-    "jupyter",
-    "furo",
-    "sphinx-design",
-    "sphinx-autoapi",
-    "myst-parser",
-    "myst-nb",
-]
 cli = [
     "cchdo.hydro[netcdf]",
     "cchdo.auth",
@@ -82,7 +57,28 @@ cli = [
     "rich",
 ]
 complete = [
-    "cchdo.hydro[cli,docs,dev,schema]"
+    "cchdo.hydro[cli,schema,selftest]"
+]
+
+[dependency-groups]
+dev = [
+    "cchdo.hydro[complete]",
+    "codecov>=2.1.13",
+    "mypy>=1.15.0",
+    "pre-commit>=4.1.0",
+    "pytest-cov>=6.0.0",
+    "pytest-xdist>=3.6.1",
+    "ruff>=0.9.7",
+    "types-requests>=2.32.0.20241016",
+]
+docs = [
+    "furo>=2024.8.6",
+    "jupyter>=1.1.1",
+    "myst-nb>=1.2.0",
+    "myst-parser>=4.0.1",
+    "sphinx>=8.2.1",
+    "sphinx-autoapi>=3.6.0",
+    "sphinx-design>=0.6.1",
 ]
 
 [tool.mypy]
@@ -130,3 +126,6 @@ select = [
 
 [tool.ruff.lint.isort]
 known-first-party = ["cchdo"]
+
+[tool.uv]
+default-groups = ["dev", "docs"]
