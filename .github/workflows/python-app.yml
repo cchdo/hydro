@@ -93,4 +93,6 @@ jobs:
     - name: Install dependencies
       run: uv sync    
     - name: Test typing
-      run: uv run mypy --namespace-packages --explicit-package-bases cchdo
+      env:
+         MYPYPATH: src
+      run: uv run mypy --namespace-packages --explicit-package-bases src
