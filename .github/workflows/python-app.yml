@@ -55,6 +55,7 @@ jobs:
       run: |
         if [[ "${{ matrix.dep }}" == "selftest" ]];
         then
+          uv venv
           uv pip install .[selftest]
         else
           uv sync
