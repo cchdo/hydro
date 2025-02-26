@@ -28,7 +28,7 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// we need to fix the perissions of the volumes (else they are owned by root)
-	"postCreateCommand": "sudo chown vscode /workspaces/hydro/.venv && sudo chown vscode /home/vscode/.cache/uv && pipx install uv && uv sync",
+	"postCreateCommand": "sudo chown vscode /workspaces/hydro/.venv && sudo chown -R vscode /home/vscode/.cache && pipx install uv && uv sync && uv run pre-commit && uv run pre-commit install",
 
 	// Configure tool-specific properties.
 	"customizations": {
