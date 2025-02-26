@@ -10,9 +10,25 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
+	// These mounts do two things, the venv one overwirtes the .venv of the mapped in workspace
+	// This needs to be done because the venv is platform specific
+	// The uv-cache saves/persists the cache using a named volmes so that multiple containers
+	// can share the same cache
+	// Even better might be to map in something from the host, but the host cache dir location is not
+	// consistent
+	"mounts": [
+		{"target": "/workspaces/hydro/.venv", "type": "volume" },
+		{ "source": "uv-cache", "target": "/home/vscode/.cache/uv", "type": "volume" }
+	],
+
+	// We need to copy rather than hardlink due to the cross volume mounts going on
+	"containerEnv": {
+		"UV_LINK_MODE": "copy"
+	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+	// we need to fix the perissions of the volumes (else they are owned by root)
+	"postCreateCommand": "sudo chown vscode /workspaces/hydro/.venv && sudo chown vscode /home/vscode/.cache/uv && pipx install uv && uv sync",
 
 	// Configure tool-specific properties.
 	"customizations": {
@@ -24,8 +40,9 @@
 				"ms-toolsai.jupyter"
 			]
 		}
-	}
+	},
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+	// this was uncommented so that the user is consistent
+	"remoteUser": "vscode"
 }
