@@ -3,6 +3,7 @@
 * (Bug) Fix fill values in bottle date/time being printed as nan in generated exchange files
 * Add the ability to ignore columns using the ODV parameter syntax to `read_exchange` and `read_csv`
 * Add a --roundtrip flag to the status-exchange command, this will convert from the exchange file online at CCHDO to xarray/netCDF then back to exchange, then back to netCDF, the purpose is to check that the derived exchange is valid.
+* Moved check_flags from exchange to checks
 
 # v1.0.2.12 (2024-10-29)
 * Add support for adding CDOM params/wavelengths

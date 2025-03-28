@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
+from cchdo.hydro.checks import check_flags as _check_flags
 from cchdo.params import WHPName, WHPNames
 
 from .exchange import (
@@ -20,7 +21,6 @@ from .exchange import (
     extract_numeric_precisions,
     flatten_cdom_coordinate,
 )
-from .exchange import check_flags as _check_flags
 
 FLAG_NAME = "cchdo.hydro._qc"
 ERROR_NAME = "cchdo.hydro._error"
