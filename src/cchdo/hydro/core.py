@@ -315,7 +315,11 @@ def add_profile_level(ds: xr.Dataset, idx, levels) -> xr.Dataset:
 
 
 def add_level(ds: xr.Dataset, n_levels=1) -> xr.Dataset:
-    return ds
+    """Expand the size of N_LEVELS
+
+    This essentially expands the slots avaialble for data and does not add any actual valid levels to a profile.
+    """
+    return ds.pad({"N_LEVELS": (0, n_levels)})
 
 
 def add_profile(
@@ -328,7 +332,14 @@ def add_profile(
     longitude: npt.ArrayLike,
     profile_type: npt.ArrayLike,
 ) -> xr.Dataset:
-    ds = ds.reset_coords()
+    """Add one or more profiles to the dataset.
+
+    Arguments maybe be scalar or 1d arrays, all 1d arrays must be of the same size.
+    Scalars will be broadcast against any 1d arrays
+    """
+    old_sizes = ds.sizes
+
+    ds = ds.copy()
 
     (
         expocode,
@@ -341,6 +352,7 @@ def add_profile(
     ) = np.broadcast_arrays(
         np.atleast_1d(expocode), station, cast, time, latitude, longitude, profile_type
     )
+
     new_profs: dict[Hashable, npt.NDArray] = {
         "expocode": expocode,
         "station": station,
@@ -351,25 +363,12 @@ def add_profile(
         "profile_type": profile_type,
     }
 
-    dataarrays: dict[Hashable, tuple[tuple[Hashable, ...], npt.ArrayLike]] = {}
-    for name, variable in ds.variables.items():
-        if name in new_profs:
-            data = new_profs[name].astype(variable.dtype.kind)
-        if len(variable.dims) == 0:
-            dataarrays[name] = (variable.dims, np.nan)
-        elif len(variable.dims) == 1:
-            dataarrays[name] = (variable.dims, data)
-        elif len(variable.dims) == 2:
-            dataarrays[name] = (
-                variable.dims,
-                np.empty((1, ds.sizes["N_LEVELS"]), dtype=variable.dtype),
-            )
-    ds = xr.concat([ds, xr.Dataset(dataarrays)], dim="N_PROF")
+    ds = ds.pad({"N_PROF": (0, len(expocode))})
+    for param, value in new_profs.items():
+        ds[param][old_sizes["N_PROF"] :] = value
 
-    # scalar var is expanded... squish it
-    ds["geometry_container"] = ds.geometry_container.squeeze()
-
-    ds = ds.set_coords([coord.nc_name for coord in COORDS if coord.nc_name in ds])
+    # TODO integrity tests?
+    # TODO sorting profiles?
     return ds
 
 
