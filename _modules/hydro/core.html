@@ -666,7 +666,11 @@
 <div class="viewcode-block" id="add_level">
 <a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.add_level">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_level</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">n_levels</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">ds</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expand the size of N_LEVELS</span>
+
+<span class="sd">    This essentially expands the slots avaialble for data and does not add any actual valid levels to a profile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ds</span><span class="o">.</span><span class="n">pad</span><span class="p">({</span><span class="s2">&quot;N_LEVELS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_levels</span><span class="p">)})</span></div>
 
 
 
@@ -682,7 +686,14 @@
     <span class="n">longitude</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
     <span class="n">profile_type</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">reset_coords</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add one or more profiles to the dataset.</span>
+
+<span class="sd">    Arguments maybe be scalar or 1d arrays, all 1d arrays must be of the same size.</span>
+<span class="sd">    Scalars will be broadcast against any 1d arrays</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">old_sizes</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">sizes</span>
+
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="p">(</span>
         <span class="n">expocode</span><span class="p">,</span>
@@ -695,6 +706,7 @@
     <span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_arrays</span><span class="p">(</span>
         <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">expocode</span><span class="p">),</span> <span class="n">station</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">profile_type</span>
     <span class="p">)</span>
+
     <span class="n">new_profs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;expocode&quot;</span><span class="p">:</span> <span class="n">expocode</span><span class="p">,</span>
         <span class="s2">&quot;station&quot;</span><span class="p">:</span> <span class="n">station</span><span class="p">,</span>
@@ -705,25 +717,12 @@
         <span class="s2">&quot;profile_type&quot;</span><span class="p">:</span> <span class="n">profile_type</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="n">dataarrays</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">new_profs</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">new_profs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">dataarrays</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">dataarrays</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">dataarrays</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">variable</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_LEVELS&quot;</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">variable</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span>
-            <span class="p">)</span>
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ds</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">dataarrays</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">pad</span><span class="p">({</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">expocode</span><span class="p">))})</span>
+    <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">new_profs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">ds</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="n">old_sizes</span><span class="p">[</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">]</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="c1"># scalar var is expanded... squish it</span>
-    <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;geometry_container&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">geometry_container</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
-
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">set_coords</span><span class="p">([</span><span class="n">coord</span><span class="o">.</span><span class="n">nc_name</span> <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">COORDS</span> <span class="k">if</span> <span class="n">coord</span><span class="o">.</span><span class="n">nc_name</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">])</span>
+    <span class="c1"># TODO integrity tests?</span>
+    <span class="c1"># TODO sorting profiles?</span>
     <span class="k">return</span> <span class="n">ds</span></div>
 
 

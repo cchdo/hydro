@@ -119,7 +119,18 @@ Module Contents
 
 .. py:function:: add_level(ds, n_levels=1)
 
+   Expand the size of N_LEVELS
+
+   This essentially expands the slots avaialble for data and does not add any actual valid levels to a profile.
+
+
 .. py:function:: add_profile(ds, expocode, station, cast, time, latitude, longitude, profile_type)
+
+   Add one or more profiles to the dataset.
+
+   Arguments maybe be scalar or 1d arrays, all 1d arrays must be of the same size.
+   Scalars will be broadcast against any 1d arrays
+
 
 .. py:function:: create_new()
 
