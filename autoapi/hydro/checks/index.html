@@ -306,6 +306,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#hydro.checks.check_ancillary_variables" title="hydro.checks.check_ancillary_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_ancillary_variables</span></code></a>(ds)</p></td>
 <td><p>Check that everything in an ancillary_variables attribute appears as a variable</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.checks.check_flags" title="hydro.checks.check_flags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_flags</span></code></a>(dataset[, raises])</p></td>
+<td><p>Check WOCE flag values agaisnt their param and ensure that the param either has a value or is &quot;nan&quot; depedning on the flag definition.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -320,6 +323,18 @@ Check that every variable that is known ancillary appears in at least one ancill
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.3.1.dev0)"><em>xarray.Dataset</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.checks.check_flags">
+<span class="sig-prename descclassname"><span class="pre">hydro.checks.</span></span><span class="sig-name descname"><span class="pre">check_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raises</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/checks.html#check_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.checks.check_flags" title="Link to this definition">¶</a></dt>
+<dd><p>Check WOCE flag values agaisnt their param and ensure that the param either has a value or is “nan” depedning on the flag definition.</p>
+<p>Return a boolean array of invalid locations?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.3.1.dev0)"><em>xarray.Dataset</em></a>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -386,6 +401,7 @@ Check that every variable that is known ancillary appears in at least one ancill
 <li><a class="reference internal" href="#functions">Functions</a></li>
 <li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
 <li><a class="reference internal" href="#hydro.checks.check_ancillary_variables"><code class="docutils literal notranslate"><span class="pre">check_ancillary_variables()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.checks.check_flags"><code class="docutils literal notranslate"><span class="pre">check_flags()</span></code></a></li>
 </ul>
 </li>
 </ul>

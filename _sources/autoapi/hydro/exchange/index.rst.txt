@@ -74,7 +74,6 @@ Functions
    hydro.exchange.finalize_ancillary_variables
    hydro.exchange.combine_bottle_time
    hydro.exchange.check_is_subset_shape
-   hydro.exchange.check_flags
    hydro.exchange._get_fill_locs
    hydro.exchange.extract_numeric_precisions
    hydro.exchange._is_valid_exchange_numeric
@@ -264,13 +263,6 @@ Package Contents
    For woce flags, flag 9s should be converted to nans (depending on scheme flag 5 and 1 may not have param values)
 
    Return a boolean array of invalid locations
-
-
-.. py:function:: check_flags(dataset, raises=True)
-
-   Check WOCE flag values agaisnt their param and ensure that the param either has a value or is "nan" depedning on the flag definition.
-
-   Return a boolean array of invalid locations?
 
 
 .. py:class:: _ExchangeData

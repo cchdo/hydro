@@ -303,6 +303,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_flags</span> <span class="k">as</span> <span class="n">_check_flags</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">WHPName</span><span class="p">,</span> <span class="n">WHPNames</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.exchange</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -312,7 +313,6 @@
     <span class="n">extract_numeric_precisions</span><span class="p">,</span>
     <span class="n">flatten_cdom_coordinate</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.exchange</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_flags</span> <span class="k">as</span> <span class="n">_check_flags</span>
 
 <div class="viewcode-block" id="FLAG_NAME">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.FLAG_NAME">[docs]</a>

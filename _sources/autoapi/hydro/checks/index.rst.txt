@@ -10,6 +10,7 @@ Functions
 .. autoapisummary::
 
    hydro.checks.check_ancillary_variables
+   hydro.checks.check_flags
 
 
 Module Contents
@@ -19,5 +20,12 @@ Module Contents
 
    Check that everything in an ancillary_variables attribute appears as a variable
    Check that every variable that is known ancillary appears in at least one ancillary_variable attribute
+
+
+.. py:function:: check_flags(dataset, raises=True)
+
+   Check WOCE flag values agaisnt their param and ensure that the param either has a value or is "nan" depedning on the flag definition.
+
+   Return a boolean array of invalid locations?
 
 

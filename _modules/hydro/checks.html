@@ -292,7 +292,15 @@
           <h1>Source code for hydro.checks</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.exchange.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExchangeDataFlagPairError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.exchange.flags</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ExchangeBottleFlag</span><span class="p">,</span>
+    <span class="n">ExchangeCTDFlag</span><span class="p">,</span>
+    <span class="n">ExchangeSampleFlag</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="check_ancillary_variables">
@@ -324,6 +332,96 @@
 
     <span class="k">if</span> <span class="n">errors</span> <span class="o">:=</span> <span class="n">looks_ancillary</span> <span class="o">-</span> <span class="n">ancillary_variables_attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_flags">
+<a class="viewcode-back" href="../../autoapi/hydro/checks/index.html#hydro.checks.check_flags">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_flags</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">raises</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check WOCE flag values agaisnt their param and ensure that the param either has a value or is &quot;nan&quot; depedning on the flag definition.</span>
+
+<span class="sd">    Return a boolean array of invalid locations?</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">woce_flags</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;WOCESAMPLE&quot;</span><span class="p">:</span> <span class="n">ExchangeBottleFlag</span><span class="p">,</span>
+        <span class="s2">&quot;WOCECTD&quot;</span><span class="p">:</span> <span class="n">ExchangeCTDFlag</span><span class="p">,</span>
+        <span class="s2">&quot;WOCEBOTTLE&quot;</span><span class="p">:</span> <span class="n">ExchangeSampleFlag</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">flag_has_value</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;WOCESAMPLE&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">flag</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">flag</span><span class="o">.</span><span class="n">has_value</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">ExchangeBottleFlag</span><span class="p">},</span>
+        <span class="s2">&quot;WOCECTD&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">flag</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">flag</span><span class="o">.</span><span class="n">has_value</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">ExchangeCTDFlag</span><span class="p">},</span>
+        <span class="s2">&quot;WOCEBOTTLE&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">flag</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">flag</span><span class="o">.</span><span class="n">has_value</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">ExchangeSampleFlag</span><span class="p">},</span>
+    <span class="p">}</span>
+    <span class="c1"># In some cases, a coordinate variable might have flags, so we are not using filter_by_attrs</span>
+    <span class="c1"># get all the flag vars (that also have conventions)</span>
+    <span class="n">flag_vars</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+        <span class="c1"># do not replace the above with .items() it will give you xr.Variable objects that you don&#39;t want to use</span>
+        <span class="c1"># the following gets a real xr.DataArray</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">{</span><span class="s2">&quot;standard_name&quot;</span><span class="p">,</span> <span class="s2">&quot;conventions&quot;</span><span class="p">}</span> <span class="o">&lt;=</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">flag</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;conventions&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">woce_flags</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="s2">&quot;status_flag&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;standard_name&quot;</span><span class="p">]:</span>
+            <span class="n">flag_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span>
+
+    <span class="c1"># match flags with their data vars</span>
+    <span class="c1"># it is legal in CF for one set of flags to apply to multiple vars</span>
+    <span class="n">flag_errors</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">flag_var</span> <span class="ow">in</span> <span class="n">flag_vars</span><span class="p">:</span>
+        <span class="c1"># get the flag and check attrs for defs</span>
+        <span class="n">flag_da</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">flag_var</span><span class="p">]</span>
+        <span class="n">conventions</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">woce_flags</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flag_da</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;conventions&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">flag</span><span class="p">):</span>
+                <span class="n">conventions</span> <span class="o">=</span> <span class="n">flag</span>
+                <span class="k">break</span>
+
+        <span class="c1"># we don&#39;t know these flags, skip the check</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">conventions</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">allowed_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">flag_has_value</span><span class="p">[</span><span class="n">conventions</span><span class="p">]))</span>
+        <span class="n">illegal_flags</span> <span class="o">=</span> <span class="o">~</span><span class="n">flag_da</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">allowed_values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">illegal_flags</span><span class="p">):</span>
+            <span class="n">illegal_flags</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;comments&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;This is a boolean array in the same shape as &#39;</span><span class="si">{</span><span class="n">flag_da</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; which is truthy where invalid values exist&quot;</span>
+            <span class="p">)</span>
+            <span class="n">flag_errors</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">flag_da</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_value_errors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">illegal_flags</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">var_name</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;ancillary_variables&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">flag_var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;ancillary_variables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># check data against flags</span>
+            <span class="n">has_fill_f</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">flag</span>
+                <span class="k">for</span> <span class="n">flag</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">flag_has_value</span><span class="p">[</span><span class="n">conventions</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">False</span>
+            <span class="p">]</span>
+
+            <span class="n">has_fill</span> <span class="o">=</span> <span class="n">flag_da</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">has_fill_f</span><span class="p">)</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">flag_da</span><span class="p">)</span>
+
+            <span class="c1"># TODO deal with strs</span>
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">):</span>
+                <span class="n">fill_value_mismatch</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">^</span> <span class="n">has_fill</span><span class="p">)</span>  <span class="c1"># type: ignore # numpy doesn&#39;t support __array_ufunc__ types yet</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">fill_value_mismatch</span><span class="p">):</span>
+                    <span class="n">fill_value_mismatch</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;comments&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;This is a boolean array in the same shape as &#39;</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; which is truthy where invalid values exist&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">flag_errors</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_value_errors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fill_value_mismatch</span>
+
+    <span class="n">flag_errors_ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">flag_errors</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">raises</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">flag_errors_ds</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ExchangeDataFlagPairError</span><span class="p">(</span><span class="n">flag_errors_ds</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">flag_errors_ds</span></div>
 
 </pre></div>
         </article>
