@@ -23,4 +23,6 @@ python:
         extra_requirements:
            - docs
 
-formats: all
+formats:
+  - epub
+  - htmlzip
