@@ -4,9 +4,17 @@ sphinx:
     configuration: docs/conf.py
 
 build:
-  os: ubuntu-22.04
+  os: ubuntu-24.04
   tools:
     python: "3.11"
+  jobs:
+    create_environment:
+      - asdf plugin add uv
+      - asdf install uv latest
+      - asdf global uv latest
+      - UV_PROJECT_ENVIRONMENT=$READTHEDOCS_VIRTUALENV_PATH uv sync --all-extras --group docs
+    install:
+      - "true"
 
 python:
     install:
