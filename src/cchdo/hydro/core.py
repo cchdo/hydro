@@ -7,6 +7,8 @@ import numpy.typing as npt
 import xarray as xr
 
 from cchdo.hydro.checks import check_ancillary_variables
+from cchdo.hydro.consts import DIMS, FILLS_MAP
+from cchdo.hydro.dt import combine_dt
 from cchdo.hydro.flags import (
     ExchangeBottleFlag,
     ExchangeCTDFlag,
@@ -17,19 +19,16 @@ from cchdo.hydro.types import FileType
 from cchdo.hydro.utils import (
     add_cdom_coordinate,
     add_geometry_var,
+    add_profile_type,
     flatten_cdom_coordinate,
 )
 from cchdo.params import WHPName, WHPNames
 
 from .exchange import (
-    add_profile_type,
-    combine_dt,
     set_axis_attrs,
     set_coordinate_encoding_fill,
 )
 
-DIMS = ("N_PROF", "N_LEVELS")
-FILLS_MAP = {"string": "", "integer": np.nan, "decimal": np.nan}
 dtype_map = {"string": "U", "integer": "float32", "decimal": "float64"}
 
 EXPOCODE = WHPNames["EXPOCODE"]

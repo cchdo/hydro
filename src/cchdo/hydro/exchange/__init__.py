@@ -2,7 +2,6 @@ import dataclasses
 import io
 import logging
 from collections.abc import Iterable
-from datetime import datetime, timedelta
 from enum import Enum, auto
 from functools import cached_property
 from itertools import chain
@@ -12,7 +11,6 @@ from typing import (
     TypedDict,
     TypeGuard,
 )
-from warnings import warn
 from zipfile import ZipFile, is_zipfile
 
 import numpy as np
@@ -21,6 +19,8 @@ import requests
 import xarray as xr
 
 from cchdo.hydro.checks import check_flags
+from cchdo.hydro.consts import FILLS_MAP
+from cchdo.hydro.dt import combine_dt
 from cchdo.hydro.exchange.exceptions import (
     ExchangeBOMError,
     ExchangeDataInconsistentCoordinateError,
@@ -29,7 +29,6 @@ from cchdo.hydro.exchange.exceptions import (
     ExchangeDuplicateKeyError,
     ExchangeDuplicateParameterError,
     ExchangeEncodingError,
-    ExchangeError,
     ExchangeFlaglessParameterError,
     ExchangeInconsistentMergeType,
     ExchangeMagicNumberError,
@@ -53,6 +52,7 @@ from cchdo.hydro.types import (
 from cchdo.hydro.utils import (
     add_cdom_coordinate,
     add_geometry_var,
+    add_profile_type,
     all_same,
     extract_numeric_precisions,
 )
@@ -70,7 +70,6 @@ except ImportError:
 
 log = logging.getLogger(__name__)
 
-DIMS = ("N_PROF", "N_LEVELS")
 
 EXPOCODE = WHPNames["EXPOCODE"]
 STNNBR = WHPNames["STNNBR"]
@@ -105,8 +104,6 @@ FLAG_SCHEME: dict[str, type[ExchangeFlag]] = {
     "woce_discrete": ExchangeSampleFlag,
     "woce_ctd": ExchangeCTDFlag,
 }
-
-FILLS_MAP = {"string": "", "integer": np.nan, "decimal": np.nan}
 
 
 # WHPNameIndex represents a Name to Column index in an exchange file
@@ -219,27 +216,6 @@ def _ctd_get_header(line, dtype=str):
     if header in ("_SAMPLING_RATE", "SAMPLING_RATE") and value.lower().endswith("hz"):
         value = value.rstrip(" HZhz")
     return header, dtype(value)
-
-
-def add_profile_type(dataset: xr.Dataset, ftype: FileTypeType) -> xr.Dataset:
-    """Adds a `profile_type` string variable to the dataset.
-
-    This is for ODV compatability
-
-    .. warning::
-      Currently mixed profile types are not supported
-    """
-    ftype = FileType(ftype)
-
-    profile_type = xr.DataArray(
-        np.full(dataset.sizes["N_PROF"], fill_value=ftype.value, dtype="U1"),
-        name="profile_type",
-        dims=DIMS[0],
-    )
-    profile_type.encoding["dtype"] = "S1"
-
-    dataset["profile_type"] = profile_type
-    return dataset
 
 
 def finalize_ancillary_variables(dataset: xr.Dataset):
@@ -850,47 +826,6 @@ def _is_valid_exchange_numeric(data: npt.NDArray[np.str_]) -> np.bool_:
 ExchangeIO = str | Path | io.BufferedIOBase
 
 
-def _combine_dt_ndarray(
-    date_arr: npt.NDArray[np.str_],
-    time_arr: npt.NDArray[np.str_] | None = None,
-    time_pad=False,
-) -> np.ndarray:
-    # TODO: When min pyver is 3.10, maybe consider pattern matching here
-    def _parse_date(date_val: str) -> np.datetime64:
-        if date_val == "":
-            return np.datetime64("nat")
-        return np.datetime64(datetime.strptime(date_val, "%Y%m%d"))
-
-    def _parse_datetime(date_val: str) -> np.datetime64:
-        if date_val == "T":
-            return np.datetime64("nat")
-        if date_val.endswith("2400"):
-            date, _ = date_val.split("T")
-            return np.datetime64(datetime.strptime(date, "%Y%m%d") + timedelta(days=1))
-        return np.datetime64(datetime.strptime(date_val, "%Y%m%dT%H%M"))
-
-    # vectorize here doesn't speed things, it just nice for the interface
-    parse_date = np.vectorize(_parse_date, ["datetime64"])
-    parse_datetime = np.vectorize(_parse_datetime, ["datetime64"])
-
-    if time_arr is None:
-        return parse_date(date_arr).astype("datetime64[D]")
-
-    if np.all(time_arr == "0"):
-        return parse_date(date_arr).astype("datetime64[D]")
-
-    time_arr = time_arr.astype("U4")
-
-    if time_pad:
-        if np.any(np.char.str_len(time_arr[time_arr != ""]) < 4):
-            warn("Time values are being padded with zeros")
-        if not np.all(time_arr == ""):
-            time_arr[time_arr != ""] = np.char.zfill(time_arr[time_arr != ""], 4)
-
-    arr = np.char.add(np.char.add(date_arr, "T"), time_arr)
-    return parse_datetime(arr).astype("datetime64[m]")
-
-
 def sort_ds(dataset: xr.Dataset) -> xr.Dataset:
     """Sorts the data values in the dataset
 
@@ -939,75 +874,6 @@ def check_sorted(dataset: xr.Dataset) -> bool:
             np.allclose(sorted_ds.longitude, dataset.longitude, equal_nan=True),
         ]
     )
-
-
-WHPNameAttr = str | list[str]
-
-
-def combine_dt(
-    dataset: xr.Dataset,
-    is_coord: bool = True,
-    date_name: WHPName = DATE,
-    time_name: WHPName = TIME,
-    time_pad=False,
-) -> xr.Dataset:
-    """Combine the exchange style string variables of date and optinally time into a single
-    variable containing real datetime objects
-
-    This will remove the time variable if present, and replace then rename the date variable.
-    Date is replaced/renamed to maintain variable order in the xr.DataSet
-    """
-
-    # date and time want specific attrs whos values have been
-    # selected by significant debate
-    date = dataset[date_name.full_nc_name]
-    time: xr.DataArray | None = dataset.get(
-        time_name.full_nc_name
-    )  # not be present, this is allowed
-
-    whp_name: WHPNameAttr = [date_name.full_whp_name, time_name.full_whp_name]
-    try:
-        if time is None:
-            dt_arr = _combine_dt_ndarray(date.values)
-        else:
-            dt_arr = _combine_dt_ndarray(date.values, time.values, time_pad=time_pad)
-    except ValueError as err:
-        raise ExchangeError(
-            f"Could not parse date/time cols {date_name.whp_name} {time_name.whp_name}"
-        ) from err
-
-    precision = 1 / 24 / 60  # minute as day fraction
-    if dt_arr.dtype.name == "datetime64[D]":
-        precision = 1
-        whp_name = date_name.whp_name
-
-    time_var = xr.DataArray(
-        dt_arr.astype("datetime64[ns]"),
-        dims=date.dims,
-        attrs={
-            "standard_name": "time",
-            "whp_name": whp_name,
-            "resolution": precision,
-        },
-    )
-    if is_coord is True:
-        time_var.attrs["axis"] = "T"
-
-    # if the thing being combined is a coordinate, it may not contain vill values
-    time_var.encoding["_FillValue"] = None if is_coord else np.nan
-    time_var.encoding["units"] = "days since 1950-01-01T00:00Z"
-    time_var.encoding["calendar"] = "gregorian"
-    time_var.encoding["dtype"] = "double"
-
-    try:
-        del dataset[time_name.nc_name]
-    except KeyError:
-        pass
-
-    # this is being done in a funny way to retain the variable ordering
-    # we will always keep the "time" variable name
-    dataset[date_name.nc_name] = time_var
-    return dataset.rename({date_name.nc_name: time_name.nc_name})
 
 
 def set_axis_attrs(dataset: xr.Dataset) -> xr.Dataset:

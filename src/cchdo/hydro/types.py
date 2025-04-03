@@ -20,3 +20,5 @@ class PrecisionSource(StrEnum):
 
 
 PrecisionSourceType = PrecisionSources | PrecisionSource
+
+WHPNameAttr = str | list[str]

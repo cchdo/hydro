@@ -4,9 +4,9 @@ import numpy as np
 import numpy.typing as npt
 import xarray as xr
 
+from cchdo.hydro.consts import DIMS, GEOMETRY_VARS
+from cchdo.hydro.types import FileType, FileTypeType
 from cchdo.params import WHPNames
-
-GEOMETRY_VARS = ("expocode", "station", "cast", "section_id", "time")
 
 
 def _is_all_dataarray(val: list[Any]) -> TypeGuard[list[xr.DataArray]]:
@@ -18,6 +18,27 @@ def all_same(ndarr: np.ndarray) -> np.bool_:
     if np.issubdtype(ndarr.dtype, np.number) and np.isnan(ndarr.flat[0]):
         return np.all(np.isnan(ndarr))
     return np.all(ndarr == ndarr.flat[0])
+
+
+def add_profile_type(dataset: xr.Dataset, ftype: FileTypeType) -> xr.Dataset:
+    """Adds a `profile_type` string variable to the dataset.
+
+    This is for ODV compatability
+
+    .. warning::
+      Currently mixed profile types are not supported
+    """
+    ftype = FileType(ftype)
+
+    profile_type = xr.DataArray(
+        np.full(dataset.sizes["N_PROF"], fill_value=ftype.value, dtype="U1"),
+        name="profile_type",
+        dims=DIMS[0],
+    )
+    profile_type.encoding["dtype"] = "S1"
+
+    dataset["profile_type"] = profile_type
+    return dataset
 
 
 def add_geometry_var(dataset: xr.Dataset) -> xr.Dataset:
