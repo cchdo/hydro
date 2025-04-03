@@ -1,0 +1,72 @@
+hydro.types
+===========
+
+.. py:module:: hydro.types
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.types.FileTypes
+   hydro.types.FileTypeType
+   hydro.types.PrecisionSources
+   hydro.types.PrecisionSourceType
+   hydro.types.WHPNameAttr
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hydro.types.FileType
+   hydro.types.PrecisionSource
+
+
+Module Contents
+---------------
+
+.. py:data:: FileTypes
+
+.. py:class:: FileType
+
+   Bases: :py:obj:`enum.StrEnum`
+
+
+   Enum where members are also (and must be) strings
+
+
+   .. py:attribute:: CTD
+      :value: 'C'
+
+
+
+   .. py:attribute:: BOTTLE
+      :value: 'B'
+
+
+
+.. py:data:: FileTypeType
+
+.. py:data:: PrecisionSources
+
+.. py:class:: PrecisionSource
+
+   Bases: :py:obj:`enum.StrEnum`
+
+
+   Enum where members are also (and must be) strings
+
+
+   .. py:attribute:: FILE
+
+
+   .. py:attribute:: DATABASE
+
+
+.. py:data:: PrecisionSourceType
+
+.. py:data:: WHPNameAttr
+

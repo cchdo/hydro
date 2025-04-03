@@ -1,0 +1,79 @@
+hydro.utils
+===========
+
+.. py:module:: hydro.utils
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.utils._is_all_dataarray
+   hydro.utils.all_same
+   hydro.utils.add_profile_type
+   hydro.utils.add_geometry_var
+   hydro.utils.add_cdom_coordinate
+   hydro.utils.flatten_cdom_coordinate
+   hydro.utils.extract_numeric_precisions
+   hydro.utils.set_axis_attrs
+   hydro.utils.set_coordinate_encoding_fill
+
+
+Module Contents
+---------------
+
+.. py:function:: _is_all_dataarray(val)
+
+.. py:function:: all_same(ndarr)
+
+   Test if all the values of an ndarray are the same value
+
+
+.. py:function:: add_profile_type(dataset, ftype)
+
+   Adds a `profile_type` string variable to the dataset.
+
+   This is for ODV compatability
+
+   .. warning::
+     Currently mixed profile types are not supported
+
+
+.. py:function:: add_geometry_var(dataset)
+
+   Adds a CF-1.8 Geometry container variable to the dataset
+
+   This allows for compatabiltiy with tools like gdal
+
+
+.. py:function:: add_cdom_coordinate(dataset)
+
+   Find all the paraters in the cdom group and add their wavelength in a new coordinate
+
+
+.. py:function:: flatten_cdom_coordinate(dataset)
+
+   Takes the a dataset with a CDOM wavelength and explocdes it back into individual variables
+
+
+.. py:function:: extract_numeric_precisions(data)
+
+   Get the numeric precision of a printed decimal number
+
+
+.. py:function:: set_axis_attrs(dataset)
+
+   Set the CF axis attribute on our axis variables (XYZT)
+
+   * longitude = "X"
+   * latitude = "Y"
+   * pressure = "Z", addtionally, positive is down
+   * time = "T"
+
+
+.. py:function:: set_coordinate_encoding_fill(dataset)
+
+   Sets the _FillValue encoidng to None for 1D coordinate vars
+
+

@@ -14,8 +14,6 @@ Attributes
 
 .. autoapisummary::
 
-   hydro.core.DIMS
-   hydro.core.FILLS_MAP
    hydro.core.dtype_map
    hydro.core.EXPOCODE
    hydro.core.STNNBR
@@ -48,12 +46,6 @@ Functions
 Module Contents
 ---------------
 
-.. py:data:: DIMS
-   :value: ('N_PROF', 'N_LEVELS')
-
-
-.. py:data:: FILLS_MAP
-
 .. py:data:: dtype_map
 
 .. py:data:: EXPOCODE
@@ -79,7 +71,7 @@ Module Contents
 .. py:data:: COORDS
 
 .. py:data:: FLAG_SCHEME
-   :type:  dict[str, type[hydro.exchange.flags.ExchangeFlag]]
+   :type:  dict[str, type[cchdo.hydro.flags.ExchangeFlag]]
 
 .. py:function:: dataarray_factory(param, ctype='data', N_PROF=0, N_LEVELS=0, strlen=0)
 

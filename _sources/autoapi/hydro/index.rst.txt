@@ -15,14 +15,19 @@ Submodules
    /autoapi/hydro/accessors/index
    /autoapi/hydro/checks/index
    /autoapi/hydro/conformance/index
+   /autoapi/hydro/consts/index
    /autoapi/hydro/convert/index
    /autoapi/hydro/core/index
+   /autoapi/hydro/dt/index
    /autoapi/hydro/exchange/index
+   /autoapi/hydro/flags/index
    /autoapi/hydro/legacy/index
    /autoapi/hydro/migration/index
    /autoapi/hydro/rename/index
    /autoapi/hydro/tests/index
    /autoapi/hydro/tutorial/index
+   /autoapi/hydro/types/index
+   /autoapi/hydro/utils/index
 
 
 Functions

@@ -1,0 +1,42 @@
+hydro.dt
+========
+
+.. py:module:: hydro.dt
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.dt.DATE
+   hydro.dt.TIME
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.dt._combine_dt_ndarray
+   hydro.dt.combine_dt
+
+
+Module Contents
+---------------
+
+.. py:data:: DATE
+
+.. py:data:: TIME
+
+.. py:function:: _combine_dt_ndarray(date_arr, time_arr = None, time_pad=False)
+
+.. py:function:: combine_dt(dataset, is_coord = True, date_name = DATE, time_name = TIME, time_pad=False)
+
+   Combine the exchange style string variables of date and optinally time into a single
+   variable containing real datetime objects
+
+   This will remove the time variable if present, and replace then rename the date variable.
+   Date is replaced/renamed to maintain variable order in the xr.DataSet
+
+

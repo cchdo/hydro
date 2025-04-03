@@ -1,0 +1,62 @@
+hydro.consts
+============
+
+.. py:module:: hydro.consts
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hydro.consts.DIMS
+   hydro.consts.GEOMETRY_VARS
+   hydro.consts.FILLS_MAP
+   hydro.consts.EXPOCODE
+   hydro.consts.STNNBR
+   hydro.consts.CASTNO
+   hydro.consts.SAMPNO
+   hydro.consts.DATE
+   hydro.consts.TIME
+   hydro.consts.LATITUDE
+   hydro.consts.LONGITUDE
+   hydro.consts.CTDPRS
+   hydro.consts.BTLNBR
+   hydro.consts.COORDS
+
+
+Module Contents
+---------------
+
+.. py:data:: DIMS
+   :value: ('N_PROF', 'N_LEVELS')
+
+
+.. py:data:: GEOMETRY_VARS
+   :value: ('expocode', 'station', 'cast', 'section_id', 'time')
+
+
+.. py:data:: FILLS_MAP
+
+.. py:data:: EXPOCODE
+
+.. py:data:: STNNBR
+
+.. py:data:: CASTNO
+
+.. py:data:: SAMPNO
+
+.. py:data:: DATE
+
+.. py:data:: TIME
+
+.. py:data:: LATITUDE
+
+.. py:data:: LONGITUDE
+
+.. py:data:: CTDPRS
+
+.. py:data:: BTLNBR
+
+.. py:data:: COORDS
+

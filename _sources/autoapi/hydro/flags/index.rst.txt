@@ -1,7 +1,7 @@
-hydro.exchange.flags
-====================
+hydro.flags
+===========
 
-.. py:module:: hydro.exchange.flags
+.. py:module:: hydro.flags
 
 .. autoapi-nested-parse::
 
@@ -14,10 +14,10 @@ Classes
 
 .. autoapisummary::
 
-   hydro.exchange.flags.ExchangeFlag
-   hydro.exchange.flags.ExchangeBottleFlag
-   hydro.exchange.flags.ExchangeSampleFlag
-   hydro.exchange.flags.ExchangeCTDFlag
+   hydro.flags.ExchangeFlag
+   hydro.flags.ExchangeBottleFlag
+   hydro.flags.ExchangeSampleFlag
+   hydro.flags.ExchangeCTDFlag
 
 
 Module Contents

@@ -222,14 +222,16 @@
 <li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/accessors/index.html">hydro.accessors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/checks/index.html">hydro.checks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/conformance/index.html">hydro.conformance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/consts/index.html">hydro.consts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/convert/index.html">hydro.convert</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/core/index.html">hydro.core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/dt/index.html">hydro.dt</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/hydro/exchange/index.html">hydro.exchange</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of hydro.exchange</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/exchange/exceptions/index.html">hydro.exchange.exceptions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/exchange/flags/index.html">hydro.exchange.flags</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/exchange/helpers/index.html">hydro.exchange.helpers</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/flags/index.html">hydro.flags</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/hydro/legacy/index.html">hydro.legacy</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of hydro.legacy</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/legacy/coards/index.html">hydro.legacy.coards</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/legacy/woce/index.html">hydro.legacy.woce</a></li>
@@ -251,6 +253,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/tutorial/index.html">hydro.tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/types/index.html">hydro.types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/utils/index.html">hydro.utils</a></li>
 </ul>
 </li>
 </ul>
@@ -294,19 +298,15 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">StrEnum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">attrgetter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Any</span><span class="p">,</span>
-    <span class="n">Literal</span><span class="p">,</span>
     <span class="n">TypedDict</span><span class="p">,</span>
     <span class="n">TypeGuard</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">zipfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZipFile</span><span class="p">,</span> <span class="n">is_zipfile</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -315,6 +315,20 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_flags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.consts</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BTLNBR</span><span class="p">,</span>
+    <span class="n">CASTNO</span><span class="p">,</span>
+    <span class="n">COORDS</span><span class="p">,</span>
+    <span class="n">CTDPRS</span><span class="p">,</span>
+    <span class="n">EXPOCODE</span><span class="p">,</span>
+    <span class="n">FILLS_MAP</span><span class="p">,</span>
+    <span class="n">LATITUDE</span><span class="p">,</span>
+    <span class="n">SAMPNO</span><span class="p">,</span>
+    <span class="n">STNNBR</span><span class="p">,</span>
+    <span class="n">TIME</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataarray_factory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.dt</span><span class="w"> </span><span class="kn">import</span> <span class="n">combine_dt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.exchange.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ExchangeBOMError</span><span class="p">,</span>
     <span class="n">ExchangeDataInconsistentCoordinateError</span><span class="p">,</span>
@@ -323,7 +337,6 @@
     <span class="n">ExchangeDuplicateKeyError</span><span class="p">,</span>
     <span class="n">ExchangeDuplicateParameterError</span><span class="p">,</span>
     <span class="n">ExchangeEncodingError</span><span class="p">,</span>
-    <span class="n">ExchangeError</span><span class="p">,</span>
     <span class="n">ExchangeFlaglessParameterError</span><span class="p">,</span>
     <span class="n">ExchangeInconsistentMergeType</span><span class="p">,</span>
     <span class="n">ExchangeMagicNumberError</span><span class="p">,</span>
@@ -332,11 +345,26 @@
     <span class="n">ExchangeParameterUndefError</span><span class="p">,</span>
     <span class="n">ExchangeParameterUnitAlignmentError</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.exchange.flags</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.flags</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ExchangeBottleFlag</span><span class="p">,</span>
     <span class="n">ExchangeCTDFlag</span><span class="p">,</span>
     <span class="n">ExchangeFlag</span><span class="p">,</span>
     <span class="n">ExchangeSampleFlag</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FileType</span><span class="p">,</span>
+    <span class="n">FileTypeType</span><span class="p">,</span>
+    <span class="n">PrecisionSource</span><span class="p">,</span>
+    <span class="n">PrecisionSourceType</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">add_cdom_coordinate</span><span class="p">,</span>
+    <span class="n">add_geometry_var</span><span class="p">,</span>
+    <span class="n">add_profile_type</span><span class="p">,</span>
+    <span class="n">all_same</span><span class="p">,</span>
+    <span class="n">extract_numeric_precisions</span><span class="p">,</span>
+    <span class="n">set_axis_attrs</span><span class="p">,</span>
+    <span class="n">set_coordinate_encoding_fill</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">WHPName</span><span class="p">,</span> <span class="n">WHPNames</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">params_version</span>
@@ -358,66 +386,6 @@
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="DIMS">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.DIMS">[docs]</a>
-<span class="n">DIMS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="s2">&quot;N_LEVELS&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="EXPOCODE">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.EXPOCODE">[docs]</a>
-<span class="n">EXPOCODE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;EXPOCODE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="STNNBR">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.STNNBR">[docs]</a>
-<span class="n">STNNBR</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;STNNBR&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="CASTNO">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.CASTNO">[docs]</a>
-<span class="n">CASTNO</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;CASTNO&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="SAMPNO">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.SAMPNO">[docs]</a>
-<span class="n">SAMPNO</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;SAMPNO&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="DATE">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.DATE">[docs]</a>
-<span class="n">DATE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;DATE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="TIME">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.TIME">[docs]</a>
-<span class="n">TIME</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;TIME&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="LATITUDE">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.LATITUDE">[docs]</a>
-<span class="n">LATITUDE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;LATITUDE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="LONGITUDE">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.LONGITUDE">[docs]</a>
-<span class="n">LONGITUDE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;LONGITUDE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="CTDPRS">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.CTDPRS">[docs]</a>
-<span class="n">CTDPRS</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[(</span><span class="s2">&quot;CTDPRS&quot;</span><span class="p">,</span> <span class="s2">&quot;DBAR&quot;</span><span class="p">)]</span></div>
-
-<div class="viewcode-block" id="BTLNBR">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.BTLNBR">[docs]</a>
-<span class="n">BTLNBR</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;BTLNBR&quot;</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="COORDS">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.COORDS">[docs]</a>
-<span class="n">COORDS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">EXPOCODE</span><span class="p">,</span>
-    <span class="n">STNNBR</span><span class="p">,</span>
-    <span class="n">CASTNO</span><span class="p">,</span>
-    <span class="n">SAMPNO</span><span class="p">,</span>
-    <span class="n">DATE</span><span class="p">,</span>
-    <span class="n">TIME</span><span class="p">,</span>
-    <span class="n">LATITUDE</span><span class="p">,</span>
-    <span class="n">LONGITUDE</span><span class="p">,</span>
-    <span class="n">CTDPRS</span><span class="p">,</span>
-<span class="p">]</span></div>
-
 
 <div class="viewcode-block" id="SENTINEL_PREFIX">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.SENTINEL_PREFIX">[docs]</a>
@@ -437,62 +405,6 @@
     <span class="s2">&quot;woce_discrete&quot;</span><span class="p">:</span> <span class="n">ExchangeSampleFlag</span><span class="p">,</span>
     <span class="s2">&quot;woce_ctd&quot;</span><span class="p">:</span> <span class="n">ExchangeCTDFlag</span><span class="p">,</span>
 <span class="p">}</span></div>
-
-
-<div class="viewcode-block" id="GEOMETRY_VARS">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.GEOMETRY_VARS">[docs]</a>
-<span class="n">GEOMETRY_VARS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;expocode&quot;</span><span class="p">,</span> <span class="s2">&quot;station&quot;</span><span class="p">,</span> <span class="s2">&quot;cast&quot;</span><span class="p">,</span> <span class="s2">&quot;section_id&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="FILLS_MAP">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.FILLS_MAP">[docs]</a>
-<span class="n">FILLS_MAP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;string&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">}</span></div>
-
-
-
-<div class="viewcode-block" id="FileTypes">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.FileTypes">[docs]</a>
-<span class="n">FileTypes</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">]</span></div>
-
-
-
-<div class="viewcode-block" id="FileType">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.FileType">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FileType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<div class="viewcode-block" id="FileType.CTD">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.FileType.CTD">[docs]</a>
-    <span class="n">CTD</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span></div>
-
-<div class="viewcode-block" id="FileType.BOTTLE">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.FileType.BOTTLE">[docs]</a>
-    <span class="n">BOTTLE</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="PrecisionSourceValues">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.PrecisionSourceValues">[docs]</a>
-<span class="n">PrecisionSourceValues</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;database&quot;</span><span class="p">]</span></div>
-
-
-
-<div class="viewcode-block" id="PrecisionSource">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.PrecisionSource">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">PrecisionSource</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
-<div class="viewcode-block" id="PrecisionSource.FILE">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.PrecisionSource.FILE">[docs]</a>
-    <span class="n">FILE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="PrecisionSource.DATABASE">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.PrecisionSource.DATABASE">[docs]</a>
-    <span class="n">DATABASE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="PrecisionSourceType">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.PrecisionSourceType">[docs]</a>
-<span class="n">PrecisionSourceType</span> <span class="o">=</span> <span class="n">PrecisionSourceValues</span> <span class="o">|</span> <span class="n">PrecisionSource</span></div>
 
 
 
@@ -623,216 +535,6 @@
     <span class="k">if</span> <span class="n">header</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;_SAMPLING_RATE&quot;</span><span class="p">,</span> <span class="s2">&quot;SAMPLING_RATE&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;hz&quot;</span><span class="p">):</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot; HZhz&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">header</span><span class="p">,</span> <span class="n">dtype</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="_is_all_dataarray">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._is_all_dataarray">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">_is_all_dataarray</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TypeGuard</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">]]:</span>
-    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">val</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="flatten_cdom_coordinate">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.flatten_cdom_coordinate">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">flatten_cdom_coordinate</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Takes the a dataset with a CDOM wavelength and explocdes it back into individual variables&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="s2">&quot;cdom&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">dataset</span>
-
-    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cdom&quot;</span><span class="p">,</span> <span class="s2">&quot;CDOM_WAVELENGTHS&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="s2">&quot;cdom_qc&quot;</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
-        <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;cdom_qc&quot;</span><span class="p">)</span>
-
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">cdom_var</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">keys</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">cdom_wavelength</span><span class="p">,</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">cdom_var</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;CDOM_WAVELENGTHS&quot;</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="s2">&quot;CDOM_WAVELENGTHS&quot;</span><span class="p">)</span>
-        <span class="n">cdom</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="s2">&quot;cdom&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-        <span class="n">cdom_qc</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cdom_qc&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">cdom_qc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">cdom_qc</span> <span class="o">=</span> <span class="n">cdom_qc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-        <span class="n">cdom</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cdom</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">CDOM_WAVELENGTHS</span><span class="o">=</span><span class="n">cdom_wavelength</span>
-        <span class="p">)</span>
-
-        <span class="n">whp_name</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cdom</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;whp_name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">cdom</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;whp_unit&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">cdom_qc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">cdom</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;ancillary_variables&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">whp_name</span><span class="o">.</span><span class="n">nc_name_flag</span>
-
-        <span class="n">ds</span><span class="p">[</span><span class="n">whp_name</span><span class="o">.</span><span class="n">nc_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cdom</span>
-        <span class="k">if</span> <span class="n">cdom_qc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ds</span><span class="p">[</span><span class="n">whp_name</span><span class="o">.</span><span class="n">nc_name_flag</span><span class="p">]</span> <span class="o">=</span> <span class="n">cdom_qc</span>
-
-    <span class="k">return</span> <span class="n">ds</span><span class="o">.</span><span class="n">drop_vars</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="add_cdom_coordinate">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.add_cdom_coordinate">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">add_cdom_coordinate</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find all the paraters in the cdom group and add their wavelength in a new coordinate&quot;&quot;&quot;</span>
-
-    <span class="n">cdom_names</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">nc_group</span> <span class="o">==</span> <span class="s2">&quot;cdom&quot;</span><span class="p">,</span> <span class="n">WHPNames</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-    <span class="p">]</span>
-
-    <span class="n">cdom_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">cdom_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">radiation_wavelength</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
-
-    <span class="c1"># NM this needs to be sorted by wavelength...</span>
-    <span class="n">cdom_data</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">dataset</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">cdom_names</span>
-        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">full_nc_name</span> <span class="ow">in</span> <span class="n">dataset</span>
-    <span class="p">]</span>
-
-    <span class="c1"># nothing to do</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cdom_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">dataset</span>
-
-    <span class="n">cdom_qc</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">dataset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dataarray</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ancillary_variables&quot;</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">dataarray</span> <span class="ow">in</span> <span class="n">cdom_data</span>
-    <span class="p">]</span>
-
-    <span class="c1"># useful for later coping of attrs</span>
-    <span class="n">first</span> <span class="o">=</span> <span class="n">cdom_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="c1"># &quot;None in&quot; doesn&#39;t seem to work due to xarray comparison?</span>
-    <span class="n">none_in_qc</span> <span class="o">=</span> <span class="p">[</span><span class="n">da</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">cdom_qc</span><span class="p">]</span>
-    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">none_in_qc</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">none_in_qc</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;partial QC for CDOM is not handled yet&quot;</span><span class="p">)</span>
-
-    <span class="n">radiation_wavelengths</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">c_formats</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">dataarray</span> <span class="ow">in</span> <span class="n">cdom_data</span><span class="p">:</span>
-        <span class="n">whp_name</span> <span class="o">=</span> <span class="n">dataarray</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">]</span>
-        <span class="n">whp_unit</span> <span class="o">=</span> <span class="n">dataarray</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_unit&quot;</span><span class="p">]</span>
-        <span class="n">whpname</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[(</span><span class="n">whp_name</span><span class="p">,</span> <span class="n">whp_unit</span><span class="p">)]</span>
-        <span class="n">radiation_wavelengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">whpname</span><span class="o">.</span><span class="n">radiation_wavelength</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;C_format&quot;</span> <span class="ow">in</span> <span class="n">dataarray</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="n">c_formats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dataarray</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;C_format&quot;</span><span class="p">])</span>
-
-    <span class="n">cdom_wavelengths</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">radiation_wavelengths</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
-        <span class="n">dims</span><span class="o">=</span><span class="s2">&quot;CDOM_WAVELENGTHS&quot;</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CDOM_WAVELENGTHS&quot;</span><span class="p">,</span>
-        <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;standard_name&quot;</span><span class="p">:</span> <span class="s2">&quot;radiation_wavelength&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;nm&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-    <span class="p">)</span>
-
-    <span class="n">new_cdom_dims</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="s2">&quot;N_LEVELS&quot;</span><span class="p">,</span> <span class="s2">&quot;CDOM_WAVELENGTHS&quot;</span><span class="p">)</span>
-    <span class="n">new_cdom_coords</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;N_PROF&quot;</span><span class="p">:</span> <span class="n">first</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;N_LEVELS&quot;</span><span class="p">:</span> <span class="n">first</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;N_LEVELS&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;CDOM_WAVELENGTHS&quot;</span><span class="p">:</span> <span class="n">cdom_wavelengths</span><span class="p">,</span>
-    <span class="p">}</span>
-
-    <span class="n">has_qc</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="c1"># qc flags first if any</span>
-    <span class="k">if</span> <span class="n">_is_all_dataarray</span><span class="p">(</span><span class="n">cdom_qc</span><span class="p">):</span>
-        <span class="n">has_qc</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">cdom_qc_arrays</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">cdom_qc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">first_qc</span> <span class="o">=</span> <span class="n">cdom_qc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="n">new_cdom_qc_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">first_qc</span><span class="o">.</span><span class="n">attrs</span><span class="p">}</span>
-        <span class="n">new_cdom_qc</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-            <span class="n">cdom_qc_arrays</span><span class="p">,</span>
-            <span class="n">dims</span><span class="o">=</span><span class="n">new_cdom_dims</span><span class="p">,</span>
-            <span class="n">coords</span><span class="o">=</span><span class="n">new_cdom_coords</span><span class="p">,</span>
-            <span class="n">attrs</span><span class="o">=</span><span class="n">new_cdom_qc_attrs</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">new_cdom_qc</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="n">first_qc</span><span class="o">.</span><span class="n">encoding</span>
-
-    <span class="n">cdom_arrays</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">cdom_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="n">new_cdom_attrs</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="o">**</span><span class="n">first</span><span class="o">.</span><span class="n">attrs</span><span class="p">,</span>
-        <span class="s2">&quot;whp_name&quot;</span><span class="p">:</span> <span class="s2">&quot;CDOM</span><span class="si">{CDOM_WAVELENGTHS}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;C_format&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">c_formats</span><span class="p">),</span>
-    <span class="p">}</span>
-
-    <span class="n">new_qc_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">whpname</span><span class="o">.</span><span class="n">nc_group</span><span class="si">}</span><span class="s2">_qc&quot;</span>
-
-    <span class="k">if</span> <span class="n">has_qc</span><span class="p">:</span>
-        <span class="n">new_cdom_attrs</span><span class="p">[</span><span class="s2">&quot;ancillary_variables&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_qc_name</span>
-
-    <span class="n">new_cdom</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-        <span class="n">cdom_arrays</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">new_cdom_dims</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">new_cdom_coords</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">new_cdom_attrs</span>
-    <span class="p">)</span>
-    <span class="n">new_cdom</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">encoding</span>
-
-    <span class="n">dataset</span><span class="p">[</span><span class="n">first</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_cdom</span>
-    <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="n">first</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">whpname</span><span class="o">.</span><span class="n">nc_group</span><span class="p">})</span>
-
-    <span class="k">if</span> <span class="n">has_qc</span><span class="p">:</span>
-        <span class="n">dataset</span><span class="p">[</span><span class="n">first_qc</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_cdom_qc</span>
-        <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="n">first_qc</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">new_qc_name</span><span class="p">})</span>
-
-    <span class="k">for</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">cdom_names</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">dataset</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">pass</span>
-
-    <span class="k">for</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">cdom_names</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">dataset</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">_qc&quot;</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">pass</span>
-
-    <span class="k">return</span> <span class="n">dataset</span></div>
-
-
-
-<div class="viewcode-block" id="add_geometry_var">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.add_geometry_var">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">add_geometry_var</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a CF-1.8 Geometry container variable to the dataset</span>
-
-<span class="sd">    This allows for compatabiltiy with tools like gdal</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">geometry_var</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;geometry_container&quot;</span><span class="p">,</span>
-        <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;geometry_type&quot;</span><span class="p">:</span> <span class="s2">&quot;point&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;node_coordinates&quot;</span><span class="p">:</span> <span class="s2">&quot;longitude latitude&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-    <span class="p">)</span>
-    <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;geometry_container&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geometry_var</span>
-
-    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">GEOMETRY_VARS</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
-            <span class="n">dataset</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;geometry_container&quot;</span>
-
-    <span class="k">return</span> <span class="n">dataset</span></div>
-
-
-
-<div class="viewcode-block" id="add_profile_type">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.add_profile_type">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">add_profile_type</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">ftype</span><span class="p">:</span> <span class="n">FileType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a `profile_type` string variable to the dataset.</span>
-
-<span class="sd">    This is for ODV compatability</span>
-
-<span class="sd">    .. warning::</span>
-<span class="sd">      Currently mixed profile types are not supported</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">profile_type</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">],</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">ftype</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;U1&quot;</span><span class="p">),</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;profile_type&quot;</span><span class="p">,</span>
-        <span class="n">dims</span><span class="o">=</span><span class="n">DIMS</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-    <span class="p">)</span>
-    <span class="n">profile_type</span><span class="o">.</span><span class="n">encoding</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;S1&quot;</span>
-
-    <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;profile_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">profile_type</span>
-    <span class="k">return</span> <span class="n">dataset</span></div>
 
 
 
@@ -1458,7 +1160,7 @@
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="_ExchangeInfo.from_lines">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.from_lines">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_lines</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">ftype</span><span class="p">:</span> <span class="n">FileType</span><span class="p">,</span> <span class="n">ignore_columns</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_lines</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">ftype</span><span class="p">:</span> <span class="n">FileTypeType</span><span class="p">,</span> <span class="n">ignore_columns</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Figure out the line numbers/indicies of the parts of the exchange file&quot;&quot;&quot;</span>
         <span class="n">stamp</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># file stamp is always the first line of a valid exchange</span>
         <span class="n">comments_start</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1471,6 +1173,8 @@
         <span class="n">data_end</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">post_data_start</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">post_data_end</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">ftype</span> <span class="o">=</span> <span class="n">FileType</span><span class="p">(</span><span class="n">ftype</span><span class="p">)</span>
 
         <span class="k">class</span><span class="w"> </span><span class="nc">LookingFor</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;States for the FSM that is this parser&quot;&quot;&quot;</span>
@@ -1552,22 +1256,6 @@
 
 
 
-<div class="viewcode-block" id="extract_numeric_precisions">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.extract_numeric_precisions">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">extract_numeric_precisions</span><span class="p">(</span>
-    <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the numeric precision of a printed decimal number&quot;&quot;&quot;</span>
-    <span class="c1"># magic number explain: np.char.partition expands each element into a 3-tuple</span>
-    <span class="c1"># of (pre, sep, post) of some sep, in our case a &quot;.&quot; char.</span>
-    <span class="c1"># We only want the post bits [idx 2] (the number of chars after a decimal seperator)</span>
-    <span class="c1"># of the last axis.</span>
-    <span class="n">numeric_parts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-    <span class="n">str_lens</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">str_len</span><span class="p">(</span><span class="n">numeric_parts</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">str_lens</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
-
-
-
 <div class="viewcode-block" id="_is_valid_exchange_numeric">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._is_valid_exchange_numeric">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">_is_valid_exchange_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
@@ -1584,50 +1272,6 @@
 <div class="viewcode-block" id="ExchangeIO">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.ExchangeIO">[docs]</a>
 <span class="n">ExchangeIO</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="n">io</span><span class="o">.</span><span class="n">BufferedIOBase</span></div>
-
-
-
-<div class="viewcode-block" id="_combine_dt_ndarray">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._combine_dt_ndarray">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">_combine_dt_ndarray</span><span class="p">(</span>
-    <span class="n">date_arr</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">],</span>
-    <span class="n">time_arr</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">time_pad</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="c1"># TODO: When min pyver is 3.10, maybe consider pattern matching here</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_date</span><span class="p">(</span><span class="n">date_val</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">date_val</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s2">&quot;nat&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date_val</span><span class="p">,</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">))</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_datetime</span><span class="p">(</span><span class="n">date_val</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">date_val</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s2">&quot;nat&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">date_val</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;2400&quot;</span><span class="p">):</span>
-            <span class="n">date</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">date_val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date_val</span><span class="p">,</span> <span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">T%H%M&quot;</span><span class="p">))</span>
-
-    <span class="c1"># vectorize here doesn&#39;t speed things, it just nice for the interface</span>
-    <span class="n">parse_date</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">_parse_date</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;datetime64&quot;</span><span class="p">])</span>
-    <span class="n">parse_datetime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">_parse_datetime</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;datetime64&quot;</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="n">time_arr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">parse_date</span><span class="p">(</span><span class="n">date_arr</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;datetime64[D]&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">time_arr</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">parse_date</span><span class="p">(</span><span class="n">date_arr</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;datetime64[D]&quot;</span><span class="p">)</span>
-
-    <span class="n">time_arr</span> <span class="o">=</span> <span class="n">time_arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;U4&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">time_pad</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">str_len</span><span class="p">(</span><span class="n">time_arr</span><span class="p">[</span><span class="n">time_arr</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">):</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Time values are being padded with zeros&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">time_arr</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
-            <span class="n">time_arr</span><span class="p">[</span><span class="n">time_arr</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">time_arr</span><span class="p">[</span><span class="n">time_arr</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
-
-    <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">date_arr</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">),</span> <span class="n">time_arr</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">parse_datetime</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;datetime64[m]&quot;</span><span class="p">)</span></div>
 
 
 
@@ -1684,114 +1328,6 @@
             <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">sorted_ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
         <span class="p">]</span>
     <span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="WHPNameAttr">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.WHPNameAttr">[docs]</a>
-<span class="n">WHPNameAttr</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
-
-
-
-<div class="viewcode-block" id="combine_dt">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.combine_dt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">combine_dt</span><span class="p">(</span>
-    <span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span>
-    <span class="n">is_coord</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">date_name</span><span class="p">:</span> <span class="n">WHPName</span> <span class="o">=</span> <span class="n">DATE</span><span class="p">,</span>
-    <span class="n">time_name</span><span class="p">:</span> <span class="n">WHPName</span> <span class="o">=</span> <span class="n">TIME</span><span class="p">,</span>
-    <span class="n">time_pad</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine the exchange style string variables of date and optinally time into a single</span>
-<span class="sd">    variable containing real datetime objects</span>
-
-<span class="sd">    This will remove the time variable if present, and replace then rename the date variable.</span>
-<span class="sd">    Date is replaced/renamed to maintain variable order in the xr.DataSet</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># date and time want specific attrs whos values have been</span>
-    <span class="c1"># selected by significant debate</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">date_name</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span>
-    <span class="n">time</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-        <span class="n">time_name</span><span class="o">.</span><span class="n">full_nc_name</span>
-    <span class="p">)</span>  <span class="c1"># not be present, this is allowed</span>
-
-    <span class="n">whp_name</span><span class="p">:</span> <span class="n">WHPNameAttr</span> <span class="o">=</span> <span class="p">[</span><span class="n">date_name</span><span class="o">.</span><span class="n">full_whp_name</span><span class="p">,</span> <span class="n">time_name</span><span class="o">.</span><span class="n">full_whp_name</span><span class="p">]</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dt_arr</span> <span class="o">=</span> <span class="n">_combine_dt_ndarray</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">dt_arr</span> <span class="o">=</span> <span class="n">_combine_dt_ndarray</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">time_pad</span><span class="o">=</span><span class="n">time_pad</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ExchangeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Could not parse date/time cols </span><span class="si">{</span><span class="n">date_name</span><span class="o">.</span><span class="n">whp_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">time_name</span><span class="o">.</span><span class="n">whp_name</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
-
-    <span class="n">precision</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">24</span> <span class="o">/</span> <span class="mi">60</span>  <span class="c1"># minute as day fraction</span>
-    <span class="k">if</span> <span class="n">dt_arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;datetime64[D]&quot;</span><span class="p">:</span>
-        <span class="n">precision</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">whp_name</span> <span class="o">=</span> <span class="n">date_name</span><span class="o">.</span><span class="n">whp_name</span>
-
-    <span class="n">time_var</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-        <span class="n">dt_arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;datetime64[ns]&quot;</span><span class="p">),</span>
-        <span class="n">dims</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span>
-        <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;standard_name&quot;</span><span class="p">:</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;whp_name&quot;</span><span class="p">:</span> <span class="n">whp_name</span><span class="p">,</span>
-            <span class="s2">&quot;resolution&quot;</span><span class="p">:</span> <span class="n">precision</span><span class="p">,</span>
-        <span class="p">},</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="n">is_coord</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">time_var</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;axis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span>
-
-    <span class="c1"># if the thing being combined is a coordinate, it may not contain vill values</span>
-    <span class="n">time_var</span><span class="o">.</span><span class="n">encoding</span><span class="p">[</span><span class="s2">&quot;_FillValue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">is_coord</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="n">time_var</span><span class="o">.</span><span class="n">encoding</span><span class="p">[</span><span class="s2">&quot;units&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;days since 1950-01-01T00:00Z&quot;</span>
-    <span class="n">time_var</span><span class="o">.</span><span class="n">encoding</span><span class="p">[</span><span class="s2">&quot;calendar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;gregorian&quot;</span>
-    <span class="n">time_var</span><span class="o">.</span><span class="n">encoding</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;double&quot;</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">del</span> <span class="n">dataset</span><span class="p">[</span><span class="n">time_name</span><span class="o">.</span><span class="n">nc_name</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-    <span class="c1"># this is being done in a funny way to retain the variable ordering</span>
-    <span class="c1"># we will always keep the &quot;time&quot; variable name</span>
-    <span class="n">dataset</span><span class="p">[</span><span class="n">date_name</span><span class="o">.</span><span class="n">nc_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_var</span>
-    <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="n">date_name</span><span class="o">.</span><span class="n">nc_name</span><span class="p">:</span> <span class="n">time_name</span><span class="o">.</span><span class="n">nc_name</span><span class="p">})</span></div>
-
-
-
-<div class="viewcode-block" id="set_axis_attrs">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.set_axis_attrs">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">set_axis_attrs</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the CF axis attribute on our axis variables (XYZT)</span>
-
-<span class="sd">    * longitude = &quot;X&quot;</span>
-<span class="sd">    * latitude = &quot;Y&quot;</span>
-<span class="sd">    * pressure = &quot;Z&quot;, addtionally, positive is down</span>
-<span class="sd">    * time = &quot;T&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dataset</span><span class="o">.</span><span class="n">longitude</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;axis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span>
-    <span class="n">dataset</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;axis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Y&quot;</span>
-    <span class="n">dataset</span><span class="o">.</span><span class="n">pressure</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;axis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>
-    <span class="n">dataset</span><span class="o">.</span><span class="n">pressure</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;down&quot;</span>
-    <span class="n">dataset</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;axis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span>
-    <span class="k">return</span> <span class="n">dataset</span></div>
-
-
-
-<div class="viewcode-block" id="set_coordinate_encoding_fill">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.set_coordinate_encoding_fill">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">set_coordinate_encoding_fill</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets the _FillValue encoidng to None for 1D coordinate vars&quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">COORDS</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">coord</span> <span class="ow">is</span> <span class="n">TIME</span> <span class="ow">and</span> <span class="n">coord</span><span class="o">.</span><span class="n">nc_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="n">coord</span><span class="o">.</span><span class="n">nc_name</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">dataset</span><span class="p">[</span><span class="n">coord</span><span class="o">.</span><span class="n">nc_name</span><span class="p">]</span><span class="o">.</span><span class="n">encoding</span><span class="p">[</span><span class="s2">&quot;_FillValue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">return</span> <span class="n">dataset</span></div>
 
 
 
@@ -1856,16 +1392,6 @@
 
 
 
-<div class="viewcode-block" id="all_same">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.all_same">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">all_same</span><span class="p">(</span><span class="n">ndarr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test if all the values of an ndarray are the same value&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">ndarr</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ndarr</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ndarr</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ndarr</span> <span class="o">==</span> <span class="n">ndarr</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
-
-
-
 <div class="viewcode-block" id="CheckOptions">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.CheckOptions">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CheckOptions</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1884,7 +1410,7 @@
     <span class="n">filename_or_obj</span><span class="p">:</span> <span class="n">ExchangeIO</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">fill_values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,),</span>
-    <span class="n">ftype</span><span class="p">:</span> <span class="n">FileType</span> <span class="o">|</span> <span class="n">FileTypes</span> <span class="o">=</span> <span class="n">FileType</span><span class="o">.</span><span class="n">BOTTLE</span><span class="p">,</span>
+    <span class="n">ftype</span><span class="p">:</span> <span class="n">FileTypeType</span> <span class="o">=</span> <span class="n">FileType</span><span class="o">.</span><span class="n">BOTTLE</span><span class="p">,</span>
     <span class="n">checks</span><span class="p">:</span> <span class="n">CheckOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">precision_source</span><span class="p">:</span> <span class="n">PrecisionSourceType</span> <span class="o">=</span> <span class="n">PrecisionSource</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
     <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">,</span>
@@ -2012,12 +1538,9 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_from_exchange_data</span><span class="p">(</span>
     <span class="n">exchange_data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">_ExchangeData</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">ftype</span><span class="o">=</span><span class="n">FileType</span><span class="o">.</span><span class="n">BOTTLE</span><span class="p">,</span>
+    <span class="n">ftype</span><span class="p">:</span> <span class="n">FileTypeType</span> <span class="o">=</span> <span class="n">FileType</span><span class="o">.</span><span class="n">BOTTLE</span><span class="p">,</span>
     <span class="n">checks</span><span class="p">:</span> <span class="n">CheckOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-    <span class="c1"># Need to avoid circular import for now</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataarray_factory</span>
-
     <span class="n">_checks</span><span class="p">:</span> <span class="n">CheckOptions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;flags&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">checks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">_checks</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">checks</span><span class="p">)</span>

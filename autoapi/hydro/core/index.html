@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="hydro.exchange" href="../exchange/index.html" /><link rel="prev" title="hydro.convert" href="../convert/index.html" />
+<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="hydro.dt" href="../dt/index.html" /><link rel="prev" title="hydro.convert" href="../convert/index.html" />
 
     <!-- Generated with Sphinx 8.2.1 and Furo 2024.08.06 -->
         <title>hydro.core - hydro documentation</title>
@@ -223,14 +223,16 @@
 <li class="toctree-l3"><a class="reference internal" href="../accessors/index.html">hydro.accessors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../checks/index.html">hydro.checks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../conformance/index.html">hydro.conformance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../consts/index.html">hydro.consts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../convert/index.html">hydro.convert</a></li>
 <li class="toctree-l3 current current-page"><a class="current reference internal" href="#">hydro.core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../dt/index.html">hydro.dt</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../exchange/index.html">hydro.exchange</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of hydro.exchange</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../exchange/exceptions/index.html">hydro.exchange.exceptions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../exchange/flags/index.html">hydro.exchange.flags</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../exchange/helpers/index.html">hydro.exchange.helpers</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../flags/index.html">hydro.flags</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../legacy/index.html">hydro.legacy</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of hydro.legacy</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../legacy/coards/index.html">hydro.legacy.coards</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../legacy/woce/index.html">hydro.legacy.woce</a></li>
@@ -252,6 +254,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../tutorial/index.html">hydro.tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../types/index.html">hydro.types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utils/index.html">hydro.utils</a></li>
 </ul>
 </li>
 </ul>
@@ -304,12 +308,6 @@
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.core.DIMS" title="hydro.core.DIMS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DIMS</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hydro.core.FILLS_MAP" title="hydro.core.FILLS_MAP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FILLS_MAP</span></code></a></p></td>
-<td><p></p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hydro.core.dtype_map" title="hydro.core.dtype_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype_map</span></code></a></p></td>
 <td><p></p></td>
 </tr>
@@ -386,16 +384,6 @@
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
 <dl class="py data">
-<dt class="sig sig-object py" id="hydro.core.DIMS">
-<span class="sig-prename descclassname"><span class="pre">hydro.core.</span></span><span class="sig-name descname"><span class="pre">DIMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('N_PROF',</span> <span class="pre">'N_LEVELS')</span></em><a class="reference internal" href="../../../_modules/hydro/core.html#DIMS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.core.DIMS" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="hydro.core.FILLS_MAP">
-<span class="sig-prename descclassname"><span class="pre">hydro.core.</span></span><span class="sig-name descname"><span class="pre">FILLS_MAP</span></span><a class="reference internal" href="../../../_modules/hydro/core.html#FILLS_MAP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.core.FILLS_MAP" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py data">
 <dt class="sig sig-object py" id="hydro.core.dtype_map">
 <span class="sig-prename descclassname"><span class="pre">hydro.core.</span></span><span class="sig-name descname"><span class="pre">dtype_map</span></span><a class="reference internal" href="../../../_modules/hydro/core.html#dtype_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.core.dtype_map" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -457,7 +445,7 @@
 
 <dl class="py data">
 <dt class="sig sig-object py" id="hydro.core.FLAG_SCHEME">
-<span class="sig-prename descclassname"><span class="pre">hydro.core.</span></span><span class="sig-name descname"><span class="pre">FLAG_SCHEME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../exchange/flags/index.html#hydro.exchange.flags.ExchangeFlag" title="hydro.exchange.flags.ExchangeFlag"><span class="pre">hydro.exchange.flags.ExchangeFlag</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/hydro/core.html#FLAG_SCHEME"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.core.FLAG_SCHEME" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hydro.core.</span></span><span class="sig-name descname"><span class="pre">FLAG_SCHEME</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.13)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">cchdo.hydro.flags.ExchangeFlag</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../_modules/hydro/core.html#FLAG_SCHEME"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.core.FLAG_SCHEME" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -596,12 +584,12 @@ Scalars will be broadcast against any 1d arrays</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../exchange/index.html">
+          <a class="next-page" href="../dt/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">hydro.exchange</div>
+                <div class="title">hydro.dt</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -650,8 +638,6 @@ Scalars will be broadcast against any 1d arrays</p>
 <li><a class="reference internal" href="#attributes">Attributes</a></li>
 <li><a class="reference internal" href="#functions">Functions</a></li>
 <li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
-<li><a class="reference internal" href="#hydro.core.DIMS"><code class="docutils literal notranslate"><span class="pre">DIMS</span></code></a></li>
-<li><a class="reference internal" href="#hydro.core.FILLS_MAP"><code class="docutils literal notranslate"><span class="pre">FILLS_MAP</span></code></a></li>
 <li><a class="reference internal" href="#hydro.core.dtype_map"><code class="docutils literal notranslate"><span class="pre">dtype_map</span></code></a></li>
 <li><a class="reference internal" href="#hydro.core.EXPOCODE"><code class="docutils literal notranslate"><span class="pre">EXPOCODE</span></code></a></li>
 <li><a class="reference internal" href="#hydro.core.STNNBR"><code class="docutils literal notranslate"><span class="pre">STNNBR</span></code></a></li>
