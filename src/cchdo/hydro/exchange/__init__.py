@@ -3,14 +3,13 @@ import io
 import logging
 from collections.abc import Iterable
 from datetime import datetime, timedelta
-from enum import Enum, StrEnum, auto
+from enum import Enum, auto
 from functools import cached_property
 from itertools import chain
 from operator import attrgetter
 from pathlib import Path
 from typing import (
     Any,
-    Literal,
     TypedDict,
     TypeGuard,
 )
@@ -45,6 +44,12 @@ from cchdo.hydro.flags import (
     ExchangeCTDFlag,
     ExchangeFlag,
     ExchangeSampleFlag,
+)
+from cchdo.hydro.types import (
+    FileType,
+    FileTypeType,
+    PrecisionSource,
+    PrecisionSourceType,
 )
 from cchdo.params import WHPName, WHPNames
 from cchdo.params import __version__ as params_version
@@ -99,25 +104,6 @@ FLAG_SCHEME: dict[str, type[ExchangeFlag]] = {
 GEOMETRY_VARS = ("expocode", "station", "cast", "section_id", "time")
 
 FILLS_MAP = {"string": "", "integer": np.nan, "decimal": np.nan}
-
-
-FileTypes = Literal["C", "B"]
-
-
-class FileType(Enum):
-    CTD = "C"
-    BOTTLE = "B"
-
-
-PrecisionSourceValues = Literal["file", "database"]
-
-
-class PrecisionSource(StrEnum):
-    FILE = auto()
-    DATABASE = auto()
-
-
-PrecisionSourceType = PrecisionSourceValues | PrecisionSource
 
 
 # WHPNameIndex represents a Name to Column index in an exchange file
@@ -408,7 +394,7 @@ def add_geometry_var(dataset: xr.Dataset) -> xr.Dataset:
     return dataset
 
 
-def add_profile_type(dataset: xr.Dataset, ftype: FileType) -> xr.Dataset:
+def add_profile_type(dataset: xr.Dataset, ftype: FileTypeType) -> xr.Dataset:
     """Adds a `profile_type` string variable to the dataset.
 
     This is for ODV compatability
@@ -416,6 +402,8 @@ def add_profile_type(dataset: xr.Dataset, ftype: FileType) -> xr.Dataset:
     .. warning::
       Currently mixed profile types are not supported
     """
+    ftype = FileType(ftype)
+
     profile_type = xr.DataArray(
         np.full(dataset.sizes["N_PROF"], fill_value=ftype.value, dtype="U1"),
         name="profile_type",
@@ -928,7 +916,7 @@ class _ExchangeInfo:
         )
 
     @classmethod
-    def from_lines(cls, lines: tuple[str, ...], ftype: FileType, ignore_columns):
+    def from_lines(cls, lines: tuple[str, ...], ftype: FileTypeType, ignore_columns):
         """Figure out the line numbers/indicies of the parts of the exchange file"""
         stamp = 0  # file stamp is always the first line of a valid exchange
         comments_start = 1
@@ -941,6 +929,8 @@ class _ExchangeInfo:
         data_end = 1
         post_data_start = 1
         post_data_end = 1
+
+        ftype = FileType(ftype)
 
         class LookingFor(Enum):
             """States for the FSM that is this parser"""
@@ -1308,7 +1298,7 @@ def read_csv(
     filename_or_obj: ExchangeIO,
     *,
     fill_values=("-999",),
-    ftype: FileType | FileTypes = FileType.BOTTLE,
+    ftype: FileTypeType = FileType.BOTTLE,
     checks: CheckOptions | None = None,
     precision_source: PrecisionSourceType = PrecisionSource.FILE,
     encoding="utf8",
@@ -1430,7 +1420,7 @@ def read_exchange(
 def _from_exchange_data(
     exchange_data: list[_ExchangeData],
     *,
-    ftype=FileType.BOTTLE,
+    ftype: FileTypeType = FileType.BOTTLE,
     checks: CheckOptions | None = None,
 ) -> xr.Dataset:
     # Need to avoid circular import for now
