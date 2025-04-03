@@ -40,7 +40,7 @@ from cchdo.hydro.exchange.exceptions import (
     ExchangeParameterUndefError,
     ExchangeParameterUnitAlignmentError,
 )
-from cchdo.hydro.exchange.flags import (
+from cchdo.hydro.flags import (
     ExchangeBottleFlag,
     ExchangeCTDFlag,
     ExchangeFlag,

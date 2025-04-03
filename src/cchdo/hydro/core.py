@@ -7,6 +7,12 @@ import numpy.typing as npt
 import xarray as xr
 
 from cchdo.hydro.checks import check_ancillary_variables
+from cchdo.hydro.flags import (
+    ExchangeBottleFlag,
+    ExchangeCTDFlag,
+    ExchangeFlag,
+    ExchangeSampleFlag,
+)
 from cchdo.params import WHPName, WHPNames
 
 from .exchange import (
@@ -18,12 +24,6 @@ from .exchange import (
     flatten_cdom_coordinate,
     set_axis_attrs,
     set_coordinate_encoding_fill,
-)
-from .exchange.flags import (
-    ExchangeBottleFlag,
-    ExchangeCTDFlag,
-    ExchangeFlag,
-    ExchangeSampleFlag,
 )
 
 DIMS = ("N_PROF", "N_LEVELS")

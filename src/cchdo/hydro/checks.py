@@ -4,7 +4,7 @@ import numpy as np
 import xarray as xr
 
 from cchdo.hydro.exchange.exceptions import ExchangeDataFlagPairError
-from cchdo.hydro.exchange.flags import (
+from cchdo.hydro.flags import (
     ExchangeBottleFlag,
     ExchangeCTDFlag,
     ExchangeSampleFlag,
