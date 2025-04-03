@@ -14,14 +14,16 @@ from cchdo.hydro.flags import (
     ExchangeSampleFlag,
 )
 from cchdo.hydro.types import FileType
+from cchdo.hydro.utils import (
+    add_cdom_coordinate,
+    add_geometry_var,
+    flatten_cdom_coordinate,
+)
 from cchdo.params import WHPName, WHPNames
 
 from .exchange import (
-    add_cdom_coordinate,
-    add_geometry_var,
     add_profile_type,
     combine_dt,
-    flatten_cdom_coordinate,
     set_axis_attrs,
     set_coordinate_encoding_fill,
 )

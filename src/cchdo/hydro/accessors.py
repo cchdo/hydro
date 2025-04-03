@@ -12,15 +12,14 @@ import pandas as pd
 import xarray as xr
 
 from cchdo.hydro.checks import check_flags as _check_flags
-from cchdo.params import WHPName, WHPNames
-
-from .exchange import (
-    FileType,
+from cchdo.hydro.types import FileType
+from cchdo.hydro.utils import (
     add_cdom_coordinate,
     all_same,
     extract_numeric_precisions,
     flatten_cdom_coordinate,
 )
+from cchdo.params import WHPName, WHPNames
 
 FLAG_NAME = "cchdo.hydro._qc"
 ERROR_NAME = "cchdo.hydro._error"
