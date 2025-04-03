@@ -15,17 +15,6 @@ Attributes
 .. autoapisummary::
 
    hydro.core.dtype_map
-   hydro.core.EXPOCODE
-   hydro.core.STNNBR
-   hydro.core.CASTNO
-   hydro.core.SAMPNO
-   hydro.core.DATE
-   hydro.core.TIME
-   hydro.core.LATITUDE
-   hydro.core.LONGITUDE
-   hydro.core.CTDPRS
-   hydro.core.BTLNBR
-   hydro.core.COORDS
    hydro.core.FLAG_SCHEME
 
 
@@ -47,28 +36,6 @@ Module Contents
 ---------------
 
 .. py:data:: dtype_map
-
-.. py:data:: EXPOCODE
-
-.. py:data:: STNNBR
-
-.. py:data:: CASTNO
-
-.. py:data:: SAMPNO
-
-.. py:data:: DATE
-
-.. py:data:: TIME
-
-.. py:data:: LATITUDE
-
-.. py:data:: LONGITUDE
-
-.. py:data:: CTDPRS
-
-.. py:data:: BTLNBR
-
-.. py:data:: COORDS
 
 .. py:data:: FLAG_SCHEME
    :type:  dict[str, type[cchdo.hydro.flags.ExchangeFlag]]

@@ -303,7 +303,12 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_ancillary_variables</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.consts</span><span class="w"> </span><span class="kn">import</span> <span class="n">DIMS</span><span class="p">,</span> <span class="n">FILLS_MAP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.consts</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">COORDS</span><span class="p">,</span>
+    <span class="n">CTDPRS</span><span class="p">,</span>
+    <span class="n">DIMS</span><span class="p">,</span>
+    <span class="n">FILLS_MAP</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.dt</span><span class="w"> </span><span class="kn">import</span> <span class="n">combine_dt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.flags</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ExchangeBottleFlag</span><span class="p">,</span>
@@ -325,62 +330,6 @@
 <div class="viewcode-block" id="dtype_map">
 <a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.dtype_map">[docs]</a>
 <span class="n">dtype_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;string&quot;</span><span class="p">:</span> <span class="s2">&quot;U&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="p">:</span> <span class="s2">&quot;float32&quot;</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">:</span> <span class="s2">&quot;float64&quot;</span><span class="p">}</span></div>
-
-
-<div class="viewcode-block" id="EXPOCODE">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.EXPOCODE">[docs]</a>
-<span class="n">EXPOCODE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;EXPOCODE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="STNNBR">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.STNNBR">[docs]</a>
-<span class="n">STNNBR</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;STNNBR&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="CASTNO">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.CASTNO">[docs]</a>
-<span class="n">CASTNO</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;CASTNO&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="SAMPNO">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.SAMPNO">[docs]</a>
-<span class="n">SAMPNO</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;SAMPNO&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="DATE">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.DATE">[docs]</a>
-<span class="n">DATE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;DATE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="TIME">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.TIME">[docs]</a>
-<span class="n">TIME</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;TIME&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="LATITUDE">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.LATITUDE">[docs]</a>
-<span class="n">LATITUDE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;LATITUDE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="LONGITUDE">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.LONGITUDE">[docs]</a>
-<span class="n">LONGITUDE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;LONGITUDE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="CTDPRS">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.CTDPRS">[docs]</a>
-<span class="n">CTDPRS</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[(</span><span class="s2">&quot;CTDPRS&quot;</span><span class="p">,</span> <span class="s2">&quot;DBAR&quot;</span><span class="p">)]</span></div>
-
-<div class="viewcode-block" id="BTLNBR">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.BTLNBR">[docs]</a>
-<span class="n">BTLNBR</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;BTLNBR&quot;</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="COORDS">
-<a class="viewcode-back" href="../../autoapi/hydro/core/index.html#hydro.core.COORDS">[docs]</a>
-<span class="n">COORDS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">EXPOCODE</span><span class="p">,</span>
-    <span class="n">STNNBR</span><span class="p">,</span>
-    <span class="n">CASTNO</span><span class="p">,</span>
-    <span class="n">SAMPNO</span><span class="p">,</span>
-    <span class="n">DATE</span><span class="p">,</span>
-    <span class="n">TIME</span><span class="p">,</span>
-    <span class="n">LATITUDE</span><span class="p">,</span>
-    <span class="n">LONGITUDE</span><span class="p">,</span>
-    <span class="n">CTDPRS</span><span class="p">,</span>
-<span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="FLAG_SCHEME">
