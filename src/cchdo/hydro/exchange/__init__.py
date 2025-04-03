@@ -3,7 +3,7 @@ import io
 import logging
 from collections.abc import Iterable
 from datetime import datetime, timedelta
-from enum import Enum, auto
+from enum import Enum, StrEnum, auto
 from functools import cached_property
 from itertools import chain
 from operator import attrgetter
@@ -107,6 +107,17 @@ FileTypes = Literal["C", "B"]
 class FileType(Enum):
     CTD = "C"
     BOTTLE = "B"
+
+
+PrecisionSourceValues = Literal["file", "database"]
+
+
+class PrecisionSource(StrEnum):
+    FILE = auto()
+    DATABASE = auto()
+
+
+PrecisionSourceType = PrecisionSourceValues | PrecisionSource
 
 
 # WHPNameIndex represents a Name to Column index in an exchange file
@@ -845,11 +856,17 @@ class _ExchangeInfo:
         )
         return np.array(_raw_data, dtype="U")
 
-    def finalize(self, fill_values=("-999",), precision_source="file") -> _ExchangeData:
+    def finalize(
+        self,
+        fill_values=("-999",),
+        precision_source: PrecisionSourceType = PrecisionSource.FILE,
+    ) -> _ExchangeData:
         """Parse all the data into ndarrays of the correct dtype and shape
 
         Returns an ExchangeData dataclass
         """
+        precision_source = PrecisionSource(precision_source)
+
         log.debug("Finializing...")
         single_profile = any(self.ctd_headers)
 
@@ -871,7 +888,7 @@ class _ExchangeInfo:
                     raise ValueError(
                         f"exchange numeric data for {param.whp_name} has bad chars"
                     )
-                if precision_source == "file":
+                if precision_source == PrecisionSource.FILE:
                     whp_param_precisions[param] = extract_numeric_precisions(param_col)
                 param_col[fill_spaces] = "nan"
             if param.dtype == "string":
@@ -892,7 +909,7 @@ class _ExchangeInfo:
                     raise ValueError(
                         f"{param} error col exchange numeric data has bad chars"
                     )
-                if precision_source == "file":
+                if precision_source == PrecisionSource.FILE:
                     whp_error_precisions[param] = extract_numeric_precisions(param_col)
                 param_col[fill_spaces] = "nan"
             whp_error_cols[param] = param_col.astype(dtype_map[param.dtype])
@@ -1293,10 +1310,11 @@ def read_csv(
     fill_values=("-999",),
     ftype: FileType | FileTypes = FileType.BOTTLE,
     checks: CheckOptions | None = None,
-    precision_source="file",
+    precision_source: PrecisionSourceType = PrecisionSource.FILE,
     encoding="utf8",
     ignore_columns: Iterable[str] | None = None,
 ) -> xr.Dataset:
+    precision_source = PrecisionSource(precision_source)
     ftype = FileType(ftype)
 
     _checks: CheckOptions = {"flags": True}
@@ -1355,7 +1373,7 @@ def read_exchange(
     *,
     fill_values=("-999",),
     checks: CheckOptions | None = None,
-    precision_source="file",
+    precision_source: PrecisionSourceType = PrecisionSource.FILE,
     file_seperator=None,
     keep_seperator=True,
     encoding="utf8",
@@ -1363,6 +1381,8 @@ def read_exchange(
 ) -> xr.Dataset:
     """Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
     CF/netCDF structure"""
+
+    precision_source = PrecisionSource(precision_source)
 
     _checks: CheckOptions = {"flags": True}
     if checks is not None:
