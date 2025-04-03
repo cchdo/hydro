@@ -7,7 +7,12 @@ import numpy.typing as npt
 import xarray as xr
 
 from cchdo.hydro.checks import check_ancillary_variables
-from cchdo.hydro.consts import DIMS, FILLS_MAP
+from cchdo.hydro.consts import (
+    COORDS,
+    CTDPRS,
+    DIMS,
+    FILLS_MAP,
+)
 from cchdo.hydro.dt import combine_dt
 from cchdo.hydro.flags import (
     ExchangeBottleFlag,
@@ -27,29 +32,6 @@ from cchdo.hydro.utils import (
 from cchdo.params import WHPName, WHPNames
 
 dtype_map = {"string": "U", "integer": "float32", "decimal": "float64"}
-
-EXPOCODE = WHPNames["EXPOCODE"]
-STNNBR = WHPNames["STNNBR"]
-CASTNO = WHPNames["CASTNO"]
-SAMPNO = WHPNames["SAMPNO"]
-DATE = WHPNames["DATE"]
-TIME = WHPNames["TIME"]
-LATITUDE = WHPNames["LATITUDE"]
-LONGITUDE = WHPNames["LONGITUDE"]
-CTDPRS = WHPNames[("CTDPRS", "DBAR")]
-BTLNBR = WHPNames["BTLNBR"]
-
-COORDS = [
-    EXPOCODE,
-    STNNBR,
-    CASTNO,
-    SAMPNO,
-    DATE,
-    TIME,
-    LATITUDE,
-    LONGITUDE,
-    CTDPRS,
-]
 
 FLAG_SCHEME: dict[str, type[ExchangeFlag]] = {
     "woce_bottle": ExchangeBottleFlag,
