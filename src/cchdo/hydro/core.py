@@ -13,10 +13,10 @@ from cchdo.hydro.flags import (
     ExchangeFlag,
     ExchangeSampleFlag,
 )
+from cchdo.hydro.types import FileType
 from cchdo.params import WHPName, WHPNames
 
 from .exchange import (
-    FileType,
     add_cdom_coordinate,
     add_geometry_var,
     add_profile_type,
