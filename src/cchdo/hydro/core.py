@@ -21,13 +21,10 @@ from cchdo.hydro.utils import (
     add_geometry_var,
     add_profile_type,
     flatten_cdom_coordinate,
-)
-from cchdo.params import WHPName, WHPNames
-
-from .exchange import (
     set_axis_attrs,
     set_coordinate_encoding_fill,
 )
+from cchdo.params import WHPName, WHPNames
 
 dtype_map = {"string": "U", "integer": "float32", "decimal": "float64"}
 

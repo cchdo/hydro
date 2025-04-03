@@ -4,7 +4,7 @@ import numpy as np
 import numpy.typing as npt
 import xarray as xr
 
-from cchdo.hydro.consts import DIMS, GEOMETRY_VARS
+from cchdo.hydro.consts import COORDS, DIMS, GEOMETRY_VARS, TIME
 from cchdo.hydro.types import FileType, FileTypeType
 from cchdo.params import WHPNames
 
@@ -226,3 +226,30 @@ def extract_numeric_precisions(
     numeric_parts = np.char.partition(data, ".")[..., 2]
     str_lens = np.char.str_len(numeric_parts)
     return np.max(str_lens, axis=0)
+
+
+def set_axis_attrs(dataset: xr.Dataset) -> xr.Dataset:
+    """Set the CF axis attribute on our axis variables (XYZT)
+
+    * longitude = "X"
+    * latitude = "Y"
+    * pressure = "Z", addtionally, positive is down
+    * time = "T"
+    """
+    dataset.longitude.attrs["axis"] = "X"
+    dataset.latitude.attrs["axis"] = "Y"
+    dataset.pressure.attrs["axis"] = "Z"
+    dataset.pressure.attrs["positive"] = "down"
+    dataset.time.attrs["axis"] = "T"
+    return dataset
+
+
+def set_coordinate_encoding_fill(dataset: xr.Dataset) -> xr.Dataset:
+    """Sets the _FillValue encoidng to None for 1D coordinate vars"""
+    for coord in COORDS:
+        if coord is TIME and coord.nc_name not in dataset:
+            continue
+        if len(dataset[coord.nc_name].dims) == 1:
+            dataset[coord.nc_name].encoding["_FillValue"] = None
+
+    return dataset

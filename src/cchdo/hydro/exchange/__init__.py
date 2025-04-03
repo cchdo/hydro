@@ -19,7 +19,19 @@ import requests
 import xarray as xr
 
 from cchdo.hydro.checks import check_flags
-from cchdo.hydro.consts import FILLS_MAP
+from cchdo.hydro.consts import (
+    BTLNBR,
+    CASTNO,
+    COORDS,
+    CTDPRS,
+    EXPOCODE,
+    FILLS_MAP,
+    LATITUDE,
+    SAMPNO,
+    STNNBR,
+    TIME,
+)
+from cchdo.hydro.core import dataarray_factory
 from cchdo.hydro.dt import combine_dt
 from cchdo.hydro.exchange.exceptions import (
     ExchangeBOMError,
@@ -55,6 +67,8 @@ from cchdo.hydro.utils import (
     add_profile_type,
     all_same,
     extract_numeric_precisions,
+    set_axis_attrs,
+    set_coordinate_encoding_fill,
 )
 from cchdo.params import WHPName, WHPNames
 from cchdo.params import __version__ as params_version
@@ -70,29 +84,6 @@ except ImportError:
 
 log = logging.getLogger(__name__)
 
-
-EXPOCODE = WHPNames["EXPOCODE"]
-STNNBR = WHPNames["STNNBR"]
-CASTNO = WHPNames["CASTNO"]
-SAMPNO = WHPNames["SAMPNO"]
-DATE = WHPNames["DATE"]
-TIME = WHPNames["TIME"]
-LATITUDE = WHPNames["LATITUDE"]
-LONGITUDE = WHPNames["LONGITUDE"]
-CTDPRS = WHPNames[("CTDPRS", "DBAR")]
-BTLNBR = WHPNames["BTLNBR"]
-
-COORDS = [
-    EXPOCODE,
-    STNNBR,
-    CASTNO,
-    SAMPNO,
-    DATE,
-    TIME,
-    LATITUDE,
-    LONGITUDE,
-    CTDPRS,
-]
 
 SENTINEL_PREFIX = "__SENTINEL"
 SENTINEL_PARAM = WHPName(
@@ -876,33 +867,6 @@ def check_sorted(dataset: xr.Dataset) -> bool:
     )
 
 
-def set_axis_attrs(dataset: xr.Dataset) -> xr.Dataset:
-    """Set the CF axis attribute on our axis variables (XYZT)
-
-    * longitude = "X"
-    * latitude = "Y"
-    * pressure = "Z", addtionally, positive is down
-    * time = "T"
-    """
-    dataset.longitude.attrs["axis"] = "X"
-    dataset.latitude.attrs["axis"] = "Y"
-    dataset.pressure.attrs["axis"] = "Z"
-    dataset.pressure.attrs["positive"] = "down"
-    dataset.time.attrs["axis"] = "T"
-    return dataset
-
-
-def set_coordinate_encoding_fill(dataset: xr.Dataset) -> xr.Dataset:
-    """Sets the _FillValue encoidng to None for 1D coordinate vars"""
-    for coord in COORDS:
-        if coord is TIME and coord.nc_name not in dataset:
-            continue
-        if len(dataset[coord.nc_name].dims) == 1:
-            dataset[coord.nc_name].encoding["_FillValue"] = None
-
-    return dataset
-
-
 def _load_raw_exchange(
     filename_or_obj: ExchangeIO,
     *,
@@ -1096,9 +1060,6 @@ def _from_exchange_data(
     ftype: FileTypeType = FileType.BOTTLE,
     checks: CheckOptions | None = None,
 ) -> xr.Dataset:
-    # Need to avoid circular import for now
-    from cchdo.hydro.core import dataarray_factory
-
     _checks: CheckOptions = {"flags": True}
     if checks is not None:
         _checks.update(checks)
