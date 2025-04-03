@@ -295,7 +295,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">StrEnum</span><span class="p">,</span> <span class="n">auto</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">attrgetter</span>
@@ -467,6 +467,32 @@
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.FileType.BOTTLE">[docs]</a>
     <span class="n">BOTTLE</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span></div>
 </div>
+
+
+
+<div class="viewcode-block" id="PrecisionSourceValues">
+<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.PrecisionSourceValues">[docs]</a>
+<span class="n">PrecisionSourceValues</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;database&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="PrecisionSource">
+<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.PrecisionSource">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrecisionSource</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<div class="viewcode-block" id="PrecisionSource.FILE">
+<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.PrecisionSource.FILE">[docs]</a>
+    <span class="n">FILE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PrecisionSource.DATABASE">
+<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.PrecisionSource.DATABASE">[docs]</a>
+    <span class="n">DATABASE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PrecisionSourceType">
+<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.PrecisionSourceType">[docs]</a>
+<span class="n">PrecisionSourceType</span> <span class="o">=</span> <span class="n">PrecisionSourceValues</span> <span class="o">|</span> <span class="n">PrecisionSource</span></div>
 
 
 
@@ -1357,11 +1383,17 @@
 
 <div class="viewcode-block" id="_ExchangeInfo.finalize">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange._ExchangeInfo.finalize">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fill_values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,),</span> <span class="n">precision_source</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_ExchangeData</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">fill_values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,),</span>
+        <span class="n">precision_source</span><span class="p">:</span> <span class="n">PrecisionSourceType</span> <span class="o">=</span> <span class="n">PrecisionSource</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_ExchangeData</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse all the data into ndarrays of the correct dtype and shape</span>
 
 <span class="sd">        Returns an ExchangeData dataclass</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">precision_source</span> <span class="o">=</span> <span class="n">PrecisionSource</span><span class="p">(</span><span class="n">precision_source</span><span class="p">)</span>
+
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finializing...&quot;</span><span class="p">)</span>
         <span class="n">single_profile</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctd_headers</span><span class="p">)</span>
 
@@ -1383,7 +1415,7 @@
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;exchange numeric data for </span><span class="si">{</span><span class="n">param</span><span class="o">.</span><span class="n">whp_name</span><span class="si">}</span><span class="s2"> has bad chars&quot;</span>
                     <span class="p">)</span>
-                <span class="k">if</span> <span class="n">precision_source</span> <span class="o">==</span> <span class="s2">&quot;file&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">precision_source</span> <span class="o">==</span> <span class="n">PrecisionSource</span><span class="o">.</span><span class="n">FILE</span><span class="p">:</span>
                     <span class="n">whp_param_precisions</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_numeric_precisions</span><span class="p">(</span><span class="n">param_col</span><span class="p">)</span>
                 <span class="n">param_col</span><span class="p">[</span><span class="n">fill_spaces</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;nan&quot;</span>
             <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span><span class="p">:</span>
@@ -1404,7 +1436,7 @@
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> error col exchange numeric data has bad chars&quot;</span>
                     <span class="p">)</span>
-                <span class="k">if</span> <span class="n">precision_source</span> <span class="o">==</span> <span class="s2">&quot;file&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">precision_source</span> <span class="o">==</span> <span class="n">PrecisionSource</span><span class="o">.</span><span class="n">FILE</span><span class="p">:</span>
                     <span class="n">whp_error_precisions</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_numeric_precisions</span><span class="p">(</span><span class="n">param_col</span><span class="p">)</span>
                 <span class="n">param_col</span><span class="p">[</span><span class="n">fill_spaces</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;nan&quot;</span>
             <span class="n">whp_error_cols</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_col</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype_map</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">dtype</span><span class="p">])</span>
@@ -1854,10 +1886,11 @@
     <span class="n">fill_values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,),</span>
     <span class="n">ftype</span><span class="p">:</span> <span class="n">FileType</span> <span class="o">|</span> <span class="n">FileTypes</span> <span class="o">=</span> <span class="n">FileType</span><span class="o">.</span><span class="n">BOTTLE</span><span class="p">,</span>
     <span class="n">checks</span><span class="p">:</span> <span class="n">CheckOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">precision_source</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">,</span>
+    <span class="n">precision_source</span><span class="p">:</span> <span class="n">PrecisionSourceType</span> <span class="o">=</span> <span class="n">PrecisionSource</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
     <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">,</span>
     <span class="n">ignore_columns</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+    <span class="n">precision_source</span> <span class="o">=</span> <span class="n">PrecisionSource</span><span class="p">(</span><span class="n">precision_source</span><span class="p">)</span>
     <span class="n">ftype</span> <span class="o">=</span> <span class="n">FileType</span><span class="p">(</span><span class="n">ftype</span><span class="p">)</span>
 
     <span class="n">_checks</span><span class="p">:</span> <span class="n">CheckOptions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;flags&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
@@ -1919,7 +1952,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">fill_values</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;-999&quot;</span><span class="p">,),</span>
     <span class="n">checks</span><span class="p">:</span> <span class="n">CheckOptions</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">precision_source</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">,</span>
+    <span class="n">precision_source</span><span class="p">:</span> <span class="n">PrecisionSourceType</span> <span class="o">=</span> <span class="n">PrecisionSource</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
     <span class="n">file_seperator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">keep_seperator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">,</span>
@@ -1927,6 +1960,8 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO</span>
 <span class="sd">    CF/netCDF structure&quot;&quot;&quot;</span>
+
+    <span class="n">precision_source</span> <span class="o">=</span> <span class="n">PrecisionSource</span><span class="p">(</span><span class="n">precision_source</span><span class="p">)</span>
 
     <span class="n">_checks</span><span class="p">:</span> <span class="n">CheckOptions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;flags&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">checks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

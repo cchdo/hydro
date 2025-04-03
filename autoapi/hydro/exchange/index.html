@@ -373,6 +373,12 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.FileTypes" title="hydro.exchange.FileTypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileTypes</span></code></a></p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.PrecisionSourceValues" title="hydro.exchange.PrecisionSourceValues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrecisionSourceValues</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.PrecisionSourceType" title="hydro.exchange.PrecisionSourceType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrecisionSourceType</span></code></a></p></td>
+<td><p></p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.WHPNameIndex" title="hydro.exchange.WHPNameIndex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WHPNameIndex</span></code></a></p></td>
 <td><p></p></td>
 </tr>
@@ -397,13 +403,16 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.FileType" title="hydro.exchange.FileType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FileType</span></code></a></p></td>
 <td><p>Create a collection of name/value pairs.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange._ExchangeData" title="hydro.exchange._ExchangeData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ExchangeData</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.PrecisionSource" title="hydro.exchange.PrecisionSource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrecisionSource</span></code></a></p></td>
+<td><p>Enum where members are also (and must be) strings</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange._ExchangeData" title="hydro.exchange._ExchangeData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ExchangeData</span></code></a></p></td>
 <td><p>Dataclass containing exchange data which has been parsed into ndarrays</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange._ExchangeInfo" title="hydro.exchange._ExchangeInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ExchangeInfo</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange._ExchangeInfo" title="hydro.exchange._ExchangeInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_ExchangeInfo</span></code></a></p></td>
 <td><p>Low level dataclass containing the parts of an exchange file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.CheckOptions" title="hydro.exchange.CheckOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CheckOptions</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.CheckOptions" title="hydro.exchange.CheckOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CheckOptions</span></code></a></p></td>
 <td><p>Flags and config that controll how strict the file checks are</p></td>
 </tr>
 </tbody>
@@ -655,6 +664,33 @@ attributes – see the documentation for details.</p>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.PrecisionSourceValues">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">PrecisionSourceValues</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#PrecisionSourceValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.PrecisionSourceValues" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.exchange.PrecisionSource">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">PrecisionSource</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#PrecisionSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.PrecisionSource" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.StrEnum" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.StrEnum</span></code></a></p>
+<p>Enum where members are also (and must be) strings</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange.PrecisionSource.FILE">
+<span class="sig-name descname"><span class="pre">FILE</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#PrecisionSource.FILE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.PrecisionSource.FILE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.exchange.PrecisionSource.DATABASE">
+<span class="sig-name descname"><span class="pre">DATABASE</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#PrecisionSource.DATABASE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.PrecisionSource.DATABASE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hydro.exchange.PrecisionSourceType">
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">PrecisionSourceType</span></span><a class="reference internal" href="../../../_modules/hydro/exchange.html#PrecisionSourceType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.PrecisionSourceType" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="hydro.exchange.WHPNameIndex">
@@ -1066,12 +1102,15 @@ One line per entry.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hydro.exchange._ExchangeInfo.finalize">
-<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('-999',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.finalize" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('-999',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PrecisionSource.FILE</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_ExchangeInfo.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._ExchangeInfo.finalize" title="Link to this definition">¶</a></dt>
 <dd><p>Parse all the data into ndarrays of the correct dtype and shape</p>
 <p>Returns an ExchangeData dataclass</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#hydro.exchange._ExchangeData" title="hydro.exchange._ExchangeData">_ExchangeData</a></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>precision_source</strong> (<em>PrecisionSourceType</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#hydro.exchange._ExchangeData" title="hydro.exchange._ExchangeData">_ExchangeData</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1284,13 +1323,14 @@ Date is replaced/renamed to maintain variable order in the xr.DataSet</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hydro.exchange.read_csv">
-<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">read_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_obj</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('-999',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ftype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">FileType.BOTTLE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#read_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.read_csv" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">read_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_obj</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('-999',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ftype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">FileType.BOTTLE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PrecisionSource.FILE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#read_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.read_csv" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename_or_obj</strong> (<em>ExchangeIO</em>)</p></li>
 <li><p><strong>ftype</strong> (<a class="reference internal" href="#hydro.exchange.FileType" title="hydro.exchange.FileType"><em>FileType</em></a><em> | </em><em>FileTypes</em>)</p></li>
 <li><p><strong>checks</strong> (<a class="reference internal" href="#hydro.exchange.CheckOptions" title="hydro.exchange.CheckOptions"><em>CheckOptions</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>precision_source</strong> (<em>PrecisionSourceType</em>)</p></li>
 <li><p><strong>ignore_columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><em>collections.abc.Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
@@ -1302,7 +1342,7 @@ Date is replaced/renamed to maintain variable order in the xr.DataSet</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hydro.exchange.read_exchange">
-<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">read_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_obj</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('-999',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_seperator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_seperator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#read_exchange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.read_exchange" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">read_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_obj</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('-999',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PrecisionSource.FILE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_seperator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_seperator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#read_exchange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.read_exchange" title="Link to this definition">¶</a></dt>
 <dd><p>Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
 CF/netCDF structure</p>
 <dl class="field-list simple">
@@ -1310,6 +1350,7 @@ CF/netCDF structure</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename_or_obj</strong> (<em>ExchangeIO</em>)</p></li>
 <li><p><strong>checks</strong> (<a class="reference internal" href="#hydro.exchange.CheckOptions" title="hydro.exchange.CheckOptions"><em>CheckOptions</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>precision_source</strong> (<em>PrecisionSourceType</em>)</p></li>
 <li><p><strong>ignore_columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.13)"><em>collections.abc.Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
@@ -1424,6 +1465,13 @@ CF/netCDF structure</p>
 <li><a class="reference internal" href="#hydro.exchange.FileType.BOTTLE"><code class="docutils literal notranslate"><span class="pre">FileType.BOTTLE</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#hydro.exchange.PrecisionSourceValues"><code class="docutils literal notranslate"><span class="pre">PrecisionSourceValues</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.PrecisionSource"><code class="docutils literal notranslate"><span class="pre">PrecisionSource</span></code></a><ul>
+<li><a class="reference internal" href="#hydro.exchange.PrecisionSource.FILE"><code class="docutils literal notranslate"><span class="pre">PrecisionSource.FILE</span></code></a></li>
+<li><a class="reference internal" href="#hydro.exchange.PrecisionSource.DATABASE"><code class="docutils literal notranslate"><span class="pre">PrecisionSource.DATABASE</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hydro.exchange.PrecisionSourceType"><code class="docutils literal notranslate"><span class="pre">PrecisionSourceType</span></code></a></li>
 <li><a class="reference internal" href="#hydro.exchange.WHPNameIndex"><code class="docutils literal notranslate"><span class="pre">WHPNameIndex</span></code></a></li>
 <li><a class="reference internal" href="#hydro.exchange.WHPParamUnit"><code class="docutils literal notranslate"><span class="pre">WHPParamUnit</span></code></a></li>
 <li><a class="reference internal" href="#hydro.exchange._has_no_nones"><code class="docutils literal notranslate"><span class="pre">_has_no_nones()</span></code></a></li>

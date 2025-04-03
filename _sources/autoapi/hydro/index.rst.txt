@@ -37,9 +37,9 @@ Functions
 Package Contents
 ----------------
 
-.. py:function:: read_csv(filename_or_obj, *, fill_values=('-999', ), ftype = FileType.BOTTLE, checks = None, precision_source='file', encoding='utf8', ignore_columns = None)
+.. py:function:: read_csv(filename_or_obj, *, fill_values=('-999', ), ftype = FileType.BOTTLE, checks = None, precision_source = PrecisionSource.FILE, encoding='utf8', ignore_columns = None)
 
-.. py:function:: read_exchange(filename_or_obj, *, fill_values=('-999', ), checks = None, precision_source='file', file_seperator=None, keep_seperator=True, encoding='utf8', ignore_columns = None)
+.. py:function:: read_exchange(filename_or_obj, *, fill_values=('-999', ), checks = None, precision_source = PrecisionSource.FILE, file_seperator=None, keep_seperator=True, encoding='utf8', ignore_columns = None)
 
    Loads the data from filename_or_obj and returns a xr.Dataset with the CCHDO
    CF/netCDF structure
