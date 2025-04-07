@@ -9,6 +9,24 @@ from cchdo.hydro.flags import (
     ExchangeCTDFlag,
     ExchangeSampleFlag,
 )
+from cchdo.hydro.sorting import sort_ds
+
+
+def check_sorted(dataset: xr.Dataset) -> bool:
+    """Check that the dataset is sorted by the rules in :func:`sort_ds`"""
+    sorted_ds = sort_ds(dataset.copy(deep=True))
+
+    return all(
+        [
+            np.allclose(sorted_ds.pressure, dataset.pressure, equal_nan=True),
+            np.all(
+                (sorted_ds.time == dataset.time)
+                | (np.isnat(sorted_ds.time) == np.isnat(dataset.time))
+            ),
+            np.allclose(sorted_ds.latitude, dataset.latitude, equal_nan=True),
+            np.allclose(sorted_ds.longitude, dataset.longitude, equal_nan=True),
+        ]
+    )
 
 
 def check_ancillary_variables(ds: xr.Dataset):
