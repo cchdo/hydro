@@ -239,6 +239,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/migration/index.html">hydro.migration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/rename/index.html">hydro.rename</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/hydro/sorting/index.html">hydro.sorting</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../autoapi/hydro/tests/index.html">hydro.tests</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of hydro.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/conftest/index.html">hydro.tests.conftest</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../autoapi/hydro/tests/data/index.html">hydro.tests.data</a></li>
@@ -351,6 +352,7 @@
     <span class="n">ExchangeFlag</span><span class="p">,</span>
     <span class="n">ExchangeSampleFlag</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.sorting</span><span class="w"> </span><span class="kn">import</span> <span class="n">sort_ds</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">FileType</span><span class="p">,</span>
     <span class="n">FileTypeType</span><span class="p">,</span>
@@ -1272,62 +1274,6 @@
 <div class="viewcode-block" id="ExchangeIO">
 <a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.ExchangeIO">[docs]</a>
 <span class="n">ExchangeIO</span> <span class="o">=</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="n">io</span><span class="o">.</span><span class="n">BufferedIOBase</span></div>
-
-
-
-<div class="viewcode-block" id="sort_ds">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.sort_ds">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">sort_ds</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sorts the data values in the dataset</span>
-
-<span class="sd">    Ensures that profiles are in the following order:</span>
-
-<span class="sd">    * Earlier before later (time will increase)</span>
-<span class="sd">    * Southerly before northerly (latitude will increase)</span>
-<span class="sd">    * Westerly before easterly (longitude will increase)</span>
-
-<span class="sd">    The two xy sorts are esentially tie breakers for when we are missing &quot;time&quot;</span>
-
-<span class="sd">    Inside profiles:</span>
-
-<span class="sd">    * Shallower before Deeper (pressure will increase)</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># first make sure everything is sorted by pressure</span>
-    <span class="c1"># this is being done &quot;manually&quot; here becuase xarray only supports 1D sorting</span>
-    <span class="n">pressure</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">pressure</span>
-    <span class="n">sorted_indicies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">pressure</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-        <span class="c1"># this check ensures that the variable being sorted</span>
-        <span class="c1"># shares the first two dims as pressure, but allows for more dims past that</span>
-        <span class="k">if</span> <span class="n">dataset</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pressure</span><span class="o">.</span><span class="n">dims</span><span class="p">))]</span> <span class="o">==</span> <span class="n">pressure</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
-            <span class="n">dataset</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take_along_axis</span><span class="p">(</span>
-                <span class="n">dataset</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">sorted_indicies</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
-            <span class="p">)</span>
-
-    <span class="c1"># now we can just use the xarray sorting, which only supports 1D</span>
-    <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sortby</span><span class="p">([</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;latitude&quot;</span><span class="p">,</span> <span class="s2">&quot;longitude&quot;</span><span class="p">])</span></div>
-
-
-
-<div class="viewcode-block" id="check_sorted">
-<a class="viewcode-back" href="../../autoapi/hydro/exchange/index.html#hydro.exchange.check_sorted">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">check_sorted</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check that the dataset is sorted by the rules in :func:`sort_ds`&quot;&quot;&quot;</span>
-    <span class="n">sorted_ds</span> <span class="o">=</span> <span class="n">sort_ds</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span>
-        <span class="p">[</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">sorted_ds</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">sorted_ds</span><span class="o">.</span><span class="n">time</span> <span class="o">==</span> <span class="n">dataset</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
-                <span class="o">|</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnat</span><span class="p">(</span><span class="n">sorted_ds</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">isnat</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
-            <span class="p">),</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">sorted_ds</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">sorted_ds</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-        <span class="p">]</span>
-    <span class="p">)</span></div>
 
 
 

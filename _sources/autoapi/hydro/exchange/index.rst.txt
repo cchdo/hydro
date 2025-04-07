@@ -53,8 +53,6 @@ Functions
    hydro.exchange.check_is_subset_shape
    hydro.exchange._get_fill_locs
    hydro.exchange._is_valid_exchange_numeric
-   hydro.exchange.sort_ds
-   hydro.exchange.check_sorted
    hydro.exchange._load_raw_exchange
    hydro.exchange.read_csv
    hydro.exchange.read_exchange
@@ -329,29 +327,6 @@ Package Contents
 .. py:function:: _is_valid_exchange_numeric(data)
 
 .. py:data:: ExchangeIO
-
-.. py:function:: sort_ds(dataset)
-
-   Sorts the data values in the dataset
-
-   Ensures that profiles are in the following order:
-
-   * Earlier before later (time will increase)
-   * Southerly before northerly (latitude will increase)
-   * Westerly before easterly (longitude will increase)
-
-   The two xy sorts are esentially tie breakers for when we are missing "time"
-
-   Inside profiles:
-
-   * Shallower before Deeper (pressure will increase)
-
-
-
-.. py:function:: check_sorted(dataset)
-
-   Check that the dataset is sorted by the rules in :func:`sort_ds`
-
 
 .. py:function:: _load_raw_exchange(filename_or_obj, *, file_seperator = None, keep_seperator=True, encoding='utf8')
 

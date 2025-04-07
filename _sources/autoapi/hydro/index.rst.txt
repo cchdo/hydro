@@ -24,6 +24,7 @@ Submodules
    /autoapi/hydro/legacy/index
    /autoapi/hydro/migration/index
    /autoapi/hydro/rename/index
+   /autoapi/hydro/sorting/index
    /autoapi/hydro/tests/index
    /autoapi/hydro/tutorial/index
    /autoapi/hydro/types/index

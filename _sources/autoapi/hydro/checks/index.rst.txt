@@ -9,12 +9,18 @@ Functions
 
 .. autoapisummary::
 
+   hydro.checks.check_sorted
    hydro.checks.check_ancillary_variables
    hydro.checks.check_flags
 
 
 Module Contents
 ---------------
+
+.. py:function:: check_sorted(dataset)
+
+   Check that the dataset is sorted by the rules in :func:`sort_ds`
+
 
 .. py:function:: check_ancillary_variables(ds)
 

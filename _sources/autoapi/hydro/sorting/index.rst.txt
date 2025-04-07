@@ -1,0 +1,35 @@
+hydro.sorting
+=============
+
+.. py:module:: hydro.sorting
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hydro.sorting.sort_ds
+
+
+Module Contents
+---------------
+
+.. py:function:: sort_ds(dataset)
+
+   Sorts the data values in the dataset
+
+   Ensures that profiles are in the following order:
+
+   * Earlier before later (time will increase)
+   * Southerly before northerly (latitude will increase)
+   * Westerly before easterly (longitude will increase)
+
+   The two xy sorts are esentially tie breakers for when we are missing "time"
+
+   Inside profiles:
+
+   * Shallower before Deeper (pressure will increase)
+
+
+

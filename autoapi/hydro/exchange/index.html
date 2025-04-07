@@ -240,6 +240,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../migration/index.html">hydro.migration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../rename/index.html">hydro.rename</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sorting/index.html">hydro.sorting</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../tests/index.html">hydro.tests</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of hydro.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../tests/conftest/index.html">hydro.tests.conftest</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../tests/data/index.html">hydro.tests.data</a></li>
@@ -393,12 +394,6 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange._is_valid_exchange_numeric" title="hydro.exchange._is_valid_exchange_numeric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_is_valid_exchange_numeric</span></code></a>(data)</p></td>
 <td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange.sort_ds" title="hydro.exchange.sort_ds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_ds</span></code></a>(dataset)</p></td>
-<td><p>Sorts the data values in the dataset</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.exchange.check_sorted" title="hydro.exchange.check_sorted"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_sorted</span></code></a>(dataset)</p></td>
-<td><p>Check that the dataset is sorted by the rules in <a class="reference internal" href="#hydro.exchange.sort_ds" title="hydro.exchange.sort_ds"><code class="xref py py-func docutils literal notranslate"><span class="pre">sort_ds()</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#hydro.exchange._load_raw_exchange" title="hydro.exchange._load_raw_exchange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_load_raw_exchange</span></code></a>(filename_or_obj, *[, ...])</p></td>
 <td><p></p></td>
@@ -823,45 +818,6 @@ One line per entry.</p>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="hydro.exchange.sort_ds">
-<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">sort_ds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#sort_ds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.sort_ds" title="Link to this definition">¶</a></dt>
-<dd><p>Sorts the data values in the dataset</p>
-<p>Ensures that profiles are in the following order:</p>
-<ul class="simple">
-<li><p>Earlier before later (time will increase)</p></li>
-<li><p>Southerly before northerly (latitude will increase)</p></li>
-<li><p>Westerly before easterly (longitude will increase)</p></li>
-</ul>
-<p>The two xy sorts are esentially tie breakers for when we are missing “time”</p>
-<p>Inside profiles:</p>
-<ul class="simple">
-<li><p>Shallower before Deeper (pressure will increase)</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.3.2.dev0)"><em>xarray.Dataset</em></a>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.3.2.dev0)">xarray.Dataset</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="hydro.exchange.check_sorted">
-<span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">check_sorted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#check_sorted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange.check_sorted" title="Link to this definition">¶</a></dt>
-<dd><p>Check that the dataset is sorted by the rules in <a class="reference internal" href="#hydro.exchange.sort_ds" title="hydro.exchange.sort_ds"><code class="xref py py-func docutils literal notranslate"><span class="pre">sort_ds()</span></code></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.3.2.dev0)"><em>xarray.Dataset</em></a>)</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="hydro.exchange._load_raw_exchange">
 <span class="sig-prename descclassname"><span class="pre">hydro.exchange.</span></span><span class="sig-name descname"><span class="pre">_load_raw_exchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_or_obj</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_seperator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_seperator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/exchange.html#_load_raw_exchange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.exchange._load_raw_exchange" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
@@ -1067,8 +1023,6 @@ CF/netCDF structure</p>
 </li>
 <li><a class="reference internal" href="#hydro.exchange._is_valid_exchange_numeric"><code class="docutils literal notranslate"><span class="pre">_is_valid_exchange_numeric()</span></code></a></li>
 <li><a class="reference internal" href="#hydro.exchange.ExchangeIO"><code class="docutils literal notranslate"><span class="pre">ExchangeIO</span></code></a></li>
-<li><a class="reference internal" href="#hydro.exchange.sort_ds"><code class="docutils literal notranslate"><span class="pre">sort_ds()</span></code></a></li>
-<li><a class="reference internal" href="#hydro.exchange.check_sorted"><code class="docutils literal notranslate"><span class="pre">check_sorted()</span></code></a></li>
 <li><a class="reference internal" href="#hydro.exchange._load_raw_exchange"><code class="docutils literal notranslate"><span class="pre">_load_raw_exchange()</span></code></a></li>
 <li><a class="reference internal" href="#hydro.exchange.CheckOptions"><code class="docutils literal notranslate"><span class="pre">CheckOptions</span></code></a><ul>
 <li><a class="reference internal" href="#hydro.exchange.CheckOptions.flags"><code class="docutils literal notranslate"><span class="pre">CheckOptions.flags</span></code></a></li>

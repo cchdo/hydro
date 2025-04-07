@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 8.2.1 and Furo 2024.08.06 -->
-        <title>hydro.consts - hydro documentation</title>
+        <title>hydro.sorting - hydro documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -294,80 +294,44 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>Source code for hydro.consts</h1><div class="highlight"><pre>
+          <h1>Source code for hydro.sorting</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.params</span><span class="w"> </span><span class="kn">import</span> <span class="n">WHPNames</span>
-
-<div class="viewcode-block" id="DIMS">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.DIMS">[docs]</a>
-<span class="n">DIMS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="s2">&quot;N_LEVELS&quot;</span><span class="p">)</span></div>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
 
-<div class="viewcode-block" id="GEOMETRY_VARS">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.GEOMETRY_VARS">[docs]</a>
-<span class="n">GEOMETRY_VARS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;expocode&quot;</span><span class="p">,</span> <span class="s2">&quot;station&quot;</span><span class="p">,</span> <span class="s2">&quot;cast&quot;</span><span class="p">,</span> <span class="s2">&quot;section_id&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="sort_ds">
+<a class="viewcode-back" href="../../autoapi/hydro/sorting/index.html#hydro.sorting.sort_ds">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_ds</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sorts the data values in the dataset</span>
 
+<span class="sd">    Ensures that profiles are in the following order:</span>
 
-<div class="viewcode-block" id="FILLS_MAP">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.FILLS_MAP">[docs]</a>
-<span class="n">FILLS_MAP</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;string&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="s2">&quot;decimal&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">}</span></div>
+<span class="sd">    * Earlier before later (time will increase)</span>
+<span class="sd">    * Southerly before northerly (latitude will increase)</span>
+<span class="sd">    * Westerly before easterly (longitude will increase)</span>
 
+<span class="sd">    The two xy sorts are esentially tie breakers for when we are missing &quot;time&quot;</span>
 
-<div class="viewcode-block" id="EXPOCODE">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.EXPOCODE">[docs]</a>
-<span class="n">EXPOCODE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;EXPOCODE&quot;</span><span class="p">]</span></div>
+<span class="sd">    Inside profiles:</span>
 
-<div class="viewcode-block" id="STNNBR">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.STNNBR">[docs]</a>
-<span class="n">STNNBR</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;STNNBR&quot;</span><span class="p">]</span></div>
+<span class="sd">    * Shallower before Deeper (pressure will increase)</span>
 
-<div class="viewcode-block" id="CASTNO">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.CASTNO">[docs]</a>
-<span class="n">CASTNO</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;CASTNO&quot;</span><span class="p">]</span></div>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># first make sure everything is sorted by pressure</span>
+    <span class="c1"># this is being done &quot;manually&quot; here becuase xarray only supports 1D sorting</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">pressure</span>
+    <span class="n">sorted_indicies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">pressure</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SAMPNO">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.SAMPNO">[docs]</a>
-<span class="n">SAMPNO</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;SAMPNO&quot;</span><span class="p">]</span></div>
+    <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+        <span class="c1"># this check ensures that the variable being sorted</span>
+        <span class="c1"># shares the first two dims as pressure, but allows for more dims past that</span>
+        <span class="k">if</span> <span class="n">dataset</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pressure</span><span class="o">.</span><span class="n">dims</span><span class="p">))]</span> <span class="o">==</span> <span class="n">pressure</span><span class="o">.</span><span class="n">dims</span><span class="p">:</span>
+            <span class="n">dataset</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take_along_axis</span><span class="p">(</span>
+                <span class="n">dataset</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">sorted_indicies</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span>
 
-<div class="viewcode-block" id="DATE">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.DATE">[docs]</a>
-<span class="n">DATE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;DATE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="TIME">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.TIME">[docs]</a>
-<span class="n">TIME</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;TIME&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="LATITUDE">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.LATITUDE">[docs]</a>
-<span class="n">LATITUDE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;LATITUDE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="LONGITUDE">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.LONGITUDE">[docs]</a>
-<span class="n">LONGITUDE</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;LONGITUDE&quot;</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="CTDPRS">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.CTDPRS">[docs]</a>
-<span class="n">CTDPRS</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[(</span><span class="s2">&quot;CTDPRS&quot;</span><span class="p">,</span> <span class="s2">&quot;DBAR&quot;</span><span class="p">)]</span></div>
-
-<div class="viewcode-block" id="BTLNBR">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.BTLNBR">[docs]</a>
-<span class="n">BTLNBR</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[</span><span class="s2">&quot;BTLNBR&quot;</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="COORDS">
-<a class="viewcode-back" href="../../autoapi/hydro/consts/index.html#hydro.consts.COORDS">[docs]</a>
-<span class="n">COORDS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">EXPOCODE</span><span class="p">,</span>
-    <span class="n">STNNBR</span><span class="p">,</span>
-    <span class="n">CASTNO</span><span class="p">,</span>
-    <span class="n">SAMPNO</span><span class="p">,</span>
-    <span class="n">DATE</span><span class="p">,</span>
-    <span class="n">TIME</span><span class="p">,</span>
-    <span class="n">LATITUDE</span><span class="p">,</span>
-    <span class="n">LONGITUDE</span><span class="p">,</span>
-    <span class="n">CTDPRS</span><span class="p">,</span>
-<span class="p">]</span></div>
+    <span class="c1"># now we can just use the xarray sorting, which only supports 1D</span>
+    <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">sortby</span><span class="p">([</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;latitude&quot;</span><span class="p">,</span> <span class="s2">&quot;longitude&quot;</span><span class="p">])</span></div>
 
 </pre></div>
         </article>
