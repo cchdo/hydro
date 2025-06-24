@@ -606,7 +606,10 @@
 
     <span class="n">out_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
     <span class="n">cruises</span><span class="p">,</span> <span class="n">files</span> <span class="o">=</span> <span class="n">cchdo_loader</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
-    <span class="n">file_paths</span> <span class="o">=</span> <span class="p">[(</span><span class="n">cached_file_loader</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Loading data files&quot;</span><span class="p">)]</span>
+    <span class="n">file_paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">cached_file_loader</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">file</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Loading data files&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
 
     <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">all_unknown_params</span> <span class="o">=</span> <span class="p">{}</span>
