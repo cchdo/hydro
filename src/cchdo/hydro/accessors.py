@@ -240,7 +240,7 @@ class CCHDOAccessor:
         The file it produces is in no way stable.
         """
         try:
-            from scipy.io import savemat as scipy_savemat  # noqa
+            from scipy.io import savemat as scipy_savemat
         except ImportError as error:
             raise ImportError("scipy is required for mat file saving") from error
 
@@ -383,7 +383,7 @@ class CCHDOAccessor:
             return f"{deg:>3d} {mins:05.2f} {hem}"
 
         col_widths = [len(s) for s in SUM_COLUMN_HEADERS_1]
-        col_widths = [max(x, len(s)) for x, s in zip(col_widths, SUM_COLUMN_HEADERS_2)]
+        col_widths = [max(x, len(s)) for x, s in zip(col_widths, SUM_COLUMN_HEADERS_2, strict=True)]
 
         sum_rows = []
         for _, prof in self._obj.groupby("N_PROF", squeeze=False):
@@ -432,10 +432,10 @@ class CCHDOAccessor:
             )
             row[17] = ""  # "COMMENTS"
             sum_rows.append(row)
-            col_widths = [max(x, len(s)) for x, s in zip(col_widths, row)]
+            col_widths = [max(x, len(s)) for x, s in zip(col_widths, row, strict=True)]
 
         formats = []
-        for width, align in zip(col_widths, SUM_COL_JUSTIFICATION):
+        for width, align in zip(col_widths, SUM_COL_JUSTIFICATION, strict=True):
             formats.append("{: " + align + str(width) + "}")
         format_str = " ".join(formats)
 
@@ -813,7 +813,7 @@ class CCHDOAccessor:
                 output.extend(self._make_params_units_line(params))
 
                 data_block = self._make_data_block(params)
-                for row in zip(*data_block):
+                for row in zip(*data_block, strict=True):
                     output.append(",".join(str(cell) for cell in row))
 
                 output.append("END_DATA\n")
@@ -832,7 +832,7 @@ class CCHDOAccessor:
 
             data_block = self._make_data_block(params)
 
-            for row in zip(*data_block):
+            for row in zip(*data_block, strict=True):
                 output.append(",".join(str(cell) for cell in row))
 
             output.append("END_DATA\n")

@@ -112,7 +112,7 @@ def _has_no_nones(val: list[str | None]) -> TypeGuard[list[str]]:
 def _transform_whp_to_csv(params: list[str], units: list[str]) -> list[str]:
     slots: list[str | None] = [None for _ in range(len(params))]
 
-    pairs = list(zip(params, units))
+    pairs = list(zip(params, units, strict=True))
     mutable_units = list(units)
 
     if len(set(pairs)) != len(pairs):
@@ -130,13 +130,13 @@ def _transform_whp_to_csv(params: list[str], units: list[str]) -> list[str]:
 
     flags = {}
     # param pass
-    for index, (param, unit) in enumerate(zip(params, mutable_units)):
+    for index, (param, unit) in enumerate(zip(params, mutable_units, strict=True)):
         if param.endswith("_FLAG_W"):
             flags[param] = index
         slots[index] = f"{param} [{unit}]"
 
     # flag pass
-    for index, (param, unit) in enumerate(zip(params, mutable_units)):
+    for index, (param, unit) in enumerate(zip(params, mutable_units, strict=True)):
         if param.endswith("_FLAG_W"):
             continue
         if (flag := f"{param}_FLAG_W") in flags:
@@ -523,7 +523,7 @@ class _ExchangeInfo:
     def comments(self):
         """Returns the comments of the exchange file with leading # stripped"""
         raw_comments = self._raw_lines[self.comments_slice]
-        return [c[1:] if c.startswith("#") else c for c in raw_comments]
+        return [c.removeprefix("#") for c in raw_comments]
 
     @property
     def ctd_headers(self):

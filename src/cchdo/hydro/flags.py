@@ -54,9 +54,9 @@ class ExchangeBottleFlag(ExchangeFlag):
             3: "Leaking.",
             4: "Did not trip correctly.",
             5: "Not reported.",
-            6: "Significant discrepancy in measured values between Gerard and Niskin bottles.",  # noqa: E501
+            6: "Significant discrepancy in measured values between Gerard and Niskin bottles.",
             7: "Unknown problem.",
-            8: "Pair did not trip correctly. Note that the Niskin bottle can trip at an unplanned depth while the Gerard trips correctly and vice versa.",  # noqa: E501
+            8: "Pair did not trip correctly. Note that the Niskin bottle can trip at an unplanned depth while the Gerard trips correctly and vice versa.",
             9: "Samples not drawn from this bottle.",
         }
 
@@ -81,7 +81,7 @@ class ExchangeSampleFlag(ExchangeFlag):
     def _flag_definitions(self):
         return {
             0: "No Flag assigned",
-            1: "Sample for this measurement was drawn from water bottle but analysis not received.",  # noqa: E501
+            1: "Sample for this measurement was drawn from water bottle but analysis not received.",
             2: "Acceptable measurement.",
             3: "Questionable measurement.",
             4: "Bad measurement.",

@@ -102,26 +102,26 @@ target-version = "py311"
 extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
-# E402: module level import not at top of file
-# E501: line too long - let black worry about that
-# E731: do not assign a lambda expression, use a def
 ignore = [
-    "E402",
-    "E501",
-    "E731",
+    "E402", # module level import not at top of file
+    "E731", # do not assign a lambda expression, use a def
 ]
-select = [
-    # Pyflakes
-    "F",
-    # Pycodestyle
-    "E",
-    "W",
-    # isort
-    "I",
-    # Pyupgrade
-    "UP",
-    # Tidy imports
-    "TID",
+extend-select = [
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "ISC",  # flake8-implicit-str-concat
+  "PIE",  # flake8-pie
+  "TID",  # flake8-tidy-imports (absolute imports)
+  "PYI",  # flake8-pyi
+  "FLY",  # flynt
+  "I",    # isort
+  "PERF", # Perflint
+  "W",    # pycodestyle warnings
+  "PGH",  # pygrep-hooks
+  "PLE",  # Pylint Errors
+  "UP",   # pyupgrade
+  "FURB", # refurb
+  "RUF",
 ]
 
 [tool.ruff.lint.isort]
