@@ -544,8 +544,8 @@ class CCHDOAccessor:
             )
         return self._obj.isel(N_LEVELS=(self._obj.sample != "")[0])
 
-    date_names = {WHPNames["DATE"], WHPNames["BTL_DATE"]}
-    time_names = {WHPNames["TIME"], WHPNames["BTL_TIME"]}
+    date_names = frozenset((WHPNames["DATE"], WHPNames["BTL_DATE"]))
+    time_names = frozenset((WHPNames["TIME"], WHPNames["BTL_TIME"]))
 
     @property
     def file_type(self):

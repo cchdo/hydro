@@ -5,7 +5,7 @@ import traceback
 from html import escape
 
 from js import Uint8Array, console  # noqa: F401
-from pyscript import display  # type: ignore
+from pyscript import display
 
 from cchdo.hydro import __version__ as hydro_version
 from cchdo.hydro import accessors, read_exchange  # noqa: F401
@@ -18,7 +18,7 @@ def logger(msg):
 
 class DisplaylHandler(logging.Handler):
     def emit(self, record) -> None:
-        logger(self.formatter.format(record))  # type: ignore
+        logger(self.formatter.format(record))
 
 
 root = logging.getLogger()

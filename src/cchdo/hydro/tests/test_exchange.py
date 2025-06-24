@@ -4,7 +4,7 @@ from importlib.resources import open_binary
 import numpy as np
 import pytest
 
-from cchdo.hydro import accessors  # noqa
+from cchdo.hydro import accessors  # noqa: F401
 from cchdo.hydro.exchange import read_exchange
 from cchdo.hydro.exchange.exceptions import (
     ExchangeBOMError,

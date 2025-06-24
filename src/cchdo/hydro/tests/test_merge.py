@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_equal
 
-from cchdo.hydro import accessors  # noqa
+from cchdo.hydro import accessors  # noqa: F401
 from cchdo.hydro.exchange.exceptions import ExchangeDataFlagPairError
 
 

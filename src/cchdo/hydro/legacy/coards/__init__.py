@@ -307,8 +307,9 @@ def get_dataarrays(ds: xr.Dataset):
 
         if data.dtype.kind in "iuf":
             if np.all(np.isnan(data)):
-                attrs["data_min"] = float("-inf")  # type: ignore
-                attrs["data_max"] = float("inf")  # type: ignore
+                # the proper fix here would be to make a type dict that knows what is going on with each key
+                attrs["data_min"] = float("-inf")  # type: ignore[assignment]
+                attrs["data_max"] = float("inf")  # type: ignore[assignment]
             else:
                 attrs["data_min"] = np.nanmin(data)
                 attrs["data_max"] = np.nanmax(data)
