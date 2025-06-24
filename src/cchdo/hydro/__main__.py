@@ -268,7 +268,10 @@ def status_exchange(
 
     out_path = Path(out_dir)
     cruises, files = cchdo_loader(dtype)
-    file_paths = [(cached_file_loader(file), file) for file in track(files, description="Loading data files")]
+    file_paths = [
+        (cached_file_loader(file), file)
+        for file in track(files, description="Loading data files")
+    ]
 
     results = []
     all_unknown_params = {}

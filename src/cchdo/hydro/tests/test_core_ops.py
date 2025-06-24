@@ -267,7 +267,8 @@ def test_remove_param(param, flag, error, empty, require_empty):
 
     if not all(bools):
         _, _params, _units, _data = zip(
-            *filter(lambda x: not x[0], zip(bools, params, units, data, strict=True)), strict=True
+            *filter(lambda x: not x[0], zip(bools, params, units, data, strict=True)),
+            strict=True,
         )
     else:
         _params = ()

@@ -59,18 +59,18 @@ def gen_template(
     ftype = FileType(ftype)
 
     exclude = {
-            "EXPOCODE",
-            "STNNBR",
-            "CASTNO",
-            "SAMPNO",
-            "LATITUDE",
-            "LONGITUDE",
-            "DATE",
-            "TIME",
-            "CTDPRS",
-            "BTL_TIME",
-            "BTL_DATE",
-        }
+        "EXPOCODE",
+        "STNNBR",
+        "CASTNO",
+        "SAMPNO",
+        "LATITUDE",
+        "LONGITUDE",
+        "DATE",
+        "TIME",
+        "CTDPRS",
+        "BTL_TIME",
+        "BTL_DATE",
+    }
 
     params = [
         "EXPOCODE",

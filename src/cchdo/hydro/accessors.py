@@ -383,7 +383,10 @@ class CCHDOAccessor:
             return f"{deg:>3d} {mins:05.2f} {hem}"
 
         col_widths = [len(s) for s in SUM_COLUMN_HEADERS_1]
-        col_widths = [max(x, len(s)) for x, s in zip(col_widths, SUM_COLUMN_HEADERS_2, strict=True)]
+        col_widths = [
+            max(x, len(s))
+            for x, s in zip(col_widths, SUM_COLUMN_HEADERS_2, strict=True)
+        ]
 
         sum_rows = []
         for _, prof in self._obj.groupby("N_PROF", squeeze=False):

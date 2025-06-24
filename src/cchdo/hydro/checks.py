@@ -131,7 +131,7 @@ def check_flags(dataset: xr.Dataset, raises=True):
             # TODO deal with strs
 
             if np.issubdtype(data.values.dtype, np.number):
-                fill_value_mismatch: xr.DataArray = ~(np.isfinite(data) ^ has_fill)  #type: ignore[assignment]
+                fill_value_mismatch: xr.DataArray = ~(np.isfinite(data) ^ has_fill)  # type: ignore[assignment]
                 if np.any(fill_value_mismatch):
                     fill_value_mismatch.attrs["comments"] = (
                         f"This is a boolean array in the same shape as '{data.name}' which is truthy where invalid values exist"

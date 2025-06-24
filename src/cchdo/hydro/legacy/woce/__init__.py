@@ -296,10 +296,18 @@ def write_data(ds, columns, base_format):
 
         if acc.FLAG_NAME in column.attrs:
             flags.append(
-                [f"{x:1d}" for x in column.attrs[acc.FLAG_NAME].fillna(9).to_numpy().astype(int)]
+                [
+                    f"{x:1d}"
+                    for x in column.attrs[acc.FLAG_NAME]
+                    .fillna(9)
+                    .to_numpy()
+                    .astype(int)
+                ]
             )
 
-    for row_d, row_f in zip_longest(zip(*data, strict=True), zip(*flags, strict=True), fillvalue=""):
+    for row_d, row_f in zip_longest(
+        zip(*data, strict=True), zip(*flags, strict=True), fillvalue=""
+    ):
         data_lines.append(base_format.format(*row_d, "".join(row_f)))
 
     return "".join([record2, record3, record4, *data_lines])
