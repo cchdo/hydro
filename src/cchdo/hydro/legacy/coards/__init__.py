@@ -162,7 +162,7 @@ def get_filename(expocode, station, cast, extension):
     station = _pad_station_cast(station)
     cast = _pad_station_cast(cast)
 
-    stem = "_".join((expocode, station, cast, extension))
+    stem = f"{expocode}_{station}_{cast}_{extension}"
     return f"{stem}.{FILE_EXTENSION}"
 
 

@@ -46,7 +46,7 @@ def _combine_dt_ndarray(
 
     if time_pad:
         if np.any(np.char.str_len(time_arr[time_arr != ""]) < 4):
-            warn("Time values are being padded with zeros")
+            warn("Time values are being padded with zeros", stacklevel=2)
         if not np.all(time_arr == ""):
             time_arr[time_arr != ""] = np.char.zfill(time_arr[time_arr != ""], 4)
 

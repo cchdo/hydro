@@ -323,7 +323,7 @@ class _ExchangeData:
                 self.error_cols.values(),
             )
         ]
-        if not all([shape == shapes[0] for shape in shapes]):
+        if not all(shape == shapes[0] for shape in shapes):
             # TODO Error handling
             raise ValueError("shape error")
 
@@ -634,7 +634,7 @@ class _ExchangeInfo:
     @property
     def _np_data_block(self):
         _raw_data = tuple(
-            tuple((*self.ctd_headers.values(), *line.replace(" ", "").split(",")))
+            (*self.ctd_headers.values(), *line.replace(" ", "").split(","))
             for line in self.data
         )
         return np.array(_raw_data, dtype="U")
@@ -931,7 +931,7 @@ def read_csv(
         0,
         0,
     )
-    new_data = tuple((",".join(params_units_list), *splitdata[1:]))
+    new_data = (",".join(params_units_list), *splitdata[1:])
     exchange_data = _ExchangeInfo(
         stamp_slice=NONE_SLICE,
         comments_slice=NONE_SLICE,

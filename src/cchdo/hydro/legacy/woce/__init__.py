@@ -126,7 +126,7 @@ def get_filename(expocode, station, cast, file_ext):
     station = _pad_station_cast(station)
     cast = _pad_station_cast(cast)
     return "{}.{}".format(
-        "_".join((expocode, station, cast)),
+        f"{expocode}_{station}_{cast}",
         file_ext,
     )
 
@@ -281,9 +281,7 @@ def write_data(ds, columns, base_format):
     flags = []
     for column in columns:
         format_str = column.attrs.get("cchdo.hydro._format", "%s")
-        str_column = list(
-            map(lambda x: format_str % x, column.fillna(FILL_VALUE).to_numpy())
-        )
+        str_column = [format_str % x for x in column.fillna(FILL_VALUE).to_numpy()]
         for i, d in enumerate(str_column):
             if len(d) > COLUMN_WIDTH:
                 extra = len(d) - COLUMN_WIDTH
@@ -298,12 +296,7 @@ def write_data(ds, columns, base_format):
 
         if acc.FLAG_NAME in column.attrs:
             flags.append(
-                list(
-                    map(
-                        lambda x: f"{x:1d}",
-                        column.attrs[acc.FLAG_NAME].fillna(9).to_numpy().astype(int),
-                    )
-                )
+                [f"{x:1d}" for x in column.attrs[acc.FLAG_NAME].fillna(9).to_numpy().astype(int)]
             )
 
     for row_d, row_f in zip_longest(zip(*data, strict=True), zip(*flags, strict=True), fillvalue=""):
@@ -336,7 +329,7 @@ def write_bottle(ds: xr.Dataset):
     record_1 += "\n"
 
     data = write_data(ds, columns, base_format)
-    return "".join([record_1, data]).encode("ascii", "replace")
+    return f"{record_1}{data}".encode("ascii", "replace")
 
 
 def write_ctd(ds: xr.Dataset):
@@ -367,9 +360,9 @@ def write_ctd(ds: xr.Dataset):
         f"INSTRUMENT NO. {instrument_no: >5s} SAMPLING RATE {sampling_rate:>6.2f} HZ"
     )
 
-    headers = "\n".join([record1, record2, record3])
+    headers = f"{record1}\n{record2}\n{record3}"
     data = write_data(ds, columns, base_format)
-    return "\n".join([headers, data]).encode("ascii", "replace")
+    return f"{headers}\n{data}".encode("ascii", "replace")
 
 
 def to_woce(ds: xr.Dataset) -> bytes:

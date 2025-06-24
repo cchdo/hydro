@@ -264,7 +264,7 @@ class CCHDOAccessor:
         def dt_list_to_str_list(dtl):
             return list(map(to_matdate, dtl))
 
-        for _, value in mat_dict.items():
+        for value in mat_dict.values():
             if value.get("attrs", {}).get("standard_name") == "time":
                 # the case of list of lists is bottle closure times, which is a sparse array
                 if any(isinstance(v, list) for v in value["data"]):
@@ -392,13 +392,13 @@ class CCHDOAccessor:
 
             sect_id = ""
             sect_ids = prof.filter_by_attrs(whp_name="SECT_ID")
-            for _, ids in sect_ids.items():
+            for ids in sect_ids.values():
                 sect_id = str(ids.values)
                 break
 
             depth = ""
             depths = prof.filter_by_attrs(whp_name="DEPTH")
-            for _, meters in depths.items():
+            for meters in depths.values():
                 depth = f"{meters.values:.0f}"
                 if depth == "nan":
                     depth = ""

@@ -67,9 +67,7 @@ def add_geometry_var(dataset: xr.Dataset) -> xr.Dataset:
 def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
     """Find all the paraters in the cdom group and add their wavelength in a new coordinate"""
 
-    cdom_names = [
-        name for name in filter(lambda x: x.nc_group == "cdom", WHPNames.values())
-    ]
+    cdom_names = list(filter(lambda x: x.nc_group == "cdom", WHPNames.values()))
 
     cdom_names = sorted(cdom_names, key=lambda x: x.radiation_wavelength or 0)
 

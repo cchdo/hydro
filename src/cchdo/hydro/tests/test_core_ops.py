@@ -270,9 +270,9 @@ def test_remove_param(param, flag, error, empty, require_empty):
             *filter(lambda x: not x[0], zip(bools, params, units, data, strict=True)), strict=True
         )
     else:
-        _params = tuple()
-        _units = tuple()
-        _data = tuple()
+        _params = ()
+        _units = ()
+        _data = ()
 
     expected_ds = read_exchange(
         io.BytesIO(simple_bottle_exchange(params=_params, units=_units, data=_data)),
