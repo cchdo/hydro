@@ -455,14 +455,14 @@
     <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading Cruise Files&quot;</span><span class="p">)</span>
     <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]:</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://cchdo.ucsd.edu/api/v1/file/all&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()}</span>
     <span class="n">extant_ids</span> <span class="o">=</span> <span class="n">cruise_file_ids</span> <span class="o">&amp;</span> <span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-    <span class="n">edit_files</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">extant_ids</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">file</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;dataset&quot;</span>
-            <span class="ow">and</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;data_format&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;cf_netcdf&quot;</span>
-            <span class="ow">and</span> <span class="n">file</span><span class="p">[</span><span class="s2">&quot;data_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dtype</span>
-        <span class="p">):</span>
-            <span class="n">edit_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">edit_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="nb">filter</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;dataset&quot;</span>
+            <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;data_format&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;cf_netcdf&quot;</span>
+            <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;data_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dtype</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">extant_ids</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edit_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No files to edit&quot;</span><span class="p">)</span>
@@ -742,9 +742,10 @@
     <span class="n">cruises</span><span class="p">,</span> <span class="n">bottle_files</span> <span class="o">=</span> <span class="n">cchdo_loader</span><span class="p">(</span><span class="s2">&quot;bottle&quot;</span><span class="p">,</span> <span class="s2">&quot;cf_netcdf&quot;</span><span class="p">)</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">ctd_files</span> <span class="o">=</span> <span class="n">cchdo_loader</span><span class="p">(</span><span class="s2">&quot;ctd&quot;</span><span class="p">,</span> <span class="s2">&quot;cf_netcdf&quot;</span><span class="p">)</span>
     <span class="n">all_files</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">bottle_files</span><span class="p">,</span> <span class="o">*</span><span class="n">ctd_files</span><span class="p">]</span>
-    <span class="n">file_paths</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="n">all_files</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Loading data files&quot;</span><span class="p">):</span>
-        <span class="n">file_paths</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cached_file_loader</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">file</span><span class="p">))</span>
+    <span class="n">file_paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">cached_file_loader</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">file</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="n">all_files</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Loading data files&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
 
     <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>

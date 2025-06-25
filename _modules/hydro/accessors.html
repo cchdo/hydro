@@ -824,9 +824,7 @@
         <span class="n">HEADERS_1</span> <span class="o">=</span> <span class="n">format_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">SUM_COLUMN_HEADERS_1</span><span class="p">)</span>
         <span class="n">HEADERS_2</span> <span class="o">=</span> <span class="n">format_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">SUM_COLUMN_HEADERS_2</span><span class="p">)</span>
         <span class="n">SEP_LINE</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">col_widths</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_widths</span><span class="p">))</span>
-        <span class="n">SUM_ROWS</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sum_rows</span><span class="p">:</span>
-            <span class="n">SUM_ROWS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">format_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">))</span>
+        <span class="n">SUM_ROWS</span> <span class="o">=</span> <span class="p">[</span><span class="n">format_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">sum_rows</span><span class="p">]</span>
 
         <span class="n">sum_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="p">[</span><span class="n">COMMENTS</span><span class="p">,</span> <span class="n">HEADERS_1</span><span class="p">,</span> <span class="n">HEADERS_2</span><span class="p">,</span> <span class="n">SEP_LINE</span><span class="p">,</span> <span class="o">*</span><span class="n">SUM_ROWS</span><span class="p">]</span>
@@ -1019,12 +1017,11 @@
 <div class="viewcode-block" id="CCHDOAccessor._whpname_from_attrs">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._whpname_from_attrs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_whpname_from_attrs</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">WHPName</span><span class="p">]:</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">WHPName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">param</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;whp_name&quot;</span><span class="p">]</span>
         <span class="n">unit</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;whp_unit&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">combined</span> <span class="ow">in</span> <span class="n">param</span><span class="p">:</span>
-                <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">WHPNames</span><span class="p">[(</span><span class="n">combined</span><span class="p">,</span> <span class="n">unit</span><span class="p">)])</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">WHPNames</span><span class="p">[(</span><span class="n">combined</span><span class="p">,</span> <span class="n">unit</span><span class="p">)]</span> <span class="k">for</span> <span class="n">combined</span> <span class="ow">in</span> <span class="n">param</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">error</span> <span class="o">=</span> <span class="n">WHPNames</span><span class="p">[(</span><span class="n">param</span><span class="p">,</span> <span class="n">unit</span><span class="p">)]</span>
@@ -1143,12 +1140,10 @@
 
 <div class="viewcode-block" id="CCHDOAccessor._get_comments">
 <a class="viewcode-back" href="../../autoapi/hydro/accessors/index.html#hydro.accessors.CCHDOAccessor._get_comments">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_comments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_comments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comments</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;comments&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">comment_line</span> <span class="ow">in</span> <span class="n">comments</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
-                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">comment_line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">output</span></div>
+            <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">comment_line</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">comment_line</span> <span class="ow">in</span> <span class="n">comments</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
 
 
 <div class="viewcode-block" id="CCHDOAccessor.to_whp_columns">
@@ -1243,8 +1238,10 @@
                 <span class="n">output</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_params_units_line</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
 
                 <span class="n">data_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_data_block</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">data_block</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-                    <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">))</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                    <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">data_block</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="p">)</span>
 
                 <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;END_DATA</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">output_files</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf8&quot;</span><span class="p">)</span>
