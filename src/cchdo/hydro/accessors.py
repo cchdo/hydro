@@ -445,9 +445,7 @@ class CCHDOAccessor:
         HEADERS_1 = format_str.format(*SUM_COLUMN_HEADERS_1)
         HEADERS_2 = format_str.format(*SUM_COLUMN_HEADERS_2)
         SEP_LINE = "-" * (sum(col_widths) + len(col_widths))
-        SUM_ROWS = []
-        for row in sum_rows:
-            SUM_ROWS.append(format_str.format(*row))
+        SUM_ROWS = [format_str.format(*row) for row in sum_rows]
 
         sum_file = "\n".join(
             [COMMENTS, HEADERS_1, HEADERS_2, SEP_LINE, *SUM_ROWS]
@@ -607,12 +605,11 @@ class CCHDOAccessor:
 
     @staticmethod
     def _whpname_from_attrs(attrs) -> list[WHPName]:
-        params = []
+        params: list[WHPName] = []
         param = attrs["whp_name"]
         unit = attrs.get("whp_unit")
         if isinstance(param, list):
-            for combined in param:
-                params.append(WHPNames[(combined, unit)])
+            params.extend(WHPNames[(combined, unit)] for combined in param)
         else:
             try:
                 error = WHPNames[(param, unit)]
@@ -722,12 +719,10 @@ class CCHDOAccessor:
                 data_block.append(error)
         return data_block
 
-    def _get_comments(self):
-        output = []
+    def _get_comments(self) -> list[str]:
         if len(comments := self._obj.attrs.get("comments", "")) > 0:
-            for comment_line in comments.splitlines():
-                output.append(f"#{comment_line}")
-        return output
+            return [f"#{comment_line}" for comment_line in comments.splitlines()]
+        return []
 
     def to_whp_columns(self, compact=False) -> dict[WHPName, xr.DataArray]:
         # collect all the Exchange variables
@@ -816,8 +811,10 @@ class CCHDOAccessor:
                 output.extend(self._make_params_units_line(params))
 
                 data_block = self._make_data_block(params)
-                for row in zip(*data_block, strict=True):
-                    output.append(",".join(str(cell) for cell in row))
+                output.extend(
+                    ",".join(str(cell) for cell in row)
+                    for row in zip(*data_block, strict=True)
+                )
 
                 output.append("END_DATA\n")
                 output_files[fname] = "\n".join(output).encode("utf8")

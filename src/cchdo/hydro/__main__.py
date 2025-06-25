@@ -132,14 +132,14 @@ def edit_comments(expocode, dtype):
     log.info("Loading Cruise Files")
     files = {f["id"]: f for f in s.get("https://cchdo.ucsd.edu/api/v1/file/all").json()}
     extant_ids = cruise_file_ids & files.keys()
-    edit_files = []
-    for file in (files[id] for id in extant_ids):
-        if (
-            file["role"] == "dataset"
-            and file["data_format"] == "cf_netcdf"
-            and file["data_type"] == dtype
-        ):
-            edit_files.append(file)
+    edit_files = list(
+        filter(
+            lambda x: x["role"] == "dataset"
+            and x["data_format"] == "cf_netcdf"
+            and x["data_type"] == dtype,
+            (files[id] for id in extant_ids),
+        )
+    )
 
     if len(edit_files) == 0:
         log.error("No files to edit")
@@ -401,9 +401,10 @@ def status_cf_derived(out_dir, verbose, only_fail):
     cruises, bottle_files = cchdo_loader("bottle", "cf_netcdf")
     _, ctd_files = cchdo_loader("ctd", "cf_netcdf")
     all_files = [*bottle_files, *ctd_files]
-    file_paths = []
-    for file in track(all_files, description="Loading data files"):
-        file_paths.append((cached_file_loader(file), file))
+    file_paths = [
+        (cached_file_loader(file), file)
+        for file in track(all_files, description="Loading data files")
+    ]
 
     results = []
     with TemporaryDirectory() as temp_dir:

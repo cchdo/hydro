@@ -136,7 +136,7 @@ def _transform_whp_to_csv(params: list[str], units: list[str]) -> list[str]:
         slots[index] = f"{param} [{unit}]"
 
     # flag pass
-    for index, (param, unit) in enumerate(zip(params, mutable_units, strict=True)):
+    for param, unit in zip(params, mutable_units, strict=True):
         if param.endswith("_FLAG_W"):
             continue
         if (flag := f"{param}_FLAG_W") in flags:
