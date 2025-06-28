@@ -1,4 +1,4 @@
-# v1.0.2.13 (2024-11-??)
+# v1.0.2.13 (2025-06-28)
 * Support specifying the text encoding of the input exchange file
 * (Bug) Fix fill values in bottle date/time being printed as nan in generated exchange files
 * Add the ability to ignore columns using the ODV parameter syntax to `read_exchange` and `read_csv`
