@@ -33,6 +33,9 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 
+[project.scripts]
+"cchdo.hydro" = "cchdo.hydro.__main__:cli"
+
 [project.urls]
 Homepage = "https://cchdo.ucsd.edu/"
 Documentation = "https://hydro.readthedocs.io/en/latest/"
