@@ -309,6 +309,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_flags</span> <span class="k">as</span> <span class="n">_check_flags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataarray_factory</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">cchdo.hydro.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">add_cdom_coordinate</span><span class="p">,</span>
@@ -517,13 +518,14 @@
         <span class="n">variableMeasured</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">NS_TO_S</span> <span class="o">=</span> <span class="mi">1000000000</span>
 
-        <span class="c1"># Inject calcualted depth if not already present</span>
+        <span class="c1"># Inject calculated depth if not already present</span>
         <span class="k">if</span> <span class="n">DEPTH</span><span class="o">.</span><span class="n">full_nc_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-            <span class="n">obj</span><span class="p">[</span><span class="n">DEPTH</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span>
-                <span class="o">-</span><span class="n">gsw</span><span class="o">.</span><span class="n">z_from_p</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">latitude</span><span class="p">),</span>
-                <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;standard_name&quot;</span><span class="p">:</span> <span class="s2">&quot;depth&quot;</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;m&quot;</span><span class="p">},</span>
-                <span class="n">dims</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="s2">&quot;N_LEVELS&quot;</span><span class="p">),</span>
+            <span class="n">depth_da</span> <span class="o">=</span> <span class="n">dataarray_factory</span><span class="p">(</span>
+                <span class="n">DEPTH</span><span class="p">,</span> <span class="n">N_PROF</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">],</span> <span class="n">N_LEVELS</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">sizes</span><span class="p">[</span><span class="s2">&quot;N_LEVELS&quot;</span><span class="p">]</span>
             <span class="p">)</span>
+            <span class="n">depth_da</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="o">-</span><span class="n">gsw</span><span class="o">.</span><span class="n">z_from_p</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">pressure</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span>
+            <span class="n">obj</span><span class="p">[</span><span class="n">DEPTH</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">depth_da</span>
+
         <span class="n">minx</span><span class="p">,</span> <span class="n">maxx</span><span class="p">,</span> <span class="n">miny</span><span class="p">,</span> <span class="n">maxy</span><span class="p">,</span> <span class="n">maxz</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;standard_name&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
