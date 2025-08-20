@@ -12,6 +12,7 @@ import pandas as pd
 import xarray as xr
 
 from cchdo.hydro.checks import check_flags as _check_flags
+from cchdo.hydro.core import dataarray_factory
 from cchdo.hydro.types import FileType
 from cchdo.hydro.utils import (
     add_cdom_coordinate,
@@ -150,13 +151,12 @@ class CCHDOAccessor:
         variableMeasured = []
         NS_TO_S = 1000000000
 
-        # Inject calcualted depth if not already present
+        # Inject calculated depth if not already present
         if DEPTH.full_nc_name not in obj.variables:
-            obj[DEPTH.full_nc_name] = xr.DataArray(
-                -gsw.z_from_p(obj.pressure, obj.latitude),
-                attrs={"standard_name": "depth", "units": "m"},
-                dims=("N_PROF", "N_LEVELS"),
-            )
+            depth_da = dataarray_factory(DEPTH, N_PROF=obj.sizes["N_PROF"], N_LEVELS=obj.sizes["N_LEVELS"])
+            depth_da.data = -gsw.z_from_p(obj.pressure, obj.latitude)
+            obj[DEPTH.full_nc_name] = depth_da
+
         minx, maxx, miny, maxy, maxz = None, None, None, None, None
         for var, da in obj.variables.items():
             if "standard_name" not in da.attrs:
