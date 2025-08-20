@@ -153,7 +153,9 @@ class CCHDOAccessor:
 
         # Inject calculated depth if not already present
         if DEPTH.full_nc_name not in obj.variables:
-            depth_da = dataarray_factory(DEPTH, N_PROF=obj.sizes["N_PROF"], N_LEVELS=obj.sizes["N_LEVELS"])
+            depth_da = dataarray_factory(
+                DEPTH, N_PROF=obj.sizes["N_PROF"], N_LEVELS=obj.sizes["N_LEVELS"]
+            )
             depth_da.data = -gsw.z_from_p(obj.pressure, obj.latitude)
             obj[DEPTH.full_nc_name] = depth_da
 
