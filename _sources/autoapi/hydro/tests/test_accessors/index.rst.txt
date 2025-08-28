@@ -27,6 +27,7 @@ Functions
    hydro.tests.test_accessors.test_nc_serialize_all_ctdetime
    hydro.tests.test_accessors.test_woce_ctd_no_flags
    hydro.tests.test_accessors.test_coards_ctdnobs_with_missing
+   hydro.tests.test_accessors.test_coards_bottle_flag_9
 
 
 Module Contents
@@ -67,5 +68,10 @@ Module Contents
 
    This is very platform dependent and depends on undefined behavior in C. Lucky for us we can see if
    numpy is issuing a runtime warning (they are considering makeing this throw in the future anyway)
+
+
+.. py:function:: test_coards_bottle_flag_9()
+
+   Test a condition where a warning might be thrown when a bottle has flag 9
 
 

@@ -350,6 +350,9 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#hydro.tests.test_accessors.test_coards_ctdnobs_with_missing" title="hydro.tests.test_accessors.test_coards_ctdnobs_with_missing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_coards_ctdnobs_with_missing</span></code></a>()</p></td>
 <td><p>Test a condition where exception might be thrown when a float array with nans is cast to int</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hydro.tests.test_accessors.test_coards_bottle_flag_9" title="hydro.tests.test_accessors.test_coards_bottle_flag_9"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_coards_bottle_flag_9</span></code></a>()</p></td>
+<td><p>Test a condition where a warning might be thrown when a bottle has flag 9</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -415,6 +418,12 @@
 <dd><p>Test a condition where exception might be thrown when a float array with nans is cast to int</p>
 <p>This is very platform dependent and depends on undefined behavior in C. Lucky for us we can see if
 numpy is issuing a runtime warning (they are considering makeing this throw in the future anyway)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.tests.test_accessors.test_coards_bottle_flag_9">
+<span class="sig-prename descclassname"><span class="pre">hydro.tests.test_accessors.</span></span><span class="sig-name descname"><span class="pre">test_coards_bottle_flag_9</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/tests/test_accessors.html#test_coards_bottle_flag_9"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.tests.test_accessors.test_coards_bottle_flag_9" title="Link to this definition">¶</a></dt>
+<dd><p>Test a condition where a warning might be thrown when a bottle has flag 9</p>
 </dd></dl>
 
 </section>
@@ -490,6 +499,7 @@ numpy is issuing a runtime warning (they are considering makeing this throw in t
 <li><a class="reference internal" href="#hydro.tests.test_accessors.test_nc_serialize_all_ctdetime"><code class="docutils literal notranslate"><span class="pre">test_nc_serialize_all_ctdetime()</span></code></a></li>
 <li><a class="reference internal" href="#hydro.tests.test_accessors.test_woce_ctd_no_flags"><code class="docutils literal notranslate"><span class="pre">test_woce_ctd_no_flags()</span></code></a></li>
 <li><a class="reference internal" href="#hydro.tests.test_accessors.test_coards_ctdnobs_with_missing"><code class="docutils literal notranslate"><span class="pre">test_coards_ctdnobs_with_missing()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.tests.test_accessors.test_coards_bottle_flag_9"><code class="docutils literal notranslate"><span class="pre">test_coards_bottle_flag_9()</span></code></a></li>
 </ul>
 </li>
 </ul>

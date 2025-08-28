@@ -527,6 +527,23 @@
         <span class="c1"># numpy would issue a RuntimeWarning if an unsafe cast occured</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
 
+
+
+<div class="viewcode-block" id="test_coards_bottle_flag_9">
+<a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_coards_bottle_flag_9">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_coards_bottle_flag_9</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test a condition where a warning might be thrown when a bottle has flag 9&quot;&quot;&quot;</span>
+    <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;EXPOCODE,SECT_ID,STNNBR,CASTNO,SAMPNO,BTLNBR,BTLNBR_FLAG_W,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR]</span>
+<span class="s2">64PE20110724,AR07E,9,1,1,1,9,20110729,1919,59.57017,-38.77183,3006.0,0</span>
+<span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_coards</span><span class="p">()</span>
+        <span class="c1"># simply assert that no warnings were issued durring the test</span>
+        <span class="c1"># numpy would issue a RuntimeWarning if an unsafe cast occured</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
+
 </pre></div>
         </article>
       </div>
