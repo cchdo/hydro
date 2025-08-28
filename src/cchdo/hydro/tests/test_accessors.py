@@ -197,3 +197,17 @@ def test_coards_ctdnobs_with_missing():
         # simply assert that no warnings were issued durring the test
         # numpy would issue a RuntimeWarning if an unsafe cast occured
         assert len(w) == 0
+
+
+def test_coards_bottle_flag_9():
+    """Test a condition where a warning might be thrown when a bottle has flag 9"""
+    test_data = b"""EXPOCODE,SECT_ID,STNNBR,CASTNO,SAMPNO,BTLNBR,BTLNBR_FLAG_W,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR]
+64PE20110724,AR07E,9,1,1,1,9,20110729,1919,59.57017,-38.77183,3006.0,0
+"""
+    ds = read_csv(test_data, ftype="B")
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter(action="ignore", category=FutureWarning)
+        ds.cchdo.to_coards()
+        # simply assert that no warnings were issued durring the test
+        # numpy would issue a RuntimeWarning if an unsafe cast occured
+        assert len(w) == 0

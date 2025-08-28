@@ -227,8 +227,8 @@ def get_coards_global_attributes(ds: xr.Dataset, *, profile_type: Literal["B", "
         attrs["BOTTLE_NUMBERS"] = " ".join(map(simplest_str, bottle_column.values))
 
         if (btl_quality_codes := ds.get("bottle_number_qc")) is not None:
-            attrs["BOTTLE_QUALITY_CODES"] = btl_quality_codes.to_numpy().astype(
-                np.int16
+            attrs["BOTTLE_QUALITY_CODES"] = (
+                btl_quality_codes.fillna(9).to_numpy().astype(np.int16)
             )
 
         attrs["WOCE_BOTTLE_FLAG_DESCRIPTION"] = woce.BOTTLE_FLAG_DESCRIPTION
