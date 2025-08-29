@@ -117,8 +117,6 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
 
     new_cdom_dims = ("N_PROF", "N_LEVELS", "CDOM_WAVELENGTHS")
     new_cdom_coords = {
-        "N_PROF": first.coords["N_PROF"],
-        "N_LEVELS": first.coords["N_LEVELS"],
         "CDOM_WAVELENGTHS": cdom_wavelengths,
     }
 
@@ -165,13 +163,13 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
 
     for old_name in cdom_names:
         try:
-            del dataset[old_name]
+            del dataset[old_name.full_nc_name]
         except KeyError:
             pass
 
     for old_name in cdom_names:
         try:
-            del dataset[f"{old_name}_qc"]
+            del dataset[f"{old_name.full_nc_name}_qc"]
         except KeyError:
             pass
 
