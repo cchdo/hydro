@@ -428,8 +428,6 @@
 
     <span class="n">new_cdom_dims</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">,</span> <span class="s2">&quot;N_LEVELS&quot;</span><span class="p">,</span> <span class="s2">&quot;CDOM_WAVELENGTHS&quot;</span><span class="p">)</span>
     <span class="n">new_cdom_coords</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;N_PROF&quot;</span><span class="p">:</span> <span class="n">first</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;N_PROF&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;N_LEVELS&quot;</span><span class="p">:</span> <span class="n">first</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="s2">&quot;N_LEVELS&quot;</span><span class="p">],</span>
         <span class="s2">&quot;CDOM_WAVELENGTHS&quot;</span><span class="p">:</span> <span class="n">cdom_wavelengths</span><span class="p">,</span>
     <span class="p">}</span>
 
@@ -476,13 +474,13 @@
 
     <span class="k">for</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">cdom_names</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">dataset</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">dataset</span><span class="p">[</span><span class="n">old_name</span><span class="o">.</span><span class="n">full_nc_name</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
 
     <span class="k">for</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">cdom_names</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">del</span> <span class="n">dataset</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">_qc&quot;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">dataset</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_name</span><span class="o">.</span><span class="n">full_nc_name</span><span class="si">}</span><span class="s2">_qc&quot;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
 
