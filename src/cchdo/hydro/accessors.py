@@ -681,9 +681,10 @@ class CCHDOAccessor:
                 values = values.tolist()
             elif param in self.elapsed_time_names and da.dtype.char == "m":
                 nat_mask = np.isnat(da.values[valid_levels])
-                values = (
-                    da.values[valid_levels].astype("timedelta64[s]").astype("float64")
+                scale_factor = np.array(1, dtype=da.dtype) / np.array(
+                    1, dtype="timedelta64[s]"
                 )
+                values = da.values[valid_levels].astype("float64") * scale_factor
                 values[nat_mask] = np.nan
                 values = values.tolist()
             else:

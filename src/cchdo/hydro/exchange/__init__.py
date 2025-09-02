@@ -479,7 +479,6 @@ class _ExchangeData:
 
         The char size can vary by platform.
         """
-        log.debug("Dealing with strings")
         lens = {}
         for param, data in self.param_cols.items():
             if param.dtype == "string":

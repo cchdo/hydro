@@ -231,9 +231,32 @@ TEST,2,1,20200101,0000,0,0,0,1
     ds = read_csv(test_data, ftype="C")
     nc = tmp_path / "test.nc"
     ds.to_netcdf(nc)
-    ds = xr.load_dataset(nc)
-    # the magic slice removes the stamp and the newline with #
+    ds = xr.load_dataset(nc, decode_timedelta=None)
     ds.cchdo.to_exchange()
     ds.cchdo.to_coards()
     ds.cchdo.to_woce()
     ds.cchdo.to_sum()
+
+    ds = xr.load_dataset(nc, decode_timedelta=False)
+    ds.cchdo.to_exchange()
+    ds.cchdo.to_coards()
+    ds.cchdo.to_woce()
+    ds.cchdo.to_sum()
+
+
+def test_ctdetime_preserve_precision(tmp_path):
+    """Test file with CTDETIME and differing profile lengths
+
+    The exchange writer would crash with a zip strict error, this is solved by setting decode_timedelta to False when the file is read in
+    """
+    test_data = b"""EXPOCODE,STNNBR,CASTNO,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR],CTDETIME[SECONDS]
+TEST,2,1,20200101,0000,0,0,0,3.1415
+"""
+    ds = read_csv(test_data, ftype="C")
+    nc = tmp_path / "test.nc"
+    assert ds.ctd_elapsed_time.attrs["C_format"] == "%.4f"
+    ds.to_netcdf(nc)
+    ds = xr.load_dataset(nc, decode_timedelta=False)
+    # the magic slice removes the stamp and the newline with #
+    ex = ds.cchdo.to_exchange()
+    assert b"3.1415" in ex

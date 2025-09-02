@@ -294,9 +294,12 @@ def get_dataarrays(ds: xr.Dataset):
             data = variable.dt.strftime("%Y%m%d").astype(float).to_numpy()
         elif parameter_name == "BTL_TIME":
             data = variable.dt.strftime("%H%M").astype(float).to_numpy()
-        elif parameter_name == "CTDETIME":
+        elif parameter_name == "CTDETIME" and variable.dtype.char == "m":
             nat_mask = np.isnat(variable)
-            data = variable.values.astype("timedelta64[s]").astype("float64")
+            scale_factor = np.array(1, dtype=variable.dtype) / np.array(
+                1, dtype="timedelta64[s]"
+            )
+            data = variable.values.astype("float64") * scale_factor
             data[nat_mask] = np.nan
         else:
             data = variable.to_numpy()
