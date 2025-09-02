@@ -216,3 +216,24 @@ def test_coards_bottle_flag_9():
         # simply assert that no warnings were issued durring the test
         # numpy would issue a RuntimeWarning if an unsafe cast occured
         assert len(w) == 0
+
+
+def test_nc_serialize_all_ctdetime_multiple_profs(tmp_path):
+    """Test file with CTDETIME and differing profile lengths
+
+    The exchange writer would crash with a zip strict error, this is solved by setting decode_timedelta to False when the file is read in
+    """
+    test_data = b"""EXPOCODE,STNNBR,CASTNO,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR],CTDETIME[SECONDS]
+TEST,1,1,20200101,0000,0,0,0,30
+TEST,1,1,20200101,0000,0,0,2,1
+TEST,2,1,20200101,0000,0,0,0,1
+"""
+    ds = read_csv(test_data, ftype="C")
+    nc = tmp_path / "test.nc"
+    ds.to_netcdf(nc)
+    ds = xr.load_dataset(nc)
+    # the magic slice removes the stamp and the newline with #
+    ds.cchdo.to_exchange()
+    ds.cchdo.to_coards()
+    ds.cchdo.to_woce()
+    ds.cchdo.to_sum()

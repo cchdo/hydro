@@ -549,6 +549,7 @@ class CCHDOAccessor:
 
     date_names = frozenset((WHPNames["DATE"], WHPNames["BTL_DATE"]))
     time_names = frozenset((WHPNames["TIME"], WHPNames["BTL_TIME"]))
+    elapsed_time_names = frozenset((WHPNames["CTDETIME [SECONDS]"],))
 
     @property
     def file_type(self):
@@ -677,6 +678,13 @@ class CCHDOAccessor:
                 mask = da[valid_levels].isnull()
                 values = da[valid_levels].dt.round("min").dt.strftime("%H%M").to_numpy()
                 values[mask] = "-999"
+                values = values.tolist()
+            elif param in self.elapsed_time_names and da.dtype.char == "m":
+                nat_mask = np.isnat(da.values[valid_levels])
+                values = (
+                    da.values[valid_levels].astype("timedelta64[s]").astype("float64")
+                )
+                values[nat_mask] = np.nan
                 values = values.tolist()
             else:
                 if da.dtype.char == "m":

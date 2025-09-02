@@ -1,7 +1,8 @@
 
 # v1.0.2.14 (2025-??-??)
-* Fix bug where 0 would be written for a bottle flag in COARDS files that should have been a fill value (9). This was the result of a nan being cast to int, so is undefined behavior in C, 0 would be written on arm machines, but could be anything.
+* (Bug) Fix where 0 would be written for a bottle flag in COARDS files that should have been a fill value (9). This was the result of a nan being cast to int, so is undefined behavior in C, 0 would be written on arm machines, but could be anything.
 * Fix CDOM coordinate collapse function not removing the collapsed variables.
+* (Bug) Fix CTDETIME parameters crashing the exchange writer
 
 # v1.0.2.13 (2025-06-28)
 * Support specifying the text encoding of the input exchange file
