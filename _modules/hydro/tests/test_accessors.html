@@ -566,12 +566,38 @@
     <span class="n">ds</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
     <span class="n">nc</span> <span class="o">=</span> <span class="n">tmp_path</span> <span class="o">/</span> <span class="s2">&quot;test.nc&quot;</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
-    <span class="c1"># the magic slice removes the stamp and the newline with #</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">decode_timedelta</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_exchange</span><span class="p">()</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_coards</span><span class="p">()</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_woce</span><span class="p">()</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_sum</span><span class="p">()</span>
+
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">decode_timedelta</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_exchange</span><span class="p">()</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_coards</span><span class="p">()</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_woce</span><span class="p">()</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_sum</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="test_ctdetime_preserve_precision">
+<a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_ctdetime_preserve_precision">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_ctdetime_preserve_precision</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test file with CTDETIME and differing profile lengths</span>
+
+<span class="sd">    The exchange writer would crash with a zip strict error, this is solved by setting decode_timedelta to False when the file is read in</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;EXPOCODE,STNNBR,CASTNO,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR],CTDETIME[SECONDS]</span>
+<span class="s2">TEST,2,1,20200101,0000,0,0,0,3.1415</span>
+<span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+    <span class="n">nc</span> <span class="o">=</span> <span class="n">tmp_path</span> <span class="o">/</span> <span class="s2">&quot;test.nc&quot;</span>
+    <span class="k">assert</span> <span class="n">ds</span><span class="o">.</span><span class="n">ctd_elapsed_time</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;C_format&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="si">%.4f</span><span class="s2">&quot;</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">decode_timedelta</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># the magic slice removes the stamp and the newline with #</span>
+    <span class="n">ex</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_exchange</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="sa">b</span><span class="s2">&quot;3.1415&quot;</span> <span class="ow">in</span> <span class="n">ex</span></div>
 
 </pre></div>
         </article>

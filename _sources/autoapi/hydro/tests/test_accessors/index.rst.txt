@@ -29,6 +29,7 @@ Functions
    hydro.tests.test_accessors.test_coards_ctdnobs_with_missing
    hydro.tests.test_accessors.test_coards_bottle_flag_9
    hydro.tests.test_accessors.test_nc_serialize_all_ctdetime_multiple_profs
+   hydro.tests.test_accessors.test_ctdetime_preserve_precision
 
 
 Module Contents
@@ -77,6 +78,13 @@ Module Contents
 
 
 .. py:function:: test_nc_serialize_all_ctdetime_multiple_profs(tmp_path)
+
+   Test file with CTDETIME and differing profile lengths
+
+   The exchange writer would crash with a zip strict error, this is solved by setting decode_timedelta to False when the file is read in
+
+
+.. py:function:: test_ctdetime_preserve_precision(tmp_path)
 
    Test file with CTDETIME and differing profile lengths
 
