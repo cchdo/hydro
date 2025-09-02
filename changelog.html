@@ -306,8 +306,9 @@
 <section id="v1-0-2-14-2025">
 <h2>v1.0.2.14 (2025-??-??)<a class="headerlink" href="#v1-0-2-14-2025" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Fix bug where 0 would be written for a bottle flag in COARDS files that should have been a fill value (9). This was the result of a nan being cast to int, so is undefined behavior in C, 0 would be written on arm machines, but could be anything.</p></li>
+<li><p>(Bug) Fix where 0 would be written for a bottle flag in COARDS files that should have been a fill value (9). This was the result of a nan being cast to int, so is undefined behavior in C, 0 would be written on arm machines, but could be anything.</p></li>
 <li><p>Fix CDOM coordinate collapse function not removing the collapsed variables.</p></li>
+<li><p>(Bug) Fix CTDETIME parameters crashing the exchange writer</p></li>
 </ul>
 </section>
 <section id="v1-0-2-13-2025-06-28">

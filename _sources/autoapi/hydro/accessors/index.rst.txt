@@ -191,6 +191,9 @@ Module Contents
    .. py:attribute:: time_names
 
 
+   .. py:attribute:: elapsed_time_names
+
+
    .. py:property:: file_type
 
 

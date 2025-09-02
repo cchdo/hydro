@@ -28,6 +28,7 @@ Functions
    hydro.tests.test_accessors.test_woce_ctd_no_flags
    hydro.tests.test_accessors.test_coards_ctdnobs_with_missing
    hydro.tests.test_accessors.test_coards_bottle_flag_9
+   hydro.tests.test_accessors.test_nc_serialize_all_ctdetime_multiple_profs
 
 
 Module Contents
@@ -73,5 +74,12 @@ Module Contents
 .. py:function:: test_coards_bottle_flag_9()
 
    Test a condition where a warning might be thrown when a bottle has flag 9
+
+
+.. py:function:: test_nc_serialize_all_ctdetime_multiple_profs(tmp_path)
+
+   Test file with CTDETIME and differing profile lengths
+
+   The exchange writer would crash with a zip strict error, this is solved by setting decode_timedelta to False when the file is read in
 
 
