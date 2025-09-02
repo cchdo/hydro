@@ -83,6 +83,11 @@ TEST          ,1       ,  1,1          ,2          ,20200101,0000,        0,    
 END_DATA
 """
     ds = read_exchange(test_data)
+    assert "N_PROF" not in ds.variables
+    assert "N_LEVELS" not in ds.variables
+    assert "cdom300" not in ds
+    assert "cdom325" not in ds
+    assert "cdom" in ds
     # the magic slice removes the stamp and the newline with #
     rt = read_exchange(ds.cchdo.to_exchange()[25:])
     assert_identical(ds, rt)
