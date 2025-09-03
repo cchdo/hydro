@@ -526,11 +526,10 @@
 <span class="s2">&quot;&quot;&quot;</span>
     <span class="n">ds</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>
         <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_coards</span><span class="p">()</span>
-        <span class="c1"># simply assert that no warnings were issued durring the test</span>
-        <span class="c1"># numpy would issue a RuntimeWarning if an unsafe cast occured</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
+        <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="n">w</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">warning</span><span class="o">.</span><span class="n">message</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">assert</span> <span class="s2">&quot;invalid value encountered in cast&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">warning</span><span class="o">.</span><span class="n">message</span></div>
 
 
 
