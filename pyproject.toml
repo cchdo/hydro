@@ -9,14 +9,14 @@ fallback_version = "999"
 name = "cchdo.hydro"
 authors = [{name = "cchdo", email = "cchdo@ucsd.edu"}]
 readme = {file = "README.md", content-type = "text/markdown"}
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dynamic = ["version"]
 license = {text = "BSD 3-clause"}
 dependencies = [
     "cchdo.params>=2024.3",
     "xarray>=2023.9.0",
     "requests>=2.26.0",
-    "numpy",
+    "numpy>=2",
     "pandas>=1.3.3",
     "appdirs",
 ]
@@ -27,7 +27,6 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering",
@@ -101,7 +100,7 @@ module = [
 ignore_missing_imports = true
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
