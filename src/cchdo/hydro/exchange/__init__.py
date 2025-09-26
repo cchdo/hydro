@@ -120,7 +120,7 @@ def _transform_whp_to_csv(params: list[str], units: list[str]) -> list[str]:
         for index, (param, unit) in enumerate(pairs):
             next_idx = index + 1
             try:
-                next_param, next_unit = pairs[next_idx]
+                next_param, _next_unit = pairs[next_idx]
             except IndexError:
                 continue
 

@@ -81,7 +81,7 @@ def p_file(file_m):
 
 
 def p_file_cf(file_m):
-    t_dir, file, file_metadata = file_m
+    _t_dir, file, file_metadata = file_m
 
     warnings.simplefilter("ignore")
 
