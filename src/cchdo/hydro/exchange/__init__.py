@@ -814,7 +814,7 @@ def _is_valid_exchange_numeric(data: npt.NDArray[np.str_]) -> np.bool_:
     return np.all(np.isin(aligned.view("|S1"), allowed_exchange_numeric_data_chars))
 
 
-ExchangeIO = str | Path | io.BufferedIOBase
+ExchangeIO = str | bytes | Path | io.BufferedIOBase
 
 
 def _load_raw_exchange(
