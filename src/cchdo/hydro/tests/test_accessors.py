@@ -259,3 +259,14 @@ TEST,2,1,20200101,0000,0,0,0,3.1415
     # the magic slice removes the stamp and the newline with #
     ex = ds.cchdo.to_exchange()
     assert b"3.1415" in ex
+
+
+def test_coards_with_param_containing_slash():
+    """Test that the COARDS conversion can deal with a parameter with a / in the name"""
+    test_data = b"""EXPOCODE,SECT_ID,STNNBR,CASTNO,SAMPNO,BTLNBR,BTLNBR_FLAG_W,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR],RA-8/6
+TEST,TEST,1,1,1,1,2,20110729,1919,0,0,3006.0,0,0
+"""
+    ds = read_csv(test_data, ftype="B")
+
+    # just needs to not raise
+    ds.cchdo.to_coards()

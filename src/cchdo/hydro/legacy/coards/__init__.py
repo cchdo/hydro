@@ -273,6 +273,8 @@ def get_dataarrays(ds: xr.Dataset):
         if not _pname:
             raise AttributeError(f"No name found for {parameter_name}")
         pname = _ascii(_pname)
+        disallowed = "/"
+        pname = pname.translate(str.maketrans(disallowed, "_" * len(disallowed)))
 
         # porting note: this was taken from the orig libcchdo
         # XXX HACK
