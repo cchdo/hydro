@@ -30,6 +30,7 @@ Functions
    hydro.tests.test_accessors.test_coards_bottle_flag_9
    hydro.tests.test_accessors.test_nc_serialize_all_ctdetime_multiple_profs
    hydro.tests.test_accessors.test_ctdetime_preserve_precision
+   hydro.tests.test_accessors.test_coards_with_param_containing_slash
 
 
 Module Contents
@@ -89,5 +90,10 @@ Module Contents
    Test file with CTDETIME and differing profile lengths
 
    The exchange writer would crash with a zip strict error, this is solved by setting decode_timedelta to False when the file is read in
+
+
+.. py:function:: test_coards_with_param_containing_slash()
+
+   Test that the COARDS conversion can deal with a parameter with a / in the name
 
 

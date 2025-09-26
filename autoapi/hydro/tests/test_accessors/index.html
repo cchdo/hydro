@@ -359,6 +359,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#hydro.tests.test_accessors.test_ctdetime_preserve_precision" title="hydro.tests.test_accessors.test_ctdetime_preserve_precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_ctdetime_preserve_precision</span></code></a>(tmp_path)</p></td>
 <td><p>Test file with CTDETIME and differing profile lengths</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hydro.tests.test_accessors.test_coards_with_param_containing_slash" title="hydro.tests.test_accessors.test_coards_with_param_containing_slash"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_coards_with_param_containing_slash</span></code></a>()</p></td>
+<td><p>Test that the COARDS conversion can deal with a parameter with a / in the name</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -446,6 +449,12 @@ numpy is issuing a runtime warning (they are considering makeing this throw in t
 <p>The exchange writer would crash with a zip strict error, this is solved by setting decode_timedelta to False when the file is read in</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="hydro.tests.test_accessors.test_coards_with_param_containing_slash">
+<span class="sig-prename descclassname"><span class="pre">hydro.tests.test_accessors.</span></span><span class="sig-name descname"><span class="pre">test_coards_with_param_containing_slash</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hydro/tests/test_accessors.html#test_coards_with_param_containing_slash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.tests.test_accessors.test_coards_with_param_containing_slash" title="Link to this definition">¶</a></dt>
+<dd><p>Test that the COARDS conversion can deal with a parameter with a / in the name</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -522,6 +531,7 @@ numpy is issuing a runtime warning (they are considering makeing this throw in t
 <li><a class="reference internal" href="#hydro.tests.test_accessors.test_coards_bottle_flag_9"><code class="docutils literal notranslate"><span class="pre">test_coards_bottle_flag_9()</span></code></a></li>
 <li><a class="reference internal" href="#hydro.tests.test_accessors.test_nc_serialize_all_ctdetime_multiple_profs"><code class="docutils literal notranslate"><span class="pre">test_nc_serialize_all_ctdetime_multiple_profs()</span></code></a></li>
 <li><a class="reference internal" href="#hydro.tests.test_accessors.test_ctdetime_preserve_precision"><code class="docutils literal notranslate"><span class="pre">test_ctdetime_preserve_precision()</span></code></a></li>
+<li><a class="reference internal" href="#hydro.tests.test_accessors.test_coards_with_param_containing_slash"><code class="docutils literal notranslate"><span class="pre">test_coards_with_param_containing_slash()</span></code></a></li>
 </ul>
 </li>
 </ul>

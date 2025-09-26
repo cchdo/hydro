@@ -635,6 +635,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_pname</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No name found for </span><span class="si">{</span><span class="n">parameter_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">pname</span> <span class="o">=</span> <span class="n">_ascii</span><span class="p">(</span><span class="n">_pname</span><span class="p">)</span>
+        <span class="n">disallowed</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span>
+        <span class="n">pname</span> <span class="o">=</span> <span class="n">pname</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="n">disallowed</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">disallowed</span><span class="p">)))</span>
 
         <span class="c1"># porting note: this was taken from the orig libcchdo</span>
         <span class="c1"># XXX HACK</span>

@@ -369,7 +369,7 @@
 <dd class="field-odd"><p><strong>param</strong> (<em>cchdo.params.WHPName</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2025.8.1)">xarray.DataArray</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2025.9.1)">xarray.DataArray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -382,7 +382,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)"><em>xarray.Dataset</em></a>) – The dataset to remove a param from.</p></li>
+<li><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)"><em>xarray.Dataset</em></a>) – The dataset to remove a param from.</p></li>
 <li><p><strong>param</strong> (<em>cchdo.params.WHPName</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A string or <code class="docutils literal notranslate"><span class="pre">WHPName</span></code> instance of a parameter, strings are in the form <code class="docutils literal notranslate"><span class="pre">&quot;param</span> <span class="pre">[unit]&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;param&quot;</span></code> if unitless, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;OXYGEN</span> <span class="pre">[UMOL/KG]&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;EXPOCODE&quot;</span></code></p></li>
 <li><p><strong>delete_param</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, delete this parameter and all associated ancillary variables. Defaults to False.</p></li>
 <li><p><strong>delete_flag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, delete this parameters flag, Defaults to False.</p></li>
@@ -395,7 +395,7 @@
 <dd class="field-even"><p>A new dataset with the requested variables removed, will return a new dataset even if the results of calling this function are no-op</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)">xarray.Dataset</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)">xarray.Dataset</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -409,7 +409,7 @@ To add a flag or error parameter to an existing parameter is done by setting the
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)"><em>xarray.Dataset</em></a>) – Dataset to add a param to</p></li>
+<li><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)"><em>xarray.Dataset</em></a>) – Dataset to add a param to</p></li>
 <li><p><strong>param</strong> (<em>cchdo.params.WHPName</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A string or <code class="docutils literal notranslate"><span class="pre">WHPName</span></code> instance of a parameter, strings are in the form <code class="docutils literal notranslate"><span class="pre">&quot;param</span> <span class="pre">[unit]&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;param&quot;</span></code> if unitless, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;OXYGEN</span> <span class="pre">[UMOL/KG]&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;EXPOCODE&quot;</span></code></p></li>
 <li><p><strong>with_flag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, also add a quality flag variable, defaults to False</p></li>
 <li><p><strong>with_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, also add an error variable if one is defined for this parent parameter, defaults to False</p></li>
@@ -420,7 +420,7 @@ To add a flag or error parameter to an existing parameter is done by setting the
 <dd class="field-even"><p>A new dataset with the requested variables added, will return a new dataset even if the results of calling this function are no-op</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)">xarray.Dataset</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)">xarray.Dataset</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -430,10 +430,10 @@ To add a flag or error parameter to an existing parameter is done by setting the
 <span class="sig-prename descclassname"><span class="pre">hydro.core.</span></span><span class="sig-name descname"><span class="pre">add_profile_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hydro/core.html#add_profile_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hydro.core.add_profile_level" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)"><em>xarray.Dataset</em></a>)</p>
+<dd class="field-odd"><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)"><em>xarray.Dataset</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)">xarray.Dataset</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)">xarray.Dataset</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -445,10 +445,10 @@ To add a flag or error parameter to an existing parameter is done by setting the
 <p>This essentially expands the slots avaialble for data and does not add any actual valid levels to a profile.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)"><em>xarray.Dataset</em></a>)</p>
+<dd class="field-odd"><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)"><em>xarray.Dataset</em></a>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)">xarray.Dataset</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)">xarray.Dataset</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -462,7 +462,7 @@ Scalars will be broadcast against any 1d arrays</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)"><em>xarray.Dataset</em></a>)</p></li>
+<li><p><strong>ds</strong> (<a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)"><em>xarray.Dataset</em></a>)</p></li>
 <li><p><strong>expocode</strong> (<em>numpy.typing.ArrayLike</em>)</p></li>
 <li><p><strong>station</strong> (<em>numpy.typing.ArrayLike</em>)</p></li>
 <li><p><strong>cast</strong> (<em>numpy.typing.ArrayLike</em>)</p></li>
@@ -473,7 +473,7 @@ Scalars will be broadcast against any 1d arrays</p>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)">xarray.Dataset</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)">xarray.Dataset</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -484,7 +484,7 @@ Scalars will be broadcast against any 1d arrays</p>
 <dd><p>Create an empty CF Dataset with the minimum required contents.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.8.1)">xarray.Dataset</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2025.9.1)">xarray.Dataset</a></p>
 </dd>
 </dl>
 </dd></dl>

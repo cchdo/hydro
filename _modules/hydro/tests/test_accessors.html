@@ -598,6 +598,20 @@
     <span class="n">ex</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_exchange</span><span class="p">()</span>
     <span class="k">assert</span> <span class="sa">b</span><span class="s2">&quot;3.1415&quot;</span> <span class="ow">in</span> <span class="n">ex</span></div>
 
+
+
+<div class="viewcode-block" id="test_coards_with_param_containing_slash">
+<a class="viewcode-back" href="../../../autoapi/hydro/tests/test_accessors/index.html#hydro.tests.test_accessors.test_coards_with_param_containing_slash">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_coards_with_param_containing_slash</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test that the COARDS conversion can deal with a parameter with a / in the name&quot;&quot;&quot;</span>
+    <span class="n">test_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;&quot;EXPOCODE,SECT_ID,STNNBR,CASTNO,SAMPNO,BTLNBR,BTLNBR_FLAG_W,DATE,TIME,LATITUDE,LONGITUDE,CTDPRS [DBAR],RA-8/6</span>
+<span class="s2">TEST,TEST,1,1,1,1,2,20110729,1919,0,0,3006.0,0,0</span>
+<span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+
+    <span class="c1"># just needs to not raise</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">cchdo</span><span class="o">.</span><span class="n">to_coards</span><span class="p">()</span></div>
+
 </pre></div>
         </article>
       </div>
