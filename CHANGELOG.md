@@ -1,5 +1,5 @@
 
-# v1.0.2.15 (2025-??-??)
+# v1.0.2.15 (2025-09-29)
 * (Bug) Fix COARDS writer not being able to handle parameter labels containing a "/" character.
 * Drop python 3.11 and numpy 1.x support.
 
