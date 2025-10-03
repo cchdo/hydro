@@ -20,7 +20,7 @@ from cchdo.hydro.flags import (
     ExchangeFlag,
     ExchangeSampleFlag,
 )
-from cchdo.hydro.types import FileType
+from cchdo.hydro.types import FileType, PrecisionSourceType
 from cchdo.hydro.utils import (
     add_cdom_coordinate,
     add_geometry_var,
@@ -288,6 +288,16 @@ def add_param(
     check_ancillary_variables(_ds)
 
     return _ds
+
+
+def change_params(
+    ds: xr.Dataset,
+    params: dict[WHPName | str, WHPName | str],
+    *,
+    precision_source: PrecisionSourceType | None = None,
+) -> xr.Dataset:
+    """Change the parameter identity of variables"""
+    return ds
 
 
 def add_profile_level(ds: xr.Dataset, idx, levels) -> xr.Dataset:
