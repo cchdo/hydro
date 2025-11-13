@@ -24,6 +24,8 @@ def make_derived(array_buffer, type):
         return xr.cchdo.to_woce(), xr.cchdo.gen_fname("woce")
     if type == "to_coards":
         return xr.cchdo.to_coards(), xr.cchdo.gen_fname("coards")
+    if type == "to_exchange":
+        return xr.cchdo.to_exchange(), xr.cchdo.gen_fname("exchange")
 
 
 __export__ = [

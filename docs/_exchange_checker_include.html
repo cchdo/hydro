@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="https://pyscript.net/releases/2024.11.1/core.css">
-<script type="module" src="https://pyscript.net/releases/2024.11.1/core.js"></script>
+<link rel="stylesheet" href="https://pyscript.net/releases/2025.11.1/core.css">
+<script type="module" src="https://pyscript.net/releases/2025.11.1/core.js"></script>
 <style>
     #log-container{
         max-height: 50vh;
@@ -32,10 +32,11 @@
 </code>
 </div>
 </div>
-<script type="py" src="./_static/convert_exchange.py" service-worker="./sw.js" worker name="my-worker" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4"], "interpreter": "0.27.0"}'></script>
-<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived1" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4" ], "interpreter": "0.27.0"}'></script>
-<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived2" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4" ], "interpreter": "0.27.0"}'></script>
-<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived3" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4" ], "interpreter": "0.27.0"}'></script>
+<script type="py" src="./_static/convert_exchange.py" service-worker="./sw.js" worker name="my-worker" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4"], "interpreter": "0.29.0"}'></script>
+<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived1" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4" ], "interpreter": "0.29.0"}'></script>
+<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived2" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4" ], "interpreter": "0.29.0"}'></script>
+<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived3" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4" ], "interpreter": "0.29.0"}'></script>
+<script type="py" src="./_static/derrived_makers.py" service-worker="./sw.js" worker name="derived4" config='{"packages": ["xarray", "cchdo.hydro", "netcdf4" ], "interpreter": "0.29.0"}'></script>
 <script type="py">
     from pyscript import workers, display, when
     from js import document, console, window, Uint8Array, Blob
@@ -59,6 +60,7 @@
     status.innerText = "Ready..."
 
     def _handle_success(result):
+        console.log(result)
         nc_bytes, nc_fname = result
         nc_blob = Blob.new([Uint8Array.new(nc_bytes)], {type : 'application/octet-stream'})
         nc_url = window.URL.createObjectURL(nc_blob) 
@@ -79,11 +81,12 @@
         worker1 = await workers["derived1"]
         worker2 = await workers["derived2"]
         worker3 = await workers["derived3"]
+        worker4 = await workers["derived4"]
 
         worker1.make_derived(nc_bytes, "to_sum").then(_handle_success)
         worker2.make_derived(nc_bytes, "to_woce").then(_handle_success)
-        # TODO make this not need scipy
-        #worker3.make_derived(nc_bytes, "to_coards").then(_handle_success)
+        worker3.make_derived(nc_bytes, "to_coards").then(_handle_success)
+        worker4.make_derived(nc_bytes, "to_exchange").then(_handle_success)
 
 
     def _handle_submit(arr_buffer):
