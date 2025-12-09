@@ -17,6 +17,7 @@ Welcome to hydro's documentation!
    ODF_CCHDO_netCDF_ops
    exchange_checker
    notebooks
+   fq_json
    changelog
 
 
