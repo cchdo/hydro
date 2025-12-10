@@ -30,6 +30,17 @@ Over time, with the exception of the CTD/ODF parameters, all the custom input fo
 The ODF Database is pure strings and has no concept of numeric values, as such, all the inputs values for parameters are expected to be string valued.
 The ODF Database also does not store the expocode, so in the ODF versions of this, no expocode key exists.
 
+When a merge target was needed for hydro/netCDF, porting the fqjson machinery seemed like a good choice.
+
+There are differences:
+* ODF fq does not have expocode
+* ODF fq does not have units
+* ODF fq does not support numeric literals
+* the hydro string and numeric literal support was made possible due to automatic casting done by numpy
+  * there _are_ behavior differences with string and numeric literals with regards to the C_format and print precisions.
+
+Consider the following two fq jsons.
+
 :::::{grid} 2
 
 ::::{grid-item}
@@ -73,3 +84,13 @@ The ODF Database also does not store the expocode, so in the ODF versions of thi
 
 ::::
 :::::
+
+In the case of the numeric literal, it is transformed into the native python data type (float) by the json parser, so the "print precision" parser never has a chance to run on this input.
+While we could intercept in the parse_float hook of the python JSONDecoder objects, doing this is cases where the source data was never text is not desired.
+
+When all the input values in an FQ json for a given parameter are strings, the print precision is extracted and the C_format attribute is set based on the input file.
+If any of the input values are numeric literals, the input print precision is considered ambiguous and the C_format attribute will be left as is.
+
+The original intent of the FQ json input is that text based input files are kept as string throughout their entire flow through the data processing pipeline (whatever it looks like).
+Similarity if the input data is actual floating point data such as netCDF (often includes excel formats), these too would continue to be in their original dtype and never round trip through a string representation.
+This includes a serialization to json string step, that is, incoming floating point data would be put into a data structure in python that has the same structure as the fq json, but never actually be written/read back in as JSON.
