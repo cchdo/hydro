@@ -350,3 +350,34 @@ def test_add_param_cdom():
 
     testing_ds_param = core.add_param(ds_param_325, WHPNames["CDOM300 [/METER]"])
     xr.testing.assert_identical(ds_param_cdom, testing_ds_param)
+
+
+def test_change_param():
+    params = (
+        "PH",
+        "PH_FLAG_W",
+        "PH_TMP",
+    )
+    new_params = (
+        "PH_TOT",
+        "PH_TOT_FLAG_W",
+        "PH_TMP",
+    )
+    units = ("", "", "DEG C")
+    data = (
+        "7.1234",
+        "2",
+        "20.0",
+    )
+    ds = read_exchange(
+        io.BytesIO(simple_bottle_exchange(params=params, units=units, data=data)),
+        precision_source="database",
+    )
+    ds_expected = read_exchange(
+        io.BytesIO(simple_bottle_exchange(params=new_params, units=units, data=data)),
+        precision_source="database",
+    )
+
+    result = core.change_params(ds, {"PH": "PH_TOT"})
+
+    xr.testing.assert_identical(result, ds_expected)
