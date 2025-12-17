@@ -1,4 +1,7 @@
 
+# v1.0.2.16 (2025-12-??)
+* Add PH with no scale/units to the legacy WOCE output formatter.
+
 # v1.0.2.15 (2025-09-29)
 * (Bug) Fix COARDS writer not being able to handle parameter labels containing a "/" character.
 * Drop python 3.11 and numpy 1.x support.
