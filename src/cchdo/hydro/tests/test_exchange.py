@@ -106,14 +106,6 @@ def test_reject_bad_examples(data, error):
         read_exchange(data)
 
 
-@pytest.mark.parametrize(
-    "uri", ["https://cchdo.ucsd.edu/exchange.csv", "http://cchdo.ucsd.edu/exchange.csv"]
-)
-def test_http_loads(uri, requests_mock):
-    requests_mock.get(uri, content=simple_bottle_exchange())
-    read_exchange(uri)
-
-
 @pytest.mark.parametrize("flag", ["1", "2", "3", "4", "6", "7"])
 def test_pressure_flags(flag):
     raw = simple_bottle_exchange(params=("CTDPRS_FLAG_W",), units=("",), data=(flag,))

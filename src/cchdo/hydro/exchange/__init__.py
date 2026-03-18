@@ -8,14 +8,15 @@ from itertools import chain
 from operator import attrgetter
 from pathlib import Path
 from typing import (
+    IO,
     TypedDict,
     TypeGuard,
 )
 from zipfile import ZipFile, is_zipfile
 
+import fsspec
 import numpy as np
 import numpy.typing as npt
-import requests
 import xarray as xr
 
 from cchdo.hydro.checks import check_flags
@@ -814,7 +815,7 @@ def _is_valid_exchange_numeric(data: npt.NDArray[np.str_]) -> np.bool_:
     return np.all(np.isin(aligned.view("|S1"), allowed_exchange_numeric_data_chars))
 
 
-ExchangeIO = str | bytes | Path | io.BufferedIOBase
+ExchangeIO = str | bytes | bytearray | Path | IO[bytes]
 
 
 def _load_raw_exchange(
@@ -824,23 +825,29 @@ def _load_raw_exchange(
     keep_seperator=True,
     encoding="utf8",
 ) -> list[str]:
-    if isinstance(filename_or_obj, str) and filename_or_obj.startswith("http"):
-        log.info("Loading object over http")
-        data_raw = io.BytesIO(requests.get(filename_or_obj).content)
+    # bytes, bytearray -> assume raw and just load
+    # Path -> try to open and read
+    # Open FileLike -> read
+    # str -> pass to fsspec
+    if isinstance(filename_or_obj, bytes | bytearray):
+        log.info("Loading raw data bytes")
+        data_raw = io.BytesIO(filename_or_obj)
 
-    elif isinstance(filename_or_obj, str | Path) and Path(filename_or_obj).exists():
+    elif isinstance(filename_or_obj, Path) and filename_or_obj.exists():
         log.info("Loading object from local file path")
-        with open(filename_or_obj, "rb") as local_file:
+        with filename_or_obj.open("rb") as local_file:
             data_raw = io.BytesIO(local_file.read())
 
     # lets just try "reading"
-    elif hasattr(filename_or_obj, "read"):
-        log.info("Loading object open file object")
+    elif isinstance(filename_or_obj, (io.BufferedIOBase, io.RawIOBase)):
+        log.info("Loading object from local file path")
         data_raw = io.BytesIO(filename_or_obj.read())
 
-    elif isinstance(filename_or_obj, bytes | bytearray):
-        log.info("Loading raw data bytes")
-        data_raw = io.BytesIO(filename_or_obj)
+    elif isinstance(filename_or_obj, str):
+        with fsspec.open(filename_or_obj, "rb") as fsspec_file:
+            data_raw = io.BytesIO(fsspec_file.read())
+    else:
+        raise ValueError(f"could load data from {filename_or_obj}")
 
     data: list[str] = []
 

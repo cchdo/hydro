@@ -44,16 +44,19 @@ Repository = "https://github.com/cchdo/hydro.git"
 netcdf = [
     "netCDF4>=1.5.7",
 ]
+fsspec = [
+    "fsspec>=2026.2.0",
+    "aiohttp>=3.13.3",
+]
 schema = [
     "gsw",
 ]
 selftest = [
     "cchdo.hydro[netcdf]",
     "pytest",
-    "requests-mock",
 ]
 cli = [
-    "cchdo.hydro[netcdf]",
+    "cchdo.hydro[netcdf,fsspec]",
     "cchdo.auth",
     "click",
     "rich",

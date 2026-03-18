@@ -240,7 +240,7 @@ def get_coards_global_attributes(ds: xr.Dataset, *, profile_type: Literal["B", "
     return attrs
 
 
-class DataArrayAttrs(TypedDict, closed=True, total=False):
+class DataArrayAttrs(TypedDict, total=False):
     long_name: str
     positive: Literal["up", "down"]
     units: str
