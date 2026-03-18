@@ -17,7 +17,7 @@ from importlib.resources import open_text
 from io import BytesIO
 from logging import getLogger
 from tempfile import TemporaryDirectory
-from typing import Literal
+from typing import Literal, TypedDict
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import numpy as np
@@ -240,10 +240,20 @@ def get_coards_global_attributes(ds: xr.Dataset, *, profile_type: Literal["B", "
     return attrs
 
 
+class DataArrayAttrs(TypedDict, closed=True, total=False):
+    long_name: str
+    positive: Literal["up", "down"]
+    units: str
+    data_min: float
+    data_max: float
+    C_format: str
+    WHPO_Variable_Name: str
+
+
 def get_dataarrays(ds: xr.Dataset):
     dataarrays = {}
     for whpname, variable in ds.cchdo.to_whp_columns(compact=True).items():
-        attrs = {}
+        attrs: DataArrayAttrs = {}
 
         parameter_name = whpname.whp_name
 
@@ -312,9 +322,8 @@ def get_dataarrays(ds: xr.Dataset):
 
         if data.dtype.kind in "iuf":
             if np.all(np.isnan(data)):
-                # the proper fix here would be to make a type dict that knows what is going on with each key
-                attrs["data_min"] = float("-inf")  # type: ignore[assignment]
-                attrs["data_max"] = float("inf")  # type: ignore[assignment]
+                attrs["data_min"] = float("-inf")
+                attrs["data_max"] = float("inf")
             else:
                 attrs["data_min"] = np.nanmin(data)
                 attrs["data_max"] = np.nanmax(data)
