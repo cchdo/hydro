@@ -55,12 +55,14 @@ PrecisionSouceType = click.Choice(["file", "database"], case_sensitive=False)
     type=str,
     help="either a comment string or file path prefixed with @ (e.g. @README.txt)",
 )
-def convert_exchange(exchange_path, out_path, check_flag, precision_source, comments):
+def convert_exchange(
+    exchange_path, out_path, check_flag: bool, precision_source, comments
+):
     setup_logging("DEBUG")
     log.info("Loading read_exchange")
-    from .exchange import read_exchange
+    from .exchange import CheckOptions, read_exchange
 
-    checks = {"flags": check_flag}
+    checks: CheckOptions = {"flags": check_flag}
 
     ex = read_exchange(exchange_path, checks=checks, precision_source=precision_source)
     log.info("Saving to netCDF")
@@ -91,9 +93,9 @@ def convert_exchange(exchange_path, out_path, check_flag, precision_source, comm
 def convert_csv(csv_path, out_path, ftype, check_flag, precision_source, comments):
     setup_logging("DEBUG")
     log.info("Loading read_exchange")
-    from .exchange import read_csv
+    from .exchange import CheckOptions, read_csv
 
-    checks = {"flags": check_flag}
+    checks: CheckOptions = {"flags": check_flag}
 
     ex = read_csv(
         csv_path, ftype=ftype, checks=checks, precision_source=precision_source
@@ -134,9 +136,11 @@ def edit_comments(expocode, dtype):
     extant_ids = cruise_file_ids & files.keys()
     edit_files = list(
         filter(
-            lambda x: x["role"] == "dataset"
-            and x["data_format"] == "cf_netcdf"
-            and x["data_type"] == dtype,
+            lambda x: (
+                x["role"] == "dataset"
+                and x["data_format"] == "cf_netcdf"
+                and x["data_type"] == dtype
+            ),
             (files[id] for id in extant_ids),
         )
     )

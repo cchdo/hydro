@@ -5,7 +5,7 @@ from base64 import b64encode
 import xarray as xr
 
 from cchdo.hydro import accessors  # noqa: F401
-from cchdo.hydro.exchange import read_exchange
+from cchdo.hydro.exchange import CheckOptions, read_exchange
 from cchdo.hydro.exchange.exceptions import (
     ExchangeDataFlagPairError,
     ExchangeParameterUndefError,
@@ -24,7 +24,7 @@ def make_netcdf_file_json(path):
 
 def p_file(file_m):
     t_dir, file, file_metadata, roundtrip = file_m
-    checks = {"flags": False}
+    checks: CheckOptions = {"flags": False}
     unknown_params = []
 
     warnings.simplefilter("ignore")
