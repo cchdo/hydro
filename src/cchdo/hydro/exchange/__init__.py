@@ -14,7 +14,6 @@ from typing import (
 )
 from zipfile import ZipFile, is_zipfile
 
-import fsspec
 import numpy as np
 import numpy.typing as npt
 import xarray as xr
@@ -844,8 +843,16 @@ def _load_raw_exchange(
         data_raw = io.BytesIO(filename_or_obj.read())
 
     elif isinstance(filename_or_obj, str):
-        with fsspec.open(filename_or_obj, "rb") as fsspec_file:
-            data_raw = io.BytesIO(fsspec_file.read())
+        try:
+            import fsspec
+
+            with fsspec.open(filename_or_obj, "rb") as fsspec_file:
+                data_raw = io.BytesIO(fsspec_file.read())
+        except ImportError:
+            # just try opening it as a path if no fssepc
+            log.info("Could not import fsspec, falling back to local file path")
+            with open(filename_or_obj, "rb") as local_file:
+                data_raw = io.BytesIO(local_file.read())
     else:
         raise ValueError(f"could load data from {filename_or_obj}")
 
