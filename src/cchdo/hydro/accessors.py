@@ -228,57 +228,6 @@ class CCHDOAccessor:
         base_schema["variableMeasured"] = variableMeasured
         return base_schema  # TODO pydantic models?
 
-    def to_mat(self, fname):
-        """Experimental Matlab .mat data file generator.
-
-        The support for netCDF files in Matlab is really bad.
-        Matlab also has no built in support for the standards
-        we are trying to follow (CF, ACDD), the most egregious
-        lack of support is how to deal with times in netCDF files.
-        This was an attempt to make a mat file which takes
-        care of some of the things matlab won't do for you.
-        It requires scipy to function.
-
-        The file it produces is in no way stable.
-        """
-        try:
-            from scipy.io import savemat as scipy_savemat
-        except ImportError as error:
-            raise ImportError("scipy is required for mat file saving") from error
-
-        mat_dict = {}
-        data = self._obj.to_dict()
-
-        # flatten
-        for coord, value in data["coords"].items():
-            del value["dims"]
-            mat_dict[coord] = value
-        for param, value in data["data_vars"].items():
-            del value["dims"]
-            mat_dict[param] = value
-
-        # cleanups for matlab users
-        def to_matdate(dt):
-            if dt is None:
-                return "NaT"
-            return dt.strftime("%d-%b-%Y %H:%M:%S")
-
-        def dt_list_to_str_list(dtl):
-            return list(map(to_matdate, dtl))
-
-        for value in mat_dict.values():
-            if value.get("attrs", {}).get("standard_name") == "time":
-                # the case of list of lists is bottle closure times, which is a sparse array
-                if any(isinstance(v, list) for v in value["data"]):
-                    value["data"] = list(map(dt_list_to_str_list, value["data"]))
-                else:
-                    value["data"] = dt_list_to_str_list(value["data"])
-
-            if "status_flag" in value.get("attrs", {}).get("standard_name", ""):
-                value["data"] = np.nan_to_num(value["data"], nan=9)
-
-        scipy_savemat(fname, mat_dict)
-
     def to_coards(self, path=None):
         from .legacy.coards import to_coards
 
