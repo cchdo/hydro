@@ -198,6 +198,8 @@ def writeable_columns(ds: xr.Dataset, is_ctd=False):
     # Filter with whitelist and rewrite format strings to WOCE standard.
     whitelisted_columns = []
     for param, col in ds.cchdo.to_whp_columns(compact=True).items():
+        if param.alt_depth > 0:
+            continue
         key = param.whp_name
         if key in _UNWRITTEN_COLUMNS:
             continue
