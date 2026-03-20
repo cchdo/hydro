@@ -25,7 +25,7 @@ IODIDE,NMOL/KG,,F8.3,,,,,x
 NH4,UMOL/KG,,,,,,,
 CH4,NMOL/KG,,F8.2,,,,,
 DON,UMOL/KG,,F8.1,,,,,
-N2O,NMOL/KG,,F8.2,,,,,x
+N2O,NMOL/KG,,F8.2,,,,,
 CHLORA,UG/KG,,F8.2,,,,,
 PPHYTN,UG/KG,,F8.2,,,,,
 Halocarbons,,,,,,,,x
