@@ -1,14 +1,28 @@
 """A Collection of Flag Schemes."""
 
+from abc import abstractmethod
 from enum import IntEnum
+from typing import Protocol
+
+
+class FlagDefProtocol(Protocol):
+    flag: int
+
+    @property
+    @abstractmethod
+    def _flag_definitions(self) -> dict[int, str]: ...
+
+    @property
+    @abstractmethod
+    def _no_data_flags(self) -> tuple[int]: ...
 
 
 class ExchangeFlag(IntEnum):
-    def __init__(self, flag) -> None:
+    def __init__(self, flag: int) -> None:
         self.flag = flag
 
     @property
-    def definition(self):
+    def definition(self: FlagDefProtocol):
         return self._flag_definitions[self.flag]
 
     @property
@@ -16,7 +30,7 @@ class ExchangeFlag(IntEnum):
         return "_".join(self.definition.lower().replace(".", "").split())
 
     @property
-    def has_value(self):
+    def has_value(self: FlagDefProtocol):
         if self.flag in self._no_data_flags:
             return False
         return True
