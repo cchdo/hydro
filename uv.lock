@@ -320,36 +320,30 @@ wheels = [
 name = "cchdo-hydro"
 source = { editable = "." }
 dependencies = [
-    { name = "appdirs" },
+    { name = "aiohttp" },
     { name = "cchdo-params" },
+    { name = "fsspec" },
     { name = "numpy" },
     { name = "pandas" },
+    { name = "platformdirs" },
     { name = "requests" },
     { name = "xarray" },
 ]
 
 [package.optional-dependencies]
 cli = [
-    { name = "aiohttp" },
     { name = "cchdo-auth" },
     { name = "click" },
-    { name = "fsspec" },
     { name = "netcdf4" },
     { name = "rich" },
 ]
 complete = [
-    { name = "aiohttp" },
     { name = "cchdo-auth" },
     { name = "click" },
-    { name = "fsspec" },
     { name = "gsw" },
     { name = "netcdf4" },
     { name = "pytest" },
     { name = "rich" },
-]
-fsspec = [
-    { name = "aiohttp" },
-    { name = "fsspec" },
 ]
 netcdf = [
     { name = "netcdf4" },
@@ -385,25 +379,25 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiohttp", marker = "extra == 'fsspec'", specifier = ">=3.13.3" },
-    { name = "appdirs" },
+    { name = "aiohttp", specifier = ">=3.11.13" },
     { name = "cchdo-auth", marker = "extra == 'cli'" },
     { name = "cchdo-hydro", extras = ["cli", "schema", "selftest"], marker = "extra == 'complete'" },
     { name = "cchdo-hydro", extras = ["fsspec", "netcdf"], marker = "extra == 'cli'" },
     { name = "cchdo-hydro", extras = ["netcdf"], marker = "extra == 'selftest'" },
     { name = "cchdo-params", specifier = ">=2024.3" },
     { name = "click", marker = "extra == 'cli'" },
-    { name = "fsspec", marker = "extra == 'fsspec'", specifier = ">=2026.2.0" },
+    { name = "fsspec", specifier = ">=2025.3.2" },
     { name = "gsw", marker = "extra == 'schema'" },
     { name = "netcdf4", marker = "extra == 'netcdf'", specifier = ">=1.5.7" },
     { name = "numpy", specifier = ">=2" },
-    { name = "pandas", specifier = ">=1.3.3" },
+    { name = "pandas", specifier = ">=2.3.0" },
+    { name = "platformdirs", specifier = ">=4.9.4" },
     { name = "pytest", marker = "extra == 'selftest'" },
     { name = "requests", specifier = ">=2.26.0" },
     { name = "rich", marker = "extra == 'cli'" },
     { name = "xarray", specifier = ">=2023.9.0" },
 ]
-provides-extras = ["netcdf", "fsspec", "schema", "selftest", "cli", "complete"]
+provides-extras = ["netcdf", "schema", "selftest", "cli", "complete"]
 
 [package.metadata.requires-dev]
 dev = [

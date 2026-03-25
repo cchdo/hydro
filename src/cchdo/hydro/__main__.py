@@ -219,9 +219,9 @@ def cached_file_loader(file):
 
     from cchdo.auth.session import session as s
 
-    from . import _hydro_appdirs
+    from . import _hydro_platformdirs
 
-    cache_dir = Path(_hydro_appdirs.user_cache_dir) / "convert"
+    cache_dir = Path(_hydro_platformdirs.user_cache_dir) / "convert"
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     file_dest = cache_dir / file["file_hash"]

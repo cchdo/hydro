@@ -5,14 +5,14 @@ from zipfile import ZipFile
 
 import requests
 
-from . import _hydro_appdirs
+from . import _hydro_platformdirs
 
 bottle_uri = "https://cchdo.ucsd.edu/search?q=a&download=exchange%2cbottle"
 bottle_fname = "bottle_data.zip"
 
 
 def _cache_dir():
-    path = _hydro_appdirs.user_cache_dir
+    path = _hydro_platformdirs.user_cache_dir
     os.makedirs(path, exist_ok=True)
     return path
 
@@ -30,7 +30,7 @@ def load_cchdo_bottle_data():
 
 class CCHDOBottleData(Mapping):
     def __init__(self):
-        self.path = os.path.join(_hydro_appdirs.user_cache_dir, bottle_fname)
+        self.path = os.path.join(_hydro_platformdirs.user_cache_dir, bottle_fname)
         try:
             with ZipFile(self.path) as f:
                 self.files = f.namelist()

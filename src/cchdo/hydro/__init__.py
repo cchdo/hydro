@@ -7,9 +7,9 @@ try:
 except PackageNotFoundError:
     pass
 
-from appdirs import AppDirs
+from platformdirs import PlatformDirs
 
-_hydro_appdirs = AppDirs("edu.ucsd.cchdo.hydro")
+_hydro_platformdirs = PlatformDirs("edu.ucsd.cchdo.hydro")
 
 from .exchange import read_csv, read_exchange
 
