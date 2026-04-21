@@ -84,7 +84,7 @@ group
 : {term}`Dimensions<dimension>`, {term}`variables<variable>`, and {term}`attributes<attribute>` can all be organized in a hierarchical structure within netCDF.
   This is similar to how files and directories exist on a computer filesystem.
   All netCDF4 files have at least one root group called "/" (forward slash).
-  Currently, no addtional groups are used in GO-SHIP netCDF files.
+  Currently, no additional groups are used in GO-SHIP netCDF files.
 
 dimension
 : The netCDf data model is primarily concerned with storing data inside arrays, almost always this is numeric data.
@@ -96,7 +96,7 @@ variable
 : In a netCDF file, a variable is the most basic data object
   Variables have a name, a data type, a shape, some attributes, and the data itself.
   Variable names can be almost anything, the only character not allowed in a netCDF variable name is the forward slash "/".
-  Names may start with or contain anything in unicode, they may not be valid variable names in your programing environment of choice.
+  Names may start with or contain anything in unicode, they may not be valid variable names in your programming environment of choice.
 
   :::{warning}
 
@@ -163,17 +163,17 @@ The CF conventions document is long, verbose, and (we think) intimidating at fir
 This is due to the wide range of data structures supported by CF, and the need to carefully describe things in detail.
 It is hard to know what parts are important for your, or our, data.
 For any given dataset, only a small portion of the CF conventions will be used.
-This is true not just for GO-SHIP data, but any data claiming to be compatable with CF.
+This is true not just for GO-SHIP data, but any data claiming to be compatible with CF.
 We selected what we hope will be an easy entry point into the data stored in this standardized structure.
 
-Chapter 9 of the CF conventions define what are called discrete sampling geometries, often refered to as a DSG.
+Chapter 9 of the CF conventions define what are called discrete sampling geometries, often referred to as a DSG.
 Specifically, we selected the incomplete multidimensional array representation defined in 9.3.2 (TODO Ref).
-This representation has two primary dimmensions, one of the profile and the other as the vertical level in that profile.
+This representation has two primary dimensions, one of the profile and the other as the vertical level in that profile.
 When each profile has different number of vertical levels, fill values will be in the trailing data slots.
 
 ## Dimensions
 There are two basic dimensions in the data file, how many profiles there are, and how many vertical levels there are.
-The two dimension names match the dimenion names found in argo profile files: N_PROF and N_LEVELS.
+The two dimension names match the dimension names found in argo profile files: N_PROF and N_LEVELS.
 
 While netCDF4 supports an actual string data type, for compatibility and compression reasons, character arrays will be used to represent text data.
 Character arrays have the string length as their last dimension, the number and values of these string dimensions is currently uncontrolled (xarray sets these automatically).
@@ -259,7 +259,7 @@ Attrs to talk about:
 :::
 
 Variable attributes are like the global attributes, but instead of being attached to the entire dataset, are attached to variables.
-These attributes are where almost all the metadata about a variable exist, things such as what the units of the measuremnet are or what the flag values mean.
+These attributes are where almost all the metadata about a variable exist, things such as what the units of the measurement are or what the flag values mean.
 
 ### ``_FillValue``
 
@@ -272,11 +272,11 @@ A value used to represent missing or undefined data. Allowed for auxiliary coord
 
 #### CCHDO Usage
 For floating point type data (float, double), the IEEE NaN value will be used.
-Woce flag variables will be initialized with the value `9b`.
+WOCE flag variables will be initialized with the value `9b`.
 Some special coordinate variables are not allowed to have any ``_FillValue`` values in them
 
 The ``_FillValue`` attribute has special meaning to the netCDF4 libraries (C and Java).
-When the size of the variable is known (i.e. the variable does not have an "unlimited" dimmension) at the time the netCDF file is written, all of the space in the variable will be initalized with the value in ``_FillValue``.
+When the size of the variable is known (i.e. the variable does not have an "unlimited" dimension) at the time the netCDF file is written, all of the space in the variable will be initialized with the value in ``_FillValue``.
 This is usually almost entirely transparent to you the user, some software will change the data type when a variable still contains ``_FillValue`` values.
 Matlab for example, will change byte (integers between 0 and 255) data into IEEE floating point values while replacing the fill value with NaNs.
 
@@ -291,11 +291,11 @@ Not used or defined in the CF conventions.
 #### CCHDO Usage
 This attribute contains the name this variable would have inside a WHP Exchange or WOCE sea/ctd file.
 Forms a pair with :ref:`whp_unit`
-This attribute will only be on variables which are data, and not on flag variables or certain specal variables meant to be interpreted by CF compliant readers (e.g. ``geometry_container``).
+This attribute will only be on variables which are data, and not on flag variables or certain special variables meant to be interpreted by CF compliant readers (e.g. ``geometry_container``).
 
 Some variables cannot be represented by a single column in the WHP Exchange format, when this occurs, the attribute will be an array of strings containing all the names needed to represent this variable in WHP Exchange format.
 The most frequent example will be the ``time`` variable, in WHP Exchange files, this may either be a pair of columns (DATE, TIME) or a single column (DATE) when time of day is not reported.
-This will very likly be used to represet ex and em wavelengths for optical sensors with multiple channels.
+This will very likely be used to represent ex and em wavelengths for optical sensors with multiple channels.
 
 :::{warning}
 There is no requirement that all variables in a netCDF file contain unique ``whp_name`` and ``whp_unit`` pairs.
@@ -326,13 +326,13 @@ Usage is the same as ``whp_name``
 get cf definition
 
 #### CCHDO Usage
-The CF usage will be followed, if a CF standard name exists for physical quantity represeted by a variable, the most specific name MUST be used and appear in the ``standard_name`` attribute.
+The CF usage will be followed, if a CF standard name exists for physical quantity represented by a variable, the most specific name MUST be used and appear in the ``standard_name`` attribute.
 The CF standard names table is updated frequently, as names are added they will be evaluated for including in the CCHDO netCDF files to both be more specific or to add a standard name to a variable that did not have one previously.
 Always check the param version attribute to see which version of the standard name table is in use for a particular file.
 
-It is important to understand that standard names represet the physical quantity of the variable and not how the data was made.
+It is important to understand that standard names represent the physical quantity of the variable and not how the data was made.
 Standard names cannot distinguish between salinity measured in situ with a CTD, salinity measured with an autosal, or even salinity from a model output.
-The names are meant to help with intercomparison of the values themselves, not methods of determing that value.
+The names are meant to help with intercomparison of the values themselves, not methods of determining that value.
 
 
 ### ``units``
@@ -347,7 +347,7 @@ get cf definition
 
 #### CCHDO Usage
 The units attribute will follow CF.
-The value must be physically comparible with the canonical units of the ``standard_name``.
+The value must be physically comparable with the canonical units of the ``standard_name``.
 The value will be the ``whp_unit`` translated into SI.
 
 Unitless parameters will have the symbol "1" as their units.
@@ -359,8 +359,8 @@ get ref to SI paper
 Some examples:
 
 * disintegrations per minute (DPM) will be translated to their equivalent Bq, which will be scaled (1DPM = 0.0166 Bq)
-* Practical salinity will have the units of "1", not variabtions on "PSU" or even "0.001" implying g/kg of actual salinity.
-* Tritium Units are really parts per 1e18, so the equivalent SI units are the recriprical: 1e-18
+* Practical salinity will have the units of "1", not variations on "PSU" or even "0.001" implying g/kg of actual salinity.
+* Tritium Units are really parts per 1e18, so the equivalent SI units are the reciprocal: 1e-18
 
 
 ### ``reference_scale``
@@ -378,7 +378,7 @@ get OceanSITES definition.
 
 Some variables (e.g. temperature) are not described well enough by their units and standard name alone.
 For example, depending on when it was measured, the temperature sensors may have been calibrated on the ITS-90, IPTS-68, or WHAT_WAS_BEFORE_t68 calibration scales.
-While all the temperatures are degree C, users doing precice work need to know the difference.
+While all the temperatures are degree C, users doing precise work need to know the difference.
 
 :::{todo}
 this is a controlled list internally, list which variables have a scale and what their value can be.
@@ -394,8 +394,8 @@ this is a controlled list internally, list which variables have a scale and what
 ``C_format`` is not mentioned at all in the CF-1.8 docs.
 
 #### CCHDO Usage
-The ``C_format`` attribute will contain the format string from either the internal database of parameters or calcualted when converting from a text input.
-The presence or lack of presence of this attribute will not change the underlyying values in the variable (e.g. you cannot round the values to the nearst integer using C_format).
+The ``C_format`` attribute will contain the format string from either the internal database of parameters or calculated when converting from a text input.
+The presence or lack of presence of this attribute will not change the underlying values in the variable (e.g. you cannot round the values to the nearest integer using C_format).
 This attribute is sometimes used when _displaying_ data values to a user.
 When performing calculations in most software, the underlying data values are almost always used directly.
 The only software we have seen respect the ``C_format`` attribute is ncdump when dumping to CDL.
@@ -406,15 +406,15 @@ This can be tricky for data managers: if for example, the data source was an exc
 
 
 :::{warning}
-Use ``C_format`` as implied uncertanty if you have _no other_ source of uncertanty (including statistical methods across the dataset).
+Use ``C_format`` as implied uncertainty if you have _no other_ source of uncertainty (including statistical methods across the dataset).
 
 Historically, storing numeric values in text and the cost of storage meant there was a tradeoff between cost and precision.
-When looking though our database of format strings, the text print precision was almost always set at one decimal place more than the actual measuremnt uncertanty.
-Having these values published in the WOCE manual also lead to values being reported a certain way to conform to the WOCE format, which disconnected "print precision" from uncertanty.
+When looking though our database of format strings, the text print precision was almost always set at one decimal place more than the actual measurement uncertainty.
+Having these values published in the WOCE manual also lead to values being reported a certain way to conform to the WOCE format, which disconnected "print precision" from uncertainty.
 Additionally, the WOCE format was designed when IEEE floating point numbers were quite new.
 
-More recent measuremnets have started to include explicit uncertanties which will be reported along side the data values.
-Often, the cruise report will contain some charicterizaion of the uncertanty of a given measumrnet.
+More recent measurements have started to include explicit uncertainties which will be reported along side the data values.
+Often, the cruise report will contain some characterization of the uncertainty of a given measurement.
 :::
 
 
@@ -428,7 +428,7 @@ This attribute is not used in CF.
 
 #### CCHDO Usage
 This attribute describes where the value in ``C_format`` came from.
-This attribute will only have the values of either ``"database"`` to indicate the ``C_format`` was taken from the internal parameters table, or ``"source_file"`` if the values was calcualted from input text.
+This attribute will only have the values of either ``"database"`` to indicate the ``C_format`` was taken from the internal parameters table, or ``"source_file"`` if the values was calculated from input text.
 
 ---
 
