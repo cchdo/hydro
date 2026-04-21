@@ -46,7 +46,7 @@ extensions = [
     "myst_nb",
 ]
 
-myst_enable_extensions = ["colon_fence"]
+myst_enable_extensions = ["colon_fence", "deflist", "attrs_block", "fieldlist"]
 jupyter_execute_notebooks = "off"
 
 autoapi_dirs = ["../src/cchdo", "../src/cchdo/hydro"]
