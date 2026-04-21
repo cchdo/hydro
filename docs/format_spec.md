@@ -84,7 +84,6 @@ group
 : {term}`Dimensions<dimension>`, {term}`variables<variable>`, and {term}`attributes<attribute>` can all be organized in a hierarchical structure within netCDF.
   This is similar to how files and directories exist on a computer filesystem.
   All netCDF4 files have at least one root group called "/" (forward slash).
-  Currently, no additional groups are used in GO-SHIP netCDF files.
 
 dimension
 : The netCDf data model is primarily concerned with storing data inside arrays, almost always this is numeric data.
@@ -231,6 +230,20 @@ The following, case sensitive, global attributes are OPTIONAL:
 * There MUST be a ``cchdo_parameters_version`` global attribute char array with the version string of the cchdo.params database.
 * There MAY be a ``comments`` attribute with more information. This attribute MAY be a string rather than a char array if there are non ASCII code points present.
 :::
+
+## Required Variables
+The following variables are required in all files:
+
+* ``geometry_container``
+* ``profile_type``
+* ``expocode``
+* ``station``
+* ``cast``
+* ``sample``
+* ``longitude``
+* ``latitude``
+* ``pressure``
+* ``time``
 
 ## Variable Attributes
 :::{todo}
@@ -554,20 +567,6 @@ It will almost always be set on string or char array data with a value of "utf8"
 
 #### CCHDO Usage
 
-Required Variables
-==================
-The following variables are required in all files:
-
-* ``geometry_container``
-* ``profile_type``
-* ``expocode``
-* ``station``
-* ``cast``
-* ``sample``
-* ``longitude``
-* ``latitude``
-* ``pressure``
-* ``time``
 
 [BCP 14]: https://www.rfc-editor.org/info/bcp14
 [RFC2119]: https://datatracker.ietf.org/doc/html/rfc2119
