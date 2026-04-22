@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.abspath("."))
 
 # generate the ERDDAP variable table using a module import
 import_module("_erddap_table")
+import_module("_variables")
 
 
 # -- Project information -----------------------------------------------------

@@ -231,19 +231,25 @@ The following, case sensitive, global attributes are OPTIONAL:
 * There MAY be a ``comments`` attribute with more information. This attribute MAY be a string rather than a char array if there are non ASCII code points present.
 :::
 
-## Required Variables
-The following variables are required in all files:
+## Required Variables (Coordinates)
+Some variables are required to be in all compliant files.
+These variables serve three distinct roles: unique identification of samples, temporal and physical location, and technical metadata.
 
+The identification required variables are:
+* [](variables/expocode)
+* [](variables/station)
+* [](variables/cast)
+* [](variables/sample)
+
+The temporal and physical location variables are:
+* [](variables/longitude)
+* [](variables/latitude)
+* [](variables/pressure)
+* [](variables/time)
+
+The technical variables are:
 * ``geometry_container``
 * ``profile_type``
-* ``expocode``
-* ``station``
-* ``cast``
-* ``sample``
-* ``longitude``
-* ``latitude``
-* ``pressure``
-* ``time``
 
 ## Variable Attributes
 :::{todo}

@@ -48,3 +48,7 @@ dmypy.json
 docs/_build
 .ipynb_checkpoints/
 _version.py
+# is generated each time
+docs/_erddap_table.md
+docs/variables.md
+docs/variables
