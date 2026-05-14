@@ -94,4 +94,4 @@ jobs:
     - name: Install dependencies
       run: uv sync
     - name: Test typing
-      run: uv ty check src
+      run: uv run ty check src
