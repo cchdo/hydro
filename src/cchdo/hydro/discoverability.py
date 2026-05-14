@@ -59,7 +59,6 @@ def temporal(ds: xr.Dataset) -> xr.Dataset:
     This includes:
     * time_coverage_start
     * time_coverage_end
-    * temporalCoverage (schema.org)
     """
     ds_ = ds.copy()
 
@@ -68,9 +67,6 @@ def temporal(ds: xr.Dataset) -> xr.Dataset:
         "time_coverage_start": ds_.time.min().dt.strftime(fmt).item(),
         "time_coverage_end": ds_.time.max().dt.strftime(fmt).item(),
     }
-    attrs["temporalCoverage"] = (
-        f"{attrs['time_coverage_start']}/{attrs['time_coverage_end']}"
-    )
 
     ds_.attrs.update(attrs)
     return ds_
@@ -88,7 +84,6 @@ def geospatial(ds: xr.Dataset) -> xr.Dataset:
     * geospatial_vertical_max
     * geospatial_vertical_positive (always "down")
     * geospatial_vertical_units (always "dbar")
-    * box
 
     Note that according to the "spec" of ACDD 1.3 if the lon min is greater
     than the lon max, this indicates that the geospatial extent crosses the
@@ -101,14 +96,6 @@ def geospatial(ds: xr.Dataset) -> xr.Dataset:
 
     The ACDD 1.3 "spec" also allows for the pressure units of bar to be used
     for the vertical units.
-
-    "box" is not defined in ACDD but instead schema.org and is for JSON-LD.
-    From the google Dataset documentation:
-    > Points inside box, circle, line, or polygon properties must be expressed
-    > as a space separated pair of two values corresponding to latitude and
-    > longitude (in that order).
-
-    Which is nicely incompatible with JSON-LD and also doesn't use WKT
     """
 
     ds_ = ds.copy()
@@ -131,10 +118,6 @@ def geospatial(ds: xr.Dataset) -> xr.Dataset:
         attrs["geospatial_lon_min"] = np.nanmin(
             ds_.longitude.values, where=ds_.longitude.values > 0, initial=180
         ).item()
-
-    attrs["box"] = (
-        f"""{attrs["geospatial_lat_min"]} {attrs["geospatial_lon_min"]} {attrs["geospatial_lat_min"]} {attrs["geospatial_lon_max"]}"""
-    )
 
     ds_.attrs.update(attrs)
     return ds_
