@@ -4,6 +4,37 @@ import numpy as np
 import xarray as xr
 
 
+def min_max(ds: xr.Dataset) -> xr.Dataset:
+    """Set min/max attributes on all the numeric data variables including
+    flags
+
+    This will use two "made up" attribute names of:
+    * actual_max
+    * actual_min
+
+    The more well known attributes of "valid_min" and "valid_max" apply to the
+    packed data, so if there are add_offset and scale_factor attributes, any
+    valid_* attributes would apply to the data before scaling/multiplying.
+    Additionally, generic applications should mask any values outside the
+    "valid" ranges. CF defines an attribute "actual_range" that includes both
+    min and max values of the unpacked data. For JSON-LD/schema.org reasons
+    we need the min/max as separate values.
+    """
+    ds_ = ds.copy()
+
+    for var in ds_.variables:
+        da = ds_[var]
+        if da.dtype.kind not in "biuf":  # numpy codes for the numeric types
+            continue
+        attrs = {
+            "actual_min": da.min(skipna=True).item(),
+            "actual_max": da.max(skipna=True).item(),
+        }
+        da.attrs.update(attrs)
+
+    return ds_
+
+
 def temporal(ds: xr.Dataset) -> xr.Dataset:
     """Set the temporal extent global attributes
 
