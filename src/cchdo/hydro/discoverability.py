@@ -134,3 +134,8 @@ def geospatial(ds: xr.Dataset) -> xr.Dataset:
 
     ds_.attrs.update(attrs)
     return ds_
+
+
+def add_discoverability_attribute(ds: xr.Dataset) -> xr.Dataset:
+    """Add (or update) all the discoverability metadata from all the other functions in this module"""
+    return ds.pipe(flag_histogram).pipe(min_max).pipe(temporal).pipe(geospatial)
