@@ -59,6 +59,7 @@ def temporal(ds: xr.Dataset) -> xr.Dataset:
     This includes:
     * time_coverage_start
     * time_coverage_end
+    * temporalCoverage (schema.org)
     """
     ds_ = ds.copy()
 
@@ -67,6 +68,9 @@ def temporal(ds: xr.Dataset) -> xr.Dataset:
         "time_coverage_start": ds_.time.min().dt.strftime(fmt).item(),
         "time_coverage_end": ds_.time.max().dt.strftime(fmt).item(),
     }
+    attrs["temporalCoverage"] = (
+        f"{attrs['time_coverage_start']}/{attrs['time_coverage_end']}"
+    )
 
     ds_.attrs.update(attrs)
     return ds_
@@ -136,6 +140,6 @@ def geospatial(ds: xr.Dataset) -> xr.Dataset:
     return ds_
 
 
-def add_discoverability_attribute(ds: xr.Dataset) -> xr.Dataset:
+def add_discoverability_attributes(ds: xr.Dataset) -> xr.Dataset:
     """Add (or update) all the discoverability metadata from all the other functions in this module"""
     return ds.pipe(flag_histogram).pipe(min_max).pipe(temporal).pipe(geospatial)
