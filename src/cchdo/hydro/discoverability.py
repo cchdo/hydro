@@ -4,6 +4,25 @@ import numpy as np
 import xarray as xr
 
 
+def temporal(ds: xr.Dataset) -> xr.Dataset:
+    """Set the temporal extent global attributes
+
+    This includes:
+    * time_coverage_start
+    * time_coverage_end
+    """
+    ds_ = ds.copy()
+
+    fmt = "%Y-%m-%dT%H:%M:%SZ"
+    attrs = {
+        "time_coverage_start": ds_.time.min().dt.strftime(fmt).item(),
+        "time_coverage_end": ds_.time.max().dt.strftime(fmt).item(),
+    }
+
+    ds_.attrs.update(attrs)
+    return ds_
+
+
 def geospatial(ds: xr.Dataset) -> xr.Dataset:
     """Set the geospatial extent global attributes
 
