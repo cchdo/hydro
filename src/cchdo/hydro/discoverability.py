@@ -4,6 +4,24 @@ import numpy as np
 import xarray as xr
 
 
+def flag_histogram(ds: xr.Dataset) -> xr.Dataset:
+    """For flag variables, create a histogram of how many times each flag value appears"""
+    ds_ = ds.copy()
+
+    # TODO: switch to operator.is_not_none when python 3.13 dropped
+    for var in ds_.filter_by_attrs(flag_values=lambda x: x is not None):
+        da = ds_[var]
+        unique, counts = np.unique(da.fillna(9), return_counts=True)
+
+        flag_values = da.attrs["flag_values"]
+
+        histogram = np.full_like(flag_values, 0, dtype=np.int64)
+        histogram[np.searchsorted(flag_values, unique)] = counts
+        da.attrs["flag_histogram"] = histogram
+
+    return ds_
+
+
 def min_max(ds: xr.Dataset) -> xr.Dataset:
     """Set min/max attributes on all the numeric data variables including
     flags
