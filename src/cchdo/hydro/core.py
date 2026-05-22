@@ -1,6 +1,7 @@
 """Core operations on a CCHDO CF/netCDF file."""
 
 from collections.abc import Hashable
+from enum import StrEnum, auto
 
 import numpy as np
 import numpy.typing as npt
@@ -40,9 +41,15 @@ FLAG_SCHEME: dict[str, type[ExchangeFlag]] = {
 }
 
 
+class ColumnType(StrEnum):
+    DATA = auto()
+    FLAG = auto()
+    ERROR = auto()
+
+
 def dataarray_factory(
     param: WHPName,
-    ctype="data",
+    ctype: ColumnType = ColumnType.DATA,
     N_PROF=0,
     N_LEVELS=0,
     strlen=0,
@@ -53,25 +60,28 @@ def dataarray_factory(
     fill = FILLS_MAP[param.dtype]
     name = param.full_nc_name
 
-    if ctype == "flag":
+    if ctype == ColumnType.FLAG:
         dtype = dtype_map["integer"]
         fill = FILLS_MAP["integer"]
         name = param.nc_name_flag
 
-    if param.scope == "profile":
-        arr = np.full((N_PROF), fill_value=fill, dtype=dtype)
-    if param.scope == "sample":
-        arr = np.full((N_PROF, N_LEVELS), fill_value=fill, dtype=dtype)
+    match param.scope:
+        case "profile":
+            arr = np.full((N_PROF), fill_value=fill, dtype=dtype)
+        case "sample":
+            arr = np.full((N_PROF, N_LEVELS), fill_value=fill, dtype=dtype)
+        case "cruise":
+            arr = np.full((), fill_value=fill, dtype=dtype)
 
     attrs = param.get_nc_attrs()
     if "C_format" in attrs:
         attrs["C_format_source"] = "database"
 
-    if ctype == "error":
+    if ctype == ColumnType.ERROR:
         attrs = param.get_nc_attrs(error=True)
         name = param.nc_name_error
 
-    if ctype == "flag" and param.flag_w in FLAG_SCHEME:
+    if ctype == ColumnType.FLAG and param.flag_w in FLAG_SCHEME:
         flag_defs = FLAG_SCHEME[param.flag_w]
         flag_values = []
         flag_meanings = []
@@ -116,7 +126,7 @@ def dataarray_factory(
         if param.dtype == "integer":
             var_da = var_da.fillna(-999).astype("int32")
 
-    if ctype == "flag":
+    if ctype == ColumnType.FLAG:
         var_da.encoding["dtype"] = "int8"
         var_da.encoding["_FillValue"] = 9
 
