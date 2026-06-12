@@ -2,6 +2,7 @@
 
 from collections.abc import Hashable
 from enum import StrEnum, auto
+from typing import cast
 
 import numpy as np
 import numpy.typing as npt
@@ -45,6 +46,7 @@ class ColumnType(StrEnum):
     DATA = auto()
     FLAG = auto()
     ERROR = auto()
+    URL = auto()
 
 
 def dataarray_factory(
@@ -53,25 +55,55 @@ def dataarray_factory(
     N_PROF=0,
     N_LEVELS=0,
     strlen=0,
+    url_shape=(),
 ) -> xr.DataArray:
     dtype = dtype_map[param.dtype]
     if param.dtype == "string":
         dtype = f"U{strlen}"
     fill = FILLS_MAP[param.dtype]
     name = param.full_nc_name
+    scope = param.scope
 
     if ctype == ColumnType.FLAG:
         dtype = dtype_map["integer"]
         fill = FILLS_MAP["integer"]
         name = param.nc_name_flag
 
-    match param.scope:
+    if ctype == ColumnType.ERROR:
+        name = param.nc_name_error
+
+    if ctype == ColumnType.URL:
+        dtype = np.dtypes.StringDType
+        fill = FILLS_MAP["string"]
+        name = f"{name}_url"  # TODO: upstream to cchdo.params
+
+        match url_shape:
+            case (int(n),) | int(n):
+                scope = cast(
+                    int, n
+                )  # TODO: remove cast when ty has support for type narrowing in match statements
+            case () if param.scope in ("sample", "profile", "cruise"):
+                scope = "cruise"
+            case ("N_PROF",) | "N_PROF" if param.scope in ("sample", "profile"):
+                scope = "profile"
+            case ("N_PROF", "N_LEVELS") if param.scope in ("sample"):
+                scope = "sample"
+            case _:
+                raise ValueError
+
+    match scope:
         case "profile":
             arr = np.full((N_PROF), fill_value=fill, dtype=dtype)
+            var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], name=name)
         case "sample":
             arr = np.full((N_PROF, N_LEVELS), fill_value=fill, dtype=dtype)
+            var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], name=name)
         case "cruise":
             arr = np.full((), fill_value=fill, dtype=dtype)
+            var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], name=name)
+        case int(n):
+            arr = np.full(n, fill_value=fill, dtype=dtype)
+            var_da = xr.DataArray(arr, dims=f"N_{name}", name=name)
 
     attrs = param.get_nc_attrs()
     if "C_format" in attrs:
@@ -79,7 +111,6 @@ def dataarray_factory(
 
     if ctype == ColumnType.ERROR:
         attrs = param.get_nc_attrs(error=True)
-        name = param.nc_name_error
 
     if ctype == ColumnType.FLAG and param.flag_w in FLAG_SCHEME:
         flag_defs = FLAG_SCHEME[param.flag_w]
@@ -101,8 +132,10 @@ def dataarray_factory(
             "flag_meanings": " ".join(flag_meanings),
             "conventions": odv_conventions_map[param.flag_w],
         }
+    if ctype == ColumnType.URL:
+        attrs = {}
 
-    var_da = xr.DataArray(arr, dims=DIMS[: arr.ndim], attrs=attrs, name=name)
+    var_da.attrs.update(attrs)
 
     if param.dtype != "decimal":
         try:
@@ -233,6 +266,7 @@ def add_param(
     with_flag: bool = False,
     with_error: bool = False,
     with_ancillary=None,
+    with_url=None,
 ) -> xr.Dataset:
     """Add a new parameter, and optionally some ancillary associated variables to a dataset.
 
@@ -262,17 +296,16 @@ def add_param(
         )
         vars_to_add.append(var)
 
+    ancillary: set[str] = set(var.attrs.get("ancillary_variables", "").split())
+
     if with_flag and _param.nc_name_flag not in _ds:
         flag_var = dataarray_factory(
             _param,
             N_PROF=ds.sizes["N_PROF"],
             N_LEVELS=ds.sizes["N_LEVELS"],
-            ctype="flag",
+            ctype=ColumnType.FLAG,
         )
-        ancillary = var.attrs.get("ancillary_variables", "").split()
-        if flag_var.name not in ancillary:
-            ancillary.append(flag_var.name)
-        var.attrs["ancillary_variables"] = " ".join(sorted(ancillary))
+        ancillary.add(str(flag_var.name))
         vars_to_add.append(flag_var)
 
     if with_error and _param.full_error_name is None:
@@ -283,16 +316,29 @@ def add_param(
             _param,
             N_PROF=ds.sizes["N_PROF"],
             N_LEVELS=ds.sizes["N_LEVELS"],
-            ctype="error",
+            ctype=ColumnType.ERROR,
         )
-        ancillary = var.attrs.get("ancillary_variables", "").split()
-        if error_var.name not in ancillary:
-            ancillary.append(error_var.name)
-        var.attrs["ancillary_variables"] = " ".join(sorted(ancillary))
+        ancillary.add(str(error_var.name))
         vars_to_add.append(error_var)
 
-    for var in vars_to_add:
-        _ds[var.name] = var
+    if (
+        with_url is not None and f"{_param.full_nc_name}_url" not in _ds
+    ):  # TODO: upstream to cchdo.params
+        url_var = dataarray_factory(
+            _param,
+            N_PROF=ds.sizes["N_PROF"],
+            N_LEVELS=ds.sizes["N_LEVELS"],
+            ctype=ColumnType.URL,
+            url_shape=with_url,
+        )
+        ancillary.add(str(url_var.name))
+        vars_to_add.append(url_var)
+
+    if ancillary:
+        var.attrs["ancillary_variables"] = " ".join(sorted(ancillary))
+
+    for add_var in vars_to_add:
+        _ds[add_var.name] = add_var
 
     _ds = add_cdom_coordinate(_ds)
     check_ancillary_variables(_ds)

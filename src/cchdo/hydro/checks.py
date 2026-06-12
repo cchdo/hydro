@@ -33,7 +33,7 @@ def check_ancillary_variables(ds: xr.Dataset):
     """Check that everything in an ancillary_variables attribute appears as a variable
     Check that every variable that is known ancillary appears in at least one ancillary_variable attribute
     """
-    looks_ancillary_suffixes = ("_qc", "_error")
+    looks_ancillary_suffixes = ("_qc", "_error", "_url")
 
     ancillary_variables_attrs = defaultdict(list)
     looks_ancillary = set()
