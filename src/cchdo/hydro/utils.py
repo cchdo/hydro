@@ -89,6 +89,9 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
 
     # useful for later coping of attrs
     first = cdom_data[0]
+    whp_name = first.attrs["whp_name"]
+    whp_unit = first.attrs["whp_unit"]
+    whpname = WHPNames[(whp_name, whp_unit)]
 
     # "None in" doesn't seem to work due to xarray comparison?
     none_in_qc = [da is None for da in cdom_qc]
@@ -98,9 +101,6 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
     radiation_wavelengths = []
     c_formats = []
     for dataarray in cdom_data:
-        whp_name = dataarray.attrs["whp_name"]
-        whp_unit = dataarray.attrs["whp_unit"]
-        whpname = WHPNames[(whp_name, whp_unit)]
         radiation_wavelengths.append(whpname.radiation_wavelength)
         if "C_format" in dataarray.attrs:
             c_formats.append(dataarray.attrs["C_format"])
@@ -120,10 +120,10 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
         "CDOM_WAVELENGTHS": cdom_wavelengths,
     }
 
-    has_qc = False
     # qc flags first if any
+    first_qc: xr.DataArray | None = None
+    new_cdom_qc: xr.DataArray | None = None
     if _is_all_dataarray(cdom_qc):
-        has_qc = True
         cdom_qc_arrays = np.stack(cdom_qc, axis=-1)
         first_qc = cdom_qc[0]
 
@@ -146,7 +146,7 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
 
     new_qc_name = f"{whpname.nc_group}_qc"
 
-    if has_qc:
+    if new_cdom_qc is not None:
         new_cdom_attrs["ancillary_variables"] = new_qc_name
 
     new_cdom = xr.DataArray(
@@ -157,7 +157,7 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
     dataset[first.name] = new_cdom
     dataset = dataset.rename({first.name: whpname.nc_group})
 
-    if has_qc:
+    if new_cdom_qc is not None and first_qc is not None:
         dataset[first_qc.name] = new_cdom_qc
         dataset = dataset.rename({first_qc.name: new_qc_name})
 

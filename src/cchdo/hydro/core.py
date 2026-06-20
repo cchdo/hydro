@@ -104,6 +104,8 @@ def dataarray_factory(
         case int(n):
             arr = np.full(n, fill_value=fill, dtype=dtype)
             var_da = xr.DataArray(arr, dims=f"N_{name}", name=name)
+        case _:
+            raise ValueError(f"found unknown scope, got {scope}")
 
     attrs = param.get_nc_attrs()
     if "C_format" in attrs:
