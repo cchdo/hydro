@@ -134,7 +134,7 @@ def get_filename(expocode, station, cast, file_ext):
 # END machinery
 
 
-def convert_fortran_format_to_c(ffmt: str):
+def convert_fortran_format_to_c(ffmt: str | None):
     """Simplistic conversion from Fortran format string to C format string.
 
     This only operates on F formats.
@@ -171,18 +171,16 @@ def get_exwoce_params():
 
             if row[-1] == "x":
                 continue
-            if not row[1]:
-                row[1] = None
+            unit_mnemonic = row[1] if row[1] != "" else None
             if row[2]:
                 prange = list(map(float, row[2].split(",")))
             else:
                 prange = None
-            if not row[3]:
-                row[3] = None
+            ffmt = row[3] if row[3] != "" else None
             params[row[0]] = {
-                "unit_mnemonic": row[1],
+                "unit_mnemonic": unit_mnemonic,
                 "range": prange,
-                "format": convert_fortran_format_to_c(row[3]),
+                "format": convert_fortran_format_to_c(ffmt),
                 "order": order,
             }
         return params

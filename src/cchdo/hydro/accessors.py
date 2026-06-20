@@ -748,7 +748,8 @@ class CCHDOAccessor:
                     ]
                     if error_param.error_col:
                         ancillary.attrs["whp_name"] = error_param.full_error_name
-                        params[param].attrs[ERROR_NAME] = ancillary
+                        for param in whp_params:
+                            params[param].attrs[ERROR_NAME] = ancillary
                 except KeyError:
                     pass
 
