@@ -135,7 +135,8 @@ class CCHDOAccessor:
     def __init__(self, xarray_obj: xr.Dataset):
         self._obj = xarray_obj
 
-    def jsonld(self) -> dict:
+    def jsonld(self) -> dict:  # ty:ignore[missing-type-argument]
+        # ignoring the type error here becuase the json-ld output is too complicated (also probably going away)
         # we are going to mess with it a little
         obj = self._obj.copy()
 
@@ -605,10 +606,10 @@ class CCHDOAccessor:
             *[f"{key} = {value}" for key, value in headers.items()],
         ]
 
-    def _make_data_block(self, params: dict[WHPName, xr.DataArray]) -> list[str]:
+    def _make_data_block(self, params: dict[WHPName, xr.DataArray]) -> list[list[str]]:
         # TODO N_PROF is guaranteed
         valid_levels = params[WHPNames["SAMPNO"]] != ""
-        data_block = []
+        data_block: list[list[str]] = []
         for param, da in sorted(params.items()):
             if self.file_type == FileType.CTD and (
                 param.scope != "sample" or param.nc_name == "sample"
@@ -827,7 +828,7 @@ class CCHDOAccessor:
         input_precisions = fq_get_precisions(normalized_fq)
         idxes = {key: idxer[key] for key in normalized_fq}
         # invert keys and indexes?
-        inverted: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(list))
+        inverted: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(list))  # ty:ignore[missing-type-argument]
         for key, fq_values in normalized_fq.items():
             for param, value in fq_values.items():
                 idx = idxes[key]
