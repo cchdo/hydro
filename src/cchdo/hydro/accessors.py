@@ -63,6 +63,7 @@ class FQProfileKey(NamedTuple):
 
 class WHPIndxer:
     def __init__(self, obj: xr.Dataset) -> None:
+        self._cache = {}
         self.n_prof = pd.MultiIndex.from_arrays(
             [
                 obj.expocode.data,
@@ -77,13 +78,19 @@ class WHPIndxer:
             self.n_level.append(pd.Index(data[data != ""]))
 
     def __getitem__(self, key: FQProfileKey | FQPointKey):
+        try:
+            return self._cache[key]
+        except KeyError:
+            pass
+
         prof_idx = self.n_prof.get_loc((key.expocode, key.station, key.cast))
         if isinstance(key, FQPointKey):
             level_idx = self.n_level[prof_idx].get_loc(key.sample)
         else:
-            level_idx = slice(None)
-
-        return prof_idx, level_idx
+            level_idx = None
+        ret = prof_idx, level_idx
+        self._cache[key] = ret
+        return ret
 
 
 NormalizedFQ = dict[FQProfileKey | FQPointKey, dict[str, str | float]]
