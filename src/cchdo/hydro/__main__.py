@@ -333,6 +333,7 @@ def status_exchange(
                         ]
                     )
                 except KeyError:
+                    expos = ["Not Attached"]
                     crs = "<span>Not Attached</span>"
                 except IndexError:
                     log.critical(metadata["cruises"])

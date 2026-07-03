@@ -31,7 +31,7 @@ from cchdo.hydro.consts import (
     STNNBR,
     TIME,
 )
-from cchdo.hydro.core import dataarray_factory
+from cchdo.hydro.core import ColumnType, dataarray_factory
 from cchdo.hydro.dt import combine_dt
 from cchdo.hydro.exchange.exceptions import (
     ExchangeBOMError,
@@ -1061,14 +1061,14 @@ def _from_exchange_data(
         if param in flags:
             qc_name = param.nc_name_flag
             dataarrays[qc_name] = dataarray_factory(
-                param, ctype="flag", N_PROF=N_PROF, N_LEVELS=N_LEVELS
+                param, ctype=ColumnType.FLAG, N_PROF=N_PROF, N_LEVELS=N_LEVELS
             )
             dataarrays[param.full_nc_name].attrs["ancillary_variables"].append(qc_name)
 
         if param in errors:
             error_name = param.nc_name_error
             dataarrays[error_name] = dataarray_factory(
-                param, ctype="error", N_PROF=N_PROF, N_LEVELS=N_LEVELS
+                param, ctype=ColumnType.ERROR, N_PROF=N_PROF, N_LEVELS=N_LEVELS
             )
             dataarrays[param.full_nc_name].attrs["ancillary_variables"].append(
                 error_name
