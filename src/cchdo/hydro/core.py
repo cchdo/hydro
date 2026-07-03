@@ -2,7 +2,7 @@
 
 from collections.abc import Hashable
 from enum import StrEnum, auto
-from typing import cast
+from typing import Literal, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -49,13 +49,21 @@ class ColumnType(StrEnum):
     URL = auto()
 
 
+URL_SHAPE = (
+    int
+    | tuple[()]
+    | tuple[Literal["N_PROF"]]
+    | tuple[Literal["N_PROF"], Literal["N_LEVELS"]]
+)
+
+
 def dataarray_factory(
     param: WHPName,
     ctype: ColumnType = ColumnType.DATA,
     N_PROF=0,
     N_LEVELS=0,
     strlen=0,
-    url_shape=(),
+    url_shape: URL_SHAPE = (),
 ) -> xr.DataArray:
     dtype = dtype_map[param.dtype]
     if param.dtype == "string":
@@ -177,6 +185,7 @@ def remove_param(
     delete_param: bool = False,
     delete_flag: bool = False,
     delete_error: bool = False,
+    delete_url: bool = False,
     delete_ancillary=False,
     require_empty: bool = True,
 ) -> xr.Dataset:

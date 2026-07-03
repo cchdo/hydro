@@ -2,9 +2,10 @@ import os
 import re
 import string
 from collections import defaultdict
+from collections.abc import Callable
 from datetime import UTC, datetime
 from io import BufferedWriter, BytesIO
-from typing import Any, Literal, NamedTuple
+from typing import Any, Literal, NamedTuple, cast
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import numpy as np
@@ -15,7 +16,6 @@ from cchdo.hydro.checks import check_flags as _check_flags
 from cchdo.hydro.core import dataarray_factory
 from cchdo.hydro.types import FileType
 from cchdo.hydro.utils import (
-    add_cdom_coordinate,
     all_same,
     extract_numeric_precisions,
     flatten_cdom_coordinate,
@@ -61,6 +61,9 @@ class FQProfileKey(NamedTuple):
     cast: int
 
 
+NormalizedFQ = list[dict[str, str | float]]
+
+
 class WHPIndxer:
     def __init__(self, obj: xr.Dataset) -> None:
         self._cache = {}
@@ -92,38 +95,107 @@ class WHPIndxer:
         self._cache[key] = ret
         return ret
 
+    def convert_fq(self, fq: NormalizedFQ) -> NormalizedFQ:
+        """Convert the FQ json to be in terms of dims actually in the dataset"""
+        new_fq = []
+        for line in fq:
+            new_line = line.copy()
+            if line.keys() >= {"EXPOCODE", "STNNBR", "CASTNO", "SAMPNO"}:
+                key = FQPointKey(
+                    str(new_line.pop("EXPOCODE")),
+                    str(new_line.pop("STNNBR")),
+                    int(new_line.pop("CASTNO")),
+                    str(new_line.pop("SAMPNO")),
+                )
+                prof_n, level_n = self[key]
+                new_line["N_PROF"] = prof_n
+                new_line["N_LEVELS"] = level_n
+            elif line.keys() >= {"EXPOCODE", "STNNBR", "CASTNO"}:
+                key = FQProfileKey(
+                    str(new_line.pop("EXPOCODE")),
+                    str(new_line.pop("STNNBR")),
+                    int(new_line.pop("CASTNO")),
+                )
+                prof_n, _level_n = self[key]
+                new_line["N_PROF"] = prof_n
+            new_fq.append(new_line)
+        return new_fq
 
-NormalizedFQ = dict[FQProfileKey | FQPointKey, dict[str, str | float]]
 
+def normalize_fq(
+    fq: list[dict[str, str | float]],
+    *,
+    check_dupes=True,
+    extra_coords: dict[str, Callable[[Any], Any]] | None = None,
+) -> NormalizedFQ:
+    fq = fq.copy()
+    if extra_coords is None:
+        extra_coords = {}
 
-def normalize_fq(fq: list[dict[str, str | float]], *, check_dupes=True) -> NormalizedFQ:
-    normalized: NormalizedFQ = defaultdict(dict)
-    key: FQProfileKey | FQPointKey
+    types = {
+        "EXPOCODE": str,
+        "STNNBR": str,
+        "CASTNO": int,
+        "SAMPNO": str,
+        "N_PROF": int,
+        "N_LEVELS": int,
+    }
+    types.update(extra_coords)
+    # one of:
+    required_keys_1 = {"EXPOCODE", "STNNBR", "CASTNO"}
+    required_keys_2 = {"N_PROF"}
+    # one of (though both are optional)
+    optional_keys_1 = {"SAMPNO"}
+    optional_keys_2 = {"N_LEVELS"}
+
+    # extend optional keys by any extra dims
+    keys = (
+        required_keys_1
+        | required_keys_2
+        | optional_keys_1
+        | optional_keys_2
+        | extra_coords.keys()
+    )
+
+    normalized: dict[tuple[Any, ...], dict[Any, Any]] = defaultdict(dict)
     for line in fq:
         line = line.copy()
-        expocode = str(line.pop("EXPOCODE"))
-        station = str(line.pop("STNNBR"))
-        cast = int(line.pop("CASTNO"))
-        try:
-            sample = str(line.pop("SAMPNO"))
-        except KeyError:
-            key = FQProfileKey(expocode, station, cast)
-        else:
-            key = FQPointKey(expocode, station, cast, sample)
+        if line.keys() >= (required_keys_1 | required_keys_2):
+            raise ValueError(
+                f"The FQ line key must either specify {required_keys_1} xor {required_keys_2} but found both"
+            )
+        if not line.keys() >= required_keys_1 and not line.keys() >= required_keys_2:
+            raise ValueError(
+                f"The FQ line key must either specify {required_keys_1} xor {required_keys_2} but found neither in {line.keys()}"
+            )
+        if line.keys() >= (optional_keys_1 | optional_keys_2):
+            raise ValueError(
+                f"The FQ line key must either specify {optional_keys_1} xor {optional_keys_2} but found both"
+            )
+
+        composite_key = tuple(sorted(keys & line.keys()))
+
+        # written in this way to preserve the order of the above composite_key
+        key = tuple(
+            types[component](line[component])
+            for component in composite_key
+            if component in line
+        )
 
         if check_dupes is True:
-            shared_keys = normalized[key].keys() & line.keys()
+            shared_keys = (normalized[key] & line.keys()) - keys
             if len(shared_keys) != 0:
                 raise ValueError(f"Duplicate input data found: {key}")
 
         normalized[key].update(line)
+        normalized[key].update(dict(zip(composite_key, key, strict=True)))
 
-    return normalized
+    return list(normalized.values())
 
 
 def fq_get_precisions(fq: NormalizedFQ) -> dict[str, int]:
     collect: dict[str, list[str]] = defaultdict(list)
-    for value in fq.values():
+    for value in fq:
         for param, data in value.items():
             if isinstance(data, str):
                 collect[param].append(data)
@@ -135,6 +207,18 @@ def fq_get_precisions(fq: NormalizedFQ) -> dict[str, int]:
 
 
 FTypeOptions = Literal["cf", "exchange", "coards", "woce"]
+
+
+@xr.register_dataarray_accessor("cchdo")
+class CCHDOAAccessor:
+    def __init__(self, xarray_obj: xr.DataArray):
+        self._obj = xarray_obj
+
+    @property
+    def whpname(self) -> WHPName | None:
+        whp_name: str | None = self._obj.attrs.get("whp_name")
+        whp_unit: str | None = self._obj.attrs.get("whp_unit")
+        return WHPNames.get((whp_name, whp_unit))
 
 
 @xr.register_dataset_accessor("cchdo")
@@ -828,38 +912,57 @@ class CCHDOAccessor:
         # * Update history attribute...
         now = datetime.now(UTC)
         new_obj = self._obj.copy(deep=True)
-        new_obj = flatten_cdom_coordinate(new_obj)
         idxer = WHPIndxer(new_obj)
 
         normalized_fq = normalize_fq(fq)
         input_precisions = fq_get_precisions(normalized_fq)
-        idxes = {key: idxer[key] for key in normalized_fq}
         # invert keys and indexes?
         inverted: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(list))  # ty:ignore[missing-type-argument]
-        for key, fq_values in normalized_fq.items():
-            for param, value in fq_values.items():
-                idx = idxes[key]
-                inverted[param]["profs"].append(idx[0])
-                inverted[param]["levels"].append(idx[1])
-                inverted[param]["values"].append(value)
+        converted_fq = idxer.convert_fq(normalized_fq)
+        for fq_json in converted_fq:
+            coords = {}
+            for coord in cast(set[str], new_obj.dims):
+                if coord in fq_json:
+                    coords[coord] = new_obj[coord].dtype.type(fq_json[coord])
+            for param, value in fq_json.items():
+                if param in coords:
+                    continue
+                for coord, coord_value in coords.items():
+                    inverted[param][coord].append(coord_value)
+
+                inverted[param]["__values"].append(value)
 
         for param, values in inverted.items():
-            whpname = WHPNames[param]
-            if whpname.error_col:
-                col_ref = new_obj[whpname.nc_name_error]
-            elif whpname.flag_col:
-                col_ref = new_obj[whpname.nc_name_flag]
+            if param in new_obj:
+                col_ref = new_obj[param]
+                whpname: WHPName | None = col_ref.cchdo.whpname
             else:
-                col_ref = new_obj[whpname.full_nc_name]
+                whpname = WHPNames[param]
+                if whpname.error_col:
+                    col_ref = new_obj[whpname.nc_name_error]
+                elif whpname.flag_col:
+                    col_ref = new_obj[whpname.nc_name_flag]
+                else:
+                    col_ref = new_obj[whpname.full_nc_name]
 
-            col_ref.values[values["profs"], values["levels"]] = values["values"]
+            __values = values.pop("__values")
+            loc_key = xr.Dataset(
+                {
+                    key: xr.DataArray(value, dims=["merge"])
+                    for key, value in values.items()
+                }
+            )
+            col_ref.loc[loc_key] = __values
 
             col_ref.attrs["date_modified"] = now.isoformat(timespec="seconds")
 
-            if (
-                param in input_precisions
-                and whpname.dtype == "decimal"
-                and not whpname.flag_col
+            if param in input_precisions and (
+                "C_format" in col_ref.attrs
+                or (
+                    whpname is not None
+                    and whpname.dtype == "decimal"
+                    and not whpname.flag_col
+                )
             ):
                 new_c_format = f"%.{input_precisions[param]}f"
                 new_c_format_source = "input_file"
@@ -872,7 +975,6 @@ class CCHDOAccessor:
                     col_ref.attrs["date_metadata_modified"] = now.isoformat(
                         timespec="seconds"
                     )
-        new_obj = add_cdom_coordinate(new_obj)
         if check_flags:
             _check_flags(new_obj)
         return new_obj
