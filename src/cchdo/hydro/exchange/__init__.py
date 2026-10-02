@@ -780,13 +780,12 @@ class _ExchangeInfo:
                 state = LookingFor.DATA
                 continue
 
-            if state is LookingFor.DATA:
-                if line == "END_DATA":
-                    data_end = idx
+            if state is LookingFor.DATA and line == "END_DATA":
+                data_end = idx
 
-                    state = LookingFor.POST_DATA
-                    post_data_start = post_data_end = idx + 1
-                    continue
+                state = LookingFor.POST_DATA
+                post_data_start = post_data_end = idx + 1
+                continue
 
             if state is LookingFor.POST_DATA:
                 post_data_end = idx

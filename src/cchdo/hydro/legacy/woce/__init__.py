@@ -12,7 +12,6 @@ import xarray as xr
 
 from cchdo.hydro import accessors as acc
 
-#
 CTD_ZIP_FILE_EXTENSION = "ct.zip"
 CTD_FILE_EXTENSION = "ct.txt"
 BOTTLE_FILE_EXTENSION = "hy.txt"
@@ -104,11 +103,8 @@ def simplest_str(s) -> str:
     If a float is almost equivalent to an integer, swap out for the integer.
     """
     # if type(s) is float:
-    if isinstance(s, float):
-        # if fns.equal_with_epsilon(s, int(s)):
-        # replace with equivalent numpy call
-        if np.isclose(s, int(s), atol=1e-6):
-            s = int(s)
+    if isinstance(s, float) and np.isclose(s, int(s), atol=1e-6):
+        s = int(s)
     return str(s)
 
 

@@ -112,6 +112,9 @@ extend-exclude = ["*.ipynb"]
 ignore = [
     "E402", # module level import not at top of file
     "E731", # do not assign a lambda expression, use a def
+    "BLE001", # used on purpose
+    "DTZ001", # we do use naive datetime
+    "DTZ007", # we parse naive datetimes
 ]
 extend-select = [
   "B",    # flake8-bugbear

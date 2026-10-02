@@ -31,9 +31,7 @@ class ExchangeFlag(IntEnum):
 
     @property
     def has_value(self: FlagDefProtocol):
-        if self.flag in self._no_data_flags:
-            return False
-        return True
+        return self.flag not in self._no_data_flags
 
 
 class ExchangeBottleFlag(ExchangeFlag):

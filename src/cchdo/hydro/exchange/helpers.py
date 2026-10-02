@@ -89,9 +89,8 @@ def gen_template(
             continue
         if name.whp_name in exclude:
             continue
-        if param_counts is not None:
-            if param_counts.get(name.nc_name, 0) < min_count:
-                continue
+        if param_counts is not None and param_counts.get(name.nc_name, 0) < min_count:
+            continue
         if ftype == FileType.CTD and name.flag_w in {
             "woce_discrete",
             "woce_bottle",
