@@ -2,7 +2,7 @@
 
 from collections.abc import Hashable
 from enum import StrEnum, auto
-from typing import Literal, cast
+from typing import Literal
 
 import numpy as np
 import numpy.typing as npt
@@ -87,9 +87,7 @@ def dataarray_factory(
 
         match url_shape:
             case (int(n),) | int(n):
-                scope = cast(
-                    int, n
-                )  # TODO: remove cast when ty has support for type narrowing in match statements
+                scope = n
             case () if param.scope in ("sample", "profile", "cruise"):
                 scope = "cruise"
             case ("N_PROF",) | "N_PROF" if param.scope in ("sample", "profile"):
