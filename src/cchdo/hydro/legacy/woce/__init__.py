@@ -309,7 +309,7 @@ def write_data(ds, columns, base_format):
     return "".join([record2, record3, record4, *data_lines])
 
 
-def write_bottle(ds: xr.Dataset):
+def write_bottle(ds: xr.Dataset) -> bytes:
     """How to write a Bottle WOCE file."""
     # Look through datetime for begin and end dates
     begin_date = np.min(ds.time).dt.strftime("%Y%m%d").values

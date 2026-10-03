@@ -27,7 +27,8 @@ class ExchangeFlag(IntEnum):
 
     @property
     def cf_def(self):
-        return "_".join(self.definition.lower().replace(".", "").split())
+        # ty seems to be getting this wrong, "definition" is defined above
+        return "_".join(self.definition.lower().replace(".", "").split())  # ty: ignore[invalid-attribute-access]
 
     @property
     def has_value(self: FlagDefProtocol):

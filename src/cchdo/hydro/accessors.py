@@ -2,7 +2,7 @@ import os
 import re
 import string
 from collections import defaultdict
-from collections.abc import Callable
+from collections.abc import Callable, KeysView
 from datetime import UTC, datetime
 from io import BufferedWriter, BytesIO
 from typing import Any, Literal, NamedTuple, cast
@@ -832,7 +832,8 @@ class CCHDOAccessor:
 
                 # TODO find a way to test this
                 try:
-                    error_param = WHPNames[
+                    # we will rely on the raised KeyError to deal with this type mismatch
+                    error_param = WHPNames[  # ty: ignore[invalid-argument-type]
                         (
                             ancillary.attrs.get("whp_name"),
                             ancillary.attrs.get("whp_unit"),
@@ -921,7 +922,7 @@ class CCHDOAccessor:
         converted_fq = idxer.convert_fq(normalized_fq)
         for fq_json in converted_fq:
             coords = {}
-            for coord in cast(set[str], new_obj.dims):
+            for coord in cast(KeysView[str], new_obj.dims.keys()):
                 if coord in fq_json:
                     coords[coord] = new_obj[coord].dtype.type(fq_json[coord])
             for param, value in fq_json.items():
