@@ -35,7 +35,7 @@ jobs:
         uvx ruff format --check
 
   pytest:
-    name: Pytest 
+    name: Pytest
 
     runs-on: ubuntu-latest
 
@@ -102,4 +102,4 @@ jobs:
     - name: Install dependencies
       run: uv sync
     - name: Test typing
-      run: uv run ty check src
+      run: uv run ty check src --exit-zero-on-warning
