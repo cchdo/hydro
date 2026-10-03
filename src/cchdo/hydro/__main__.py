@@ -18,6 +18,8 @@ from . import __main_helpers as mh
 
 log = logging.getLogger(__name__)
 
+import sys
+
 from . import __version__
 
 
@@ -147,10 +149,10 @@ def edit_comments(expocode, dtype):
 
     if len(edit_files) == 0:
         log.error("No files to edit")
-        exit(1)
+        sys.exit(1)
     if len(edit_files) > 1:
         log.error("Too many files to edit")
-        exit(2)
+        sys.exit(2)
     file = edit_files[0]
     with NamedTemporaryFile(suffix=".nc") as tf:
         tf.write(s.get(f"https://cchdo.ucsd.edu/{file['file_path']}").content)
@@ -333,6 +335,7 @@ def status_exchange(
                         ]
                     )
                 except KeyError:
+                    expos = ["Not Attached"]
                     crs = "<span>Not Attached</span>"
                 except IndexError:
                     log.critical(metadata["cruises"])
