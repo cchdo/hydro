@@ -1,0 +1,1672 @@
+[
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 9,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 3.96,
+        "D15N_TDN [/MILLE]": 4.65,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 9,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.51,
+        "D15N_TDN [/MILLE]": 3.91,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 9,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.44,
+        "D15N_TDN [/MILLE]": 3.99,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 14,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 6.28,
+        "D15N_TDN [/MILLE]": 5.48,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 14,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 5.42,
+        "D15N_TDN [/MILLE]": 6.56,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 14,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 6.47,
+        "D15N_TDN [/MILLE]": 4.28,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 14,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.64,
+        "D15N_TDN [/MILLE]": 4.91,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 14,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.19,
+        "D15N_TDN [/MILLE]": 3.59,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 14,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.49,
+        "D15N_TDN [/MILLE]": 3.93,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 23,
+        "CASTNO": 1,
+        "SAMPNO": 25,
+        "TDN [UMOL/KG]": 7.27,
+        "D15N_TDN [/MILLE]": 4.34,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 23,
+        "CASTNO": 1,
+        "SAMPNO": 26,
+        "TDN [UMOL/KG]": 5.43,
+        "D15N_TDN [/MILLE]": 4.65,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 23,
+        "CASTNO": 1,
+        "SAMPNO": 27,
+        "TDN [UMOL/KG]": 5.26,
+        "D15N_TDN [/MILLE]": 5.0,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 23,
+        "CASTNO": 1,
+        "SAMPNO": 28,
+        "TDN [UMOL/KG]": 5.3,
+        "D15N_TDN [/MILLE]": 4.14,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 23,
+        "CASTNO": 1,
+        "SAMPNO": 29,
+        "TDN [UMOL/KG]": 4.73,
+        "D15N_TDN [/MILLE]": 5.26,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 23,
+        "CASTNO": 1,
+        "SAMPNO": 30,
+        "TDN [UMOL/KG]": 5.69,
+        "D15N_TDN [/MILLE]": 3.69,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 23,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 4.17,
+        "D15N_TDN [/MILLE]": 4.64,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 23,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 4.73,
+        "D15N_TDN [/MILLE]": 4.85,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 29,
+        "CASTNO": 1,
+        "SAMPNO": 19,
+        "TDN [UMOL/KG]": 7.3,
+        "D15N_TDN [/MILLE]": 4.64,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 29,
+        "CASTNO": 1,
+        "SAMPNO": 20,
+        "TDN [UMOL/KG]": 7.33,
+        "D15N_TDN [/MILLE]": 4.65,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 29,
+        "CASTNO": 1,
+        "SAMPNO": 22,
+        "TDN [UMOL/KG]": 5.49,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 29,
+        "CASTNO": 1,
+        "SAMPNO": 23,
+        "TDN [UMOL/KG]": 4.76,
+        "D15N_TDN [/MILLE]": 3.89,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 29,
+        "CASTNO": 1,
+        "SAMPNO": 24,
+        "TDN [UMOL/KG]": 4.11,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 29,
+        "CASTNO": 1,
+        "SAMPNO": 25,
+        "TDN [UMOL/KG]": 4.84,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 29,
+        "CASTNO": 1,
+        "SAMPNO": 26,
+        "TDN [UMOL/KG]": 4.57,
+        "D15N_TDN [/MILLE]": 3.99,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 29,
+        "CASTNO": 1,
+        "SAMPNO": 27,
+        "TDN [UMOL/KG]": 4.86,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 33,
+        "CASTNO": 1,
+        "SAMPNO": 15,
+        "TDN [UMOL/KG]": 7.21,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 33,
+        "CASTNO": 1,
+        "SAMPNO": 16,
+        "TDN [UMOL/KG]": 5.72,
+        "D15N_TDN [/MILLE]": 3.09,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 33,
+        "CASTNO": 1,
+        "SAMPNO": 17,
+        "TDN [UMOL/KG]": 5.33,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 33,
+        "CASTNO": 1,
+        "SAMPNO": 18,
+        "TDN [UMOL/KG]": 4.84,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 33,
+        "CASTNO": 1,
+        "SAMPNO": 19,
+        "TDN [UMOL/KG]": 4.63,
+        "D15N_TDN [/MILLE]": 6.09,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 33,
+        "CASTNO": 1,
+        "SAMPNO": 20,
+        "TDN [UMOL/KG]": 4.38,
+        "D15N_TDN [/MILLE]": 6.39,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 33,
+        "CASTNO": 1,
+        "SAMPNO": 21,
+        "TDN [UMOL/KG]": 5.97,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 33,
+        "CASTNO": 1,
+        "SAMPNO": 22,
+        "TDN [UMOL/KG]": 5.61,
+        "D15N_TDN [/MILLE]": 3.09,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 33,
+        "CASTNO": 1,
+        "SAMPNO": 23,
+        "TDN [UMOL/KG]": 4.98,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 37,
+        "CASTNO": 1,
+        "SAMPNO": 23,
+        "TDN [UMOL/KG]": 7.83,
+        "D15N_TDN [/MILLE]": 5.61,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 37,
+        "CASTNO": 1,
+        "SAMPNO": 24,
+        "TDN [UMOL/KG]": 6.85,
+        "D15N_TDN [/MILLE]": 5.43,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 37,
+        "CASTNO": 1,
+        "SAMPNO": 25,
+        "TDN [UMOL/KG]": 4.78,
+        "D15N_TDN [/MILLE]": 6.09,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 37,
+        "CASTNO": 1,
+        "SAMPNO": 26,
+        "TDN [UMOL/KG]": 4.77,
+        "D15N_TDN [/MILLE]": 5.55,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 37,
+        "CASTNO": 1,
+        "SAMPNO": 27,
+        "TDN [UMOL/KG]": 4.36,
+        "D15N_TDN [/MILLE]": 5.99,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 37,
+        "CASTNO": 1,
+        "SAMPNO": 28,
+        "TDN [UMOL/KG]": 4.07,
+        "D15N_TDN [/MILLE]": 5.85,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 37,
+        "CASTNO": 1,
+        "SAMPNO": 29,
+        "TDN [UMOL/KG]": 4.38,
+        "D15N_TDN [/MILLE]": 4.6,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 37,
+        "CASTNO": 1,
+        "SAMPNO": 30,
+        "TDN [UMOL/KG]": 4.44,
+        "D15N_TDN [/MILLE]": 4.89,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 37,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 4.22,
+        "D15N_TDN [/MILLE]": 5.45,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 44,
+        "CASTNO": 1,
+        "SAMPNO": 27,
+        "TDN [UMOL/KG]": 6.9,
+        "D15N_TDN [/MILLE]": 4.49,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 44,
+        "CASTNO": 1,
+        "SAMPNO": 28,
+        "TDN [UMOL/KG]": 4.56,
+        "D15N_TDN [/MILLE]": 4.61,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 44,
+        "CASTNO": 1,
+        "SAMPNO": 29,
+        "TDN [UMOL/KG]": 4.65,
+        "D15N_TDN [/MILLE]": 2.8,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 44,
+        "CASTNO": 1,
+        "SAMPNO": 30,
+        "TDN [UMOL/KG]": 4.59,
+        "D15N_TDN [/MILLE]": 2.82,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 44,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 5.1,
+        "D15N_TDN [/MILLE]": 4.54,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 44,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 5.02,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 44,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 5.24,
+        "D15N_TDN [/MILLE]": 4.21,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 44,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 5.05,
+        "D15N_TDN [/MILLE]": 4.36,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 50,
+        "CASTNO": 1,
+        "SAMPNO": 17,
+        "TDN [UMOL/KG]": 7.76,
+        "D15N_TDN [/MILLE]": 5.66,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 50,
+        "CASTNO": 1,
+        "SAMPNO": 18,
+        "TDN [UMOL/KG]": 6.73,
+        "D15N_TDN [/MILLE]": 5.38,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 50,
+        "CASTNO": 1,
+        "SAMPNO": 19,
+        "TDN [UMOL/KG]": 4.51,
+        "D15N_TDN [/MILLE]": 3.6,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 50,
+        "CASTNO": 1,
+        "SAMPNO": 20,
+        "TDN [UMOL/KG]": 4.61,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 50,
+        "CASTNO": 1,
+        "SAMPNO": 21,
+        "TDN [UMOL/KG]": 4.02,
+        "D15N_TDN [/MILLE]": 5.11,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 50,
+        "CASTNO": 1,
+        "SAMPNO": 22,
+        "TDN [UMOL/KG]": 3.85,
+        "D15N_TDN [/MILLE]": 6.84,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 50,
+        "CASTNO": 1,
+        "SAMPNO": 23,
+        "TDN [UMOL/KG]": 4.12,
+        "D15N_TDN [/MILLE]": 6.65,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 50,
+        "CASTNO": 1,
+        "SAMPNO": 24,
+        "TDN [UMOL/KG]": 4.01,
+        "D15N_TDN [/MILLE]": 4.2,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 56,
+        "CASTNO": 1,
+        "SAMPNO": 29,
+        "TDN [UMOL/KG]": 4.89,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 56,
+        "CASTNO": 1,
+        "SAMPNO": 30,
+        "TDN [UMOL/KG]": 4.43,
+        "D15N_TDN [/MILLE]": 5.13,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 56,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 4.03,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 56,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 4.41,
+        "D15N_TDN [/MILLE]": 5.84,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 56,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 4.79,
+        "D15N_TDN [/MILLE]": 4.05,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 56,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.28,
+        "D15N_TDN [/MILLE]": 5.87,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 56,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.13,
+        "D15N_TDN [/MILLE]": 5.9,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 64,
+        "CASTNO": 1,
+        "SAMPNO": 30,
+        "TDN [UMOL/KG]": 4.03,
+        "D15N_TDN [/MILLE]": 4.7,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 64,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 5.48,
+        "D15N_TDN [/MILLE]": 4.76,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 64,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 5.25,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 64,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 5.21,
+        "D15N_TDN [/MILLE]": 5.0,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 64,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 5.62,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 64,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 5.3,
+        "D15N_TDN [/MILLE]": 4.51,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 64,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 5.66,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 71,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 4.75,
+        "D15N_TDN [/MILLE]": 3.22,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 71,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 3.79,
+        "D15N_TDN [/MILLE]": 5.0,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 71,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 5.07,
+        "D15N_TDN [/MILLE]": 7.8,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 71,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 5.33,
+        "D15N_TDN [/MILLE]": 8.16,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 75,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 4.35,
+        "D15N_TDN [/MILLE]": 4.28,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 75,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.58,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 75,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 3.75,
+        "D15N_TDN [/MILLE]": 4.63,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 75,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.35,
+        "D15N_TDN [/MILLE]": 5.0,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 79,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 5.5,
+        "D15N_TDN [/MILLE]": 4.23,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 79,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 4.43,
+        "D15N_TDN [/MILLE]": 3.86,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 79,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 4.74,
+        "D15N_TDN [/MILLE]": 4.11,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 79,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.55,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 79,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.74,
+        "D15N_TDN [/MILLE]": 4.27,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 85,
+        "CASTNO": 1,
+        "SAMPNO": 30,
+        "TDN [UMOL/KG]": 5.25,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 85,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 4.57,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 85,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 3.93,
+        "D15N_TDN [/MILLE]": 5.31,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 85,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 3.82,
+        "D15N_TDN [/MILLE]": 5.78,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 85,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.27,
+        "D15N_TDN [/MILLE]": 4.92,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 85,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.16,
+        "D15N_TDN [/MILLE]": 4.86,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 92,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 3.93,
+        "D15N_TDN [/MILLE]": 5.1,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 92,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 4.18,
+        "D15N_TDN [/MILLE]": 3.99,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 92,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 3.84,
+        "D15N_TDN [/MILLE]": 4.74,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 92,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.46,
+        "D15N_TDN [/MILLE]": 5.84,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 92,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 5.9,
+        "D15N_TDN [/MILLE]": 3.8,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 97,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 5.44,
+        "D15N_TDN [/MILLE]": 5.78,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 97,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 4.25,
+        "D15N_TDN [/MILLE]": 4.95,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 97,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 4.5,
+        "D15N_TDN [/MILLE]": 4.12,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 97,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.55,
+        "D15N_TDN [/MILLE]": 4.21,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 97,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.53,
+        "D15N_TDN [/MILLE]": 4.68,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 97,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.4,
+        "D15N_TDN [/MILLE]": 3.98,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 101,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 3.69,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 101,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.06,
+        "D15N_TDN [/MILLE]": 5.18,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 101,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 3.78,
+        "D15N_TDN [/MILLE]": 4.75,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 101,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 3.95,
+        "D15N_TDN [/MILLE]": 3.33,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 106,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 3.96,
+        "D15N_TDN [/MILLE]": 4.74,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 106,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 4.95,
+        "D15N_TDN [/MILLE]": 4.71,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 106,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.68,
+        "D15N_TDN [/MILLE]": 2.73,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 106,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.53,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 106,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.69,
+        "D15N_TDN [/MILLE]": 4.65,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 112,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 7.29,
+        "D15N_TDN [/MILLE]": 5.09,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 112,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 4.14,
+        "D15N_TDN [/MILLE]": 3.99,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 112,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.43,
+        "D15N_TDN [/MILLE]": 4.13,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 112,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.09,
+        "D15N_TDN [/MILLE]": 4.4,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 112,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 5.0,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 115,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 7.52,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 115,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 4.0,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 115,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 3.99,
+        "D15N_TDN [/MILLE]": 3.63,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 115,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 3.94,
+        "D15N_TDN [/MILLE]": 3.24,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 115,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 3.98,
+        "D15N_TDN [/MILLE]": 4.19,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 115,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 3.98,
+        "D15N_TDN [/MILLE]": 4.46,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 118,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 6.88,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 118,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 5.05,
+        "D15N_TDN [/MILLE]": 3.31,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 118,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.11,
+        "D15N_TDN [/MILLE]": 4.05,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 118,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.27,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 118,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.3,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 124,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 3.91,
+        "D15N_TDN [/MILLE]": 3.07,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 124,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 3.73,
+        "D15N_TDN [/MILLE]": 2.9,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 124,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 3.38,
+        "D15N_TDN [/MILLE]": 3.74,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 124,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 3.86,
+        "D15N_TDN [/MILLE]": 3.76,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 124,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 3.84,
+        "D15N_TDN [/MILLE]": 3.53,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 127,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 6.29,
+        "D15N_TDN [/MILLE]": 4.73,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 127,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 3.79,
+        "D15N_TDN [/MILLE]": 5.06,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 127,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.99,
+        "D15N_TDN [/MILLE]": 3.29,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 127,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.98,
+        "D15N_TDN [/MILLE]": null,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": null
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 129,
+        "CASTNO": 1,
+        "SAMPNO": 30,
+        "TDN [UMOL/KG]": 6.66,
+        "D15N_TDN [/MILLE]": 6.12,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 129,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 5.28,
+        "D15N_TDN [/MILLE]": 2.95,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 129,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 4.5,
+        "D15N_TDN [/MILLE]": 2.85,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 129,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 3.98,
+        "D15N_TDN [/MILLE]": 2.85,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 129,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 3.77,
+        "D15N_TDN [/MILLE]": 2.09,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 129,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.05,
+        "D15N_TDN [/MILLE]": 3.75,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 129,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 3.86,
+        "D15N_TDN [/MILLE]": 4.41,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 132,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 5.96,
+        "D15N_TDN [/MILLE]": 5.23,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 132,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 3.49,
+        "D15N_TDN [/MILLE]": 4.66,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 132,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 3.72,
+        "D15N_TDN [/MILLE]": 4.21,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 132,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 3.62,
+        "D15N_TDN [/MILLE]": 3.21,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 132,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 3.3,
+        "D15N_TDN [/MILLE]": 3.47,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 132,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 3.43,
+        "D15N_TDN [/MILLE]": 2.53,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 135,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 5.76,
+        "D15N_TDN [/MILLE]": 5.46,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 135,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 4.33,
+        "D15N_TDN [/MILLE]": 3.79,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 135,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 4.32,
+        "D15N_TDN [/MILLE]": 3.52,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 135,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.55,
+        "D15N_TDN [/MILLE]": 3.98,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 135,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.78,
+        "D15N_TDN [/MILLE]": 3.73,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 135,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.72,
+        "D15N_TDN [/MILLE]": 4.2,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 138,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 4.26,
+        "D15N_TDN [/MILLE]": 3.46,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 138,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 3.78,
+        "D15N_TDN [/MILLE]": 3.64,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 138,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.36,
+        "D15N_TDN [/MILLE]": 3.25,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 138,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 3.92,
+        "D15N_TDN [/MILLE]": 4.15,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 138,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.66,
+        "D15N_TDN [/MILLE]": 1.97,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 141,
+        "CASTNO": 1,
+        "SAMPNO": 31,
+        "TDN [UMOL/KG]": 5.52,
+        "D15N_TDN [/MILLE]": 3.91,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 141,
+        "CASTNO": 1,
+        "SAMPNO": 32,
+        "TDN [UMOL/KG]": 3.72,
+        "D15N_TDN [/MILLE]": 5.6,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 141,
+        "CASTNO": 1,
+        "SAMPNO": 33,
+        "TDN [UMOL/KG]": 3.99,
+        "D15N_TDN [/MILLE]": 5.51,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 141,
+        "CASTNO": 1,
+        "SAMPNO": 34,
+        "TDN [UMOL/KG]": 4.4,
+        "D15N_TDN [/MILLE]": 2.85,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 141,
+        "CASTNO": 1,
+        "SAMPNO": 35,
+        "TDN [UMOL/KG]": 4.29,
+        "D15N_TDN [/MILLE]": 1.92,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    },
+    {
+        "EXPOCODE": 320620170703,
+        "STNNBR": 141,
+        "CASTNO": 1,
+        "SAMPNO": 36,
+        "TDN [UMOL/KG]": 4.15,
+        "D15N_TDN [/MILLE]": 4.43,
+        "TDN [UMOL/KG]_FLAG_W": 2,
+        "D15N_TDN [/MILLE]_FLAG_W": 2
+    }
+]

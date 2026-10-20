@@ -127,7 +127,8 @@ def test_fq_merge_cdom(nc_placeholders):
             "STNNBR": "1",
             "CASTNO": 1,
             "SAMPNO": "36",
-            "CDOM300 [/METER]": "100.2",
+            "CDOM_WAVELENGTHS": 300,
+            "cdom": "100.2",
         }
     ]
     merged = nc_placeholders.cchdo.merge_fq(fq)
@@ -141,7 +142,8 @@ def test_fq_merge_cdom(nc_placeholders):
             "STNNBR": "1",
             "CASTNO": 1,
             "SAMPNO": "36",
-            "CDOM325 [/METER]": "100.2",
+            "CDOM_WAVELENGTHS": 325,
+            "cdom": "100.2",
         }
     ]
     merged = nc_placeholders.cchdo.merge_fq(fq)

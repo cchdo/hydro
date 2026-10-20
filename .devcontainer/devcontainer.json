@@ -1,48 +1,55 @@
+
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
-	"name": "Python 3",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/python:1-3.12",
+  "name": "Python 3",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "image": "ghcr.io/astral-sh/uv:debian",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2.7.0": {}
+  },	// Features to add to the dev container. More info: https://containers.dev/features.
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  // These mounts do two things, the venv one overwirtes the .venv of the mapped in workspace
+  // This needs to be done because the venv is platform specific
+  // The uv-cache saves/persists the cache using a named volmes so that multiple containers
+  // can share the same cache
+  // Even better might be to map in something from the host, but the host cache dir location is not
+  // consistent
+  "mounts": [
+    {
+      "source": "venv-${devcontainerId}",
+      "target": "${containerWorkspaceFolder}/.venv",
+      "type": "volume"
+    },
+    { "source": "uv-cache", "target": "/home/vscode/.cache/uv", "type": "volume" }
+  ],
 
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-	// These mounts do two things, the venv one overwirtes the .venv of the mapped in workspace
-	// This needs to be done because the venv is platform specific
-	// The uv-cache saves/persists the cache using a named volmes so that multiple containers
-	// can share the same cache
-	// Even better might be to map in something from the host, but the host cache dir location is not
-	// consistent
-	"mounts": [
-		{"target": "/workspaces/hydro/.venv", "type": "volume" },
-		{ "source": "uv-cache", "target": "/home/vscode/.cache/uv", "type": "volume" }
-	],
+  // We need to copy rather than hardlink due to the cross volume mounts going on
+  "containerEnv": {
+    "UV_LINK_MODE": "copy"
+  },
 
-	// We need to copy rather than hardlink due to the cross volume mounts going on
-	"containerEnv": {
-		"UV_LINK_MODE": "copy"
-	},
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // we need to fix the perissions of the volumes (else they are owned by root)
+  "onCreateCommand": "sudo chown -R vscode:vscode /home/vscode/.cache .venv",
+  "postCreateCommand": "uv sync && uv run pre-commit && uv run pre-commit install",
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// we need to fix the perissions of the volumes (else they are owned by root)
-	"postCreateCommand": "sudo chown vscode /workspaces/hydro/.venv && sudo chown -R vscode /home/vscode/.cache && pipx install uv && uv sync && uv run pre-commit && uv run pre-commit install",
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "charliermarsh.ruff",
+        "ms-python.vscode-python-envs",
+        "GitHub.vscode-pull-request-github",
+        "github.vscode-github-actions",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  },
 
-	// Configure tool-specific properties.
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"charliermarsh.ruff",
-				"GitHub.vscode-pull-request-github",
-				"github.vscode-github-actions",
-				"ms-toolsai.jupyter"
-			]
-		}
-	},
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// this was uncommented so that the user is consistent
-	"remoteUser": "vscode"
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // this was uncommented so that the user is consistent
+  "remoteUser": "vscode"
 }

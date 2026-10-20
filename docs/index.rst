@@ -12,8 +12,8 @@ Welcome to hydro's documentation!
 
    getting_started
    format_spec
-   variables
    erddap
+   metadata_model
    ODF_CCHDO_netCDF_ops
    exchange_checker
    notebooks

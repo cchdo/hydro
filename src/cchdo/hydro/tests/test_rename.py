@@ -23,7 +23,7 @@ def test_rename():
     )
     name_dict = {"var1": "new_var1"}
     result = rename_with_bookkeeping(example, name_dict, attrs=["ancillary_variables"])
-    assert "new_var1" in result.data_vars.keys()
+    assert "new_var1" in result.data_vars
     for da in result.filter_by_attrs(ancillary_variables=is_not_none).values():
         assert "new_var1" in da.attrs["ancillary_variables"]
         assert "var2" in da.attrs["ancillary_variables"]

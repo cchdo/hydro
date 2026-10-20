@@ -1,5 +1,3 @@
-""" """
-
 from collections.abc import Mapping
 
 from xarray import Dataset
@@ -11,7 +9,7 @@ def is_not_none(obj):
 
 def rename_with_bookkeeping(
     xarray_obj: Dataset,
-    name_dict: Mapping | None = None,
+    name_dict: Mapping[str, str] | None = None,
     attrs: list[str] | None = None,
 ) -> Dataset:
     """Find and update all instances of a given variable to a new name.

@@ -1,6 +1,7 @@
 import io
 import os
-from collections.abc import Mapping
+import typing
+from collections.abc import Generator, Mapping
 from zipfile import ZipFile
 
 import requests
@@ -28,7 +29,7 @@ def load_cchdo_bottle_data():
                     f.write(chunk)
 
 
-class CCHDOBottleData(Mapping):
+class CCHDOBottleData(Mapping[str, io.BytesIO]):
     def __init__(self):
         self.path = os.path.join(_hydro_platformdirs.user_cache_dir, bottle_fname)
         try:
@@ -39,13 +40,16 @@ class CCHDOBottleData(Mapping):
             with ZipFile(self.path) as f:
                 self.files = f.namelist()
 
-    def __len__(self):
+    @typing.override
+    def __len__(self) -> int:
         return len(self.files)
 
-    def __iter__(self):
+    @typing.override
+    def __iter__(self) -> Generator[str]:
         yield from self.files
 
-    def __getitem__(self, key):
+    @typing.override
+    def __getitem__(self, key: str) -> io.BytesIO:
         if key not in self.files:
             raise KeyError()
         with ZipFile(self.path) as f:

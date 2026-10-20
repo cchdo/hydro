@@ -33,14 +33,16 @@ def test_btl_date_time_fill_round_trip():
     ex_xr = read_exchange(io.BytesIO(raw))
 
     assert "bottle_time" in ex_xr.variables
-    np.testing.assert_array_equal(ex_xr["bottle_time"].values, [[np.datetime64("nat")]])
+    np.testing.assert_array_equal(
+        ex_xr["bottle_time"].values, [[np.datetime64("nat", "m")]]
+    )
 
     # test the round trip
     ex = ex_xr.cchdo.to_exchange()
     assert b"nan" not in ex
     ex_xr_rt = read_exchange(io.BytesIO(ex))
     np.testing.assert_array_equal(
-        ex_xr_rt["bottle_time"].values, [[np.datetime64("nat")]]
+        ex_xr_rt["bottle_time"].values, [[np.datetime64("nat", "m")]]
     )
 
 
@@ -51,7 +53,7 @@ def test_btl_date_time_missing_warn():
     with pytest.warns(UserWarning):
         ex_xr = read_exchange(io.BytesIO(raw))
 
-    assert ex_xr["bottle_time"].values == [[np.datetime64("2020-01-01T00:34")]]
+    assert ex_xr["bottle_time"].values == [[np.datetime64("2020-01-01T00:34", "m")]]
 
 
 def test_ctd_nan():
