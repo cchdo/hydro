@@ -33,14 +33,14 @@ def check_ancillary_variables(ds: xr.Dataset):
     """Check that everything in an ancillary_variables attribute appears as a variable
     Check that every variable that is known ancillary appears in at least one ancillary_variable attribute
     """
-    looks_ancillary_suffixes = ("_qc", "_error")
+    looks_ancillary_suffixes = ("_qc", "_error", "_url")
 
     ancillary_variables_attrs = defaultdict(list)
     looks_ancillary = set()
 
     for name, variable in ds.variables.items():
         if not isinstance(name, str):
-            raise ValueError(f"variable names must be strings not {name}")
+            raise TypeError(f"variable names must be strings not {name}")
 
         if any(name.endswith(suffix) for suffix in looks_ancillary_suffixes):
             looks_ancillary.add(name)

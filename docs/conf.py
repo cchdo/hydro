@@ -16,7 +16,8 @@ sys.path.insert(0, os.path.abspath("."))
 
 # generate the ERDDAP variable table using a module import
 import_module("_erddap_table")
-import_module("_variables")
+# Disable variables for now
+# import_module("_variables")
 
 
 # -- Project information -----------------------------------------------------
@@ -48,6 +49,7 @@ extensions = [
     "sphinx_design",
     "autoapi.extension",
     "myst_nb",
+    "sphinxcontrib.mermaid",
 ]
 
 myst_enable_extensions = ["colon_fence", "deflist", "attrs_block", "fieldlist"]
@@ -57,6 +59,11 @@ autoapi_dirs = ["../src/cchdo", "../src/cchdo/hydro"]
 autoapi_python_use_implicit_namespaces = True
 
 autodoc_typehints = "description"
+
+mermaid_version = "12.2.0"
+mermaid_d3_zoom = True
+mermaid_dark_theme = "redux-dark-color"
+mermaid_light_theme = "redux-color"
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']

@@ -15,8 +15,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - name: Install uv
       uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: false
     - name: Build Dists
       run: uv build 
     - name: Publish Python distribution to PyPI

@@ -21,16 +21,18 @@ def _combine_dt_ndarray(
     # TODO: When min pyver is 3.10, maybe consider pattern matching here
     def _parse_date(date_val: str) -> np.datetime64:
         if date_val == "":
-            return np.datetime64("nat")
-        return np.datetime64(datetime.strptime(date_val, "%Y%m%d"))
+            return np.datetime64("nat", "D")
+        return np.datetime64(datetime.strptime(date_val, "%Y%m%d"), "D")
 
     def _parse_datetime(date_val: str) -> np.datetime64:
         if date_val == "T":
-            return np.datetime64("nat")
+            return np.datetime64("nat", "m")
         if date_val.endswith("2400"):
             date, _ = date_val.split("T")
-            return np.datetime64(datetime.strptime(date, "%Y%m%d") + timedelta(days=1))
-        return np.datetime64(datetime.strptime(date_val, "%Y%m%dT%H%M"))
+            return np.datetime64(
+                datetime.strptime(date, "%Y%m%d") + timedelta(days=1), "m"
+            )
+        return np.datetime64(datetime.strptime(date_val, "%Y%m%dT%H%M"), "m")
 
     # vectorize here doesn't speed things, it just nice for the interface
     parse_date = np.vectorize(_parse_date, ["datetime64"])
