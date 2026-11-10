@@ -13,7 +13,7 @@ requires-python = ">=3.12"
 dynamic = ["version"]
 license = {text = "BSD 3-clause"}
 dependencies = [
-    "cchdo.params>=2024.3",
+    "cchdo.params>=2024.3,<=2026.10.0",
     "xarray>=2023.9.0",
     "requests>=2.26.0",
     "numpy>=2",
