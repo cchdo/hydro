@@ -20,7 +20,7 @@ from cchdo.hydro.utils import (
     extract_numeric_precisions,
     flatten_cdom_coordinate,
 )
-from cchdo.params import WHPName, WHPNames
+from cchdo.params import WHPName, WHPNames, to_odv
 
 FLAG_NAME = "cchdo.hydro._qc"
 ERROR_NAME = "cchdo.hydro._error"
@@ -653,15 +653,15 @@ class CCHDOAccessor:
         param = attrs["whp_name"]
         unit = attrs.get("whp_unit")
         if isinstance(param, list):
-            params.extend(WHPNames[(combined, unit)] for combined in param)
+            params.extend(WHPNames[to_odv((combined, unit))] for combined in param)
         else:
             try:
-                error = WHPNames[(param, unit)]
+                error = WHPNames[to_odv((param, unit))]
                 if error.error_col:
                     return []
             except KeyError:
                 pass
-            params.append(WHPNames[(param, unit)])
+            params.append(WHPNames[to_odv((param, unit))])
         return params
 
     def _make_ctd_headers(self, params) -> list[str]:
@@ -832,11 +832,12 @@ class CCHDOAccessor:
 
                 # TODO find a way to test this
                 try:
-                    # we will rely on the raised KeyError to deal with this type mismatch
-                    error_param = WHPNames[  # ty: ignore[invalid-argument-type]
-                        (
-                            ancillary.attrs.get("whp_name"),
-                            ancillary.attrs.get("whp_unit"),
+                    error_param = WHPNames[
+                        to_odv(
+                            (
+                                ancillary.attrs.get("whp_name", ""),
+                                ancillary.attrs.get("whp_unit"),
+                            )
                         )
                     ]
                     if error_param.error_col:
@@ -880,6 +881,7 @@ class CCHDOAccessor:
             output.append(f"BOTTLE,{datetime.now(UTC):%Y%m%d}CCHHYDRO")
             output.extend(self._get_comments())
             params = self._obj.cchdo.to_whp_columns()
+            print(params.keys())
 
             # add the params and units line
             output.extend(self._make_params_units_line(params))

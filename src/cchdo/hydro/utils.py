@@ -6,7 +6,7 @@ import xarray as xr
 
 from cchdo.hydro.consts import COORDS, DIMS, GEOMETRY_VARS, TIME
 from cchdo.hydro.types import FileType, FileTypeType
-from cchdo.params import WHPNames
+from cchdo.params import WHPNames, to_odv
 
 
 def _is_all_dataarray(val: list[Any]) -> TypeGuard[list[xr.DataArray]]:
@@ -89,7 +89,7 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
 
     # useful for later coping of attrs
     first = cdom_data[0]
-    whpname = WHPNames[(first.attrs["whp_name"], first.attrs["whp_unit"])]
+    whpname = WHPNames[to_odv((first.attrs["whp_name"], first.attrs["whp_unit"]))]
 
     # "None in" doesn't seem to work due to xarray comparison?
     none_in_qc = [da is None for da in cdom_qc]
@@ -99,7 +99,9 @@ def add_cdom_coordinate(dataset: xr.Dataset) -> xr.Dataset:
     radiation_wavelengths = []
     c_formats = []
     for dataarray in cdom_data:
-        whpname = WHPNames[(dataarray.attrs["whp_name"], dataarray.attrs["whp_unit"])]
+        whpname = WHPNames[
+            to_odv((dataarray.attrs["whp_name"], dataarray.attrs["whp_unit"]))
+        ]
         radiation_wavelengths.append(whpname.radiation_wavelength)
         if "C_format" in dataarray.attrs:
             c_formats.append(dataarray.attrs["C_format"])

@@ -118,7 +118,7 @@ def dataarray_factory(
         attrs["C_format_source"] = "database"
 
     if ctype == ColumnType.ERROR:
-        attrs = param.get_nc_attrs(error=True)
+        attrs = param.as_error().get_nc_attrs()
 
     if ctype == ColumnType.FLAG and param.flag_w in FLAG_SCHEME:
         flag_defs = FLAG_SCHEME[param.flag_w]

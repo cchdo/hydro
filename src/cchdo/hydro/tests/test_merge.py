@@ -185,9 +185,9 @@ def test_fq_merge_with_alt_params(nc_placeholders):
             "STNNBR": "1",
             "CASTNO": 1,
             "SAMPNO": "36",
-            "SILCAT_ALT_1 [UMOL/KG]": "100.1",
-            "SILCAT_ALT_1 [UMOL/KG]_FLAG_W": "2",
-            "SILUNC_ALT_1 [UMOL/KG]": "1.0",
+            "SILCAT [UMOL/KG]_ALT_1": "100.1",
+            "SILCAT [UMOL/KG]_ALT_1_FLAG_W": "2",
+            "SILUNC [UMOL/KG]_ALT_1": "1.0",
         }
     ]
     merged = nc_placeholders.cchdo.merge_fq(fq)

@@ -71,7 +71,7 @@ from cchdo.hydro.utils import (
     set_axis_attrs,
     set_coordinate_encoding_fill,
 )
-from cchdo.params import WHPName, WHPNames
+from cchdo.params import WHPName, WHPNames, normalize_odv_name, to_odv
 from cchdo.params import __version__ as params_version
 
 try:
@@ -110,42 +110,32 @@ def _has_no_nones(val: list[str | None]) -> TypeGuard[list[str]]:
 
 
 def _transform_whp_to_csv(params: list[str], units: list[str]) -> list[str]:
-    slots: list[str | None] = [None for _ in range(len(params))]
+    """Collapse the two line exchange param unit pairs into a single list of ODV style param strings
 
-    pairs = list(zip(params, units, strict=True))
-    mutable_units = list(units)
+    The tricky part here is that the ODV style will want the unit along with the variuous supported suffixes
+    but for example, a _FLAG_W column will not have a unit."""
+    pairs = zip(params, units, strict=True)
+    name_parts = [normalize_odv_name(to_odv(param)) for param in pairs]
 
-    if len(set(pairs)) != len(pairs):
-        # we will assume that this is due to flags, actual duplciate params will come later
-        for index, (param, unit) in enumerate(pairs):
-            next_idx = index + 1
-            try:
-                next_param, _next_unit = pairs[next_idx]
-            except IndexError:
-                continue
+    # we will group by (base, alt) then for each group
+    # the units will be homogonized, in a valid file, only the primary variable should have units
+    # we won't care for now and let that error happen later
 
-            potential_flag = f"{param}_FLAG_W"
-            if next_param == potential_flag:
-                mutable_units[next_idx] = unit
+    # The builtin groupby cannot be used because these pairings do not need to be next to each other
+    # except in the case of same param name with different units
+    # The behavior here will be that the flags of some name get the units for the last seen param of that name
+    # that isn't an empty string
+    last_seen_units = {}
+    for idx, parts in enumerate(name_parts):
+        key = (parts.base, parts.alt)
 
-    flags = {}
-    # param pass
-    for index, (param, unit) in enumerate(zip(params, mutable_units, strict=True)):
-        if param.endswith("_FLAG_W"):
-            flags[param] = index
-        slots[index] = f"{param} [{unit}]"
-
-    # flag pass
-    for param, unit in zip(params, mutable_units, strict=True):
-        if param.endswith("_FLAG_W"):
+        if parts.unit != "":
+            last_seen_units[key] = parts.unit
             continue
-        if (flag := f"{param}_FLAG_W") in flags:
-            slots[flags[flag]] = f"{param} [{unit}]_FLAG_W"
+        if key in last_seen_units:
+            name_parts[idx] = parts._replace(unit=last_seen_units[key])
 
-    if _has_no_nones(slots):
-        return slots
-
-    raise ValueError("something has gone wrong with parameters transform")
+    return [name.as_odv_key() for name in name_parts]
 
 
 def _get_params(
@@ -1076,7 +1066,12 @@ def _from_exchange_data(
         # Check for ancillary temperature data and connect to the parent
         if param.analytical_temperature_name is not None:
             ancilary_temp_param = WHPNames[
-                (param.analytical_temperature_name, param.analytical_temperature_units)
+                to_odv(
+                    (
+                        param.analytical_temperature_name,
+                        param.analytical_temperature_units,
+                    )
+                )
             ]
             if ancilary_temp_param in params:
                 dataarrays[param.full_nc_name].attrs["ancillary_variables"].append(
